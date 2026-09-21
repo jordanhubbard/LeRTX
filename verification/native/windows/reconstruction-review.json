@@ -1,0 +1,12 @@
+{
+  "scope": "Complete retained-source suite including strict photo-scene interchange and native USD/RTX draft handling",
+  "tests": 113,
+  "seconds": 199.608,
+  "exit_code": 0,
+  "source_files": 40,
+  "source_identity": "525803de032ebdbf79b8ad6c67d051b77598814e5a6cc0aecf71a18adcbaf35e",
+  "identity_algorithm": "SHA256 of compact JSON sorted relative-path and file-SHA256 pairs, excluding __pycache__",
+  "local_remote_source_match": true,
+  "coverage": ["strict bounded model-output validation", "box, sphere and mesh USD construction", "edit-save-reopen preserves unverified provenance", "real RTX draft rendering with physics disabled when no rigid bodies exist", "existing native, CLI, UI and settings regressions"],
+  "limitations": ["no live image inference", "no photo import UI yet", "no measured registration", "no physical robot verification", "distribution and lifecycle acceptance incomplete"]
+}

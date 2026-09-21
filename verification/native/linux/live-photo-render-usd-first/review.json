@@ -1,0 +1,11 @@
+{
+  "state": "rendered",
+  "reconstruction_status": "unverified",
+  "width": 640,
+  "height": 480,
+  "frame_sha256": "9d2e6c904521a2db0591f3b91af397252f20e96a987735b1e93b1dafe5226d33",
+  "usd_sha256": "24d689e2be7bb3c7d6d9e4fc8db8ac0b68164cd567e7bc50476b91bcd3e2cf81",
+  "physics_error": "No supported rigid bodies; physics disabled",
+  "scope": "live model output rendered; no measured spatial accuracy claim",
+  "worker_closed": true
+}

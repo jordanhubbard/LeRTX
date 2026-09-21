@@ -1,0 +1,12 @@
+{
+  "scope": "retained application document, CUDA physics and native scene session; not Qt acceptance",
+  "command": "python -m unittest tests.test_document tests.test_physics_native tests.test_runtime_native -v",
+  "gpu": "NVIDIA L40",
+  "tests": 5,
+  "seconds": 63.671,
+  "exit_code": 0,
+  "result": "pass",
+  "repair": "Windows fsync requires a writable temporary-file handle; changed rb to r+b before atomic replacement",
+  "verified": ["Atomic USD saving and Save As", "Invalid edit is nonmutating", "Centimeter Y-up parent-scaled Newton simulation", "Unsupported collider rejection", "RTX frames follow published Newton poses", "Pause and camera", "Reset", "Edit/save/reopen", "Native shutdown"],
+  "application_acceptance": "incomplete: Windows Qt controls and remaining cross-platform requirements"
+}

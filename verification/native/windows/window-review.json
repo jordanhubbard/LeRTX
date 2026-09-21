@@ -1,0 +1,13 @@
+{
+  "scope": "Windows Qt controls with real L40 worker and injected settings transport",
+  "command": "python -m unittest tests.test_window_native tests.test_settings_ui -v",
+  "tests": 4,
+  "seconds": 72.137,
+  "exit_code": 0,
+  "result": "pass",
+  "qt_provisioning": "Verified Qt 6.10.2 wheels installed offline in isolated target using pinned installer; original SDK environment unchanged",
+  "screenshot": "window.png",
+  "visual_inspection": "Real rendered workspace and controls visible; wider camera retains edited sphere in frame. Hierarchy dock is too narrow on Windows; local layout constraints added afterward and require repeat visual verification",
+  "warnings": ["Qt DPI-awareness context access denied; window still rendered", "carb profiler already registered"],
+  "full_milestone_acceptance": "incomplete"
+}

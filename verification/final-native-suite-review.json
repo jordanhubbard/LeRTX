@@ -1,0 +1,16 @@
+{
+  "scope": "Complete retained desktop regression after photo failure coverage and whitespace cleanup",
+  "command": "python -m unittest discover -s tests -q (Linux under Xvfb)",
+  "source_files": 54,
+  "source_identity": "b03443a32b9f84008dc46fad21db7c3e0998b4733b06082509c127dfb9557655",
+  "identity_algorithm": "SHA256 of compact JSON sorted relative-path and file-SHA256 pairs, excluding __pycache__",
+  "linux": {"tests": 154, "seconds": 117.477, "exit_code": 0},
+  "windows": {"tests": 154, "seconds": 325.596, "exit_code": 0},
+  "source_identity_verified_on": ["local", "linux", "windows"],
+  "limitations": [
+    "Native SDK warnings remain in output; neither suite reported a test failure",
+    "Mock telemetry does not yet drive rendered SO-101 joints",
+    "No physical robot or calibration verification was performed",
+    "This report is not a verifier-owned lifecycle admission receipt or end-user packaging acceptance"
+  ]
+}

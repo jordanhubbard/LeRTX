@@ -1,0 +1,46 @@
+{
+  "scope": "Native startup and renderer-system shutdown repair; full Linux and Windows development regressions pass",
+  "reproduction": "Native window test followed by fresh-process existing-file launch; fails first-frame deadline on real X11 and Xvfb",
+  "diagnosis": "Worker traceback stopped inside OVRTX attach_ovstage during initial worker setup",
+  "repair": "Create and release an anonymous OpenUSD stage before constructing RTX; importing Usd alone did not provide sufficient initialization in the reproduced order",
+  "verification": {
+    "original_four_case_reproduction": "failed, 1 failure in 140.565 seconds",
+    "repaired_four_case_order": "passed, 4 tests in 29.623 seconds",
+    "repeated_order_plus_native": "passed, 7 tests in 31.623 seconds",
+    "portable_worker_regressions": "passed, 3 tests in 0.057 seconds",
+    "full_linux_suite": "passed, 156 tests in 67.386 seconds with LERTX_TEST_SCENES set to the verified fixture directory",
+    "pre_shutdown_repair_linux_suite": "passed, 157 tests in 67.203 seconds; process exit 0",
+    "pre_shutdown_repair_source_identity": "sha256:81fe000670be8cacf6104212769e373bbce6a7e443d75c1c810773877812c440",
+    "pre_shutdown_repair_source_identity_scope": "54 files excluding __pycache__; independently equal on Mac, Linux and Windows",
+    "windows_explicit_environment_diagnostic": {
+      "native_controls": "passed, 1 test in 70.203 seconds",
+      "following_existing_file_cli": "failed, 1 test in 150.890 seconds",
+      "observation": "Native PATH differs from Python os.environ after SDK initialization; explicitly passing Python environment to child does not resolve attach_ovstage timeout",
+      "free_bytes_after": 2692968448,
+      "followup_controls": {
+        "responsive_parent_qt_events": "failed, CLI timeout after 150.726 seconds",
+        "original_pre_sdk_environment": "failed, CLI timeout after 150.669 seconds",
+        "dll_directory_comparison": "unchanged after native controls; no DLL-directory restoration or child launch attempted in that control"
+      },
+      "independent_process_control": "failed, 151.378 seconds while completed native test process stayed alive; inheritance is not necessary to reproduce"
+    },
+    "renderer_system_shutdown": {
+      "repair": "RendererConfig keep_system_alive=False; the pinned SDK otherwise retains the system after every renderer instance is destroyed",
+      "source_identity": "sha256:394bda7d83268dfc5559886575f5a7c6c3947d4bb3beeedfe541c834238cf0db",
+      "source_scope": "54 files excluding __pycache__; independently equal on Mac, Linux and Windows",
+      "portable_worker_tests": "passed, 3 tests in 0.061 seconds",
+      "linux_full_suite": "passed, 157 tests in 95.020 seconds; process exit 0",
+      "windows_mixed_order_batch": "passed, 7 tests in 234.028 seconds; process exit 0",
+      "windows_full_suite": "passed, 157 tests in 520.415 seconds; process exit 0",
+      "windows_free_bytes_after_batch": 2696327168,
+      "windows_free_bytes_after_full_suite": 2694156288,
+      "post_run_identity_check": "Both worker source snapshots still equal the recorded source identity after full-suite completion"
+    }
+  },
+  "limitations": [
+    "Windows fresh installs remain held for critical disk pressure; existing-environment tests have a monitored 2 GiB reserve and 256 MiB write budget",
+    "Development regressions do not replace retained-source lifecycle admission or installed-product acceptance",
+    "The existing interactive process still runs its originally loaded code and was not restarted",
+    "No lifecycle admission, packaging, merge or release is claimed"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "scope": "retained native scene session; not Qt or Windows acceptance",
+  "command": "python -m unittest tests.test_runtime_native -v",
+  "exit_code": 0,
+  "tests": 1,
+  "seconds": 20.270,
+  "result": "pass",
+  "verified": [
+    "Actual owned RTX frame has requested dimensions and pixel variation",
+    "Newton sphere settles at expected authored-floor height",
+    "Runtime poses publish through OVStage and rendered frame changes",
+    "Camera changes render while simulation time remains paused",
+    "Simulation and camera changes leave authored file bytes unchanged",
+    "Reset restores authored pose",
+    "Edit then Save persists authored transform without application camera",
+    "Reopen resets simulation time",
+    "Worker shutdown releases renderer, stage, temporary files and thread"
+  ],
+  "resource_release": "Explicit query/path-list release added; rerun emitted no corresponding ResourceWarning",
+  "qualification_limit": "Recoverable ValueError/OSError command handling was added locally after deployment of this tested snapshot and awaits worker regression testing",
+  "full_application_acceptance": "incomplete"
+}

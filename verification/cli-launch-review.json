@@ -1,0 +1,17 @@
+{
+  "command": "python -m unittest tests.test_cli tests.test_launch_native -v (Linux under Xvfb)",
+  "linux": {"tests": 4, "seconds": 33.706, "exit_code": 0},
+  "windows": {"tests": 4, "seconds": 91.258, "exit_code": 0},
+  "coverage": [
+    "portable CLI and framework modes return parseable JSON",
+    "Python, fd-level and interpreter-shutdown diagnostics route to stderr",
+    "actual CLI entrypoint renders an RTX frame, closes the Qt window, stops native work and emits only JSON on stdout",
+    "repeated in-process launch renders and cleans unique untitled workspaces"
+  ],
+  "files_sha256": {
+    "main.py": "4d1e3fc24167ac32482c2aa7e2fa3c84b213d785ca5dad1d5a59d69aed512762",
+    "tests/test_cli.py": "b6ff06ffabb7a1842ca9cfd80dd7aa93c6775f812c3fbe9a554de62dc405d909",
+    "tests/test_launch_native.py": "de8718b67534d289b586e95b636cd60888039beea0d1ff4b0fe35efc603eaced"
+  },
+  "limitations": "Focused tests on provisioned SDK environments, not distributable-install acceptance. Endpoint-validation edits followed this run. Prior complete 97-test evidence remains bound to its earlier source snapshot."
+}

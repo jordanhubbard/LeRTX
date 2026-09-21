@@ -1,0 +1,9 @@
+{
+  "schema": "lertx/native-api-observation@1",
+  "package": "usd-core",
+  "version": "25.11",
+  "observation": "Gf.Matrix4d has no ExtractScale method; Gf.Transform(matrix).GetScale returns the authored scale",
+  "input_scale": ["2.0", "2.0", "0.05"],
+  "observed_scale": ["2.0", "2.0", "0.05"],
+  "application_executed": false
+}

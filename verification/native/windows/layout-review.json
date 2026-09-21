@@ -1,0 +1,11 @@
+{
+  "scope": "Windows layout, diagnostics and settings regression",
+  "command": "python -m unittest tests.test_window_native tests.test_settings_ui -v",
+  "tests": 5,
+  "seconds": 73.177,
+  "exit_code": 0,
+  "screenshot": "window-layout.png",
+  "visual_inspection": "Hierarchy and inspector now remain visible and readable at the Windows test desktop size. Actual sphere, surface, obstacle and shadows render. Numeric spinbox text remains cramped and deserves further polish.",
+  "verified": ["Hierarchy minimum width", "Inspector maximum width", "Discovered GPU and OVRTX version present", "Live Qt/GPU controls", "Display-unit conversion leaves authored scale unchanged", "Theme stylesheet changes", "Transactional and asynchronous settings behavior"],
+  "full_acceptance": "incomplete: further interaction, safety and packaging checks remain"
+}

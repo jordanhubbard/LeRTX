@@ -1,0 +1,24 @@
+{
+  "schema": "lertx/native-wheel-install-review@1",
+  "status": "fail",
+  "scope": "disposable-offline-install-not-application-admission",
+  "framework_revision": "dcacfbc243bb6c6c30c7e95ab079fa8ede5bf728",
+  "framework_wheel_sha256": "1f2d4880c2fd9319591aa4610a8a2e86c24d8d3cfd13538426c224c55ae3cdcd",
+  "target_identity": "sha256:e7e0e02159ed93246413670cccdf717a2303104b59fb2db7d6cbb1be0b3c58c1",
+  "archive_evidence": "repaired-wheel-archives.json",
+  "archive_and_target_checks": "pass: ten packages",
+  "error_code": "dependencies.python-installed-invalid",
+  "error": "Python wheel installation paths collide",
+  "failure_stage": "independent installed-payload observation after offline installation",
+  "shared_payload_diagnosis": {
+    "distinct_paths": 62,
+    "overlap_pairs": 124,
+    "different_byte_pairs": 0,
+    "owners": ["pyside6", "pyside6-addons", "pyside6-essentials"],
+    "examples": ["PySide6/QtCore.pyi", "PySide6/__init__.py", "PySide6/_config.py", "PySide6/py.typed"]
+  },
+  "cleanup": "No litai-owned temporary installation or staging directories remain",
+  "sdk_environment_changed": false,
+  "validator_changed": false,
+  "application_executed": false
+}

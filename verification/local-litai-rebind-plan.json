@@ -1,0 +1,121 @@
+{
+  "schema": "literate-ai/standard-lifecycle-rebind-plan@1",
+  "project_configuration_identity": "sha256:fcd9edf0e6c8faf56cdac7b327a22dcb3746d4c0e2cde55b00d734c001fa649f",
+  "configured_binding": {
+    "schema": "urn:literate-ai:schema:v2:project-lifecycle-driver",
+    "binding": "standard",
+    "framework_distribution_identity": {
+      "schema": "urn:literate-ai:schema:v1:content-identity",
+      "algorithm": "sha256",
+      "digest": "a3db861236cf52fb3e228a0859a945c1bd39fa7b88c75eba0b1690b43e3e5479"
+    },
+    "policy_identity": {
+      "schema": "urn:literate-ai:schema:v1:content-identity",
+      "algorithm": "sha256",
+      "digest": "a5ca0d6d13daff0199f218c5e4af723a2cec87b927e75dd3a731c511b5d85ac7"
+    }
+  },
+  "proposed_binding": {
+    "schema": "urn:literate-ai:schema:v2:project-lifecycle-driver",
+    "binding": "standard",
+    "framework_distribution_identity": {
+      "schema": "urn:literate-ai:schema:v1:content-identity",
+      "algorithm": "sha256",
+      "digest": "b3ff8ff1fde986b047d36d945884e01cfef5922e18f0684c18b53cce8afa0bbb"
+    },
+    "policy_identity": {
+      "schema": "urn:literate-ai:schema:v1:content-identity",
+      "algorithm": "sha256",
+      "digest": "a5ca0d6d13daff0199f218c5e4af723a2cec87b927e75dd3a731c511b5d85ac7"
+    }
+  },
+  "configured_receipt_policy": {
+    "schema": "urn:literate-ai:schema:v1:project-test-receipt-policy",
+    "suite_id": "literate-ai-standard",
+    "suite_version": "1.0.0",
+    "runner_identity": {
+      "schema": "urn:literate-ai:schema:v1:content-identity",
+      "algorithm": "sha256",
+      "digest": "a62e9157fb2d947af2d60ef59f783268502425758a69a8f73ad337864503bfea"
+    },
+    "required_evidence_kinds": [
+      "acceptance-result",
+      "build-result",
+      "generation-provenance",
+      "lifecycle-command",
+      "lifecycle-plan",
+      "lifecycle-request",
+      "observation-result",
+      "resolved-sbom",
+      "security-scan-report",
+      "source-cache-decision",
+      "source-cache-lifecycle",
+      "source-intelligence",
+      "source-sbom",
+      "test-report",
+      "test-runner",
+      "workspace-admission"
+    ],
+    "minimum_test_count": 1
+  },
+  "proposed_receipt_policy": {
+    "schema": "urn:literate-ai:schema:v1:project-test-receipt-policy",
+    "suite_id": "literate-ai-standard",
+    "suite_version": "1.0.0",
+    "runner_identity": {
+      "schema": "urn:literate-ai:schema:v1:content-identity",
+      "algorithm": "sha256",
+      "digest": "6fee8d2d7fa4d7ae646cd8ba7353a9449107dd6516b27aea6fd2fd78d5f3a690"
+    },
+    "required_evidence_kinds": [
+      "acceptance-result",
+      "build-result",
+      "generation-provenance",
+      "lifecycle-command",
+      "lifecycle-plan",
+      "lifecycle-request",
+      "observation-result",
+      "resolved-sbom",
+      "security-scan-report",
+      "source-cache-decision",
+      "source-cache-lifecycle",
+      "source-intelligence",
+      "source-sbom",
+      "test-report",
+      "test-runner",
+      "workspace-admission"
+    ],
+    "minimum_test_count": 1
+  },
+  "installed_authority": {
+    "distribution": {
+      "name": "literate-ai",
+      "version": "1.1.0",
+      "identity": "sha256:b3ff8ff1fde986b047d36d945884e01cfef5922e18f0684c18b53cce8afa0bbb",
+      "member_count": 871,
+      "payload_bytes": 11843058
+    },
+    "origin": {
+      "schema": "urn:literate-ai:schema:v1:project-initialization-origin",
+      "repository_url": "https://gitlab-master.nvidia.com/jordanh/literate-ai.git",
+      "git_revision": "dcacfbc243bb6c6c30c7e95ab079fa8ede5bf728",
+      "distribution_name": "literate-ai",
+      "distribution_version": "1.1.0"
+    },
+    "policy": {
+      "id": "literate-ai-standard",
+      "version": "1.0.0",
+      "identity": "sha256:a5ca0d6d13daff0199f218c5e4af723a2cec87b927e75dd3a731c511b5d85ac7"
+    }
+  },
+  "change_required": true,
+  "changed_fields": [
+    "lifecycle_driver",
+    "test_receipt_policy"
+  ],
+  "evidence_after_apply": {
+    "test_receipt": "stale-until-rebuild",
+    "accepted_source_membership": "stale-until-rebuild"
+  },
+  "identity": "sha256:773d0ab6d0bfc672ea099030937947dd8370fcf28fff7ef606e079d638648da3"
+}

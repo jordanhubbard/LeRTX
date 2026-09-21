@@ -1,0 +1,22 @@
+{
+  "scope": "Fresh Intelligence credentials and actual native-window photo failure preservation",
+  "command": "python -m unittest tests.test_settings_ui tests.test_photo_window_native -q (Linux under Xvfb)",
+  "source_files": 54,
+  "source_identity": "e02c6eeb32b6affa57a7f1756e13a89180bf0369c179f4ddf77e146d2dec951e",
+  "identity_algorithm": "SHA256 of compact JSON sorted relative-path and file-SHA256 pairs, excluding __pycache__",
+  "linux": {"tests":14, "seconds":34.418, "exit_code":0},
+  "windows": {"tests":14, "seconds":113.283, "exit_code":0},
+  "verified": [
+    "Fresh Intelligence dialog keeps API key blank with environment test keys present and Python file reads forbidden",
+    "Malformed scene, incomplete response, authentication failure and timeout pass through actual photo preview/upload UI and asynchronous request handling",
+    "Rejected responses never reach native draft adoption",
+    "Existing dirty authored USD text, file bytes and current path remain unchanged",
+    "Viewport continues receiving new frames after each failure",
+    "Provider error details remain absent from visible status"
+  ],
+  "limitations": [
+    "Transport responses are injected; no new live inference was performed",
+    "Only tests changed from the preceding full 152-test application snapshot",
+    "This focused run is not a full 154-test matrix or lifecycle admission receipt"
+  ]
+}

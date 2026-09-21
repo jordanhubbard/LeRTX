@@ -1,0 +1,27 @@
+{
+  "scope": "First interactive Linux development application, not milestone-wide admission",
+  "date": "2026-09-16",
+  "platform": "Linux NVIDIA RTX 5090, real user X11 desktop",
+  "launch": "python main.py '[{\"command\":\"launch\"}]' from desktop/source with provisioned SDK Python",
+  "observed": {
+    "window": "Visible LeRTX Qt window",
+    "native_status": "ready",
+    "viewport": "Actual rendered work surface, obstacle and yellow dynamic sphere",
+    "displayed_fps": 15.6,
+    "process": "Live after frame capture; left open for the user"
+  },
+  "fresh_checks": {
+    "visible_controls_physics_edit_save": "passed",
+    "blank_scene_cli": "passed",
+    "repeated_in_process_close": "passed",
+    "existing_file_cli_after_native_window_test": "failed first-frame deadline",
+    "existing_file_cli_isolated": "passed, 1 test in 15.978 seconds",
+    "combined_batch": "4 tests in 156.150 seconds; 1 failure"
+  },
+  "remaining": [
+    "Diagnose order-dependent first-frame startup failure",
+    "Verifier-owned retained-source application admission",
+    "End-user packaging and complete Linux/Windows delivery acceptance",
+    "Physical servo synchronization and rendered robot-joint integration"
+  ]
+}

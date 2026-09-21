@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "llm": {
+    "api_format": "responses",
+    "endpoint": "https://inference-api.nvidia.com/v1/responses",
+    "model": "azure/openai/gpt-6-astra",
+    "api_key": "",
+    "max_output_tokens": 512,
+    "timeout_seconds": 60,
+    "remember_key": false
+  }
+}

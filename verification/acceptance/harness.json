@@ -1,0 +1,25 @@
+{
+  "schema": "literate-ai/component-acceptance-oracle@1",
+  "component": "harness",
+  "specification_set_identity": "sha256:9822da0fe045ccc5d5ee08de9cdd32c079802cd3ebe3a003af28b48e36ba5663",
+  "cases": [
+    {
+      "case_id": "honest-bootstrap-capabilities",
+      "arguments": [{"command": "info"}],
+      "expected_result": {
+        "application": "LeRTX",
+        "milestone": "harness",
+        "creation_system": "literate-ai",
+        "product_platforms": ["linux", "windows"],
+        "robot_family": "so101",
+        "integrations": {
+          "renderer": "ovrtx",
+          "scene": "ovstage",
+          "physics": "newton",
+          "robot": "lerobot"
+        },
+        "runtime_ready": false
+      }
+    }
+  ]
+}

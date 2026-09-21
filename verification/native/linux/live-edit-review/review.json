@@ -1,0 +1,23 @@
+{
+  "state": "rendered",
+  "reconstruction_status": "unverified",
+  "width": 640,
+  "height": 480,
+  "frame_sha256": "9d2e6c904521a2db0591f3b91af397252f20e96a987735b1e93b1dafe5226d33",
+  "usd_sha256": "24d689e2be7bb3c7d6d9e4fc8db8ac0b68164cd567e7bc50476b91bcd3e2cf81",
+  "physics_error": "No supported rigid bodies; physics disabled",
+  "scope": "live model output rendered; no measured spatial accuracy claim",
+  "edit_verification": {
+    "prim": "/World/Objects/ground_patch",
+    "translation": [
+      0.125,
+      0.0,
+      0.0
+    ],
+    "saved_and_reopened": true,
+    "unverified_warning_preserved": true,
+    "usd_sha256": "b64c02c7f5f8ff5b37a1bbefdc599172312b99451277ec4641642696b5520f60",
+    "frame_sha256": "bc6c4ccc6a4d865e2f08930ce3719fbba23764082f63a47f93b653a9c69e4f1e"
+  },
+  "worker_closed": true
+}

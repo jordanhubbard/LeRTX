@@ -1,0 +1,60 @@
+{
+  "schema": "lertx/retained-driver-qualification@1",
+  "status": "local-qualification-passed",
+  "revision": "051852ad94e3ed6ce4ba3c13de44993ed949d6bf",
+  "driver_identity": "sha256:75f82723a21237d8c88254e41fb62bab770cfac1363c6eae86956462c1c4a434",
+  "documentation_authority": "sha256:abcb442352b2bc3b128eeceb93139ee79df696639939d60a12b6cd70cb4966c6",
+  "review": "retained-source-fix-review.md",
+  "pin_command": "make driver-review-record LITAI_SESSION_KEY=make-95155",
+  "wheel_gate": {
+    "command": "make wheel-check LITAI_SESSION_KEY=make-95155",
+    "exit_code": 0,
+    "identity": "sha256:d4a1fb0b6be34d7f59b66b2e45f917f7aef7253a1561bdddbe017e8004ae486c",
+    "bytes": 2785625,
+    "manifest": "parents/literate-ai/_build/ci-wheels/run-xso45lsg/manifest.json",
+    "evidence": "parents/literate-ai/_build/evidence/20260917T075522Z-15bc57/n0001/stdout.log",
+    "installed_distribution": "sha256:1168298f2e2f0f2ebf34c74a2c33b6710fb0e224cffb01c048ca18dc00757d5e",
+    "installed_members": 872,
+    "tamper_rejected": true
+  },
+  "local_cli": "_build/local-litai-retained-051852ad/venv/bin/litai",
+  "local_dependency_check": "passed",
+  "local_distribution_matches_wheel_gate": true,
+  "other_gates": {
+    "lint": "passed",
+    "format": "passed; 1112 Python files",
+    "repository_layout": "passed",
+    "openspec": "passed; 2 items",
+    "documentation": "passed; 9 tooling tests; 121 diagrams from 541 Markdown files",
+    "driver_review": "current"
+  },
+  "python_gate": {
+    "state": "passed",
+    "exit_code": 0,
+    "tests": 5131,
+    "passed": 5097,
+    "skipped": 34,
+    "seconds": 4890.786,
+    "evidence": "parents/literate-ai/_build/evidence/20260917T075523Z-114a9b/n0001/stderr.log",
+    "evidence_identity": "sha256:c0fa47e7fe024795615eb5008e309c09ff8fb3bd583bd8f0c8aeec07e9d58afa",
+    "checkpoint": "parents/literate-ai/_build/retained-051852ad-python.json",
+    "checkpoint_removed_by_runner_on_success": true,
+    "command": "make python-check LITAI_SESSION_KEY=make-95155 PYTHON_TEST_CHECKPOINT=_build/retained-051852ad-python.json",
+    "fresh_from_test_one": true
+  },
+  "application_binding_changed": false,
+  "unchanged_application_distribution": "sha256:5b5c9505009371cc98741052cf97da48dc7bfc33873147734d758b6be36293a8",
+  "global_installation_changed": false,
+  "published": false,
+  "local_candidate_merged": false,
+  "upstream_pr": {
+    "number": 464,
+    "state_at_final_check": "merged",
+    "merged_at": "2026-09-17T08:10:21Z",
+    "merge_commit": "26c8b22fa93af663905142d87769bea8ee18b839",
+    "performed_in_this_task": false,
+    "pulled_into_local_candidate": false
+  },
+  "released": false,
+  "application_admission": "not performed"
+}

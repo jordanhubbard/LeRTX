@@ -1,0 +1,12 @@
+{
+  "scope": "All retained-source tests, including native CUDA/RTX and Qt under Xvfb",
+  "command": "xvfb-run -a python tools/run_tests.py",
+  "tests": 93,
+  "seconds": 38.061,
+  "exit_code": 0,
+  "source_files": 35,
+  "source_identity": "e6423869d9500e61a7d5da9658437ee6a016af50ddf7f8a120fcc393cb367052",
+  "identity_algorithm": "SHA256 of compact JSON sorted relative-path and file-SHA256 pairs, excluding __pycache__",
+  "local_remote_source_match": true,
+  "milestone_acceptance": "incomplete; existing test coverage is not proof of every specification requirement"
+}

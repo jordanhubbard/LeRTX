@@ -1,0 +1,42 @@
+{
+  "schema": "lertx/package-adoption-regression@1",
+  "framework_revision": "aa3a58689fa5b1c585dd532939ef1869ab6bea20",
+  "source_tree": "sha256:272e1af07312461fb27fbdc7a2abb8bf72a2c9316c829efb888f89f514e29304",
+  "scope": "Retained source tested under Xvfb against the newly built native dependency runtime; not admission or package verification",
+  "admission": {
+    "exit_code": 2,
+    "error": "cli.invalid_input: PackageResult.artifacts: must contain at most 256 values",
+    "artifact_built": true,
+    "candidate_receipt_produced": false,
+    "required_package_entries": 11117,
+    "stderr_identity": "sha256:f0ca92347046f77d538eb9b16cba111cac02ceb17346ae7d00fa92914e737e11"
+  },
+  "native_suite": {
+    "exit_code": 1,
+    "tests": 157,
+    "passed": 156,
+    "failures": 1,
+    "seconds": 212.590,
+    "failed_test": "tests.test_launch_native.LaunchNativeTests.test_cli_existing_file_in_fresh_process_initializes_usd_before_rtx",
+    "failure": "No native frame reached the actual CLI window; native thread trace shows destroy_renderer during open_document/rebuild",
+    "dependency_binding": "Explicit inherited PYTHONPATH to the newly built artifact's python-runtime/site",
+    "bytecode_writes_disabled": true,
+    "fixtures_configured": true,
+    "test_assertions_changed": false,
+    "timeout_assertions_changed": false,
+    "stderr_identity": "sha256:fbe2e85d146a55445536146cbfa75f4c609bdf4c60b97c98bf56d17c097f1f77",
+    "stdout_identity": "sha256:42884010c59ea23c85658f1c0a98dce73fa92e184dc20fc73d1ed5ab0d97f812"
+  },
+  "verification": {
+    "authority": "pass",
+    "locks": "pass",
+    "documentation_review": "current",
+    "source_intelligence": "skipped-by-policy",
+    "html_observability": "skipped-no-artifacts",
+    "receipt": "project.test_receipt_stale"
+  },
+  "global_installation_changed": false,
+  "parent_production_code_changed": false,
+  "windows_packaging_attempted": false,
+  "physical_robot_actuation_tested": false
+}

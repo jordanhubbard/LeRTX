@@ -1,0 +1,41 @@
+{
+  "schema": "lertx/desktop-candidate-review@1",
+  "status": "rejected-before-admission",
+  "method": "source inspection and read-only installed SDK signature checks",
+  "application_executed": false,
+  "generation_stopped": true,
+  "candidate": "generated/desktop-codex-candidate/litai-node-71d86eb3ee77-oe7q7mtx/source",
+  "reviewed_sha256": {
+    "native_worker.py": "ac7c4433a9db1b86253122302e706a13bd8e95be46a07406aa9277b97b82e667",
+    "ui.py": "a3adaebda88b738c2c43cf20dbc874d2bf99355c3d51fe091935aacd455c66ef",
+    "tests/test_native_integration.py": "040c6471c3c9823b7301a5b1eda235c677a0e9ffffaf3bc04ec7469bd9fec363",
+    "tests/test_ui.py": "9bd5a0a1d43b77318403c45c913f48301d08805fc170bc581862fefd937d149e"
+  },
+  "findings": [
+    {"requirement": "native initialization", "finding": "Renderer is called with an unsupported device keyword; detach_ovstage is called with an unsupported stage argument."},
+    {"requirement": "USD runtime population", "finding": "Stage.population and Stage.PathDictionary do not exist in the installed pinned SDK."},
+    {"requirement": "Newton model and pose publication", "finding": "Model construction omits collision shapes and authored body transforms, uses nonexistent newton.SolverXPBD, and publishes an empty transform matrix array."},
+    {"requirement": "default render scene", "finding": "The requested render product is never authored; the camera lacks orientation toward the workspace."},
+    {"requirement": "USD editing and save", "finding": "Inspector fields are noneditable list entries; worker does not handle save or save-as commands; hierarchy is hardcoded rather than derived from the loaded stage."},
+    {"requirement": "configuration UI", "finding": "Settings displays an informational message instead of an editable settings dialog and LLM configuration controls."},
+    {"requirement": "native and UI acceptance", "finding": "Required native and UI behavior tests are unconditional failure placeholders, not implemented tests."},
+    {"requirement": "complete source-generation input", "finding": "The exact generation request contains the native API requirements and complete settings requirements; input truncation does not explain these omissions."}
+  ],
+  "installed_api_checks": {
+    "ovrtx": "0.5.0.377615",
+    "ovstage": "0.2.0.377349",
+    "newton": "1.6.0",
+    "Renderer_signature": "(config: Optional[RendererConfig] = None)",
+    "detach_ovstage_signature": "(self) -> None",
+    "newton.SolverXPBD_exists": false,
+    "newton.solvers.SolverXPBD_exists": true,
+    "Stage.population_exists": false,
+    "Stage.PathDictionary_exists": false
+  },
+  "independent_linux_qt_preflight": {
+    "qt_version": "6.10.2",
+    "platform": "xcb",
+    "visible_window": true,
+    "application_ui_acceptance": false
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "scope": "retained application document, CUDA physics and worker frame tests; not full UI acceptance",
+  "tests": 7,
+  "test_result": "pass",
+  "modules": ["tests.test_document", "tests.test_physics_native", "tests.test_native_integration"],
+  "verified": [
+    "Authored USD editing and saving",
+    "Centimeter Y-up parent-scaled sphere falls and settles on authored static floor under CUDA Newton",
+    "World matrix publication input preserves geometry scale and exact body path",
+    "Unsupported static mesh collider rejects simulation",
+    "Default authored scene has required schemas",
+    "Dedicated native worker opens USD and returns owned RTX frame bytes"
+  ],
+  "remaining": ["Qt integration", "Live physics-to-OVStage publication in application", "Camera and editing controls", "Repeated lifecycle and failure tests", "Windows native and UI verification"],
+  "warnings": ["Headless display unavailable", "CPU powersave profile", "PCIe current width below maximum", "IOMMU enabled"]
+}

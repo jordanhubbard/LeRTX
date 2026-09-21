@@ -1,0 +1,12 @@
+{
+  "command": "python -m unittest tests.test_config tests.test_settings_ui tests.test_cli -v (Linux under Xvfb)",
+  "linux": {"tests": 21, "seconds": 1.176, "exit_code": 0},
+  "windows": {"tests": 21, "seconds": 5.147, "exit_code": 0},
+  "coverage": ["malformed bracketed hosts and invalid ports become field errors", "control characters and credential-bearing encoded queries rejected", "valid IPv6 and noncredential API-version query accepted", "settings dialog remains open and retains prior profile on invalid URL"],
+  "files_sha256": {
+    "lertx/config.py": "ae1ca5fc2fdec0ac42122143a3e35b40e4749ae303e642a521132534b78fcadc",
+    "tests/test_config.py": "5f23069f4031987554311e6c434c6f45e44abb1ca9a2e4e614542d898405e715",
+    "tests/test_settings_ui.py": "d07fd0ba8ed57f30fb9b3c260f9b71aded671b445c48a6940f9d53093dc20a63"
+  },
+  "limitations": "Focused regression, no live inference request or credentials used; full latest-source suite not rerun in this checkpoint."
+}

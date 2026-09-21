@@ -1,0 +1,227 @@
+"""Single-thread native scene session; methods are queued on its worker."""
+from __future__ import annotations
+
+import math
+import copy
+import tempfile
+from pathlib import Path
+
+from .document import SceneDocument
+from .physics import PhysicsScene
+from .scene import BodyMapping, NativeWorker, SimulationDisabledError, ensure_render_product
+from .simulation import SimulationClock
+
+
+class SceneWorker(NativeWorker):
+    def __init__(self, profile):
+        super().__init__(profile["rendering"]["device"])
+        self.profile = profile
+        self.document = None
+        self.physics = None
+        self.physics_error = ""
+        self.clock = SimulationClock(profile["physics"]["timestep_hz"])
+        self._temporary = None
+        self._drafts = None
+        self._snapshot_number = 0
+        self.camera_path = "/LeRTXCamera"
+        self.center = [0., 0., 0.]
+        self.distance = 3.
+        self.azimuth = -0.8
+        self.elevation = 0.55
+
+    def _initialize(self):
+        # NativeWorker starts the command owner, but this session creates RTX
+        # only in rebuild(), once its first document/runtime snapshot is ready.
+        # Creating an empty renderer here immediately tears it down on the first
+        # open, potentially waiting on SDK initialization before any frame exists.
+        pass
+
+    def open_document(self, filename):
+        candidate = SceneDocument(filename, self.profile["workspace"]["asset_search_paths"])
+        previous = self.document
+        old_camera = (self.center[:], self.distance)
+        self.document = candidate
+        try:
+            self.frame_selection(None, publish=False)
+        except Exception:
+            self.document = previous
+            self.center, self.distance = old_camera
+            raise
+        self.rebuild()
+        return self.status()
+
+    def import_photo_draft(self, text, image_sha256, model):
+        from uuid import uuid4
+        from .reconstruction import build_draft_stage
+        stage = build_draft_stage(text, image_sha256, model)
+        if self._drafts is None:
+            self._drafts = tempfile.TemporaryDirectory(prefix="lertx-photo-")
+        path = Path(self._drafts.name) / (uuid4().hex + ".usda")
+        if not stage.GetRootLayer().Export(str(path)):
+            raise OSError("Could not create draft workspace")
+        self.open_document(str(path))
+        self.document.dirty = True
+        return self.status()
+
+    def rebuild(self):
+        from pxr import Gf, Usd, UsdGeom, UsdLux
+        self.clock.pause()
+        self.clock.reset()
+        self.physics = None
+        self.physics_error = ""
+        try:
+            self.physics = PhysicsScene(self.document.stage,
+                device=f"cuda:{self._gpu_index}", gravity=float(self.profile["physics"]["gravity_m_s2"]))
+        except SimulationDisabledError as exc:
+            self.physics_error = str(exc)
+        # Render a flattened runtime copy, never inject cameras or simulated poses
+        # into the authored document. Flatten resolves local asset paths.
+        if self._temporary is None:
+            self._temporary = tempfile.TemporaryDirectory(prefix="lertx-runtime-")
+        self._snapshot_number += 1
+        filename = Path(self._temporary.name) / f"scene-{self._snapshot_number}.usda"
+        self.document.stage.Flatten().Export(str(filename))
+        runtime = Usd.Stage.Open(str(filename))
+        while runtime.GetPrimAtPath(self.camera_path):
+            self.camera_path += "_"
+        camera = UsdGeom.Camera.Define(runtime, self.camera_path)
+        camera.CreateFocalLengthAttr(24.)
+        camera.CreateClippingRangeAttr(Gf.Vec2f(max(self.distance/10000, 0.0001), self.distance*1000))
+        UsdGeom.Xformable(camera).AddTransformOp().Set(self.camera_matrix())
+        if not any(p.IsA(UsdLux.DomeLight) or p.IsA(UsdLux.DistantLight) for p in runtime.Traverse()):
+            UsdLux.DomeLight.Define(runtime, self.camera_path + "Light").CreateIntensityAttr(1000.)
+        rendering = self.profile["rendering"]
+        ensure_render_product(runtime, self.camera_path, rendering["width"], rendering["height"], rendering["quality"])
+        runtime.GetRootLayer().Save()
+        self.runtime_file = filename
+        runtime = None
+        # Release all previous renderer/stage state before opening a replacement.
+        super()._cleanup()
+        super()._initialize()
+        self.open_usd(str(filename))
+        return self.status()
+
+    def status(self):
+        from pxr import UsdGeom
+        import importlib.metadata
+        import warp as wp
+        diagnostics = {name: importlib.metadata.version(name) for name in
+                       ("ovrtx", "ovstage", "newton", "warp-lang", "usd-core", "PySide6")}
+        diagnostics["gpu"] = wp.get_device(f"cuda:{self._gpu_index}").name
+        diagnostics["workspace"] = str(self.document.path.parent)
+        diagnostics["temporary_directory"] = tempfile.gettempdir()
+        world = self.document.stage.GetPrimAtPath("/World")
+        photo_draft = bool(world and world.GetAttribute("lertx:sceneSchema").Get() == "lertx.photo-scene.v1")
+        return {"path": str(self.document.path), "dirty": self.document.dirty,
+                "reconstruction_status": "unverified" if photo_draft else "",
+                "diagnostics": diagnostics,
+                "meters_per_unit": UsdGeom.GetStageMetersPerUnit(self.document.stage),
+                "hierarchy": self.document.hierarchy(), "time": self.clock.sim_time,
+                "playing": self.clock.playing, "physics_error": self.physics_error}
+
+    def set_playing(self, enabled):
+        if enabled and (self.physics is None or self.physics_error):
+            raise ValueError(self.physics_error or "No simulated scene")
+        self.clock.play() if enabled else self.clock.pause()
+        return self.status()
+
+    def configure(self, profile, config_path):
+        """Apply and persist on the native owner, restoring prior state on failure."""
+        from .config import save_profile, validate_profile
+        candidate = copy.deepcopy(profile)
+        if not validate_profile(candidate)["valid"]:
+            raise ValueError("Invalid application settings")
+        if self.document is None:
+            raise ValueError("Open a ready workspace before applying settings")
+        previous = self.profile
+        native_change = any(candidate[key] != previous[key] for key in ("rendering", "physics"))
+        self.profile = candidate
+        try:
+            if native_change:
+                self._gpu_index = candidate["rendering"]["device"]
+                self.clock.set_timestep_hz(candidate["physics"]["timestep_hz"])
+            status = self.rebuild() if native_change else self.status()
+            save_profile(candidate, config_path)
+        except Exception:
+            self.profile = previous
+            if native_change:
+                self._gpu_index = previous["rendering"]["device"]
+                self.clock.set_timestep_hz(previous["physics"]["timestep_hz"])
+                try:
+                    self.rebuild()
+                except Exception:
+                    raise RuntimeError("Settings were not saved; native restoration failed. Reopen the application.") from None
+            raise ValueError("Settings were not saved; previous configuration restored.") from None
+        return status
+
+    def tick(self, elapsed):
+        # Only bounded catch-up is admitted; excess wall time is dropped.
+        if self.physics is not None:
+            for _ in range(self.clock.advance(min(max(elapsed, 0), 0.1))):
+                self.physics.step(self.clock.dt, self.profile["physics"]["substeps"])
+            self.publish_transforms(self.physics.mapping, self.physics.world_matrices())
+        frame = self.render("/Render/Product", max(0., elapsed))
+        return {"frame": frame, "time": self.clock.sim_time, "playing": self.clock.playing}
+
+    def reset(self):
+        return self.rebuild()
+
+    def edit(self, path, translation, rotation, scale):
+        self.document.edit_transform(path, translation, rotation, scale)
+        return self.rebuild()
+
+    def save(self, destination=None):
+        self.document.save(destination)
+        return self.status()
+
+    def inspect(self, path):
+        return self.document.transform(path)
+
+    def camera_matrix(self):
+        from pxr import Gf, UsdGeom
+        axis = str(UsdGeom.GetStageUpAxis(self.document.stage))
+        up = Gf.Vec3d(0, 1, 0) if axis == "Y" else Gf.Vec3d(0, 0, 1)
+        horizontal = self.distance * math.cos(self.elevation)
+        v = [horizontal*math.cos(self.azimuth), horizontal*math.sin(self.azimuth),
+             self.distance*math.sin(self.elevation)]
+        if axis == "Y":
+            v = [v[0], v[2], v[1]]
+        center = Gf.Vec3d(*self.center)
+        return Gf.Matrix4d().SetLookAt(center + Gf.Vec3d(*v), center, up).GetInverse()
+
+    def move_camera(self, orbit=(0, 0), pan=(0, 0), zoom=0):
+        from pxr import Gf
+        self.azimuth += orbit[0]
+        self.elevation = max(-1.45, min(1.45, self.elevation + orbit[1]))
+        matrix = self.camera_matrix()
+        shift = matrix.TransformDir(Gf.Vec3d(pan[0], pan[1], 0)) * self.distance
+        self.center = list(Gf.Vec3d(*self.center) + shift)
+        self.distance = max(0.001, min(1e8, self.distance * math.exp(max(-2, min(2, zoom)))))
+        mapping = BodyMapping({0: self.camera_path})
+        self.publish_transforms(mapping, [self.camera_matrix()])
+
+    def frame_selection(self, path=None, publish=True):
+        from pxr import Usd, UsdGeom
+        prim = self.document.stage.GetPrimAtPath(path) if path else self.document.stage.GetPseudoRoot()
+        if not prim:
+            raise ValueError("Select an existing prim")
+        box = UsdGeom.BBoxCache(Usd.TimeCode.Default(), ["default", "render", "proxy"]).ComputeWorldBound(prim).ComputeAlignedRange()
+        if box.IsEmpty():
+            raise ValueError("Selected prim has no visible bounds")
+        self.center = list(box.GetMidpoint())
+        self.distance = max(box.GetSize().GetLength()*1.6, 0.01)
+        if publish:
+            self.move_camera()
+
+    def _cleanup(self):
+        try:
+            super()._cleanup()
+        finally:
+            self.physics = None
+            self.document = None
+            if self._temporary is not None:
+                self._temporary.cleanup()
+                self._temporary = None
+            if self._drafts is not None:
+                self._drafts.cleanup()
+                self._drafts = None

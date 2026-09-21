@@ -1,0 +1,9 @@
+{
+  "scope": "Local USD dependency preflight and document regression",
+  "command": "python -m unittest tests.test_asset_policy tests.test_document -v",
+  "tests": 9,
+  "seconds": 0.082,
+  "exit_code": 0,
+  "verified": ["Remote texture in nested layer rejected before Usd.Stage.Open", "URI/custom resolver and UNC asset paths rejected", "Dependency cycles terminate", "Layer count budget enforced", "Local search-path and Save As regressions pass"],
+  "limits": ["Plain local USD formats only", "No claim of protection against concurrent external file replacement", "Windows test pending"]
+}

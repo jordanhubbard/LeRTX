@@ -1,0 +1,12 @@
+{
+  "schema": "lertx/native-framework-install-review@1",
+  "platform": "windows-x86_64",
+  "framework_revision": "0449e10c3a487ae21c4f606d69ee416dd853056f",
+  "framework_wheel_sha256": "9b64f5e1c5bc7f40fa15f95275342f805668ee92f37187885726aa4f9e330f95",
+  "installation": "non-editable isolated disposable environment",
+  "dependency_check": "pass",
+  "cli_version": "1.1.0",
+  "global_installation_changed": false,
+  "native_closure_installation": "pass: qualified-install-review.json; 10974 files, revalidation and disposable cleanup passed",
+  "application_acceptance": "incomplete"
+}

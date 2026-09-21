@@ -1,0 +1,27 @@
+{
+  "scope": "Worker-owned native settings transaction and recovery status, full retained desktop suite",
+  "command": "python -m unittest discover -s tests -q (Linux under Xvfb)",
+  "source_files": 54,
+  "source_identity": "bd3e2c6973844a74303e5bf633f2c9dee61b41f7549ada61ee19f8f260ded6c3",
+  "identity_algorithm": "SHA256 of compact JSON sorted relative-path and file-SHA256 pairs, excluding __pycache__",
+  "local_linux_windows_identity_match": true,
+  "source_unchanged_during_runs": true,
+  "visual_review": "Both native window captures inspected: actual RTX scene and readable hierarchy/inspector remain present, and the prior stale status-bar parse error is absent after recovery.",
+  "linux": {"tests": 152, "seconds": 92.753, "exit_code": 0, "screenshot": "native/linux/settings-window.png"},
+  "windows": {"tests": 152, "seconds": 283.305, "exit_code": 0, "screenshot": "native/windows/settings-window.png"},
+  "verified": [
+    "Settings are persisted only after native application succeeds",
+    "Native or atomic persistence failure restores the prior profile; failed restoration is explicitly fatal",
+    "UI profile adoption waits for the successful worker result",
+    "LLM-only changes do not rebuild or reset simulation",
+    "Actual GPU resize preserves authored dirty edits and changes framebuffer dimensions",
+    "Injected settings-save failure restores the old GPU rendering configuration without overwriting the previous settings file",
+    "Successful operation clears the old status-bar error; an additional Linux Qt probe confirms a frame alone does not clear it"
+  ],
+  "limitations": [
+    "Catastrophic failure of both apply and rollback stops the native worker; no automatic recovery of an unavailable native stack is claimed",
+    "Project receipt remains stale; application lifecycle admission and distribution acceptance are incomplete",
+    "Baseline whitespace review still reports ten trailing-blank-line findings in retained files",
+    "No physical robot verification is claimed"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "scope": "authored USD document layer only",
+  "platform": "linux",
+  "command": "python -m unittest tests.test_document -v",
+  "tests": 2,
+  "result": "pass",
+  "verified": [
+    "Edit does not write the source file until Save",
+    "Failed Save preserves dirty state",
+    "Save and binary USD Save As reopen with edited transforms",
+    "Parent transform is preserved",
+    "Nonfinite edits do not mutate authored state"
+  ],
+  "native_ui_acceptance": "incomplete"
+}

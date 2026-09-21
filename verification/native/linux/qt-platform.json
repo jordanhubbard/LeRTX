@@ -1,0 +1,13 @@
+{
+  "schema": "lertx/qt-platform-probe@1",
+  "scope": "Qt display readiness only, not graphical application or RTX acceptance",
+  "platform": "linux-x86_64",
+  "qt_version": "6.10.2",
+  "qpa_plugin": "xcb",
+  "display": "isolated temporary Xvfb, 1440x900x24",
+  "cycles": [
+    {"cycle": 0, "visible_before_close": true, "image_width": 640, "image_height": 360, "image_null": false, "event_loop_result": 0},
+    {"cycle": 1, "visible_before_close": true, "image_width": 640, "image_height": 360, "image_null": false, "event_loop_result": 0}
+  ],
+  "result": "pass"
+}

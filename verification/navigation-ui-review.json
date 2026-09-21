@@ -1,0 +1,27 @@
+{
+  "scope": "Full retained desktop suite after nested hierarchy and readable inspector repair",
+  "command": "python -m unittest discover -s tests -q (Linux under Xvfb)",
+  "source_files": 53,
+  "source_identity": "e53c3239bcaf5389ce3340b62dd19cf723ead13a88d8c8a151ec2787006b6820",
+  "identity_algorithm": "SHA256 of compact JSON sorted relative-path and file-SHA256 pairs, excluding __pycache__",
+  "local_linux_windows_identity_match": true,
+  "transfers_completed_before_dispatch": true,
+  "source_unchanged_during_runs": true,
+  "visual_review": "Both native screenshots inspected: real rendered fixture, nested filtered hierarchy and legible stacked XYZ fields. Windows small-desktop layout fits. Old parse-error status text remains visible after recovery and is recorded as unfinished work.",
+  "linux": {"tests": 144, "seconds": 91.014, "exit_code": 0, "screenshot": "native/linux/navigation-window.png"},
+  "windows": {"tests": 144, "seconds": 269.635, "exit_code": 0, "screenshot": "native/windows/navigation-window.png"},
+  "verified": [
+    "Actual nested USD hierarchy with full-path item identity",
+    "Search keeps matching ancestors visible and restores expansion state",
+    "Hidden selection cannot leave transform editing enabled",
+    "Hierarchy rebuild preserves selection by full path",
+    "Stacked labeled XYZ fields fit numeric values at 1024 by 768",
+    "Native Qt selection, transform edit, save and real RTX frame delivery",
+    "Full photo reconstruction and mock telemetry regression suite"
+  ],
+  "limitations": [
+    "Stale status-bar error after successful native recovery still needs a UI repair",
+    "Lifecycle admission and distributable installation acceptance remain incomplete",
+    "No real robot telemetry, rendered SO-101 joint mapping or measured reconstruction accuracy is claimed"
+  ]
+}

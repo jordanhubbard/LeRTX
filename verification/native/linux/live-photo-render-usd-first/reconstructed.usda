@@ -1,0 +1,62 @@
+#usda 1.0
+(
+    defaultPrim = "World"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "World"
+{
+    custom string lertx:dimensionSource = "estimated"
+    custom string lertx:reconstructionStatus = "unverified"
+    custom string lertx:sceneSchema = "lertx.photo-scene.v1"
+    custom string lertx:sourceImageSHA256 = "5ca065c4c8672ed9f2be08925d49e85ba660c441cc48149ecc0fb96ea151f868"
+    custom string lertx:sourceModel = "azure/openai/gpt-6-astra"
+    custom string[] lertx:unobserved = ["This is a draft interpretation of a rendered scene, not a verified map. Scale, depth, and dimensions are estimated without calibration.", "The cube's rear faces and underside are unseen; its box geometry is an approximate primitive fit to the visible faces.", "The sphere's hidden hemisphere is not observed; sphere geometry is an approximate primitive fit.", "Ground beneath the cube and ground extending outside the image are not observed. The ground mesh approximates the visible image footprint.", "The gray background provides no evidence of walls or additional workspace geometry.", "Dark regions on the cube and ground are interpreted as shadows, not separate physical objects. The light source is outside the visible scene."]
+
+    def Xform "Objects"
+    {
+        def Mesh "ground_patch" (
+            displayName = "Visible blue-gray ground surface"
+        )
+        {
+            uniform bool doubleSided = 1
+            float3[] extent = [(-2.72, -2.72, 0), (3.62, 3.58, 0)]
+            int[] faceVertexCounts = [3, 3, 3, 3, 3]
+            int[] faceVertexIndices = [0, 2, 1, 0, 3, 2, 0, 4, 3, 0, 5, 4, 0, 6, 5]
+            custom double lertx:confidence = 0.7
+            point3f[] points = [(-2.72, -2.6, 0), (-2.72, 0.84, 0), (-0.34, 3.22, 0), (0.54, 3.58, 0), (3.62, 0.5, 0), (3.22, -0.34, 0), (0.84, -2.72, 0)]
+            color3f[] primvars:displayColor = [(0.55, 0.63, 0.68)]
+            uniform token subdivisionScheme = "none"
+            float3 xformOp:rotateXYZ = (0, 0, 0)
+            double3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
+        }
+
+        def Cube "cyan_block" (
+            displayName = "Cyan cube resting on the ground"
+        )
+        {
+            custom double lertx:confidence = 0.85
+            color3f[] primvars:displayColor = [(0.31, 0.68, 0.75)]
+            double size = 1
+            float3 xformOp:rotateXYZ = (0, 0, 0)
+            float3 xformOp:scale = (0.8, 0.8, 0.8)
+            double3 xformOp:translate = (0.85, -0.75, 0.4)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ", "xformOp:scale"]
+        }
+
+        def Sphere "orange_sphere" (
+            displayName = "Orange sphere suspended above and left of the cube"
+        )
+        {
+            custom double lertx:confidence = 0.75
+            color3f[] primvars:displayColor = [(0.91, 0.53, 0.16)]
+            double radius = 0.29
+            float3 xformOp:rotateXYZ = (0, 0, 0)
+            double3 xformOp:translate = (-0.45, -0.45, 2.3)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:rotateXYZ"]
+        }
+    }
+}
+

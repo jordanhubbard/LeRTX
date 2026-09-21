@@ -1,0 +1,22 @@
+{
+  "scope": "Hardware-free read-only telemetry mock, USB panel regressions and strengthened photo viewport test",
+  "command": "python -m unittest tests.test_telemetry tests.test_mock_ui tests.test_devices tests.test_devices_ui tests.test_photo_window_native -q",
+  "source_files": 53,
+  "source_identity": "4ba77cd2ce045f122b1c70de736764251b9a9886f21052865577361a927ec745",
+  "identity_algorithm": "SHA256 of compact JSON sorted relative-path and file-SHA256 pairs, excluding __pycache__",
+  "linux": {"tests": 18, "seconds": 17.539, "exit_code": 0, "display": "Xvfb"},
+  "windows": {"tests": 18, "seconds": 71.334, "exit_code": 0},
+  "verified": [
+    "Independent simulated leader/follower connection and pose controls",
+    "Frozen stream becomes visibly stale; disconnected and reconnect states remain distinct",
+    "Invalid identity, ordering, timestamp and nonfinite or incomplete samples preserve previous reading",
+    "Panel close stops timer and disconnects mock readers",
+    "Photo adoption delivers a fresh changed nonuniform RTX frame to the viewport before Save As and reopen"
+  ],
+  "limitations": [
+    "No physical serial bus was opened, and no real robot calibration or telemetry was verified",
+    "Mock telemetry is not yet published to a rendered SO-101 joint model",
+    "The full 134-test matrix belongs to the preceding snapshot; these are focused follow-up tests",
+    "Project lifecycle receipt and distributable installation acceptance remain outstanding"
+  ]
+}

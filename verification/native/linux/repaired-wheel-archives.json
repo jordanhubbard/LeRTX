@@ -1,0 +1,294 @@
+{
+  "schema": "lertx/native-wheel-archive-review@1",
+  "scope": "archive-integrity-only-not-execution-admission",
+  "status": "pass",
+  "packages": [
+    {
+      "name": "newton",
+      "version": "1.6.0",
+      "filename": "newton-1.6.0-py3-none-any.whl",
+      "sha256": "5eedebe17d7261ca39e8f97c2f2f20e22e7264d0aed01782f3cb1dd60180b872",
+      "bytes": 6159741,
+      "requires_python": ">=3.10",
+      "requires_dist": [
+        "alphashape>=1.3.1 ; extra == 'importers'",
+        "cbor2>=5.7.0 ; extra == 'examples'",
+        "coacd>=1.0.7 ; python_full_version < '3.14' and extra == 'importers'",
+        "coverage[toml]>=7.8.0 ; extra == 'dev'",
+        "fast-simplification>=0.1.11 ; extra == 'importers'",
+        "gitpython>=3.1.58 ; extra == 'docs'",
+        "gitpython>=3.1.58 ; extra == 'examples'",
+        "imgui-bundle>=1.92.0 ; extra == 'examples'",
+        "ipykernel>=6.0.0,<7.0.0 ; extra == 'docs'",
+        "jupyter-server-proxy>=4.5.0 ; extra == 'notebook'",
+        "jupyterlab>=4.5.7 ; extra == 'notebook'",
+        "meshio>=5.3.5 ; extra == 'importers'",
+        "mujoco-warp~=3.12.0 ; extra == 'sim'",
+        "mujoco~=3.12.0 ; extra == 'sim'",
+        "myst-parser>=3.0.1 ; extra == 'docs'",
+        "nbsphinx>=0.9.0 ; extra == 'docs'",
+        "newton-usd-schemas>=0.5.0 ; extra == 'importers'",
+        "newton[examples] ; extra == 'dev'",
+        "newton[examples] ; extra == 'notebook'",
+        "newton[examples] ; extra == 'torch-cu12'",
+        "newton[examples] ; extra == 'torch-cu13'",
+        "newton[importers] ; extra == 'docs'",
+        "newton[importers] ; extra == 'examples'",
+        "newton[importers] ; extra == 'rtx'",
+        "newton[onnx] ; extra == 'examples'",
+        "newton[sim] ; extra == 'examples'",
+        "open3d>=0.19.0 ; (python_full_version < '3.13' and platform_machine != 'aarch64' and extra == 'importers') or (python_full_version < '3.13' and sys_platform != 'linux' and extra == 'importers')",
+        "open3d>=0.19.0 ; (python_full_version < '3.13' and platform_machine != 'aarch64' and extra == 'remesh') or (python_full_version < '3.13' and sys_platform != 'linux' and extra == 'remesh')",
+        "ovrtx>=0.3 ; extra == 'rtx'",
+        "pillow>=11.3.0 ; extra == 'examples'",
+        "pycollada>=0.9 ; extra == 'importers'",
+        "pydata-sphinx-theme>=0.16.1 ; extra == 'docs'",
+        "pyfqmr>=0.5.0 ; extra == 'remesh'",
+        "pyglet>=2.1.6,<3 ; extra == 'examples'",
+        "pyglet>=2.1.6,<3 ; extra == 'rtx'",
+        "pypandoc-binary>=1.11 ; extra == 'docs'",
+        "pypandoc>=1.11 ; extra == 'docs'",
+        "pyyaml>=6.0.2 ; extra == 'examples'",
+        "requests>=2.25.0 ; extra == 'importers'",
+        "rerun-sdk[notebook]>=0.27.1 ; python_full_version < '3.14' and extra == 'notebook'",
+        "resolve-robotics-uri-py>=0.4.0 ; extra == 'importers'",
+        "scipy>=1.11.0 ; extra == 'importers'",
+        "sphinx-copybutton>=0.5.0 ; extra == 'docs'",
+        "sphinx-design>=0.5.0,<=0.6.1 ; extra == 'docs'",
+        "sphinx-tabs>=3.3.0 ; extra == 'docs'",
+        "sphinx>=7.4.7 ; extra == 'docs'",
+        "sphinxcontrib-mermaid>=1.0.0 ; extra == 'docs'",
+        "torch>=2.10.0 ; extra == 'torch-cu13'",
+        "torch>=2.7.0 ; extra == 'torch-cu12'",
+        "trimesh>=4.6.8 ; extra == 'importers'",
+        "usd-core>=25.5,<26.5 ; python_full_version < '3.14' and platform_machine != 'aarch64' and extra == 'importers'",
+        "usd-exchange>=2.2.0,<3 ; python_full_version < '3.13' and platform_machine == 'aarch64' and extra == 'importers'",
+        "viser==1.0.26 ; extra == 'docs'",
+        "viser==1.0.26 ; extra == 'notebook'",
+        "warp-lang>=1.17.0",
+        "warp-nn[onnx]==0.3.1 ; extra == 'onnx'"
+      ],
+      "status": "pass",
+      "members": 884,
+      "expanded_bytes": 27430780
+    },
+    {
+      "name": "numpy",
+      "version": "2.4.6",
+      "filename": "numpy-2.4.6-cp311-cp311-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "sha256": "89cd468399cfd2504718f0ba50e410dca55a170b61a02ad92bb18c8a65186e93",
+      "bytes": 16918164,
+      "requires_python": ">=3.11",
+      "requires_dist": [],
+      "status": "pass",
+      "members": 1042,
+      "expanded_bytes": 57360224
+    },
+    {
+      "name": "ovrtx",
+      "version": "0.5.0.377615",
+      "filename": "ovrtx-0.5.0.377615-py3-none-manylinux_2_35_x86_64.whl",
+      "sha256": "e57c266a3a0b7b8a7e17dbecf75f559caf5f1dac2c9f58c1424b0e7ac10a16a2",
+      "bytes": 1329019554,
+      "requires_python": ">=3.10",
+      "requires_dist": [],
+      "status": "pass",
+      "members": 4535,
+      "expanded_bytes": 2276452206
+    },
+    {
+      "name": "ovstage",
+      "version": "0.2.0.377349",
+      "filename": "ovstage-0.2.0.377349-py3-none-manylinux_2_35_x86_64.whl",
+      "sha256": "092a34c0054664b90a32c07209647bd02e6f774a705295d8c460813940153f5b",
+      "bytes": 70881630,
+      "requires_python": ">=3.10",
+      "requires_dist": [],
+      "status": "pass",
+      "members": 262,
+      "expanded_bytes": 226327507
+    },
+    {
+      "name": "pyside6",
+      "version": "6.10.2",
+      "filename": "pyside6-6.10.2-cp39-abi3-manylinux_2_34_x86_64.whl",
+      "sha256": "1b89ce8558d4b4f35b85bff1db90d680912e4d3ce9e79ff804d6fef1d1a151ef",
+      "bytes": 563357,
+      "requires_python": "<3.15,>=3.9",
+      "requires_dist": [
+        "PySide6_Addons==6.10.2",
+        "PySide6_Essentials==6.10.2",
+        "shiboken6==6.10.2"
+      ],
+      "status": "pass",
+      "members": 66,
+      "expanded_bytes": 4817216
+    },
+    {
+      "name": "pyside6-addons",
+      "version": "6.10.2",
+      "filename": "pyside6_addons-6.10.2-cp39-abi3-manylinux_2_34_x86_64.whl",
+      "sha256": "030a851163b51dbf0063be59e9ddb6a9e760bde89a28e461ccc81a224d286eaf",
+      "bytes": 170718434,
+      "requires_python": "<3.15,>=3.9",
+      "requires_dist": [
+        "PySide6_Essentials==6.10.2",
+        "shiboken6==6.10.2"
+      ],
+      "status": "pass",
+      "members": 1283,
+      "expanded_bytes": 427937364
+    },
+    {
+      "name": "pyside6-essentials",
+      "version": "6.10.2",
+      "filename": "pyside6_essentials-6.10.2-cp39-abi3-manylinux_2_34_x86_64.whl",
+      "sha256": "660aea45bfa36f1e06f799b934c2a7df963bd31abc5083e8bb8a5bfaef45686b",
+      "bytes": 77027153,
+      "requires_python": "<3.15,>=3.9",
+      "requires_dist": [
+        "shiboken6==6.10.2"
+      ],
+      "status": "pass",
+      "members": 2340,
+      "expanded_bytes": 225515323
+    },
+    {
+      "name": "shiboken6",
+      "version": "6.10.2",
+      "filename": "shiboken6-6.10.2-cp39-abi3-manylinux_2_34_x86_64.whl",
+      "sha256": "ace0790032d9cb0adda644b94ee28d59410180d9773643bb6cf8438c361987ad",
+      "bytes": 273052,
+      "requires_python": "<3.15,>=3.9",
+      "requires_dist": [],
+      "status": "pass",
+      "members": 56,
+      "expanded_bytes": 657450
+    },
+    {
+      "name": "usd-core",
+      "version": "25.11",
+      "filename": "usd_core-25.11-cp311-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "sha256": "d9f1019fa8d79c6e56403f2a26e6850353085d3981333b655693c1a78fd705d3",
+      "bytes": 201560309,
+      "requires_python": ">=3.8, <3.14",
+      "requires_dist": [],
+      "status": "pass",
+      "members": 122,
+      "expanded_bytes": 201533619
+    },
+    {
+      "name": "warp-lang",
+      "version": "1.17.0",
+      "filename": "warp_lang-1.17.0-py3-none-manylinux_2_28_x86_64.whl",
+      "sha256": "47cd93636828dd16e55eeb4e77a0e3547b5fb0f383000a3d228629df68f28fd8",
+      "bytes": 164347636,
+      "requires_python": ">=3.10",
+      "requires_dist": [
+        "blosc>=1.11.1; (sys_platform != \"win32\" or (platform_machine != \"ARM64\" and platform_machine != \"arm64\" and platform_machine != \"aarch64\")) and extra == \"examples\"",
+        "coverage[toml]; extra == \"dev\"",
+        "matplotlib>=3.7.5; extra == \"examples\"",
+        "ml-dtypes>=0.5.4; extra == \"dev\"",
+        "myst_parser; extra == \"docs\"",
+        "numpy",
+        "nvidia-sphinx-theme; extra == \"docs\"",
+        "nvtx; (sys_platform != \"win32\" or (platform_machine != \"ARM64\" and platform_machine != \"arm64\" and platform_machine != \"aarch64\")) and extra == \"dev\"",
+        "pillow>=10.4.0; extra == \"examples\"",
+        "pre-commit; extra == \"docs\"",
+        "psutil>=7.1.0; extra == \"examples\"",
+        "pyglet>=2.1.9; extra == \"examples\"",
+        "sphinx-copybutton; extra == \"docs\"",
+        "torch>=2.7.0; extra == \"torch-cu12\"",
+        "torch>=2.9.0; extra == \"torch-cu13\"",
+        "usd-core>=25.5; ((sys_platform != \"linux\" or platform_machine != \"aarch64\") and (sys_platform != \"win32\" or (platform_machine != \"ARM64\" and platform_machine != \"arm64\" and platform_machine != \"aarch64\"))) and extra == \"benchmark\"",
+        "usd-core>=25.5; ((sys_platform != \"linux\" or platform_machine != \"aarch64\") and (sys_platform != \"win32\" or (platform_machine != \"ARM64\" and platform_machine != \"arm64\" and platform_machine != \"aarch64\"))) and extra == \"examples\"",
+        "usd-exchange>=2.2; (python_version >= \"3.10\" and python_version < \"3.13\" and sys_platform == \"linux\" and platform_machine == \"aarch64\") and extra == \"benchmark\"",
+        "usd-exchange>=2.2; (python_version >= \"3.10\" and python_version < \"3.13\" and sys_platform == \"linux\" and platform_machine == \"aarch64\") and extra == \"examples\"",
+        "warp-lang[docs]; extra == \"dev\"",
+        "warp-lang[examples]; extra == \"dev\"",
+        "warp-lang[examples]; extra == \"torch-cu12\"",
+        "warp-lang[examples]; extra == \"torch-cu13\""
+      ],
+      "status": "pass",
+      "members": 593,
+      "expanded_bytes": 444715309
+    }
+  ],
+  "compatibility": {
+    "status": "pass",
+    "scope": "compatibility-with-captured-target-not-installation-or-admission",
+    "target_identity": "sha256:e7e0e02159ed93246413670cccdf717a2303104b59fb2db7d6cbb1be0b3c58c1",
+    "requirements": [
+      "newton==1.6.0",
+      "numpy==2.4.6",
+      "ovrtx==0.5.0.377615",
+      "ovstage==0.2.0.377349",
+      "pyside6==6.10.2",
+      "usd-core==25.11",
+      "warp-lang==1.17.0"
+    ],
+    "edges": [
+      [
+        "@root",
+        "newton"
+      ],
+      [
+        "@root",
+        "numpy"
+      ],
+      [
+        "@root",
+        "ovrtx"
+      ],
+      [
+        "@root",
+        "ovstage"
+      ],
+      [
+        "@root",
+        "pyside6"
+      ],
+      [
+        "@root",
+        "usd-core"
+      ],
+      [
+        "@root",
+        "warp-lang"
+      ],
+      [
+        "newton",
+        "warp-lang"
+      ],
+      [
+        "pyside6",
+        "pyside6-addons"
+      ],
+      [
+        "pyside6",
+        "pyside6-essentials"
+      ],
+      [
+        "pyside6",
+        "shiboken6"
+      ],
+      [
+        "pyside6-addons",
+        "pyside6-essentials"
+      ],
+      [
+        "pyside6-addons",
+        "shiboken6"
+      ],
+      [
+        "pyside6-essentials",
+        "shiboken6"
+      ],
+      [
+        "warp-lang",
+        "numpy"
+      ]
+    ],
+    "target_report_sha256": "3315b7b83da942f66cb56f1a1ed14285a7c79220f03eb38347851cce6d0f9c4d"
+  }
+}

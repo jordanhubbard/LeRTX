@@ -1,0 +1,7 @@
+{
+  "schema": "urn:literate-ai:schema:v2:standard-python-wheel-command-profile",
+  "target": "pip",
+  "toolchain": "python",
+  "manifest": "source/requirements.txt",
+  "lockfile": "source/python-wheel-lock.json"
+}

@@ -1,0 +1,10 @@
+{
+  "scope": "Failed-open and unsaved-document recovery with private USD layers",
+  "runs": [
+    {"module": "tests.test_runtime_native", "tests": 1, "seconds": 21.199, "exit_code": 0},
+    {"module": "tests.test_settings_ui", "tests": 5, "seconds": 0.532, "exit_code": 0},
+    {"module": "tests.test_window_native", "tests": 1, "seconds": 29.439, "exit_code": 0}
+  ],
+  "verified": ["Malformed USD does not replace existing document", "Native worker continues rendering after parse failure", "Qt reports error and keeps prior path and readiness", "Cancel prevents follow-on action", "Discard permits follow-on action", "Failed Save retains dirty state and prevents follow-on action"],
+  "limits": "Windows recovery rerun pending; remote asset policy and remaining native settings still need coverage"
+}

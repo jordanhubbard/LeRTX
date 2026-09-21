@@ -1,0 +1,160 @@
+{
+  "schema": "literate-ai/component-acceptance-oracle@1",
+  "component": "desktop",
+  "specification_set_identity": "sha256:f2a740ffcbb58057a132dcdd98d12faf69e24e1a1ea99bf0c339b592f9613903",
+  "cases": [
+    {
+      "case_id": "nondefault-valid-profile",
+      "arguments": [
+        {
+          "command": "validate-settings",
+          "profile": {
+            "llm": {
+              "endpoint": "https://inference-api.nvidia.com/v1/responses",
+              "model": "azure/openai/gpt-6-astra",
+              "api_key": "",
+              "max_output_tokens": 512,
+              "timeout_seconds": 60,
+              "remember_key": false
+            },
+            "general": {
+              "theme": "light",
+              "display_units": "cm"
+            },
+            "rendering": {
+              "device": 0,
+              "width": 1280,
+              "height": 720,
+              "target_fps": 47,
+              "quality": "balanced"
+            },
+            "physics": {
+              "timestep_hz": 240,
+              "substeps": 7,
+              "gravity_m_s2": "-9.81",
+              "reset_on_edit": true
+            },
+            "devices": {
+              "discovery_enabled": false,
+              "telemetry_hz": 30,
+              "actuation_enabled": false
+            },
+            "workspace": {
+              "asset_search_paths": [],
+              "reconstruction_status": "unverified"
+            }
+          }
+        }
+      ],
+      "expected_result": {
+        "valid": true,
+        "errors": []
+      }
+    },
+    {
+      "case_id": "reject-secret-persistence-and-actuation",
+      "arguments": [
+        {
+          "command": "validate-settings",
+          "profile": {
+            "llm": {
+              "endpoint": "http://invalid.example/v1/responses",
+              "model": "azure/openai/gpt-6-astra",
+              "api_key": "",
+              "max_output_tokens": 512,
+              "timeout_seconds": 60,
+              "remember_key": true
+            },
+            "general": {
+              "theme": "dark",
+              "display_units": "m"
+            },
+            "rendering": {
+              "device": 0,
+              "width": 1280,
+              "height": 720,
+              "target_fps": 30,
+              "quality": "balanced"
+            },
+            "physics": {
+              "timestep_hz": 240,
+              "substeps": 4,
+              "gravity_m_s2": "-9.81",
+              "reset_on_edit": true
+            },
+            "devices": {
+              "discovery_enabled": false,
+              "telemetry_hz": 30,
+              "actuation_enabled": true
+            },
+            "workspace": {
+              "asset_search_paths": [],
+              "reconstruction_status": "unverified"
+            }
+          }
+        }
+      ],
+      "expected_result": {
+        "valid": false,
+        "errors": [
+          "devices.actuation_enabled",
+          "llm.endpoint",
+          "llm.remember_key"
+        ]
+      }
+    },
+    {
+      "case_id": "reject-invalid-numeric-settings",
+      "arguments": [
+        {
+          "command": "validate-settings",
+          "profile": {
+            "llm": {
+              "endpoint": "https://inference-api.nvidia.com/v1/responses",
+              "model": "azure/openai/gpt-6-astra",
+              "api_key": "",
+              "max_output_tokens": true,
+              "timeout_seconds": 60,
+              "remember_key": false
+            },
+            "general": {
+              "theme": "dark",
+              "display_units": "m"
+            },
+            "rendering": {
+              "device": -1,
+              "width": 1280,
+              "height": 720,
+              "target_fps": 30,
+              "quality": "balanced"
+            },
+            "physics": {
+              "timestep_hz": 240,
+              "substeps": 0,
+              "gravity_m_s2": "NaN",
+              "reset_on_edit": true
+            },
+            "devices": {
+              "discovery_enabled": false,
+              "telemetry_hz": 30,
+              "actuation_enabled": false
+            },
+            "workspace": {
+              "asset_search_paths": [],
+              "reconstruction_status": "unverified"
+            }
+          }
+        }
+      ],
+      "expected_result": {
+        "valid": false,
+        "errors": [
+          "llm.max_output_tokens",
+          "physics.gravity_m_s2",
+          "physics.substeps",
+          "rendering.device"
+        ]
+      }
+    }
+  ]
+}

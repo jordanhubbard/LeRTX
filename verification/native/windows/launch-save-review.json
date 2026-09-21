@@ -1,0 +1,13 @@
+{
+  "scope": "Consolidated retained-source suite including repeated real Qt application launch and untitled Save As protection",
+  "tests": 97,
+  "seconds": 141.862,
+  "exit_code": 0,
+  "source_files": 36,
+  "source_identity": "aaa17ea8890bcf368bda0e301858ffdcc82bc499f480b69ecd9bbbbada90ffd5",
+  "identity_algorithm": "SHA256 of compact JSON sorted relative-path and file-SHA256 pairs, excluding __pycache__",
+  "local_remote_source_match": true,
+  "coverage": ["two actual Qt event-loop launches with RTX frames and native shutdown", "distinct temporary workspaces removed after close", "untitled Save cancellation retains dirty state", "Save As rejects temporary descendants", "successful existing-file open clears untitled flag"],
+  "limitations": ["test invokes app.main rather than the CLI subprocess", "distribution packaging and full milestone acceptance remain incomplete"],
+  "worker_capacity": "8.41 GB free; existing environments only; 3 GB reserve used for this small test job; large installations remain held"
+}

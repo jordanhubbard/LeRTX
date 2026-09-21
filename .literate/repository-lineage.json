@@ -1,0 +1,41 @@
+{
+  "schema": "urn:literate-ai:schema:v1:repository-lineage",
+  "selection": {
+    "schema": "urn:literate-ai:schema:v1:repository-parent-selection",
+    "mode": "inherit",
+    "parents": [
+      {
+        "schema": "urn:literate-ai:schema:v1:repository-parent-reference",
+        "repository_url": "https://gitlab-master.nvidia.com/jordanh/literate-ai.git",
+        "requested_revision": "v0.8.3"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "schema": "urn:literate-ai:schema:v1:repository-lineage-node",
+      "project_id": "literate-ai",
+      "project_identity": {
+        "schema": "urn:literate-ai:schema:v1:content-identity",
+        "algorithm": "sha256",
+        "digest": "0e82d657d0d18f3dbece4fe0c65a1342ddea158390799e753089f879d9232cd2"
+      },
+      "repository_url": "https://gitlab-master.nvidia.com/jordanh/literate-ai.git",
+      "requested_revision": "v0.8.3",
+      "resolved_revision": "58a4c3bafb2a7a22d4cc21bb08a971605ca69959",
+      "parent_selection": {
+        "schema": "urn:literate-ai:schema:v1:repository-parent-selection",
+        "mode": "root",
+        "parents": []
+      },
+      "parents": []
+    }
+  ],
+  "selected_parents": [
+    {
+      "schema": "urn:literate-ai:schema:v1:content-identity",
+      "algorithm": "sha256",
+      "digest": "1fffddf9846969ad8fc601c8ad056f671bcd6018f2f07894d547c5c6fed928c0"
+    }
+  ]
+}

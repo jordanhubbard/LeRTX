@@ -1,0 +1,40 @@
+{
+  "schema": "lertx/shared-wheel-followup-review@1",
+  "status": "local-python-qualification-passed",
+  "base_revision": "dcacfbc243bb6c6c30c7e95ab079fa8ede5bf728",
+  "revision": "0449e10c3a487ae21c4f606d69ee416dd853056f",
+  "observer_sha256": "89acf1c3bedb2239f917f8520e2a4c502005722090f39e7b73ff354478c466d2",
+  "driver_identity": "sha256:59c56e3bb7ced25291a1944f8f8f8f42cc39926e7c2b20a09ea80d06b8898bbc",
+  "focused_tests": {"tests": 62, "skipped": 0, "seconds": 49.570, "result": "pass"},
+  "version_authority_tests": {"tests": 12, "seconds": 6.789, "result": "pass"},
+  "windows_focused": {
+    "tests": 26,
+    "skipped": 0,
+    "seconds": 31.204,
+    "result": "pass",
+    "scope": "Existing disposable Windows review snapshot with exact observer and two updated test modules; not full Windows framework or desktop qualification",
+    "coverage": ["installed payload observer", "identical shared payload offline install", "conflicting shared payload rejection and cleanup", "generated script collision rejection"],
+    "disk_free_before_bytes": 7202979840,
+    "disk_status": "critical below two percent; full native installation held",
+    "cleanup_investigation": "Known pip cache about 9.9 MB; no new deletions"
+  },
+  "linux_native_install": {
+    "evidence": "native/linux/qualified-install-review.json",
+    "earlier_patched_environment_evidence": "native/linux/shared-install-review.json",
+    "installed_files": 11105,
+    "revalidation": "pass",
+    "cleanup": "pass",
+    "scope": "disposable offline native closure installed by the exact qualified non-editable framework wheel; not desktop application acceptance",
+    "framework_wheel_sha256": "9b64f5e1c5bc7f40fa15f95275342f805668ee92f37187885726aa4f9e330f95",
+    "framework_dependency_check": "pass"
+  },
+  "full_python_gate": {"result": "pass-with-platform-skips", "command": "make python-check PYTHON_ENV=_build/python-envs/make-95155", "tests": 5155, "skipped": 29, "seconds": 5177.128, "exit_code": 0, "post_run_worktree": "clean at the tested revision"},
+  "published": false,
+  "project_binding_changed": true,
+  "framework_wheel_sha256": "9b64f5e1c5bc7f40fa15f95275342f805668ee92f37187885726aa4f9e330f95",
+  "installed_distribution_identity": "sha256:5b5c9505009371cc98741052cf97da48dc7bfc33873147734d758b6be36293a8",
+  "rebind_plan": "shared-wheel-rebind-plan.json",
+  "local_cli": "_build/local-litai-0449/venv/bin/litai",
+  "global_installation_changed": false,
+  "application_acceptance": "incomplete"
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "lertx/python-package-custody-diagnostic@1",
+  "component_test_and_execute": "passed",
+  "original_artifact_unchanged": true,
+  "packaged_dependency_runtime_present": false,
+  "packaged_dependency_manifest_present": false,
+  "packaged_execution_seal_registered": false,
+  "packaged_root_integration_error": "Python execution differs from its sealed artifact",
+  "fixture": "StandardPythonLifecycleTests example/helper wheels",
+  "reproducer": "verification/reproduce_python_package_custody.py",
+  "application_admitted": false,
+  "framework_production_code_modified": false
+}

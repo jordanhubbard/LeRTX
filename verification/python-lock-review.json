@@ -1,0 +1,234 @@
+{
+  "schema": "lertx/python-lock-draft-review@1",
+  "status": "preparatory-not-admission-ready",
+  "issue": "https://gitlab-master.nvidia.com/jordanh/literate-ai/-/issues/1",
+  "checkout": "parents/literate-ai",
+  "branch": "fix/python-lock-admission",
+  "draft_commit": "dcacfbc243bb6c6c30c7e95ab079fa8ede5bf728",
+  "base_revision": "143c268914e7168f5ded3e1271b08cefd71c2ad4",
+  "published": false,
+  "installed_litai_changed": false,
+  "source_sha256": {
+    "pyproject.toml": "eec03c94f3373def711983448a989a568f9ed27f85b98d40020906c17fc85e7c",
+    "src/literate_ai/adapters/dependencies/python_install.py": "e3d80fc5f5008804ce389ad0d0a9e9ea7328e7fb5d3ab746be5e39ece9aabf18",
+    "src/literate_ai/adapters/dependencies/python_pip_driver.py": "d3d78e7ed23e9b835c254049c7e0c3f01378d679f98e50e3c045f5fca0ffb044",
+    "tests/unit/test_python_install.py": "8a495b1546ac24d56f895fec3fcaf36ebeaa2d3658cf00ece7cba84e7a98ddb8",
+    "src/literate_ai/adapters/dependencies/python_target.py": "9a0378754e9ec95ef57ae840e70d5044dc0ad6e77cefa54df1e624aea99fa6d6",
+    "tests/unit/test_python_target.py": "0d688647b90457eff8272e5ec36ad151227acd50fa31feed95da9b607a8ffeea",
+    "src/literate_ai/adapters/dependencies/python_installed.py": "cf37411c08431ce1e1ece3cc4f7bd8a38c86a401f68de45d8bf683feb89180df",
+    "tests/unit/test_python_installed.py": "4880053cd7c19e0f49aea99eaff7cb320364897a92c3ab4f9e1f8b5ce9a5cb50",
+    "src/literate_ai/adapters/dependencies/python_lock.py": "89919b78e832457175283bed64b78a65b846439fefd911bd2b503e0100e38787",
+    "src/literate_ai/adapters/dependencies/python_archive.py": "500fffb5b542a8e512ed4bf256db3718b3852102c30d37d49a0d21ff516a6828",
+    "src/literate_ai/adapters/dependencies/python_wheelhouse.py": "eb8bfbcf5b621e84f1a94de94af9a41b6185da5e89833820553ef9928fd4cc84",
+    "src/literate_ai/adapters/dependencies/python_source.py": "8cfa4893768428303001d1059e58ce5d23b2684e0d73b1f9a13b2e4d8d6f62f6",
+    "src/literate_ai/adapters/dependencies/acquisition.py": "e3f90ea1223e48856aacb88d16e2c42820f6c2ce416788b159850225496760ac",
+    "src/literate_ai/adapters/dependencies/admission.py": "f54944602285d5905bd0a3d945bf94a47b9b2fe1ff28077db3237e29c30bcb51",
+    "src/literate_ai/adapters/dependencies/resolution.py": "08a5dbf43a0f181c633591fedd3e0b4f6b95893f7f421d8188c337b03216242b",
+    "src/literate_ai/adapters/dependencies/python_resolution.py": "ed1625b6ffb94a9fdeb39b34c3dab35d4ad157a6e45c424b5af887d67f08addf",
+    "src/literate_ai/adapters/lifecycle/standard_python.py": "c47caaba703358d700648b2cb638bf4c9394c56800db1b280d0a739a42964ccc",
+    "src/literate_ai/adapters/lifecycle/standard_runtime.py": "1ea34d37dfc43fa33e74a61946bd05da19c09c1d713c641b42be17d8ab1f9a9e",
+    "src/literate_ai/adapters/standard_project.py": "c1bdec26c44450e4a123a40edbb7b3563db3e04a36dc5111611123f722bb698d",
+    "src/literate_ai/adapters/lifecycle/standard_local.py": "cff1b5c274bbe3936ba8f12572f0375af0290506ae60bd12de3515446defaa32",
+    "src/literate_ai/adapters/standard_rebuild.py": "517e15e63ff7b2d702a918324ed538ad7cde5b8ebadc9bd3f4765ec0befd5511",
+    "tests/unit/test_standard_python_lifecycle.py": "2fd322035358c4c59c0c59a6a3e5532b25cd8f894bfbc8d5ebe5dd5a34f22a56",
+    "tests/unit/test_standard_rebuild_adapter.py": "8242917d5848054d8b0e3c1177dc41a79327608febda0b593ddb733bc2a5f42c",
+    "tests/unit/standard_source_evidence_fixture.py": "e5f9ec0353cb9e2154b490ac3d891e52f498cad61e7293fac85529035973b966",
+    "schemas/v2/index.json": "e1eb683fb7cb2e9bc89d708e6fc5dca5f8739658075dd2950829c5a3f54b863a",
+    "schemas/v2/standard-command-profiles.schema.json": "1425478becae27a804a332af0e466982a3b7dcd915e06beba63357a16243cb6b",
+    "src/literate_ai/contracts/__init__.py": "f51fa6d133f47c0e8a3a52775b4b05e1d549b65ca320aeae08b517d34edc1329",
+    "src/literate_ai/contracts/executable_components/__init__.py": "18c0f4ae74eafe4fa515eb9a30d80239bc0cc32cfbce7ed17f5b66f94161955c",
+    "src/literate_ai/contracts/executable_components/standard_command_profiles.py": "490e4f737f1091e2427c498cb73cddae07f377301c9820ecfe4d0db85b5d2c70",
+    "tests/unit/test_standard_command_projection.py": "8c0174e4d1fe0dc755a72e9ab5c0f6c6f26b244403fbb384f00382dff6a06bdb",
+    "tests/unit/test_python_wheel_runtime.py": "bcef5b1f3bf996880ac84a4d6b27151a6fcc9882f74536af26da33e017dbd184",
+    "src/literate_ai/ports/contracts.py": "4c4c262e58088218ea3d4eb1a2dd1eaec009ff0d8c3746f9062ff26c69e60977",
+    "tests/unit/test_python_resolution.py": "694a7c52ebca4dc7cce8c2f3810e06924f445d4b002891cb753107cf99128851",
+    "tests/unit/test_standard_python_evidence.py": "8a28ec7e6c7eb19196fad61baa1835d934c04692861d3a3c61990fbff4fc6b71",
+    "tests/unit/test_python_wheel_lock.py": "bc05eece826eaadcc6baa6baa55c96d988b45492f908026ef09a9394fc3826b9",
+    "tests/unit/test_python_wheel_archive.py": "4a103580e4b3b3669f385428c147ec2212c705fe6cb01c926e2b635a7a08e0c9",
+    "tests/unit/test_python_wheelhouse.py": "66e1f8805fa83803df7e1d6e752cd5355483849e0efe429ea0f80ca368013b84",
+    "tests/unit/test_python_source_authority.py": "f496093f62d3e544508e7c74c67103d2e51b23e834a43ec55dfc0473a53b9cb2"
+  },
+  "checks": {
+    "windows_portability_repair_draft": {
+      "base_revision": "4853ee67590bdcec4b782ea605dba3d66f43c270",
+      "patch": "verification/windows-wheel-portability.patch",
+      "patch_sha256": "42836c6095f4b10786c0209aa45206538afcf4be5fa04e272b09b0c70303b61c",
+      "applied_scope": "disposable Windows exported-source review snapshot; subsequently integrated into local parent worktree after broad gate terminated",
+      "regression_source": "verification/test_windows_wheel_metadata.py",
+      "regression_sha256": "d787c1f353a6159fbcb0eb1c0151b9c002b595dc8a04d6ca8b9a66aa937916e9",
+      "baseline": "Two tests on unchanged local parent: incomplete enumeration metadata reproduces rejection; hardlinked payload rejection passes.",
+      "patched_windows_regressions": {
+        "tests": 2,
+        "seconds": 0.376,
+        "result": "pass",
+        "scope": "full metadata accepts legitimate payload despite incomplete enumeration metadata; actual hardlinked payload remains rejected"
+      },
+      "affected_module_retest": {
+        "modules": ["tests.unit.test_standard_python_lifecycle", "tests.unit.test_python_resolution", "tests.unit.test_python_install", "tests.unit.test_python_installed"],
+        "tests": 48,
+        "skipped": 1,
+        "seconds": 374.448,
+        "result": "pass-with-platform-skip"
+      },
+      "local_integrated_retest": {
+        "tests": 50,
+        "skipped": 0,
+        "seconds": 53.557,
+        "result": "pass",
+        "lint_format_diff": "pass"
+      },
+      "remaining_windows_module_retest": {
+        "tests": 161,
+        "errors": 4,
+        "skipped": 1,
+        "seconds": 183.146,
+        "result": "failed",
+        "failed_tests": [
+          "test_dyld_shared_cache_only_symlink_uses_uuid_without_file_hash",
+          "test_macho_symlink_retarget_during_inspection_fails_closed",
+          "test_materialized_macho_symlink_chain_is_bound_into_component",
+          "test_npm_bin_target_rejects_noncanonical_and_linked_paths"
+        ],
+        "diagnosis": "All four existing dependency-lifecycle cases raise WinError 1463 while following fixture symlinks. Python wheel/runtime/evidence modules passed. Read-only policy query reports local-to-local enabled but terminates with error 2 before a complete policy report; no complete host-policy diagnosis is claimed.",
+        "combined_209_result": "203 passed, 2 platform skips, 4 errors across the two patched-snapshot runs; not full Windows qualification",
+        "boundary": "No Windows symlink policy changes or new test skips.",
+        "baseline_comparison": {
+          "base_revision": "143c268914e7168f5ded3e1271b08cefd71c2ad4",
+          "review_revision": "dcacfbc243bb6c6c30c7e95ab079fa8ede5bf728",
+          "observation_py_git_blob": "592a2a515cd2e540142924f26deab6f13163b82e",
+          "dependency_lifecycle_test_git_blob": "5b56fb91b451f0432abc1acc73641f677e2821e9",
+          "result": "Both files are byte-identical at baseline and review revision; the four failing direct observer cases were not introduced or modified by the Python wheel patch. This does not turn their observed failures into passes."
+        }
+      },
+      "boundary": "Not full framework qualification or application acceptance; local integration and broader retesting remain unqualified."
+    },
+    "windows_python312_dependency_lifecycle": {
+      "revision": "4853ee67590bdcec4b782ea605dba3d66f43c270",
+      "environment": "isolated Make-managed Windows x86-64 Python 3.12.10",
+      "tests": 209,
+      "failures": 5,
+      "errors": 40,
+      "skipped": 2,
+      "seconds": 225.706,
+      "result": "failed",
+      "diagnosis": [
+        "Python wheel profile fixture writes platform-default CRLF but authoring requires LF.",
+        "Installed-tree observer uses DirEntry.stat identity and link count: Windows reports st_ino=0, st_dev=0 and st_nlink=0 for an ordinary file; Path.lstat and os.fstat agree on nonzero identity and st_nlink=1. This rejects real files and also invalidates subsequent identity comparison.",
+        "Some existing dependency lifecycle symlink fixtures fail with WinError 1463: link type disabled. These are separate from the Python wheel observer defect."
+      ],
+      "next_action": "Repair full-metadata observation and LF fixture authoring with focused regression coverage after the currently running exact-commit local gate finishes; investigate remaining failures independently.",
+      "boundary": "No Windows framework qualification, relaxed link checks, host policy change or desktop acceptance claimed."
+    },
+    "linux_rebuild_cli_qualification_adapters": {
+      "revision": "4853ee67590bdcec4b782ea605dba3d66f43c270",
+      "tests": 50,
+      "errors": 27,
+      "seconds": 3.482,
+      "result": "failed-environment-prerequisite",
+      "initial_attempt": "source-only editable export lacks exact Git initialization origin",
+      "retest": "installed exported-source wheel with exact origin; private origin DNS unavailable on worker",
+      "framework_wheel_sha256": "efdbb6da29863a3378d79d320de44bff01f4ebb10c3a64c38951d9f68ef9c584",
+      "installation_scope": "disposable Make-managed review environment only; SDK and operator installation unchanged",
+      "boundary": "no substitute origin, mocked admission, worker network mutation or CLI pass claimed"
+    },
+    "linux_python311_dependency_lifecycle": {
+      "revision": "4853ee67590bdcec4b782ea605dba3d66f43c270",
+      "exported_source_tar_sha256": "6958dc55f58be1a63e1bb43681ce3cfd7821bb88835051357c742b029c4de01e",
+      "environment": "isolated Make-managed Linux x86-64 Python 3.11.16",
+      "modules": ["tests.unit.test_standard_python_lifecycle", "tests.unit.test_python_wheel_runtime", "tests.unit.test_python_resolution", "tests.unit.test_standard_python_evidence", "tests.unit.test_python_install", "tests.unit.test_python_target", "tests.unit.test_python_installed", "tests.unit.test_python_wheelhouse", "tests.unit.test_python_wheel_archive", "tests.unit.test_python_source_authority", "tests.unit.test_python_wheel_lock", "tests.unit.test_dependency_lifecycle", "tests.unit.test_application_ports", "tests.unit.test_cyclonedx_sbom"],
+      "tests": 209,
+      "skipped": 0,
+      "seconds": 73.068,
+      "result": "pass",
+      "scope": "framework dependency and lifecycle fixtures on Linux; not native SDK installation or desktop acceptance"
+    },
+    "offline_standard_dispatch": {
+      "tests": 374,
+      "passed": 372,
+      "skipped": 2,
+      "seconds": 97.782,
+      "result": "pass-with-platform-skips",
+      "scope": "local offline install/build/test/execute and sealed cache regression; not native GPU application acceptance"
+    },
+    "rebuild_cli_qualification_adapters": {
+      "tests": 50,
+      "seconds": 87.010,
+      "result": "pass"
+    },
+    "current_full_python_gate": {
+      "revision": "dcacfbc243bb6c6c30c7e95ab079fa8ede5bf728",
+      "result": "pass-with-platform-skips",
+      "command": "make python-check PYTHON_ENV=_build/python-envs/make-95155",
+      "tests": 5148,
+      "skipped": 29,
+      "seconds": 5353.028,
+      "make_exit_code": 0,
+      "post_run_worktree": "clean at the tested revision",
+      "scope": "Local macOS full Python gate only; not native Windows qualification, project lifecycle rebind, or desktop application acceptance."
+    },
+    "reviewed_parent_driver_identity": {
+      "identity": "sha256:629166b067bf5baf150efae93199987f9b2c9400e3a6847230870a85028b4271",
+      "method": "repository review_lifecycle_driver.py --record after source review",
+      "version_authority_tests": 12,
+      "seconds": 6.891,
+      "result": "pass",
+      "scope": "local parent self-hosting driver only; no installed framework change or derived-project lifecycle rebind"
+    },
+    "previous_full_python_gate_4853ee67": {
+      "revision": "4853ee67590bdcec4b782ea605dba3d66f43c270",
+      "tests": 5007,
+      "failures": 1,
+      "skipped": 29,
+      "seconds": 5312.101,
+      "result": "failed",
+      "failure": "test_self_hosting_project_protocols_and_derived_identities_agree: configured self-hosting driver implementation identity is stale",
+      "configured_driver_identity": "sha256:ac6c4db491ae3f07d675379ed1ff9f5f14a4be9edcb48d2f7f38c270f0f3dde1",
+      "observed_driver_identity": "sha256:95c05a74bb949336c30d43582db30e23d2c055eb02a868207adfbc3ed1a648fc"
+    },
+    "focused_unittest": {
+      "modules": ["tests.unit.test_python_resolution", "tests.unit.test_standard_python_evidence", "tests.unit.test_python_install", "tests.unit.test_python_target", "tests.unit.test_python_installed", "tests.unit.test_python_wheelhouse", "tests.unit.test_python_wheel_archive", "tests.unit.test_python_source_authority", "tests.unit.test_python_wheel_lock", "tests.unit.test_dependency_lifecycle"],
+      "tests": 175,
+      "skipped": 0,
+      "installer_fixture": {
+        "environment_variable": "LITAI_TEST_PIP_WHEEL",
+        "filename": "pip-26.2.1-py3-none-any.whl",
+        "sha256": "71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e",
+        "source": "https://pypi.org/pypi/pip/26.2.1/json"
+      },
+      "result": "pass"
+    },
+    "public_port_and_sbom_regressions": {
+      "modules": ["tests.unit.test_application_ports", "tests.unit.test_cyclonedx_sbom"],
+      "tests": 22,
+      "skipped": 0,
+      "result": "pass"
+    },
+    "ruff_check_changed_python": "pass",
+    "profile_and_runtime_regressions": {
+      "modules": ["tests.unit.test_standard_command_projection", "tests.unit.test_python_wheel_runtime", "tests.unit.test_schema_catalog", "tests.unit.test_standard_project_factory", "tests.unit.test_standard_project_lifecycle", "tests.unit.test_standard_local_command_adapter"],
+      "tests": 148,
+      "skipped": 2,
+      "skip_reasons": ["existing macOS HTTP/SSE service readiness exclusion", "JavaScript service process regression requires Linux and Node"],
+      "result": "pass-with-platform-skips",
+      "scope": "local projection and retained-wheel runtime fixtures; no native Windows/Linux GPU application acceptance"
+    },
+    "ruff_format_check_changed_python": "pass",
+    "git_diff_check": "pass",
+    "make_python_check": {
+      "applies_to_draft_commit": "1a36b5c2c108ab3afbe726176f8e92abf9c3611b",
+      "current_draft_full_gate": "not-run",
+      "result": "incomplete-agent-interrupted",
+      "command": "make python-check PYTHON_ENV=_build/python-envs/make-95155",
+      "checkpoint_completed_cases": 3291,
+      "self_hosting_replay": "passed",
+      "reason": "Broad suite stopped during slow repository-ownership tests; no full-suite pass claimed.",
+      "make_exit_code": 2,
+      "runner_termination": "SIGINT / KeyboardInterrupt"
+    }
+  },
+  "remaining": [
+    "full framework qualification and production rebuild/source-cache/receipt-chain validation",
+    "actual Linux/Windows native wheel closure and desktop application acceptance",
+    "controlled network acquisition remains unimplemented; verified offline provisioning is supported by the local draft"
+  ]
+}

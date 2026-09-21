@@ -1,0 +1,10 @@
+{
+  "scope": "USD document isolation, transform round trip and saving",
+  "command": "python -m unittest tests.test_document -v",
+  "linux": {"tests": 5, "seconds": 0.078, "exit_code": 0},
+  "windows": {"tests": 5, "seconds": 1.101, "exit_code": 0},
+  "reproduced_defects": ["Opening the same USD reused a shared dirty layer", "XYZ inspector decomposition did not round-trip the authored rotation"],
+  "repairs": ["Private layer read directly from disk", "Root asset paths anchored before anonymous-layer composition", "Correct reversed-axis Euler decomposition", "Sheared and singular/reflected transforms rejected for editing"],
+  "verified": ["Unsaved edits stay private", "Discard/reopen sees persisted state", "General rotation and scale matrix round trip", "Save As preserves relative asset meaning", "Atomic saving and invalid-edit behavior"],
+  "remaining": "Integrated scene/UI regression after private-layer change; broader asset and failure-path coverage"
+}

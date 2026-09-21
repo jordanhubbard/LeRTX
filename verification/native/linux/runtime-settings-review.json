@@ -1,0 +1,11 @@
+{
+  "scope": "Rendering quality and local asset search paths",
+  "runs": [
+    {"module": "tests.test_runtime_native", "tests": 1, "seconds": 22.018, "exit_code": 0},
+    {"module": "tests.test_document", "tests": 6, "seconds": 0.084, "exit_code": 0}
+  ],
+  "rendering_quality": "Runtime render product authors OmniRtxSettingsRtAPI_1 and omni:rtx:post:dlss:execMode; balanced maps to balanced and high to quality",
+  "api_evidence": "Pinned OVRTX package bin/usd_plugins/rtx_settings/generatedSchema.usda",
+  "verified": ["Balanced token before reset", "Quality token after configured restart", "Actual frames and simulation continue", "Configured local search directory resolves otherwise missing relative USD layer"],
+  "limits": "Windows has not yet received these quality/search-path changes; no claim of perceptual image-quality benchmark or complete asset-resolution policy"
+}

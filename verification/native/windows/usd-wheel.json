@@ -1,0 +1,24 @@
+{
+  "schema": "lertx/native-wheel-archive-review@1",
+  "scope": "archive-integrity-only-not-execution-admission",
+  "status": "pass",
+  "inventory_complete": false,
+  "packages": [
+    {
+      "name": "usd-core",
+      "version": "25.11",
+      "filename": "usd_core-25.11-cp312-none-win_amd64.whl",
+      "sha256": "7bc5aaad20287bfc821e73e2ced99123e448e40ffd018acf99b09975eab4012d",
+      "bytes": 13061673,
+      "requires_python": ">=3.8, <3.14",
+      "requires_dist": [],
+      "status": "pass",
+      "members": 131,
+      "expanded_bytes": 48197249,
+      "wheel_metadata": "Single Root-Is-Purelib: true; no conflicting duplicate field",
+      "source": "https://pypi.org/pypi/usd-core/25.11/json",
+      "published_hash_verified": true
+    }
+  ],
+  "boundary": "Unmodified Windows wheel; no metadata repair. Other Windows application wheels, target closure and installation remain separate checks."
+}

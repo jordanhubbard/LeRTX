@@ -1,0 +1,819 @@
+{
+  "schema": "lertx/usd-wheel-metadata-repair@1",
+  "status": "pass",
+  "scope": "local-metadata-repair-not-installation-or-application-admission",
+  "filename": "usd_core-25.11-cp311-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+  "original_sha256": "a971c76ee4470a318df0517109fa8302f4bfa4f42c1f26b011658bb2ae6b6fa4",
+  "repaired_sha256": "d9f1019fa8d79c6e56403f2a26e6850353085d3981333b655693c1a78fd705d3",
+  "repair_script_sha256": "83df89b3dd80379f714eed18edd2168377182712bc1076d5835cfe01e4abe5a7",
+  "zip_encoding": "ZIP_STORED; original member order and metadata retained",
+  "root_is_purelib": "false",
+  "changed_members": [
+    "usd_core-25.11.dist-info/WHEEL",
+    "usd_core-25.11.dist-info/RECORD"
+  ],
+  "unchanged_members": [
+    {
+      "path": "pxr/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "usd_core.libs/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "usd_core-25.11.dist-info/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdHydra/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdRi/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdRender/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdVol/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdMedia/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdProc/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Sdr/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdSemantics/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Tf/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Kind/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Plug/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Usd/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdUI/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdValidation/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Trace/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdUtils/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Gf/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Vt/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdLux/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdPhysics/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Work/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdShaders/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Ts/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdShade/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdSkel/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Sdf/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Ar/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Pcp/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/UsdGeom/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/__init__.py",
+      "sha256": "b562c0316021f102951b9976572119f65f816ff5790f0c9b4ac0be7e4acc1ee5"
+    },
+    {
+      "path": "pxr/UsdHydra/__init__.py",
+      "sha256": "00b372a13b06de79b865f8e7ed489a434873cb1d6d517d5b355ebb5a8d7f201d"
+    },
+    {
+      "path": "pxr/UsdHydra/_usdHydra.so",
+      "sha256": "73f191abd867986b2810fd086596dfb08dd1afd23eacb5f5790358429d1345e1"
+    },
+    {
+      "path": "pxr/UsdRi/__init__.py",
+      "sha256": "296d06c2e8bcadecfd1e622b19a3354b5af5b951fa2881e89974fcc0d9a02747"
+    },
+    {
+      "path": "pxr/UsdRi/_usdRi.so",
+      "sha256": "b7873fba85b60425b636c39c4ffb8bcc62f25224c4e41ffc262f78d5bb32ebab"
+    },
+    {
+      "path": "pxr/UsdRender/__init__.py",
+      "sha256": "296d06c2e8bcadecfd1e622b19a3354b5af5b951fa2881e89974fcc0d9a02747"
+    },
+    {
+      "path": "pxr/UsdRender/_usdRender.so",
+      "sha256": "17cde25ce7eb2dd2b00e27161056f64c848db6a096d0e7d26f37bfdc29a6a559"
+    },
+    {
+      "path": "pxr/UsdVol/__init__.py",
+      "sha256": "e30d0ec3756129728ed13f19c2e68151412b368e6033c45f290faf499e59d3bf"
+    },
+    {
+      "path": "pxr/UsdVol/_usdVol.so",
+      "sha256": "1fffdc94965e0782f5690e05b5f42f42f1c18a97e72dfa2c79ed3f6aca16965c"
+    },
+    {
+      "path": "pxr/UsdMedia/__init__.py",
+      "sha256": "d337c7fe212796b1cc01b21b5eaafabfef861f559dff97017804c7a98bab04f1"
+    },
+    {
+      "path": "pxr/UsdMedia/_usdMedia.so",
+      "sha256": "e368385c6bddd21c19ce59fe085efff9095bc66ca59078ed07df5a64ae940993"
+    },
+    {
+      "path": "pxr/UsdProc/__init__.py",
+      "sha256": "4e5ed66be805be837c787228f444b4d55856f348b8074a7629c8da03827fb194"
+    },
+    {
+      "path": "pxr/UsdProc/_usdProc.so",
+      "sha256": "29e701014122802fde93a30fc56475fe9f2cb7d437542b7e40df3bdd617a3d0f"
+    },
+    {
+      "path": "pxr/Sdr/__init__.py",
+      "sha256": "7e3397c29732d0606f23ec787639d55a7c4fbe38845e1ff5d8bdf92e5ef8371a"
+    },
+    {
+      "path": "pxr/Sdr/_sdr.so",
+      "sha256": "e22903066bdab2667a1b2d3d9fd4f2ceca25aac7cc663ef03e6dca32d9ceddb5"
+    },
+    {
+      "path": "pxr/Sdr/shaderParserTestUtils.py",
+      "sha256": "c1c0118a63ddd43ff7b0b17d1cccb22f204b249658852bb8e3ac8c8af778ace2"
+    },
+    {
+      "path": "pxr/UsdSemantics/__init__.py",
+      "sha256": "a15e89f335938e3f2a203acbf69d8994d49ce6ff1e996d05df3f158b8b7e9a88"
+    },
+    {
+      "path": "pxr/UsdSemantics/_usdSemantics.so",
+      "sha256": "a550d0947354f9a0a29258dca3ad716a7c5e9eaa47cd6a2a6a8d00342d5f6159"
+    },
+    {
+      "path": "pxr/Tf/testenv/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/Tf/__init__.py",
+      "sha256": "483b9f300080181276c407210be09bba07e2bc43a65ec4a489df05d846226902"
+    },
+    {
+      "path": "pxr/Tf/_tf.so",
+      "sha256": "f50e5786bd2555795df5134ac3c50756283b756695300cf8a7a2dedf1f994aa5"
+    },
+    {
+      "path": "pxr/Tf/testenv/__init__.py",
+      "sha256": "cd6954980bfe350235f0e6ead8dbfa07a8c3c26f38e4d113ce18d3594f6d389f"
+    },
+    {
+      "path": "pxr/Tf/testenv/testTfScriptModuleLoader_Other.py",
+      "sha256": "063f1f15a49b9eaa2ff83250a8afe8fb14b32c4ae2715d526a34fcab9edc0581"
+    },
+    {
+      "path": "pxr/Tf/testenv/testTfScriptModuleLoader_LoadsAll.py",
+      "sha256": "507e0315f3e250de6d95e2574839def7f81a79e41b0f9741fca3a7cc4951de13"
+    },
+    {
+      "path": "pxr/Tf/testenv/testTfScriptModuleLoader_AAA_RaisesError.py",
+      "sha256": "633be4c86eab4272e2d6cdcc594cdfda2c04d0e3325caab1c48447e1a971e4cb"
+    },
+    {
+      "path": "pxr/Tf/testenv/testTfScriptModuleLoader_Unknown.py",
+      "sha256": "30147195db99f944e452290ca624940511787e11a74c92bef1adfad07f4442c6"
+    },
+    {
+      "path": "pxr/Tf/testenv/testTfScriptModuleLoader_LoadsUnknown.py",
+      "sha256": "3bcdf2c365d17a31b9fa7ec6ddfe037a4830894b9c3c8079e3b0d2dbe7d550df"
+    },
+    {
+      "path": "pxr/Tf/testenv/testTfPyInvoke_callees.py",
+      "sha256": "e178a9b95307b10a25a7a7cf3caf1466e4ea715afa0d33d1ba7697ec54e03bc6"
+    },
+    {
+      "path": "pxr/Tf/testenv/testTfScriptModuleLoader_DepLoadsAll.py",
+      "sha256": "72c149547e271cb4a66e2c6bbca8a491e415f3b3034e36d0a45e3e1de6e7cc7a"
+    },
+    {
+      "path": "pxr/Tf/testenv/testTfScriptModuleLoader_Test.py",
+      "sha256": "3d72a83a5c6b4470b2ce873ee5854ff83f03dcc8a8af9ad8147e7c9edbd3a56c"
+    },
+    {
+      "path": "pxr/Kind/__init__.py",
+      "sha256": "00e7c5b109e9ef6ded009a2fbb1b9ad50528e221180dd5918225e5ba14b9b3e4"
+    },
+    {
+      "path": "pxr/Kind/_kind.so",
+      "sha256": "66b24c9ce21b93966acd7bee0c723ba7fecb9814ab388032229677cbab0f444f"
+    },
+    {
+      "path": "pxr/Plug/__init__.py",
+      "sha256": "5973644bc27b47a5584bc0e5421e882bb2aa8c82c2e5e7696619651b99074302"
+    },
+    {
+      "path": "pxr/Plug/_plug.so",
+      "sha256": "dae8f2d762dd989a60cd9bd7d6af9e7e204007efb804406e258d4f9c4d076740"
+    },
+    {
+      "path": "pxr/Usd/__init__.py",
+      "sha256": "296d06c2e8bcadecfd1e622b19a3354b5af5b951fa2881e89974fcc0d9a02747"
+    },
+    {
+      "path": "pxr/Usd/usdInitSchema.py",
+      "sha256": "06754828d1c737fb9da3d3c1cf8a952f64fc55f2b34df19b3037b0da1fd284dc"
+    },
+    {
+      "path": "pxr/Usd/usdGenSchema.py",
+      "sha256": "fb26189bac6912a0603956ee0eccb845933fc780c1d6e376187fe9382cca528a"
+    },
+    {
+      "path": "pxr/Usd/_usd.so",
+      "sha256": "a356206192ab7ff0db32c2d9507833246f909bd2c30f0f80c7c336e23baa8f0c"
+    },
+    {
+      "path": "pxr/UsdUI/__init__.py",
+      "sha256": "296d06c2e8bcadecfd1e622b19a3354b5af5b951fa2881e89974fcc0d9a02747"
+    },
+    {
+      "path": "pxr/UsdUI/_usdUI.so",
+      "sha256": "7edac29436455878682cbf1ef89ee55c3c2c64bb3fa932e4921fdcfbb9ca8974"
+    },
+    {
+      "path": "pxr/UsdValidation/__init__.py",
+      "sha256": "fe8c373ccb65c996581be9377aef83a6c2080595fb4fb87f15ae6a327f8fe922"
+    },
+    {
+      "path": "pxr/UsdValidation/_usdValidation.so",
+      "sha256": "a3b05831a7ac52ca6c096ecbff66fb153eaa9e39815000656777e3375d08c1f3"
+    },
+    {
+      "path": "pxr/Trace/__init__.py",
+      "sha256": "67a4c20312af7cc9b27356af2d159057007e7a2f820c84251609ed1c2b179975"
+    },
+    {
+      "path": "pxr/Trace/__main__.py",
+      "sha256": "c548b35e2f8cb49b92232db387e76d852ebae45789fd37b815b5fcc91ef18ce1"
+    },
+    {
+      "path": "pxr/Trace/_trace.so",
+      "sha256": "f9641243a9e8e8fd01b82cd92fc209037bf3413581250fbd5c2418771ebb8baa"
+    },
+    {
+      "path": "pxr/UsdUtils/__init__.py",
+      "sha256": "4346706cdcf53b9ce9193cd8a22340d340b538cec23f85fef987b162bbdcb85d"
+    },
+    {
+      "path": "pxr/UsdUtils/complianceChecker.py",
+      "sha256": "357442bb4038f61829edee5cf82bbb6c1e27faf345c4589f32253317639158d2"
+    },
+    {
+      "path": "pxr/UsdUtils/_usdUtils.so",
+      "sha256": "b0e11bfdb1c683a447c7c7e7f95ddb4190dfa9231daf7d0744643d831896c051"
+    },
+    {
+      "path": "pxr/UsdUtils/toolPaths.py",
+      "sha256": "81dfca2cc0b1213eb5452e006ae0d52acbb516a0e8900d13c9ea5294a641c02a"
+    },
+    {
+      "path": "pxr/UsdUtils/usdzUtils.py",
+      "sha256": "977d66873a112be0d28df9bad6369c3beef603cf5197b0e9cdceeacb895b076d"
+    },
+    {
+      "path": "pxr/UsdUtils/fixBrokenPixarSchemas.py",
+      "sha256": "1594ac034c7333eca8bd911d98a5967ac9c5a5e80b24d811278db319a677d5c1"
+    },
+    {
+      "path": "pxr/UsdUtils/updateSchemaWithSdrNode.py",
+      "sha256": "4f40dbbf13c47f8727bef9bf030147ab6f71c389035f1b12a906fe1e29e8de70"
+    },
+    {
+      "path": "pxr/UsdUtils/constantsGroup.py",
+      "sha256": "4c29dd84b448395d7c90096dc153553accc51257c0b96278e3d7b58efccc4a67"
+    },
+    {
+      "path": "pxr/Gf/__init__.py",
+      "sha256": "01dd802e1595abbabe0dd412e659594634438c2a677a69192081a81b03fc29bf"
+    },
+    {
+      "path": "pxr/Gf/_gf.so",
+      "sha256": "0cdc9f819bd87842fd63ec9ddef044ec718eea9cc53646c2832b5b9122845d49"
+    },
+    {
+      "path": "pxr/Vt/__init__.py",
+      "sha256": "37cd73fd76692b7d5faff0d6f7a379f6145f26727223b66683c5266442a4cdee"
+    },
+    {
+      "path": "pxr/Vt/_vt.so",
+      "sha256": "1a6c4ab08d31b73fb304e99aabd82a2f59497d55569c1557be3ab7f2fcbde3b9"
+    },
+    {
+      "path": "pxr/UsdLux/__init__.py",
+      "sha256": "00b372a13b06de79b865f8e7ed489a434873cb1d6d517d5b355ebb5a8d7f201d"
+    },
+    {
+      "path": "pxr/UsdLux/_usdLux.so",
+      "sha256": "f27acb989a7597e84cbb30e7807891cd1505277ea1664666fc7e28ee1b540720"
+    },
+    {
+      "path": "pxr/UsdPhysics/__init__.py",
+      "sha256": "edec069a2e138c7dbf8972092b904e1b94cc57f1390637cfac110a1095a4ef23"
+    },
+    {
+      "path": "pxr/UsdPhysics/_usdPhysics.so",
+      "sha256": "64ebe7d89cf311a0e75d872aaafed152a33b68f9d037c573263f87e96323f226"
+    },
+    {
+      "path": "pxr/Work/__init__.py",
+      "sha256": "63a1055e72270cdc8950065894294fa25ebbcea2d9f59c4e37d92f75a1e4c9dc"
+    },
+    {
+      "path": "pxr/Work/_work.so",
+      "sha256": "5dd3b4127f287d8b5e4e9d5dd8e95f051f7dc11761fe4f7ac4e9b4180560c816"
+    },
+    {
+      "path": "pxr/UsdShaders/__init__.py",
+      "sha256": "8bcff93c5d8729cb1fe209cc1b36f94479745e6968ad70aeb35b210f6b3622a2"
+    },
+    {
+      "path": "pxr/Ts/__init__.py",
+      "sha256": "9645be35932efac527912c269443a159149602b49e89e5a5f1f32323abef388e"
+    },
+    {
+      "path": "pxr/Ts/_ts.so",
+      "sha256": "6774ae5f229a53b9c0ca023477da8c082acaa2fca003a4f7f8d74aefd2649401"
+    },
+    {
+      "path": "pxr/UsdShade/__init__.py",
+      "sha256": "296d06c2e8bcadecfd1e622b19a3354b5af5b951fa2881e89974fcc0d9a02747"
+    },
+    {
+      "path": "pxr/UsdShade/_usdShade.so",
+      "sha256": "13308d96620ec6f384937cd88fba343268bb6fa32202d6098f0451808e7a1d74"
+    },
+    {
+      "path": "pxr/UsdSkel/__init__.py",
+      "sha256": "296d06c2e8bcadecfd1e622b19a3354b5af5b951fa2881e89974fcc0d9a02747"
+    },
+    {
+      "path": "pxr/UsdSkel/_usdSkel.so",
+      "sha256": "eed444359f1c3b188a6f13b8e66985e33e0f0c209a25aa5d4b58982b183536dc"
+    },
+    {
+      "path": "pxr/Sdf/__init__.py",
+      "sha256": "01ba7cf4c245b4288ea3c0367491b6cdb01446b3931f95b5eff800566dc5921c"
+    },
+    {
+      "path": "pxr/Sdf/_sdf.so",
+      "sha256": "345a2fe575639d9666676b2a9050d076ca1e5e4525753b8e4f15c0c33d5657ea"
+    },
+    {
+      "path": "pxr/pluginfo/usdVol/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usd/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/ar/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdUtilsValidators/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdGeom/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdSkelValidators/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdSemantics/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdHydra/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdMedia/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdLux/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdPhysicsValidators/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdPhysics/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdSkel/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdGeomValidators/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdValidation/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdShade/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdProc/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdShadeValidators/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/sdf/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdUI/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdRender/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdRi/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/sdr/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/plugInfo.json",
+      "sha256": "c42a8b0c30e7cc9f85349184a2273ad6f5b0f7e283b090f5497dc4668c1f1e40"
+    },
+    {
+      "path": "pxr/pluginfo/usdVol/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdVol/resources/plugInfo.json",
+      "sha256": "15052938d2cb96c894d8ff57084219909884cd81d0762fee9fdbec9cc42e5e1f"
+    },
+    {
+      "path": "pxr/pluginfo/usdVol/resources/generatedSchema.usda",
+      "sha256": "073dec481492de4b3ddbf78921de549fd6d0158f2b13865aa6d6af5fcfa432a3"
+    },
+    {
+      "path": "pxr/pluginfo/usd/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usd/resources/plugInfo.json",
+      "sha256": "f6eb00916c7a62664be0f9a0d525c06b3c4e3c5e6be139f1fd5fe5bf189dffbd"
+    },
+    {
+      "path": "pxr/pluginfo/usd/resources/generatedSchema.usda",
+      "sha256": "372c8dd3995ccaf37f69f4a4b4367dd001de64a9bfb7be3282596946b1a6030a"
+    },
+    {
+      "path": "pxr/pluginfo/ar/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/ar/resources/plugInfo.json",
+      "sha256": "9e1f7de1980772441033787853be0dd5b7a6619c3abc86285ac242b8589e326c"
+    },
+    {
+      "path": "pxr/pluginfo/usdUtilsValidators/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdUtilsValidators/resources/plugInfo.json",
+      "sha256": "647581c6b9086fc012c278cf809e2ddc979699fe6ceb76b701092de88c6760f7"
+    },
+    {
+      "path": "pxr/pluginfo/usdGeom/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdGeom/resources/plugInfo.json",
+      "sha256": "8b8e7f1c441e8813dbf3fc7a74c450315ae5766b630fd8985847a47185762d9e"
+    },
+    {
+      "path": "pxr/pluginfo/usdGeom/resources/generatedSchema.usda",
+      "sha256": "4bc9b0c0cae9208bef0cbe106c40a32ebedb6fcece66a0e0db881a84d200847b"
+    },
+    {
+      "path": "pxr/pluginfo/usdSkelValidators/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdSkelValidators/resources/plugInfo.json",
+      "sha256": "e287a3314fbea98e3a9bd114f789bccb9e217e9c551278c2374a882774c61cfd"
+    },
+    {
+      "path": "pxr/pluginfo/usdSemantics/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdSemantics/resources/plugInfo.json",
+      "sha256": "14bc96e04615123a7515422105eadfd62efafd28d635e3cd5d15c76d09173a9c"
+    },
+    {
+      "path": "pxr/pluginfo/usdSemantics/resources/generatedSchema.usda",
+      "sha256": "0184b76290a4120d06f8cd7170bb496cb70cebf966fa5f43feaf93349043a7ff"
+    },
+    {
+      "path": "pxr/pluginfo/usdHydra/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdHydra/resources/plugInfo.json",
+      "sha256": "2e9cbb5b26608c91fb88d8ed39690ca4aaaee52eb84a4a283ccd223d1cb29af8"
+    },
+    {
+      "path": "pxr/pluginfo/usdHydra/resources/generatedSchema.usda",
+      "sha256": "7cd88e4f07c980c86cd578a90a4889df31eef92a9b06fcb809f1c03eb4ca609f"
+    },
+    {
+      "path": "pxr/pluginfo/usdMedia/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdMedia/resources/plugInfo.json",
+      "sha256": "066c01f985e7339267096b3c6f271c2af31626708835e1c22d4bd38e427b980a"
+    },
+    {
+      "path": "pxr/pluginfo/usdMedia/resources/generatedSchema.usda",
+      "sha256": "7a2889e99f19c717846d165fa86a7a97726b15de07dce6ad4eaa6d33d76423bb"
+    },
+    {
+      "path": "pxr/pluginfo/usdLux/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdLux/resources/plugInfo.json",
+      "sha256": "e15934fffef727105c542c1f78f3eacc7f9304aae2de2195109ade0ec27fd89d"
+    },
+    {
+      "path": "pxr/pluginfo/usdLux/resources/generatedSchema.usda",
+      "sha256": "79c9feb33072156def2b625e84a3f2455b26bf1ee93a44afc45a32aedd4750e9"
+    },
+    {
+      "path": "pxr/pluginfo/usdPhysicsValidators/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdPhysicsValidators/resources/plugInfo.json",
+      "sha256": "529f976484a0171d1971497033e6f04f251fbf21f6d529accb247da74e811e32"
+    },
+    {
+      "path": "pxr/pluginfo/usdPhysics/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdPhysics/resources/plugInfo.json",
+      "sha256": "dc5c013feded71c33fc4aeb099a7ec8bd1e5244cc7c6642b358c8591f5e032f7"
+    },
+    {
+      "path": "pxr/pluginfo/usdPhysics/resources/generatedSchema.usda",
+      "sha256": "681cac0463546c032ba903ae77e0dd245265bbb75d2db4719fe6696debe9bf47"
+    },
+    {
+      "path": "pxr/pluginfo/usdSkel/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdSkel/resources/plugInfo.json",
+      "sha256": "3640d5c9891f2918454cb6fb5b8d989601508b1ff7478fe3f97e01b502e35f9c"
+    },
+    {
+      "path": "pxr/pluginfo/usdSkel/resources/generatedSchema.usda",
+      "sha256": "43fc5e5b73ea3b6362b26e813acbe6f0c1c450dafa4313a6f3e6c0ab04a0c7a7"
+    },
+    {
+      "path": "pxr/pluginfo/usdGeomValidators/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdGeomValidators/resources/plugInfo.json",
+      "sha256": "e6b58ae0e8d73410ced2842f6a08c57096bca7db986d72468d94f40dbd4b0568"
+    },
+    {
+      "path": "pxr/pluginfo/usdValidation/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdValidation/resources/plugInfo.json",
+      "sha256": "14fe1aa2f06dd21559fa6b9682e6e82a06bf5b9f40be9b0d42c6950b4db597fe"
+    },
+    {
+      "path": "pxr/pluginfo/usdShade/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdShade/resources/plugInfo.json",
+      "sha256": "b6ca7744f0adca9a4ed236549d412a4062f72ecee20be7794785c7d2c2d96986"
+    },
+    {
+      "path": "pxr/pluginfo/usdShade/resources/generatedSchema.usda",
+      "sha256": "aef8c58040043e586bcf7f3b8dec116d0b5c0e5e224abc058235f33b6d77bbda"
+    },
+    {
+      "path": "pxr/pluginfo/usdProc/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdProc/resources/plugInfo.json",
+      "sha256": "042ed1297fcaf72d2f64cff6617ccd021727fe662b0848bc3ea31ae4a7516bbd"
+    },
+    {
+      "path": "pxr/pluginfo/usdProc/resources/generatedSchema.usda",
+      "sha256": "4488dc6a9a7be63a46928a28b86cc826a074a4c6e5c2833626fb87aed0259b28"
+    },
+    {
+      "path": "pxr/pluginfo/usdShadeValidators/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdShadeValidators/resources/plugInfo.json",
+      "sha256": "5b8cc2347792fe25d190e955c7a878e4f96decf1915d27bf73754245ce6b03ee"
+    },
+    {
+      "path": "pxr/pluginfo/sdf/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/sdf/resources/plugInfo.json",
+      "sha256": "39fbcb5a53d124d01454154d7097c15971adb6c8cd6fed17c6db17e56331f84f"
+    },
+    {
+      "path": "pxr/pluginfo/usdUI/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdUI/resources/plugInfo.json",
+      "sha256": "02b04fd19e747b2dbffeab57f35cc6daea661b6190c1393ed97ff8634a3520ea"
+    },
+    {
+      "path": "pxr/pluginfo/usdUI/resources/generatedSchema.usda",
+      "sha256": "41e3c4a5cb04f45052479f4b03e8d4430d38605e78387460920614cbecd7999f"
+    },
+    {
+      "path": "pxr/pluginfo/usdRender/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdRender/resources/plugInfo.json",
+      "sha256": "c411852d1278cb3ef359ae0253738f2bb6cf6f3b84b3479936db8b8a5051ed35"
+    },
+    {
+      "path": "pxr/pluginfo/usdRender/resources/generatedSchema.usda",
+      "sha256": "d16cc289e3186f7fb595cf69399b3acd7ec4ede9367eb31f877e49b5ff834dc5"
+    },
+    {
+      "path": "pxr/pluginfo/usdRi/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/usdRi/resources/plugInfo.json",
+      "sha256": "0fa8b2d74f0deb6f3233ff4e994890cdfa9b1ea4923446cb7df0860fe205bef0"
+    },
+    {
+      "path": "pxr/pluginfo/usdRi/resources/generatedSchema.usda",
+      "sha256": "35afd0fc35ce5607188aa16ae8e2bd8f843bdafa0f4a334358a212fd8d5824e0"
+    },
+    {
+      "path": "pxr/pluginfo/sdr/resources/",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pxr/pluginfo/sdr/resources/plugInfo.json",
+      "sha256": "4c2ea700a1ccfe9e2926ab47bd1f56b4584e1946bf5215248876c4a31d2117f2"
+    },
+    {
+      "path": "pxr/Ar/__init__.py",
+      "sha256": "296d06c2e8bcadecfd1e622b19a3354b5af5b951fa2881e89974fcc0d9a02747"
+    },
+    {
+      "path": "pxr/Ar/_ar.so",
+      "sha256": "d20b25ded127f3469ef742b9e8404ba6e43c29d593a7e43613b49a289fac80c2"
+    },
+    {
+      "path": "pxr/Pcp/__init__.py",
+      "sha256": "7ae835bb24a6f7ab7ff5de3e343145b4847da3e058b0a7609826a945788fd4ce"
+    },
+    {
+      "path": "pxr/Pcp/_pcp.so",
+      "sha256": "382b720e845c17e8fb89f651bc53776925b8e7ef426fd28e3aa488bf01ba9e80"
+    },
+    {
+      "path": "pxr/UsdGeom/__init__.py",
+      "sha256": "296d06c2e8bcadecfd1e622b19a3354b5af5b951fa2881e89974fcc0d9a02747"
+    },
+    {
+      "path": "pxr/UsdGeom/_usdGeom.so",
+      "sha256": "cdbfa3e636c2d18bd5aa681db0c2c6c7980645d6d091ed2422f32d60cef332f5"
+    },
+    {
+      "path": "usd_core.libs/libtbb-88a0cc2c.so.2",
+      "sha256": "17da91f0dac6e347536f4181009c674a57239aa065fdd355b5c9541f44738fa5"
+    },
+    {
+      "path": "usd_core.libs/libusd_ms-e730f952.so",
+      "sha256": "caaac236242c396f0868eaa6543c825b911e781e32f797dbb1773a5517a3ff63"
+    },
+    {
+      "path": "usd_core-25.11.dist-info/top_level.txt",
+      "sha256": "7d5529d27d0ef431cd5d29288148bbf391afbf2b33d01ee0a7b4e13e4dbcd0b2"
+    },
+    {
+      "path": "usd_core-25.11.dist-info/LICENSE.txt",
+      "sha256": "96ab8f00d1f73b78e20a4aa950818db1e8b36809e4553f322773cf4a9df15b2d"
+    },
+    {
+      "path": "usd_core-25.11.dist-info/METADATA",
+      "sha256": "89ff379a1b75c4bd34590eb90f220eed512620e21a58ad1ed808c80676c328c2"
+    }
+  ],
+  "strict_validator": "pass",
+  "verified_members": 122
+}

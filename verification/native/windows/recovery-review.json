@@ -1,0 +1,10 @@
+{
+  "scope": "Windows document, native session, Qt and settings recovery",
+  "modules": ["tests.test_document", "tests.test_runtime_native", "tests.test_window_native", "tests.test_settings_ui"],
+  "tests": 12,
+  "seconds": 138.452,
+  "exit_code": 0,
+  "result": "pass",
+  "verified": ["Private authored layers", "Transform round trip", "Malformed USD recovery retains current scene", "Worker remains usable", "Native rendering and physics", "Visible Qt controls", "Unsaved dialog branches and failed-save retention"],
+  "snapshot_limit": "Predates latest render-quality, search-path and recursive asset-preflight changes"
+}

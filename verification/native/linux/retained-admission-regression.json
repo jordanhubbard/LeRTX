@@ -1,0 +1,31 @@
+{
+  "schema": "lertx/retained-admission-regression@1",
+  "source_tree": "sha256:272e1af07312461fb27fbdc7a2abb8bf72a2c9316c829efb888f89f514e29304",
+  "scope": "Retained application tests against newly built native dependency runtime under Xvfb; not formal admission or package verification",
+  "initial_attempt": {
+    "tests": 157,
+    "seconds": 195.650,
+    "exit_code": 1,
+    "failures": 3,
+    "diagnosis": [
+      "Two fresh-process CLI failures: the diagnostic injected dependencies only into the parent sys.path, so child processes could not import PySide6",
+      "First in-process native launch exceeded its unchanged first-frame deadline with Native: loading; the subsequent launch passed"
+    ]
+  },
+  "corrected_environment_rerun": {
+    "tests": 157,
+    "seconds": 95.255,
+    "exit_code": 0,
+    "failures": 0,
+    "dependency_binding": "Explicit PYTHONPATH to built python-runtime/site inherited by subprocesses",
+    "bytecode_writes_disabled": true,
+    "fixtures_configured": true,
+    "test_assertions_changed": false,
+    "timeout_assertions_changed": false
+  },
+  "remaining": [
+    "The passing rerun does not erase the first-launch deadline failure or prove cold-start reliability",
+    "Independent acceptance remains blocked by framework Python package custody",
+    "No robot hardware or actuation was tested"
+  ]
+}

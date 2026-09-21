@@ -1,0 +1,13 @@
+{
+  "scope": "Qt visible controls with actual RTX/Newton worker on Linux Xvfb",
+  "command": "xvfb-run -a python -m unittest tests.test_window_native -v",
+  "exit_code": 0,
+  "seconds": 28.236,
+  "tests": 1,
+  "result": "pass",
+  "screenshot": "window.png",
+  "visual_inspection": "Real scene, hierarchy, inspector, toolbar and transport visible; screenshot after upward edit clips sphere at frame edge; framing and visual polish still require work",
+  "test_wait_repair": "QTest.qWait loop replaced with event processing plus Python sleep so worker can acquire GIL; timeout unchanged",
+  "verified": ["Visible native frame", "Play/pause/reset", "Inspector edit and save", "Search text entry", "Window closes and joins worker"],
+  "remaining": ["Settings async behavior and complete controls", "Camera interaction coverage", "Failure and unsaved-change dialogs", "Visual polish", "Windows equivalent test", "Full milestone acceptance"]
+}

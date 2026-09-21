@@ -1,0 +1,27 @@
+{
+  "schema": "lertx/worker-cache-cleanup@1",
+  "date_utc": "2026-09-16",
+  "authorization": "operator requested old caches and temporary files be cleaned",
+  "volume": "C:",
+  "initial_free_bytes": 7176900608,
+  "final_free_bytes": 11074404352,
+  "measured_net_increase_bytes": 3897503744,
+  "removed": [
+    "Two completed Wisp update staging directories; installer logs confirmed success",
+    "Administrator account completed Wisp installer download; installation success confirmed",
+    "Application account pip download cache: 224 files",
+    "Build account uv cache: 62411 files; supported clean without force",
+    "Build account pip download cache: 260 files",
+    "Build account npm cache: supported cache clean"
+  ],
+  "recovery": "Package and installer bytes can be downloaded again; removed temporary installer logs are not recoverable from recycle bin",
+  "preserved": [
+    "Installed SDKs and application probe environments",
+    "Project checkouts and retained build/test evidence",
+    "Windows Installer repair cache",
+    "Pagefile, hibernation and system component stores",
+    "Unknown temporary directories and reparse-linked paths"
+  ],
+  "remaining_capacity": "Full retained application installation still requires a fresh peak-footprint and reserve check; no full application installation dispatched",
+  "notes": "uv logical deletion size was 6.9 GiB; actual free-space increase is smaller due to shared storage and concurrent filesystem activity"
+}

@@ -1,0 +1,16 @@
+{
+  "status": "pass",
+  "scope": "USD acceptance fixture parsing only; not application acceptance",
+  "platform": "linux",
+  "fixtures": {
+    "centimeters-y-up.usda": "bc7300c15b578b2f3e99acf3c24472fcc922e3242fe08650f81e52510da75b64",
+    "unsupported-collider.usda": "6436963ce8a3093f348ec4ebaa112a13111e6f4cd01cc9f485a99b20075cf455"
+  },
+  "verified": [
+    "Centimeter scene has metersPerUnit 0.01 and Y up",
+    "Nested ball world center is [-20, 80, 10] in scene units",
+    "Nested ball world scale is [2, 2, 2] and authored radius is 5",
+    "Ball has both rigid body and collision APIs",
+    "Unsupported collider fixture contains a Mesh with CollisionAPI"
+  ]
+}

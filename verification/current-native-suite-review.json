@@ -1,0 +1,15 @@
+{
+  "scope": "Retained desktop full suite including native startup repair, photo workflow, and USB metadata panel",
+  "command": "python -m unittest discover -s tests -q (Linux under Xvfb)",
+  "source_files": 49,
+  "source_identity": "0a8edf63a2a05bbe4923838e5a1868ade2dfacd4fcbc6e87a88c5bd0704652b2",
+  "identity_algorithm": "SHA256 of compact JSON sorted relative-path and file-SHA256 pairs, excluding __pycache__",
+  "linux": {"tests": 134, "seconds": 109.309, "exit_code": 0},
+  "windows": {"tests": 134, "seconds": 283.948, "exit_code": 0, "post_run_tree_matches_local_snapshot": true},
+  "limitations": [
+    "Windows transfer completion was observed after suite dispatch; post-run tree identity matches, but this is not immutable-deployment attestation",
+    "Snapshot precedes the loading-label and stronger displayed-photo-frame assertion follow-up",
+    "No physical robot telemetry or measured reconstruction accuracy is claimed",
+    "Project lifecycle receipt remains stale; distribution acceptance is incomplete"
+  ]
+}

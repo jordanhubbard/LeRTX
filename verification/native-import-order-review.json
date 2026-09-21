@@ -1,0 +1,14 @@
+{
+  "problem":"Standalone worker initialized OVRTX before importing OpenUSD; native USD parsing aborted with invalid-size/double-free diagnostics, with and without Xvfb.",
+  "controlled_change":"Importing pxr.Usd before OVRTX allowed the identical live reconstruction to render and close cleanly.",
+  "repair":"NativeWorker._initialize explicitly imports pxr.Usd first on its owner thread. Portable commands remain lazy.",
+  "linux_existing_file_subprocess":{"tests":1,"seconds":16.923,"exit_code":0},
+  "windows_existing_file_subprocess":{"tests":1,"seconds":46.016,"exit_code":0},
+  "repaired_live_render":"native/linux/live-photo-render-repaired/review.json",
+  "same_frame_as_control":true,
+  "files_sha256":{
+    "lertx/scene.py":"b1585f88b6821ed3337f1e4b3b68bca143add5149a9789c427c911018ef4888f",
+    "tests/test_launch_native.py":"1dd5afe74f68515d3b6940a94728400375c171b3a49ad9b09446df7e60e36d9e"
+  },
+  "limitations":"Focused repair verification after the 122-test matrix; full current 123-test matrix has not yet been rerun. Root ABI/library defect has not been attributed beyond the demonstrated import-order dependency."
+}

@@ -1,0 +1,18 @@
+{
+  "scope": "Qt settings and worker control tests with injected transport; no live inference request",
+  "command": "python -m unittest tests.test_ui tests.test_settings_ui tests.test_connection_probe tests.test_worker -v",
+  "qt_platform": "offscreen",
+  "tests": 10,
+  "seconds": 0.513,
+  "exit_code": 0,
+  "verified": [
+    "Defaults are staged and Cancel preserves the prior profile",
+    "Invalid Save leaves dialog open and prior profile intact",
+    "Connection test permits UI timer callbacks while transport waits",
+    "Endpoint changes clear session credential and invalidate late result",
+    "Only one inference request can be in flight per window",
+    "Recoverable worker command failure does not terminate worker",
+    "Play without a loaded native scene does not claim simulation"
+  ],
+  "full_settings_acceptance": "incomplete: diagnostics, theme/units behavior and broader interaction coverage remain"
+}

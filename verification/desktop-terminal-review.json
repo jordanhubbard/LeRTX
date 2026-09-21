@@ -1,0 +1,23 @@
+{
+  "schema": "lertx/desktop-source-review@1",
+  "status": "rejected",
+  "generation_exit_code": 0,
+  "application_executed": false,
+  "component_revision": "32ccd56a03ed9e8e492c3a294d516e96f900bbcd174a6eb2ec71fae8772e551d",
+  "files_sha256": {
+    "source/lertx/ui.py": "33f3d0c0e71984b0a5cef03c35b99135f127e904a65495abd35888bba84a3880",
+    "source/lertx/scene.py": "654dbf3f1f1c932af9f06a8134bd04b0c7fefcced08b8d6c48ed217091ccb3fa",
+    "source/tests/test_native_integration.py": "fce1d291df5d8037b2500c2eb4f6f43b3791ad0749b95726968397fecea9ecbd"
+  },
+  "blocking_findings": [
+    {"file": "source/lertx/ui.py", "line": 496, "finding": "Scene Save only clears the dirty flag; it does not persist USD"},
+    {"file": "source/lertx/ui.py", "line": 541, "finding": "Starting the native worker does not queue scene opening and reports ready before initialization succeeds"},
+    {"file": "source/lertx/ui.py", "line": 555, "finding": "Frame timer only updates a time label; no frame delivery or Newton stepping"},
+    {"file": "source/lertx/scene.py", "line": 162, "finding": "Nonexistent Matrix4d.ExtractScale falls back to unit scale, losing authored collider scale"},
+    {"file": "source/lertx/scene.py", "line": 251, "finding": "Stop sets termination before queued commands finish and uses blocking queue insertion and join"},
+    {"file": "source/tests/test_native_integration.py", "line": 47, "finding": "Queues open/render then immediately stops without awaiting command completion; does not prove UI rendering, physics, or persistence"}
+  ],
+  "resolved_provisional_findings": ["Terminal tests use unittest, not pytest"],
+  "next_action": "Await operator decision on direct reviewable source repair; retain current spec-led authority meanwhile",
+  "completion_claim": "Neither application admission nor milestone acceptance"
+}

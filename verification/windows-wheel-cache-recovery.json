@@ -1,0 +1,15 @@
+{
+  "scope": "Completed-install download staging cleanup under existing operator authorization",
+  "removed_files": 10,
+  "removed_archive_bytes": 1701056243,
+  "measured_free_before_bytes": 1228652544,
+  "measured_free_after_bytes": 2929725440,
+  "measured_recovery_bytes": 1701072896,
+  "inventory": "native/windows/wheel-archives.json",
+  "verification": "All ten size/SHA256 pairs matched retained Mac copies; parent directories and files were not reparse points; no active installer referenced the staging directory",
+  "recovery": "Restore the exact hash-verified Mac staging copies when full installation qualification resumes",
+  "preserved": ["installed SDK environment", "installed Qt environment", "application source", "framework installations", "system files", "unrelated workspaces"],
+  "remaining_pressure": "About 2.73 GiB free after cleanup; percentage-critical disk condition remains",
+  "limited_test_policy": "Existing-environment tests only; monitor a 2 GiB reserve and 256 MiB write budget, stopping only the owned test process tree on violation",
+  "fresh_installs": "held pending substantially more capacity"
+}

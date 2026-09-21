@@ -1,0 +1,13 @@
+{
+  "scope": "Complete retained-source suite with photo preview, explicit upload, cancellation, worker adoption and Save As",
+  "command": "python tools/run_tests.py (Linux under Xvfb)",
+  "linux": {"tests":122, "exit_code":0, "timing":"not retained after output truncation; test count independently confirmed by discovery with no loader errors"},
+  "windows": {"tests":122, "seconds":209.425, "exit_code":0},
+  "source_files":45,
+  "source_identity":"e68bbb9c2ad462fb6793ccf61bad4fe57cd3a0eeb207acb695cc87410b36b58f",
+  "identity_algorithm":"SHA256 of compact JSON sorted relative-path and file-SHA256 pairs, excluding __pycache__",
+  "local_remote_source_match":true,
+  "live_inference":"live-photo-response.json records successful synthetic-image input and three schema-valid objects from the configured NVIDIA Astra model",
+  "live_render":"native/linux/live-photo-render-usd-first/review.json; rendered artifact visually inspected",
+  "limitations":["suite snapshot precedes explicit USD-before-RTX startup repair", "standalone native initialization crashed when RTX was imported first, including under Xvfb", "no measured reconstruction accuracy or physical robot verification", "distribution and lifecycle acceptance remain incomplete"]
+}

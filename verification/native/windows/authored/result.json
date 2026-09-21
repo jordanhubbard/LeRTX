@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "initial_pose": [
+    0.0,
+    0.0,
+    0.800000011920929,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+  ],
+  "final_pose": [
+    0.0,
+    0.0,
+    0.09999290853738785,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+  ],
+  "mean_image_difference": 2.1124593098958333,
+  "frames": {
+    "before.png": "14a0e9590a8c2143b91328a1a4125263e2f71852d6711a8c317a7b41bf6ecb84",
+    "after.png": "670780b3439301af03647b55a14eb1113bdd101757a5dc751b66df9d7f1166ce",
+    "workspace.usda": "686dc2824a1a798ade70756ccc49287821b1b7767529c2a3ea5cef0b89bf188c"
+  },
+  "probe_sha256": "d45d5fd63027d9fb802b90f233c7b66198eea75f8ff6d8e8cb30c14ac43db10f",
+  "system": {
+    "os": "Windows",
+    "architecture": "AMD64",
+    "python": "3.12.10"
+  },
+  "gpu": "NVIDIA L40, 595.97, 49140",
+  "packages": {
+    "ovrtx": "0.5.0.377615",
+    "ovstage": "0.2.0.377349",
+    "newton": "1.6.0",
+    "warp-lang": "1.17.0",
+    "numpy": "2.4.6",
+    "usd-core": "25.11"
+  },
+  "cleanup_completed": true
+}

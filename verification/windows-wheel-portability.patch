@@ -1,0 +1,25 @@
+diff --git a/src/literate_ai/adapters/dependencies/python_installed.py b/src/literate_ai/adapters/dependencies/python_installed.py
+--- a/src/literate_ai/adapters/dependencies/python_installed.py
++++ b/src/literate_ai/adapters/dependencies/python_installed.py
+@@ -103,7 +103,9 @@
+                 _path(relative)
+                 if nodes.setdefault(relative.casefold(), relative) != relative:
+                     _fail("Python installation paths have case aliases")
+-                before = entry.stat(follow_symlinks=False)
++                # Windows DirEntry.stat omits file identity and link count.
++                # Custody checks require full metadata, not enumeration hints.
++                before = path.lstat()
+                 if getattr(before, "st_file_attributes", 0) & 0x400:
+                     _fail("Python installation contains a reparse point")
+                 if stat.S_ISDIR(before.st_mode):
+diff --git a/tests/unit/test_standard_command_projection.py b/tests/unit/test_standard_command_projection.py
+--- a/tests/unit/test_standard_command_projection.py
++++ b/tests/unit/test_standard_command_projection.py
+@@ -284,6 +284,6 @@
+                 "      uri: standard-command-profile.json\n",
+             )
+-            flavor_path.write_text(content, encoding="utf-8")
++            flavor_path.write_text(content, encoding="utf-8", newline="\n")
+             (flavors / package_name / "standard-command-profile.json").write_text(
+                 json.dumps(
+                     {
