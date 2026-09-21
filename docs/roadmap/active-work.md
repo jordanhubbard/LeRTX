@@ -79,7 +79,7 @@ CONFIG-001, TWIN-001 and ROBOT-001 remain open at the boundaries listed here.
 
 ### CHECKPOINT-001: repository publication
 
-- [ ] Commit the reviewed source/specification/test/evidence checkpoint and push
+- [x] Commit the reviewed source/specification/test/evidence checkpoint and push
   to `NVIDIA-dev/LeRTX`; verify the remote SHA. The operator selected the
   NVIDIA-dev organization. Create a private development repository; public
   publication is not implied by this checkpoint.
@@ -1029,7 +1029,7 @@ queue item or let `docs/roadmap/` become a plan archive.
   reader and operator-selected calibration import. Never reuse mock identities
   as persistent USB roles or present a sample readout as a rendered physical twin.
 
-### [ ] CHECKPOINT-001 — Publish the current LeRTX development checkpoint
+### [x] CHECKPOINT-001 — Publish the current LeRTX development checkpoint
 
 - **Priority:** P0
 - **Owner:** project roadmap and repository
@@ -1038,12 +1038,12 @@ queue item or let `docs/roadmap/` become a plan archive.
 - **Depends on:** none
 - **Implementation:**
   - [x] Reconcile open implementation, qualification, packaging and physical-twin work.
-  - [ ] Audit and commit the retained source, specifications, tests and nonsecret evidence.
-  - [ ] Push to the operator-selected repository and verify remote commit identity.
+  - [x] Audit and commit the retained source, specifications, tests and nonsecret evidence.
+  - [x] Push to the operator-selected repository and verify remote commit identity.
 - **Evidence:**
   - [x] Authority and locks pass; stale acceptance receipt remains explicit.
   - [x] Staged files contain no credentials, private worker assignments or build caches.
-  - [ ] Local and remote checkpoint commit IDs match.
+  - [x] Local and remote checkpoint commit IDs match.
 - **Checkpoint evidence:** 34 portable worker/configuration/transport/simulation/
   mapping tests pass in 0.121 seconds. No application modules changed during this
   roadmap/publication pass. The staged text and original source archive were
@@ -1051,5 +1051,8 @@ queue item or let `docs/roadmap/` become a plan archive.
   renderer report. Native evidence bytes retain their original line endings to
   preserve artifact hashes. Parent checkouts, transient locks and build outputs
   are excluded. Local authority and all three locks pass; the receipt remains
-  stale. The operator selected `NVIDIA-dev/LeRTX`; private repository creation
-  and remote commit verification are the remaining checkpoint actions.
+  stale. The private `NVIDIA-dev/LeRTX` repository now contains the development
+  checkpoint. Initial publication was verified with matching local and remote
+  commit `19f71e7201bf827eadbb6e56a29f116810a4785b`. No pre-existing branch or
+  review existed for the initial push. Project CI and public-release review
+  remain open above; publication does not constitute application acceptance.
