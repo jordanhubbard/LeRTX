@@ -80,10 +80,15 @@ CONFIG-001, TWIN-001 and ROBOT-001 remain open at the boundaries listed here.
 ### CHECKPOINT-001: repository publication
 
 - [ ] Commit the reviewed source/specification/test/evidence checkpoint and push
-  to a confirmed destination; verify the remote SHA. The repository currently
-  has no remote, so LeRTX issue/PR reconciliation is unavailable.
+  to `NVIDIA-dev/LeRTX`; verify the remote SHA. The operator selected the
+  NVIDIA-dev organization. Create a private development repository; public
+  publication is not implied by this checkpoint.
 - [ ] Establish project CI and repeatable contributor verification on the chosen
   remote without confusing upstream Litai CI with LeRTX native acceptance.
+- [ ] Before public publication, select the application license, review NVIDIA
+  SDK redistribution obligations, resolve internal framework references through
+  supported tooling, and establish public availability of the configured Astra
+  service/model. Public SDK downloads do not make those SDKs open source.
 
 ## Detailed-roadmap lifecycle
 
@@ -1046,4 +1051,5 @@ queue item or let `docs/roadmap/` become a plan archive.
   renderer report. Native evidence bytes retain their original line endings to
   preserve artifact hashes. Parent checkouts, transient locks and build outputs
   are excluded. Local authority and all three locks pass; the receipt remains
-  stale. Push awaits a confirmed repository URL; no remote exists locally.
+  stale. The operator selected `NVIDIA-dev/LeRTX`; private repository creation
+  and remote commit verification are the remaining checkpoint actions.
