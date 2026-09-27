@@ -12,7 +12,7 @@ def build_robot_panel(window):
     class RobotPanel(QWidget):
         def __init__(self):
             super().__init__(window)
-            self.state={};self.selected=None
+            self.state={};self.selected=None;self.pending_follow=None
             self.setMinimumWidth(370)
             self.setMaximumWidth(480)
             layout=QVBoxLayout(self)
@@ -32,6 +32,8 @@ def build_robot_panel(window):
                     label=QLabel('—');self.readings[role,name]=label;grid.addWidget(label,row,column)
             self.apply=QPushButton('Apply joint targets');layout.addWidget(self.apply)
             self.selection_label=QLabel('Select an arm link to turn its joint here.');self.selection_label.setWordWrap(True);layout.addWidget(self.selection_label)
+            self.unlock=QPushButton('Manipulate follower independently');self.unlock.hide();layout.addWidget(self.unlock)
+            self.unlock.clicked.connect(lambda:self.follow.setChecked(False))
             self.joint_slider=QSlider(Qt.Orientation.Horizontal);self.joint_slider.setRange(0,1000);self.joint_slider.setEnabled(False)
             self.joint_slider.setAccessibleName('Selected joint angle');layout.addWidget(self.joint_slider)
             self.joint_slider.valueChanged.connect(self.slide_joint)
@@ -51,8 +53,12 @@ def build_robot_panel(window):
             self.apply.setEnabled(not self.state.get('live_roles') and (role=='leader' or not self.follow.isChecked()))
 
         def set_following(self,value):
-            self.apply.setEnabled(self.role.currentText()=='leader' or not value)
-            if window._ready and not window._pending:
+            self.pending_follow=value
+            self.flush()
+
+        def flush(self):
+            if self.pending_follow is not None and window._ready and not window._pending:
+                value,self.pending_follow=self.pending_follow,None
                 window._command(lambda:window.worker.command_robot('leader',following=value),window._apply_status)
 
         def command(self):
@@ -70,7 +76,7 @@ def build_robot_panel(window):
             self.setEnabled(available)
             if not available:
                 self.status.setText('Open a workspace containing SO-101 articulations.');return
-            self.follow.blockSignals(True);self.follow.setChecked(state['following']);self.follow.blockSignals(False)
+            self.follow.blockSignals(True);self.follow.setChecked(state['following'] if self.pending_follow is None else self.pending_follow);self.follow.blockSignals(False)
             live=state.get('live_roles',[])
             self.follow.setEnabled(not live)
             self.apply.setEnabled(not live and (self.role.currentText()=='leader' or not state['following']))
@@ -90,6 +96,7 @@ def build_robot_panel(window):
         def select_joint(self,result):
             self.selected=result.get('joint')
             joint=self.selected
+            self.unlock.setVisible(bool(joint and joint['role']=='follower' and joint['locked'] and not self.state.get('live_roles')))
             self.joint_slider.setEnabled(bool(joint and not joint['locked']))
             if not joint:
                 self.selection_label.setText('Select an arm link to turn its joint here.');return

@@ -937,6 +937,8 @@ queue item or let `docs/roadmap/` become a plan archive.
 
 ### [ ] TWIN-001 — Milestone three: Astra photo-to-USD reconstruction
 
+- **Current usability repair:** The visible Windows dialog rejects upload because the session key is missing, but the small status message is easily missed. Add an inline password field, preflight feedback and visible in-flight progress while preserving the chosen photo; verify missing-key, success and failure paths without transmitting the operator photo during tests. Windows Qt verification passes missing-key, inline-key success, authentication failure/retry and cancellation cases. Live provider acceptance still requires the operator credential.
+
 - **Scope clarification:** The operator explicitly selected Astra photo-to-USD
   reconstruction as milestone three. USB discovery and read-only SO-101
   synchronization remain follow-on product work, not milestone-three acceptance
@@ -1145,6 +1147,8 @@ queue item or let `docs/roadmap/` become a plan archive.
   for the operator to switch back to Omarchy.
 
 ### [ ] APP-001 — Deliver an installed desktop application with a simulated SO-101 pair
+
+- **Current interaction repair:** The selected follower joint is locked by leader-following. Provide an explicit action beside the selected joint to disable following, retain toggle requests while the native worker is busy, and verify subsequent slider and pointer motion. Windows verification passes the busy-worker regression and visible native follower unlock plus slider motion (20 degree target, 21.8 degree measured paused pose, changed RTX frame). Physical motor control is unchanged.
 
 - **Priority:** high
 - **Owner:** Desktop Component and native delivery

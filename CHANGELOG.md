@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Desktop: make locked follower joints directly unlockable, retain following changes while rendering, and provide an inline photo API-key field with explicit upload progress and retry feedback.
+
 - Desktop hardware: explicit SO-101 USB telemetry, LeRobot calibration import,
   motor arming, held bounded movement, torque-off stop and fault handling through
   the pinned Feetech SDK. Measured joint bindings support live articulated viewing

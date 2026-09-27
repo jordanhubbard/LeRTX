@@ -37,6 +37,9 @@ assuming equal angle limits. Clearly label simulated controls and measured
 virtual state. No physical port opening or actuation follows from these controls.
 
 Expose independent following on/off, joint position controls, Play/Pause and Reset.
+When following locks a selected follower joint, expose an adjacent explicit
+"Manipulate follower independently" action. Retain following changes until the
+native worker can accept them; a busy renderer must not silently discard input.
 Pause holds simulation state; Reset restores the authored poses and target state.
 Report tracking or physics failure visibly instead of falling back to animation.
 Reject inconsistent articulation metadata. Arbitrary transform edits to an
@@ -98,3 +101,10 @@ frame interval after render completion. Simulation receives elapsed wall time
 between tick starts. Idle polling remains inexpensive. Use compact runtime USD
 snapshots, and discard previous owned snapshots after their native stage closes;
 reopening a document must not retain every prior runtime export until app exit.
+
+## Photo request feedback
+
+The photo dialog must show missing credentials before upload, provide a masked
+in-memory API key field, and focus that field when an upload is blocked. Preserve
+the selected image for retries, show in-flight progress, and clear the dialog key
+on close. Do not persist or log the key or send the image before explicit Upload.

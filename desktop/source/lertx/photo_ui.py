@@ -1,5 +1,6 @@
 """Photo preview and explicit upload. Qt is imported only when opening the dialog."""
 import copy
+import time
 
 from .photo import MAX_IMAGE_BYTES
 
@@ -7,7 +8,7 @@ from .photo import MAX_IMAGE_BYTES
 def build_photo_dialog(profile, probe, parent=None):
     from PySide6.QtCore import QByteArray, QBuffer, QIODevice, QSize, Qt, QTimer
     from PySide6.QtGui import QImage, QImageReader, QPainter, QPixmap
-    from PySide6.QtWidgets import QDialog, QFileDialog, QLabel, QPushButton, QVBoxLayout
+    from PySide6.QtWidgets import QDialog, QFileDialog, QLabel, QPushButton, QVBoxLayout, QLineEdit, QProgressBar
 
     class PhotoDialog(QDialog):
         def __init__(self):
@@ -28,6 +29,12 @@ def build_photo_dialog(profile, probe, parent=None):
                           "The result is an unverified draft with estimated dimensions, not a collision-safe map.")
             note.setWordWrap(True)
             layout.addWidget(note)
+            layout.addWidget(QLabel('API key for this request (kept in memory; not saved)'))
+            self.key_input = QLineEdit(self.profile['llm']['api_key'])
+            self.key_input.setEchoMode(QLineEdit.EchoMode.Password)
+            self.key_input.setPlaceholderText('Enter the key for the upload destination above')
+            self.key_input.setAccessibleName('Photo reconstruction API key')
+            layout.addWidget(self.key_input)
             self.preview = QLabel("Choose a PNG or JPEG (up to 8 MiB / 16 million pixels)")
             self.preview.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.preview.setMinimumHeight(320)
@@ -41,7 +48,10 @@ def build_photo_dialog(profile, probe, parent=None):
             layout.addWidget(self.upload_button)
             self.status = QLabel("")
             self.status.setWordWrap(True)
+            self.status.setStyleSheet('font-weight: bold; padding: 8px;')
             layout.addWidget(self.status)
+            self.progress = QProgressBar();self.progress.setRange(0,0);self.progress.hide()
+            layout.addWidget(self.progress)
             cancel = QPushButton("Cancel")
             cancel.clicked.connect(self.reject)
             layout.addWidget(cancel)
@@ -96,12 +106,18 @@ def build_photo_dialog(profile, probe, parent=None):
                 self.preview.setPixmap(QPixmap.fromImage(clean).scaled(640,360,
                     Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation))
                 self.upload_button.setEnabled(True)
-                self.status.setText("Ready to upload. Nothing has been sent.")
+                self.status.setText("Ready to upload. Nothing has been sent." if self.key_input.text().strip()
+                    else "API key required: enter it above, then click Upload and Reconstruct. Nothing has been sent.")
             except Exception:
                 self.status.setText("Cannot load image: use a valid PNG/JPEG within the displayed limits.")
 
         def upload(self):
             if self.image_bytes is None:
+                return
+            self.profile['llm']['api_key'] = self.key_input.text().strip()
+            if not self.profile['llm']['api_key']:
+                self.status.setText('API key required: enter it above. Nothing has been uploaded.')
+                self.key_input.setFocus()
                 return
             self.ticket = probe.start((copy.deepcopy(self.profile), self.image_bytes))
             if self.ticket is None:
@@ -109,25 +125,32 @@ def build_photo_dialog(profile, probe, parent=None):
                 return
             self.choose_button.setEnabled(False)
             self.upload_button.setEnabled(False)
+            self.key_input.setEnabled(False)
+            self.started_at = time.monotonic()
+            self.progress.show()
             self.status.setText("Reconstructing… Cancel ignores late results; it cannot cancel server work.")
             self.timer.start()
 
         def poll(self):
             result = probe.poll(self.ticket)
             if result is None:
+                self.status.setText(f'Reconstructing… {int(time.monotonic()-self.started_at)}s elapsed. '
+                    'Waiting for the service; Cancel ignores late results.')
                 return
             self.timer.stop()
+            self.progress.hide()
+            self.key_input.setEnabled(True)
             self.choose_button.setEnabled(True)
             self.upload_button.setEnabled(self.image_bytes is not None)
             if result["state"] == "success":
                 self.result_scene = result
                 self.accept()
             else:
-                messages = {"missing_key": "Add a session API key in Settings / Intelligence.",
+                messages = {"missing_key": "Enter an API key above and retry. Nothing has been uploaded.",
                     "incomplete": "Response was truncated. Increase the token limit in Settings and retry.",
                     "invalid_scene": "The response did not contain a valid scene. Workspace unchanged.",
                     "invalid_settings": "Correct Intelligence settings before uploading.",
-                    "auth_failure": "Authentication failed.", "unknown_model": "Model unavailable.",
+                    "auth_failure": "Authentication failed. Check the key for the destination above and retry.", "unknown_model": "Model unavailable. Check Settings / Intelligence.",
                     "timeout": "Request timed out.", "rate_limited": "Service rate limit reached.",
                     "cancelled": "Cancelled; workspace unchanged."}
                 self.status.setText(messages.get(result["state"], "Reconstruction failed; workspace unchanged."))
@@ -138,5 +161,6 @@ def build_photo_dialog(profile, probe, parent=None):
                 probe.cancel(self.ticket)
             self.image_bytes = None
             self.profile["llm"]["api_key"] = ""
+            self.key_input.clear()
 
     return PhotoDialog()

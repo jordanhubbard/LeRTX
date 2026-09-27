@@ -1,0 +1,22 @@
+{
+  "scope": "Windows interaction recovery, not release or live provider qualification",
+  "qt_tests_passed": 27,
+  "native": {
+    "complete": true,
+    "seconds": 9.81,
+    "physical_hardware_tested": false,
+    "provider_request_sent": false,
+    "follower_unlocked": true,
+    "slider_moved_articulation": true,
+    "paused": true,
+    "actual_radians": 0.38054004311561584
+  },
+  "source_sha256": {
+    "desktop/source/lertx/robot_ui.py": "0e529d08b5586c68a0fa368d1e7e87bd918b3ea713e7663b433827457f636ee6",
+    "desktop/source/lertx/photo_ui.py": "534faf2220ffaa5db7275fb070284d17a255b56ed8cfff1c03e98d8505805b0f",
+    "desktop/source/lertx/ui.py": "36d963f0d0f2c68e83c5a65880ae170f3971d695aa9cb7fbe2b23e36b8395ed1",
+    "desktop/source/tests/test_photo_ui.py": "89107b1df0b0f58ae29bd671f46b07a0665a68558ace79d41066e52fed96697e",
+    "desktop/source/tests/test_hardware_ui.py": "c4deb9d991278e4008107d862c34ad4a793993c7b32e634c2b966bdb5806b31f",
+    "verification/interaction_recovery_window.py": "9fb0a34a1f3fc8bb055cdc6fefe7d08005d6625240e68d24db8046146683186b"
+  }
+}

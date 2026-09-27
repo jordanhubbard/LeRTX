@@ -1037,6 +1037,7 @@ def build_main_window(
                 self._on_open_settings()
                 return
             now = time.monotonic()
+            self.robot_panel.flush()
             self.viewport_label.flush()
             if self._ready and not self._idle_frame and not self._pending and now >= self._next_frame_at:
                 # Schedule start-to-start. Waiting a frame interval after the

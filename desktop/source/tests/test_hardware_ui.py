@@ -118,3 +118,34 @@ class HardwareUITests(unittest.TestCase):
             self.assertIn('expired',self.panel.message.text())
             self.assertEqual(self.serial.writes,[])
         finally:owner._ready=False;owner.worker=None
+
+    def test_follower_unlock_survives_busy_worker(self):
+        from types import SimpleNamespace
+        from lertx.robot import home_positions
+        owner=self.owner;owner._ready=True;panel=owner.robot_panel
+        state={'positions':{'follower':home_positions('follower')},'following':True}
+        panel.update_state(state)
+        panel.select_joint({'joint':dict(role='follower',name='wrist_roll',low=-1.,high=1.,value=0.,locked=True)})
+        self.assertFalse(panel.joint_slider.isEnabled())
+        self.assertFalse(panel.unlock.isHidden())
+        owner._pending=[object()]
+        panel.unlock.click()
+        self.assertEqual(panel.pending_follow,False)
+        panel.update_state(state)
+        self.assertFalse(panel.follow.isChecked())
+        calls=[]
+        def command(role,following):
+            calls.append(following)
+            return {**state,'following':following}
+        owner.worker=SimpleNamespace(command_robot=command)
+        owner._command=lambda fn,callback:callback(fn())
+        owner._apply_status=panel.update_state
+        owner._pending=[]
+        try:
+            panel.flush()
+            self.assertEqual(calls,[False])
+            self.assertTrue(panel.joint_slider.isEnabled())
+            self.assertTrue(panel.unlock.isHidden())
+            panel.joint_slider.setValue(800)
+            self.assertAlmostEqual(owner.viewport_label.intent[2],.6)
+        finally:owner._ready=False;owner.worker=None;owner._pending=[]
