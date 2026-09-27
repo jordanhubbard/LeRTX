@@ -21,7 +21,8 @@
     "routing"
   ],
   "documentation_roots": [
-    "docs"
+    "docs",
+    "verification/performance"
   ],
   "source_intelligence": {
     "schema": "urn:literate-ai:schema:v1:project-source-intelligence-policy",
@@ -45,7 +46,7 @@
     "framework_distribution_identity": {
       "schema": "urn:literate-ai:schema:v1:content-identity",
       "algorithm": "sha256",
-      "digest": "b616288d5bfd067566a5d36633a501c6f4d1913805735fb01cc3408982099433"
+      "digest": "119009a00d7144a477934f1b5d7201aad084f99ec4e9b92cdd60aa048a24ee8d"
     },
     "policy_identity": {
       "schema": "urn:literate-ai:schema:v1:content-identity",
@@ -83,7 +84,7 @@
     "runner_identity": {
       "schema": "urn:literate-ai:schema:v1:content-identity",
       "algorithm": "sha256",
-      "digest": "fe86c3f6a4fdf5dd804f146f671d8c1157f0c9e46e82fca2ca6880cb3aa585d3"
+      "digest": "0f21a51430cf8fe2be0bcc20aed6d79f513615558c3043491acf4d0ad80dbfbd"
     },
     "required_evidence_kinds": [
       "acceptance-result",
@@ -118,7 +119,7 @@
       "-flavor://literate-ai/build-make",
       "+flavor://lertx/desktop-wheels",
       "-flavor://literate-ai/os-macos",
-      "+flavor://lertx/desktop-linux"
+      "+flavor://lertx/desktop-linux-arm64"
     ]
   },
   "mcp_roots": [

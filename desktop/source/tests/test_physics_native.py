@@ -10,7 +10,12 @@ from lertx.scene import SimulationDisabledError
 class PhysicsNativeTests(unittest.TestCase):
     def fixture(self, name):
         from pxr import Usd
-        return Usd.Stage.Open(str(Path(os.environ["LERTX_TEST_SCENES"]) / name))
+        default = Path(__file__).resolve().parents[3] / "verification" / "acceptance" / "scenes"
+        directory = Path(os.environ.get("LERTX_TEST_SCENES", str(default)))
+        path = directory / name
+        if not path.is_file():
+            self.fail(f"Missing native acceptance fixture: {path}")
+        return Usd.Stage.Open(str(path))
 
     def test_centimeters_y_up_parent_scale_and_floor(self):
         sim = PhysicsScene(self.fixture("centimeters-y-up.usda"))

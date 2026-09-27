@@ -11,8 +11,13 @@ USD scene and Newton physics. See the [runtime contract](../architecture/runtime
 
 ## Installation
 
-There is no end-user installer or graphical application release yet. Native SDK
-integration and application execution are tracked by RENDER-001 in
+The retained prototype now has an isolated setup helper and desktop/Start Menu
+launcher. From the repository, run `python desktop/manage.py setup`, then
+`python desktop/manage.py install` and `python desktop/manage.py run`.
+Python 3.11 (or `uv`) and a working NVIDIA driver are prerequisites; see
+`desktop/README.md` for Linux ARM64 and packaging details.
+There is no formally admitted graphical application release yet. Native SDK
+integration and application execution are tracked by RENDER-001 and PORT-001 in
 [active work](../roadmap/active-work.md). No service or hardware connection is
 installed by the harness.
 
@@ -34,6 +39,13 @@ Use Open USD for an existing local scene, or explore the default workspace.
 Play/Pause and Reset control Newton simulation; Save As preserves authored scene
 edits, not transient simulated poses.
 
+Grab an arm link in the viewport and drag right/up to increase its joint angle,
+or left/down to decrease it. The selected link is outlined; targets stop at the
+model's joint limits. Paused drags run a short physics preview and remain paused.
+Disable following in Robot Controls to manipulate the follower independently.
+Alt-left drag orbits the camera, right drag pans, and the wheel zooms. Escape
+cancels the remaining gesture. These controls operate only the simulated robots.
+
 For milestone-three reconstruction:
 
 1. Open Settings → Intelligence. Confirm the endpoint and model, then enter your
@@ -49,9 +61,10 @@ For milestone-three reconstruction:
    preserves its unverified-dimensions warning. A reconstructed draft is not a
    measured collision model and must not be used to authorize robot motion.
 
-The Devices panel only enumerates USB serial metadata and records explicit role
-assignments. It does not connect to motor buses or synchronize robot joints yet;
-physical synchronization is follow-on work outside milestone three.
+The Devices panel enumerates USB serial metadata and records explicit roles.
+Open its separate hardware controls to connect read-only, import calibration,
+enable bounded manual writes, or bind physical readings to the virtual arm.
+See [hardware controls](hardware.md) before the first physical connection.
 Choose Open telemetry mock in Devices to exercise simulated leader/follower
 connections, degree inputs, gripper percentage and frozen/stale streams without
 hardware. This panel does not drive a rendered robot model yet.

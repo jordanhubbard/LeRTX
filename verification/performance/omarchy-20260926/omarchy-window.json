@@ -1,0 +1,101 @@
+{
+  "complete": true,
+  "samples": [
+    {
+      "phase": "before",
+      "peak_rss_kib": 39012,
+      "rss_kib": 39264,
+      "memory.current": "18276352",
+      "memory.peak": "18276352",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "3, 15879"
+    },
+    {
+      "phase": "idle-start",
+      "peak_rss_kib": 4716048,
+      "rss_kib": 4717144,
+      "memory.current": "3229126656",
+      "memory.peak": "3231223808",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1923, 13959"
+    },
+    {
+      "phase": "idle-end",
+      "peak_rss_kib": 4716048,
+      "rss_kib": 4548440,
+      "memory.current": "3228016640",
+      "memory.peak": "3250618368",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1922, 13960"
+    },
+    {
+      "phase": "playing-end",
+      "peak_rss_kib": 4716048,
+      "rss_kib": 4576632,
+      "memory.current": "3257569280",
+      "memory.peak": "3259666432",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1899, 13983"
+    },
+    {
+      "phase": "paused",
+      "peak_rss_kib": 4716048,
+      "rss_kib": 4576632,
+      "memory.current": "3257618432",
+      "memory.peak": "3279323136",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1899, 13983"
+    },
+    {
+      "phase": "closed",
+      "peak_rss_kib": 4716048,
+      "rss_kib": 3709672,
+      "memory.current": "3033403392",
+      "memory.peak": "3319992320",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "314, 15568"
+    }
+  ],
+  "resolution": [
+    1280,
+    720
+  ],
+  "target_fps": 30,
+  "first_frame_seconds": 7.709354523001821,
+  "idle": {
+    "wall_seconds": 5.019801748996542,
+    "process_cpu_seconds": 0.1487241570000002
+  },
+  "playing": {
+    "wall_seconds": 20.005275575997075,
+    "frames": 249,
+    "display_fps": 12.446716819975107,
+    "simulation_seconds": 8.29999999999985,
+    "simulation_to_wall_ratio": 0.4148905606658294,
+    "frame_intervals": {
+      "count": 248,
+      "mean_ms": 80.00323308870945,
+      "p50_ms": 80.12364599926514,
+      "p95_ms": 80.65346399962436,
+      "p99_ms": 80.82070300588384,
+      "max_ms": 80.90455899946392,
+      "throughput_fps": 12.49949485030407
+    },
+    "qt_heartbeat_intervals": {
+      "count": 1001,
+      "mean_ms": 19.98528853846392,
+      "p50_ms": 20.250194997061044,
+      "p95_ms": 20.50428399525117,
+      "p99_ms": 20.675052001024596,
+      "max_ms": 24.653899999975692,
+      "throughput_fps": 50.03680572714216
+    }
+  },
+  "screenshot_saved": true
+}

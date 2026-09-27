@@ -59,6 +59,9 @@ class SceneDocument:
         prim = self.stage.GetPrimAtPath(path)
         if not prim or not prim.IsA(UsdGeom.Xformable):
             raise ValueError(f"{path}: prim does not support transforms")
+        from .robot import robot_ancestor
+        if robot_ancestor(prim):
+            raise ValueError("Use the robot joint controls; articulated links cannot be transformed independently")
         xf = UsdGeom.Xformable(prim)
         if xf.TransformMightBeTimeVarying():
             raise ValueError(f"{path}: animated transforms cannot be edited")

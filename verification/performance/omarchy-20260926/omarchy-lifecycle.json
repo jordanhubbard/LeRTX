@@ -1,0 +1,282 @@
+{
+  "complete": true,
+  "samples": [
+    {
+      "phase": "before",
+      "peak_rss_kib": 23012,
+      "rss_kib": 23324,
+      "memory.current": "11558912",
+      "memory.peak": "11558912",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "3, 15879"
+    },
+    {
+      "phase": "first-frame",
+      "peak_rss_kib": 4570408,
+      "rss_kib": 4571244,
+      "memory.current": "2999373824",
+      "memory.peak": "3001470976",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1923, 13959"
+    },
+    {
+      "phase": "idle-10s",
+      "peak_rss_kib": 4570408,
+      "rss_kib": 4402540,
+      "memory.current": "2998611968",
+      "memory.peak": "3020865536",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1922, 13960"
+    },
+    {
+      "phase": "reset-1",
+      "peak_rss_kib": 4570408,
+      "rss_kib": 4421284,
+      "memory.current": "3021684736",
+      "memory.peak": "3021684736",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1877, 14005"
+    },
+    {
+      "phase": "reset-2",
+      "peak_rss_kib": 4570408,
+      "rss_kib": 4424820,
+      "memory.current": "3025203200",
+      "memory.peak": "3043172352",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1877, 14005"
+    },
+    {
+      "phase": "reset-3",
+      "peak_rss_kib": 4570408,
+      "rss_kib": 4426992,
+      "memory.current": "3027525632",
+      "memory.peak": "3046694912",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1877, 14005"
+    },
+    {
+      "phase": "reset-4",
+      "peak_rss_kib": 4570408,
+      "rss_kib": 4429124,
+      "memory.current": "3029782528",
+      "memory.peak": "3049017344",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1877, 14005"
+    },
+    {
+      "phase": "reset-5",
+      "peak_rss_kib": 4570408,
+      "rss_kib": 4429388,
+      "memory.current": "3030200320",
+      "memory.peak": "3051532288",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1877, 14005"
+    },
+    {
+      "phase": "reset-6",
+      "peak_rss_kib": 4570408,
+      "rss_kib": 4429388,
+      "memory.current": "3030052864",
+      "memory.peak": "3051692032",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1877, 14005"
+    },
+    {
+      "phase": "reset-7",
+      "peak_rss_kib": 4570408,
+      "rss_kib": 4429388,
+      "memory.current": "3030200320",
+      "memory.peak": "3051692032",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1877, 14005"
+    },
+    {
+      "phase": "reset-8",
+      "peak_rss_kib": 4570408,
+      "rss_kib": 4429392,
+      "memory.current": "3029905408",
+      "memory.peak": "3051692032",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1877, 14005"
+    },
+    {
+      "phase": "reset-9",
+      "peak_rss_kib": 4570408,
+      "rss_kib": 4429400,
+      "memory.current": "3029811200",
+      "memory.peak": "3051692032",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1877, 14005"
+    },
+    {
+      "phase": "reset-10",
+      "peak_rss_kib": 4570408,
+      "rss_kib": 4429400,
+      "memory.current": "3030089728",
+      "memory.peak": "3051692032",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1877, 14005"
+    },
+    {
+      "phase": "reopen-1",
+      "peak_rss_kib": 5027728,
+      "rss_kib": 5027904,
+      "memory.current": "3453267968",
+      "memory.peak": "3455365120",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1957, 13925"
+    },
+    {
+      "phase": "reopen-2",
+      "peak_rss_kib": 5095748,
+      "rss_kib": 4947572,
+      "memory.current": "3375206400",
+      "memory.peak": "3527053312",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1959, 13923"
+    },
+    {
+      "phase": "reopen-3",
+      "peak_rss_kib": 5095748,
+      "rss_kib": 5008252,
+      "memory.current": "3435028480",
+      "memory.peak": "3527053312",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1963, 13919"
+    },
+    {
+      "phase": "reopen-4",
+      "peak_rss_kib": 5219684,
+      "rss_kib": 5222108,
+      "memory.current": "3654504448",
+      "memory.peak": "3654512640",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1965, 13917"
+    },
+    {
+      "phase": "reopen-5",
+      "peak_rss_kib": 5263784,
+      "rss_kib": 5265848,
+      "memory.current": "3699920896",
+      "memory.peak": "3700051968",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1969, 13913"
+    },
+    {
+      "phase": "reopen-6",
+      "peak_rss_kib": 5290732,
+      "rss_kib": 5293304,
+      "memory.current": "3728941056",
+      "memory.peak": "3728969728",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1971, 13911"
+    },
+    {
+      "phase": "reopen-7",
+      "peak_rss_kib": 5327608,
+      "rss_kib": 5330536,
+      "memory.current": "3767463936",
+      "memory.peak": "3767472128",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1975, 13907"
+    },
+    {
+      "phase": "reopen-8",
+      "peak_rss_kib": 5383628,
+      "rss_kib": 5386344,
+      "memory.current": "3818971136",
+      "memory.peak": "3819020288",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1977, 13905"
+    },
+    {
+      "phase": "reopen-9",
+      "peak_rss_kib": 5383628,
+      "rss_kib": 5385196,
+      "memory.current": "3824230400",
+      "memory.peak": "3840462848",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1983, 13899"
+    },
+    {
+      "phase": "reopen-10",
+      "peak_rss_kib": 5390180,
+      "rss_kib": 5329916,
+      "memory.current": "3767705600",
+      "memory.peak": "3845984256",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "1985, 13897"
+    },
+    {
+      "phase": "closed",
+      "peak_rss_kib": 5390180,
+      "rss_kib": 4251716,
+      "memory.current": "3627331584",
+      "memory.peak": "3845984256",
+      "memory.max": "8589934592",
+      "memory.swap.current": "0",
+      "gpu_memory_mib": "322, 15560"
+    }
+  ],
+  "resolutions": [],
+  "lifecycle_only": true,
+  "reopen_count": 10,
+  "conditions": {
+    "scene": "SO-101 leader and follower, default workspace",
+    "quality": "balanced",
+    "physics_hz": 240,
+    "substeps": 4,
+    "cpu_quota_percent": 200,
+    "cache": "existing SDK shader/kernel caches"
+  },
+  "scene_sha256": "5b78344b71e31d68a24219be1b417a6d59e29224817131ac42f8de11da00adea",
+  "first_frame_seconds": 5.554872519998753,
+  "idle": {
+    "seconds": 10.012476812000386,
+    "process_cpu_seconds": 0.28202879000000003,
+    "ticks": 297
+  },
+  "reset": {
+    "count": 10,
+    "mean_ms": 806.1674904995016,
+    "p50_ms": 805.4920444992604,
+    "p95_ms": 894.0351359997294,
+    "p99_ms": 894.0351359997294,
+    "max_ms": 894.0351359997294,
+    "throughput_fps": 1.2404370205754636
+  },
+  "reopen_first_frame": {
+    "count": 10,
+    "mean_ms": 3535.0601452992123,
+    "p50_ms": 3524.0817864978453,
+    "p95_ms": 3634.2770109986304,
+    "p99_ms": 3634.2770109986304,
+    "max_ms": 3634.2770109986304,
+    "throughput_fps": 0.2828806184046859
+  },
+  "shutdown_seconds": 0.6982955939965905
+}

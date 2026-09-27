@@ -1,0 +1,225 @@
+{
+  "after_reset_fix": {
+    "completed": true,
+    "first_frame_seconds": 7.238261813999998,
+    "frame_seconds": {
+      "maximum": 0.10406402900025569,
+      "mean": 0.023815266299925496
+    },
+    "idle_100_ticks_seconds": 0.0025204459998349193,
+    "samples": [
+      {
+        "gpu_memory_mib": "3, 15879",
+        "memory.current": "11370496",
+        "memory.max": "8589934592",
+        "memory.peak": "11370496",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 20704,
+        "phase": "before",
+        "rss_kib": 20892
+      },
+      {
+        "gpu_memory_mib": "1011, 14870",
+        "memory.current": "2957860864",
+        "memory.max": "8589934592",
+        "memory.peak": "2957869056",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 4281376,
+        "phase": "opened",
+        "rss_kib": 4168896
+      },
+      {
+        "gpu_memory_mib": "1747, 14135",
+        "memory.current": "3134070784",
+        "memory.max": "8589934592",
+        "memory.peak": "3134070784",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 4583080,
+        "phase": "settled",
+        "rss_kib": 4586216
+      },
+      {
+        "gpu_memory_mib": "1747, 14135",
+        "memory.current": "3134726144",
+        "memory.max": "8589934592",
+        "memory.peak": "3156086784",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 4583080,
+        "phase": "idle",
+        "rss_kib": 4586216
+      },
+      {
+        "gpu_memory_mib": "1801, 14081",
+        "memory.current": "3152297984",
+        "memory.max": "8589934592",
+        "memory.peak": "3156217856",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 4601044,
+        "phase": "playing",
+        "rss_kib": 4604220
+      },
+      {
+        "gpu_memory_mib": "1833, 14049",
+        "memory.current": "3180244992",
+        "memory.max": "8589934592",
+        "memory.peak": "3180371968",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 4627696,
+        "phase": "reset-1",
+        "rss_kib": 4630884
+      },
+      {
+        "gpu_memory_mib": "1833, 14049",
+        "memory.current": "3181395968",
+        "memory.max": "8589934592",
+        "memory.peak": "3201998848",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 4629040,
+        "phase": "reset-2",
+        "rss_kib": 4632156
+      },
+      {
+        "gpu_memory_mib": "345, 15536",
+        "memory.current": "2858369024",
+        "memory.max": "8589934592",
+        "memory.peak": "3228815360",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 4675164,
+        "phase": "closed",
+        "rss_kib": 3498548
+      }
+    ]
+  },
+  "before_reset_fix": {
+    "completed": true,
+    "first_frame_seconds": 7.311725184000352,
+    "frame_seconds": {
+      "maximum": 0.08589793200007989,
+      "mean": 0.023414412649981387
+    },
+    "idle_100_ticks_seconds": 0.001990605000173673,
+    "samples": [
+      {
+        "gpu_memory_mib": "3, 15879",
+        "memory.current": "10846208",
+        "memory.max": "8589934592",
+        "memory.peak": "10846208",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 20252,
+        "phase": "before",
+        "rss_kib": 20508
+      },
+      {
+        "gpu_memory_mib": "1011, 14870",
+        "memory.current": "3011018752",
+        "memory.max": "8589934592",
+        "memory.peak": "3011284992",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 4336248,
+        "phase": "opened",
+        "rss_kib": 4224004
+      },
+      {
+        "gpu_memory_mib": "1747, 14135",
+        "memory.current": "3161759744",
+        "memory.max": "8589934592",
+        "memory.peak": "3161759744",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 4613304,
+        "phase": "settled",
+        "rss_kib": 4616176
+      },
+      {
+        "gpu_memory_mib": "1747, 14135",
+        "memory.current": "3162148864",
+        "memory.max": "8589934592",
+        "memory.peak": "3183513600",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 4613304,
+        "phase": "idle",
+        "rss_kib": 4616176
+      },
+      {
+        "gpu_memory_mib": "1801, 14081",
+        "memory.current": "3180384256",
+        "memory.max": "8589934592",
+        "memory.peak": "3183640576",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 4631796,
+        "phase": "playing",
+        "rss_kib": 4634960
+      },
+      {
+        "gpu_memory_mib": "1835, 14047",
+        "memory.current": "3558830080",
+        "memory.max": "8589934592",
+        "memory.peak": "3558912000",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 4884968,
+        "phase": "reset-1",
+        "rss_kib": 4887836
+      },
+      {
+        "gpu_memory_mib": "1837, 14045",
+        "memory.current": "3794960384",
+        "memory.max": "8589934592",
+        "memory.peak": "3807404032",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 5008324,
+        "phase": "reset-2",
+        "rss_kib": 4998276
+      },
+      {
+        "gpu_memory_mib": "351, 15530",
+        "memory.current": "3224137728",
+        "memory.max": "8589934592",
+        "memory.peak": "3822440448",
+        "memory.swap.current": "0",
+        "peak_rss_kib": 5021784,
+        "phase": "closed",
+        "rss_kib": 3859908
+      }
+    ]
+  },
+  "containment": {
+    "cpu_quota_percent": 200,
+    "deadline_seconds": 120,
+    "gpu_limit": "host reserve watchdog; cgroup memory does not guarantee a hard GPU allocation limit",
+    "host_reserve_gib": 16,
+    "one_run_per_host": true,
+    "process_memory_gib": 8,
+    "swap_limit_bytes": 0
+  },
+  "date": "2026-09-26",
+  "followup": "performance/omarchy-20260926/README.md",
+  "incident": {
+    "confirmed": [
+      "NVIDIA memory allocation failures",
+      "global kernel OOM event",
+      "unrelated compiler process killed by OOM killer",
+      "overlapping uncontained native tests"
+    ],
+    "platform": "Linux ARM64 shared-memory NVIDIA GPU",
+    "response": "no further native tests on incident host; qualification guard and remote bounded profiling"
+  },
+  "profile_platform": "Omarchy Linux x86-64, RTX 5080 Laptop GPU",
+  "qualification": "partial; no long-duration or isolated application-worker qualification",
+  "remaining": [
+    "native work isolation from the GUI process",
+    "long-duration memory and GPU allocation profiling",
+    "full application qualification on all supported targets"
+  ],
+  "render_resolution": [
+    640,
+    360
+  ],
+  "schema": "lertx.application-resources.v1",
+  "source_sha256": {
+    "desktop/source/lertx/physics.py": "42a3051ce242fb0496e18a2a483aa41603392949dfc19002b6673ffe2ab7a66d",
+    "desktop/source/lertx/runtime.py": "d6df98bdb25723aa6abed20d412ffe28a32801a705c8fa3a851fa3407a604105",
+    "desktop/source/lertx/scene.py": "58fc3265b0afbf9b8cb04de6ec8931c65583715601d95e2bd6d5714aa85b1ee0",
+    "desktop/source/lertx/ui.py": "5ec050c13f1f98ff667bdfb2acf5c4e3099725cf7b56485a9c6781a82314a9d9",
+    "verification/native_guard.py": "ad708317e0a05bff5476e08efec0d06bc576a08990aa541949f2e9c277b55f97",
+    "verification/profile_native.py": "6804bb0ebe3a29ebfb1c97645a505394df97aa92c8ab4d939ca02dc9798601a3"
+  }
+}

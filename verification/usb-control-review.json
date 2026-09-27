@@ -1,0 +1,89 @@
+{
+  "schema": "lertx/usb-control-review@1",
+  "timestamp_utc": "2026-09-27T06:12:01.800931+00:00",
+  "scope": "worktree software feature verification, not physical-arm or release qualification",
+  "physical_hardware_tested": false,
+  "windows": {
+    "platform": "Windows 11 x86-64 RTX 5080 Laptop",
+    "tests": {
+      "sdk_controller_calibration": {
+        "passed": 15,
+        "skipped": 1,
+        "skip": "POSIX serial endpoint is tested on Linux"
+      },
+      "binding": 2,
+      "hardware_qt": 6,
+      "joint_input_runtime": 6,
+      "device_qt": 4,
+      "main_window_qt": 9
+    },
+    "dependencies": "pyserial 3.5 installed with hash verification; pip check and installation diagnostics pass",
+    "native": {
+      "complete": true,
+      "physical_hardware_tested": false,
+      "live_pose_fk": true,
+      "live_render_changed": true,
+      "simulation_ownership": true,
+      "stale_pose_rejected": true,
+      "authored_usd_unchanged": true,
+      "selected_joint_slider": true,
+      "target_radians": 0.3490660000000001,
+      "measured_radians": 0.3653404414653778,
+      "paused": true,
+      "seconds": 11.53
+    },
+    "process_commit_limit_bytes": 12884901888
+  },
+  "linux": {
+    "tests_passed": 18,
+    "scope": "SDK/controller/calibration/binding tests including real pyserial over a POSIX serial endpoint backed by an emulator; no GPU work"
+  },
+  "protocol_source": {
+    "package": "feetech-servo-sdk",
+    "version": "1.0.0",
+    "sha256": "d4d3832e4b1b22a8222133a414db9f868224c2fb639426a1b11d96ddfe84e69c",
+    "vendored_files_verified_against_archive": true
+  },
+  "framework_verify": {
+    "passed": 0,
+    "failed": 3,
+    "skipped": 2,
+    "blockers": [
+      "documentation authority review stale",
+      "component locks stale",
+      "current artifact receipt stale"
+    ]
+  },
+  "source_sha256": {
+    "desktop/source/lertx/usb_bus.py": "33fc5e279bf7dce17683610a3590cdfbed4ce6b01aa064190c7cdb84deceb346",
+    "desktop/source/lertx/hardware.py": "f9a2d334d92f905abfba821553eff19481ef7c0b9238415961b5ff4469ef1ed3",
+    "desktop/source/lertx/hardware_calibration.py": "d9c5416f46e42107a12f987ec122fb230bf73dbf9544d68c9bee5cb1fbd8ab69",
+    "desktop/source/lertx/hardware_ui.py": "fe0ff23bd89edb00834ccd1cb9dac4e6c7b943ec74ba2ce78798a178c8dcb0d7",
+    "desktop/source/lertx/binding_ui.py": "fc0ba586b41f5d9f48bf10213015d76e52a61362d8af2d9d35f93f32ef46cf14",
+    "desktop/source/lertx/joint_binding.py": "00d2905350dbafd23a64f62f8881784799228e0aa00a8d04e04ccceff80ece3b",
+    "desktop/source/lertx/physics.py": "e59b672c83a6ce6428a9b9f3843f55c05ec3f6f079c0a167cdc0b7f0d99d2a5e",
+    "desktop/source/lertx/runtime.py": "a5d00b10d1fbcaf1a3ccf19c643c6667634d7bd1ffc68e79df06df3ddb38c5eb",
+    "desktop/source/lertx/picking.py": "b5fdbd611bc0eaf4d187bc1b953b1d3c9e480a33a850f3c5c0158ec7c8714417",
+    "desktop/source/lertx/viewport_ui.py": "a4216afeead917ac0c55e89a83219213d1bd9584aec985988e0f381c0f0f343d",
+    "desktop/source/lertx/robot_ui.py": "a1059388e86c2bd0ee3dcb801b081e6b2655c6a48141ecce9dbd335d35434aec",
+    "desktop/source/lertx/ui.py": "5deef2d96b646951dce429b16574dc534d4c1b16b1ad2554d327763f7eeead41",
+    "desktop/source/lertx/devices_ui.py": "05bdabeec2ff9e89dfb5ed24d9db685457b001e8bdee775bfc6c9e44ada3d690",
+    "desktop/source/lertx/diagnostics.py": "08745b9921d4fa77f8d3fc7d6f677345615f966de13eccc25b594bfdda5622a1",
+    "desktop/source/lertx/vendor/feetech/protocol_packet_handler.py": "9932c85b9e2ac671a7e33f39e8e80b05d6592280d9f2bcebd85103845e36e655",
+    "desktop/source/lertx/vendor/feetech/group_sync_write.py": "70d2a9e2157692932dd6e25515e53d600da9ca87ffab656c4660fb0de4d03476",
+    "desktop/source/lertx/vendor/feetech/scservo_def.py": "068f7ad5c453ad6e338543c706047253495fcd6bf9a632465501ace12fee0627",
+    "desktop/source/lertx/vendor/feetech/packet_handler.py": "96bb801133436122d39e868bc6492a226222a737c04560ea7a02d0c5eacef2fd",
+    "desktop/source/lertx/vendor/feetech/__init__.py": "c3047515bd2992e6fc209386f11fd4c80722c519b21be2a3a7a91f2d96222941",
+    "desktop/source/lertx/vendor/feetech/port_handler.py": "c8dbb189ca98705bd71066d5a9a691b4c80b484c77ebe8a9ccc2d6c46321e999",
+    "desktop/source/lertx/vendor/feetech/group_sync_read.py": "ccbbb3a864c047bf3a7808a0b455676b198645ee1caffa58dac562339a86ad76",
+    "desktop/source/tests/test_hardware.py": "f3d8f734df564482caa9e73fca2e5fbce2eec8417c5c7b3d83d6fbcaab71da0d",
+    "desktop/source/tests/test_hardware_ui.py": "03eadc7566080d3ff6deb61e0b9bb2fc7752b7ca1d0c59c2d2ec927e4e310c63",
+    "verification/hardware_window.py": "1c30515ffefb67d92007733d20782002984249f87eca42fac41fdd4b450869a7"
+  },
+  "source_bundle": {
+    "path": "dist/LeRTX-prototype.zip",
+    "sha256": "5f8b9d593608aa780c2f6048bfa77c4bd2042fc52eab4b7cdfcb36a18f88986d",
+    "includes_sdk_license_and_assets": true,
+    "installed_binary_bundle": false
+  }
+}

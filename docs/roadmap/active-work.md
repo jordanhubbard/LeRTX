@@ -4,7 +4,23 @@ This file is the durable resumption queue for user-directed and discovered work.
 implementation, follow `skills/agent/record-user-directed-work/SKILL.md`.
 Keep detailed designs in focused roadmap documents and link them here.
 
-## Current open-items checkpoint — 2026-09-20
+## Current open-items checkpoint — 2026-09-25
+
+PORT-001 below records the current four-platform runtime and delivery evidence.
+All four native suites pass 160 tests. The isolated Windows runtime also passes
+all 160 tests. PORT-002 adds a fresh Windows 11 installation on an RTX 5080
+Laptop GPU: hash-checked downloads, native warmup, all 160 tests and Start Menu
+launch pass, closing the earlier Windows capacity limitation.
+Formal admission reproduced the old framework's 256-artifact limit. Its retry
+then exposed oversized Windows filesystem identifiers. Both repairs are now
+upstream: the project binds exact revision `b2f8013491b7298b09a7d325f70595bf595bfe30`,
+qualified by successful full CI run `35971877165` and its checksum-verified wheel.
+The supported local rebind preserves policy and required receipt evidence.
+`verification/framework-platform-qualification.json` retains the superseded
+failure and current qualification. ARM64 application admission, independent
+acceptance and all 160 tests against the admitted artifact now pass; see
+`verification/prototype-admission-review.json`. Fresh Omarchy bundle installation,
+upgrade and all 160 tests pass. PORT-001 is complete under the accepted scope.
 
 This checklist is the current execution order. The detailed narratives below
 retain historical failures and approvals; their older "next" and "in progress"
@@ -14,23 +30,19 @@ CONFIG-001, TWIN-001 and ROBOT-001 remain open at the boundaries listed here.
 
 ### RENDER-001: qualification, admission and delivery
 
-- [ ] Diagnose and resolve the failed Windows Python 3.12 test shard (2 of 3)
-  in merged Litai revision `f99e4cb2`, CI run `35478113877`; require a passing
-  exact revision before application adoption. PR #482 is merged and supersedes
-  the stashed local package-count patch; do not reapply that patch. Local wheel
-  qualification completed successfully (manifest `run-xivvuz4g`, wheel SHA256
-  `5064c5d2df52cd0465dcb559d038e0610226e669934a2f1dbfbe5dc3f22174d0`).
-- [ ] Install the qualified exact wheel in project-local environments, review
+- [x] Diagnose the failed Windows shard and adopt an exact framework revision
+  with green full-matrix CI. PRs #482 and #491 supply the required repairs;
+  preserve canonical integer bounds and full artifact-custody validation.
+- [x] Install the qualified exact wheel in a project-local environment, review
   and apply the supported Standard rebind; leave global installations unchanged.
-- [ ] Prepare current retained-source metadata, recipe, target-specific wheel
+- [x] Prepare current retained-source metadata, recipe, target-specific wheel
   lock and source/resolved SBOMs without changing tested application modules.
-- [ ] Complete verifier-owned retained-source admission, independent acceptance,
+- [x] Complete verifier-owned retained-source admission, independent acceptance,
   sealed dependency custody and a current project test receipt. Resolve any new
   blocker at its owner rather than weakening validation or inventing evidence.
 - [ ] Run native and Qt acceptance against the admitted artifact on both GPU
-  targets. Current development evidence is 158 passing Linux tests, eight targeted
-  Windows tests and three extra Linux fresh-process launches; the full Windows
-  suite has not been repeated on the latest renderer-fixed snapshot.
+  targets for formal release qualification. ARM64 admitted-artifact tests pass
+  all 160 cases; the four-platform development suites also pass all 160 cases.
 - [ ] Verify first-frame startup, repeated scene reload/close, physics, camera,
   edit/save/reopen, error recovery and requirements coverage on the delivered
   artifact. Fresh-process success is not cleared-cache cold-start evidence.
@@ -55,27 +67,41 @@ CONFIG-001, TWIN-001 and ROBOT-001 remain open at the boundaries listed here.
 - [ ] Complete the remaining requirement-by-requirement UI/asset/failure-path
   review and close milestones two and three only after their dependencies pass.
 
-### ROBOT-001: read-only digital twin and deferred product vision
+### ROBOT-001: manual USB controls, physical twin and deferred product vision
+
+Current direction supersedes the earlier read-only boundary: the user explicitly
+requested USB reads and writes before taking the app to the physical SO-101 pair.
+Implemented: pinned Feetech SDK transport, LeRobot calibration validation,
+independent hardware workers, read/arm/move/stop controls and measured virtual
+binding. Connect/reconnect stays read-only. SDK byte-stream, OS serial endpoint,
+failure-path, Qt and native RTX checks are recorded in
+`verification/usb-control-review.json`. The Windows development app is deployed;
+formal framework authority/lock/receipt admission remains stale and is not claimed.
+Actual leader/follower qualification remains pending for the connected arms.
+EEPROM setup, automatic calibration writes and autonomous policies are separate.
 
 - [ ] Finish and verify USB candidate discovery, persistent explicit roles,
   ambiguous/missing serial handling, hotplug/reconnect and stale-state behavior.
 - [ ] Source licensed SO-101 geometry/kinematics; verify axes, offsets, units and
   limits, including the gripper. Connect the explicit leader/follower mock to
   rendered joint poses through the native worker, without Newton pose conflicts.
-- [ ] Qualify a separately pinned LeRobot helper dependency closure compatible
-  with its Python/NumPy requirements; implement the reviewed bus-level read-only
-  adapter and calibration import without setup, torque or register writes.
-- [ ] Test adapter errors, reconnection, role persistence, sample timestamps and
-  absence of actuator writes. Verify real leader/follower motion against the
-  rendered twin when hardware and calibration become available.
+- [x] Ship the unchanged checksum-pinned Feetech SDK used by LeRobot and the
+  hash-locked pyserial 3.5 dependency; verify calibration against motor registers.
+  No high-level robot setup or EEPROM writes run implicitly.
+- [x] Verify software packet/controller failure paths, read-only no-write behavior,
+  explicit arm/move/stop, bounded targets, held-motion release and stale heartbeat
+  handling. Test measured live-pose publication and simulation ownership on RTX.
+- [ ] Next physical gate: connect the real leader and follower, confirm motor
+  identities/calibration, measured directions, bounded motion, stop behavior and
+  rendered poses. No emulated result counts as physical-arm acceptance.
 - [ ] Design and implement measured scene scale, robot-base registration,
   obstacle/occlusion review and verification invalidation after geometry edits;
   a plausible photo reconstruction must never imply collision safety.
 - [ ] Specify and qualify any Hugging Face model selection/download/inference
   workflow separately; no robot policy execution is currently implemented.
-- [ ] Deferred, not authorized for execution: physical task control, planning,
-  arming, emergency stop, stale-state handling and bounded actuation. Require
-  explicit safety requirements, authorization and hardware acceptance first.
+- [ ] Deferred: autonomous task execution, planning and physical safety-system
+  integration. Manual bounded USB control is implemented above; real hardware
+  qualification is still required.
 
 ### CHECKPOINT-001: repository publication
 
@@ -1003,17 +1029,17 @@ queue item or let `docs/roadmap/` become a plan archive.
   Its unfinished gates are not milestone-three requirements. TWIN-001 remains
   open pending its own final evidence and prerequisite application acceptance.
 
-### [ ] ROBOT-001 — Follow-on SO-101 mock and read-only physical twin
+### [ ] ROBOT-001 — SO-101 USB control and physical twin
 
 - **Priority:** P1
 - **Owner:** desktop device and LeRobot adapters
 - **Direction:** Build robot support and a hardware-free mock; the physical devices are not currently attached.
-- **Conclusion:** Keep mock telemetry explicitly simulated, then integrate reviewed SO-101 geometry and a qualified read-only LeRobot adapter. This follow-on work is outside milestone-three photo reconstruction and does not authorize actuation.
+- **Conclusion:** Preserve explicit mock identity and read-only connection defaults. The later operator direction now authorizes bounded manual writes and measured virtual bindings; see the current ROBOT-001 checkpoint above. Physical acceptance remains pending.
 - **Depends on:** RENDER-001
 - **Implementation:**
   - [x] Provide isolated simulated leader/follower streams with connection, pose, freeze and stale controls.
-  - [ ] Wrap pinned LeRobot discovery and read-only telemetry with explicit roles and calibration import.
-  - [ ] Publish joint poses through reviewed SO-101 kinematics to the native viewport without motor writes.
+  - [x] Implement explicit discovery/roles, the pinned Feetech SDK, calibration import and separately armed manual controls.
+  - [x] Publish calibrated observations through SO-101 kinematics to the native viewport without conflicting Newton control or automatic motor writes.
 - **Evidence:**
   - [x] Exercise mock states, sample validation and cleanup on Linux and Windows.
   - [ ] Verify real adapter ambiguity, persistence, reconnect, joint units and absence of actuator writes.
@@ -1024,10 +1050,9 @@ queue item or let `docs/roadmap/` become a plan archive.
   `verification/mock-telemetry-review.json`. Neither serial ports nor real
   motor registers were accessed. The operator confirms both devices are
   elsewhere; physical attachment is not a blocker to building support.
-  Next: connect the mock boundary to sourced, licensed SO-101 kinematics and
-  native joint-pose publication, then qualify the isolated physical LeRobot
-  reader and operator-selected calibration import. Never reuse mock identities
-  as persistent USB roles or present a sample readout as a rendered physical twin.
+  This is historical mock evidence. Current software-control evidence is in
+  `verification/usb-control-review.json`; the next gate is the actual attached
+  arms. Mock identities never become persistent hardware identities.
 
 ### [x] CHECKPOINT-001 — Publish the current LeRTX development checkpoint
 
@@ -1056,3 +1081,87 @@ queue item or let `docs/roadmap/` become a plan archive.
   commit `19f71e7201bf827eadbb6e56a29f116810a4785b`. No pre-existing branch or
   review existed for the initial push. Project CI and public-release review
   remain open above; publication does not constitute application acceptance.
+
+### [x] PORT-001 — Complete the prototype across Windows and Linux architectures
+
+- **Priority:** P0
+- **Owner:** Desktop Component, native Flavors, packaging and acceptance
+- **Direction:** Finish the prototype for Windows 11, Linux x86-64 and Linux ARM64; deploy and test on an additional Omarchy GPU worker over SSH.
+- **Conclusion:** Qualify actual rendering, editing, physics, settings and reconstruction on each target; complete reproducible setup and delivery, with physical motor control remaining separately gated.
+- **Depends on:** RENDER-001
+- **Implementation:**
+  - [x] Resolve and lock real native dependencies for Linux ARM64 alongside Windows 11 and Linux x86-64.
+  - [x] Implement portable installation, launch and diagnostics with actionable dependency and platform errors.
+  - [x] Complete outstanding prototype functionality and application acceptance without substituting mock rendering.
+  - [x] Copy the project into the additional Omarchy worker source directory and provision an isolated runtime without overwriting unrelated work.
+- **Evidence:**
+  - [x] Current full application suites and real rendered Qt interaction on Windows 11, Linux x86-64, Linux ARM64 and Omarchy.
+  - [x] Verify delivered setup, launch, reload, physics, camera, editing, save/reopen, photo workflow, shutdown and installation lifecycle within the agreed platform coverage.
+  - [x] Refresh dependency evidence and project acceptance receipt; retain exact source identities and platform evidence.
+- **Current evidence:** `verification/prototype-platform-review.json` binds
+  matching source/test identities observed on all four workers. Full suites:
+  ARM64 211.522 seconds, Linux x86-64 83.834 seconds, native Wayland Omarchy
+  108.239 seconds, isolated Windows 371.490 seconds; each passes 160 tests.
+  Setup warmup produces actual nonuniform RTX pixels and cleans up. First-frame
+  and process deadlines in the application tests remain unchanged. The ARM64
+  archive and isolated-install reviews pass for all ten distributions and
+  11,212 installed files. The admitted ARM64 artifact then passes all 160 native
+  tests in 108.157 seconds against its sealed SDK closure; all 30 declared
+  contract tests and independent acceptance pass, with a current verifier-owned
+  receipt. The delivered ZIP passes fresh Omarchy setup, upgrade and all 160
+  tests in 131.481 seconds. Windows Start Menu launch produces a real frame in
+  17.844 seconds and closes cleanly. No physical serial device or motor register
+  was accessed.
+- **Accepted coverage:** The operator accepts limited Windows testing and considers
+  this prototype complete when Linux is good. Windows clean-download installation
+  was initially unverified because of worker capacity; PORT-002 below closes that
+  gap on another worker. The original isolated runtime, idempotent
+  setup, complete native suite and actual shortcut launch pass. This is not a
+  blocker to PORT-001 under that explicit direction.
+- **Delivery boundary:** The tested deliverable is the reproducible source/setup
+  ZIP. The separate formal native-wheel command rejects the custom
+  `desktop-wheels` provider name. Its naming experiment was removed; no framework
+  validator or native dependency policy was weakened. Native registry packaging
+  and production release qualification remain separate RENDER-001 release work.
+
+
+### [x] PORT-002 — Qualify a fresh Windows 11 installation
+
+- **Direction:** Prioritize the newly supplied Windows boot of the additional GPU
+  laptop; install required dependencies and test the prototype before the operator
+  switches it back to Omarchy.
+- **Scope:** Project-local Python environment, hash-locked SDK installation from
+  the existing source/setup bundle, native tests and Start Menu launch.
+- [x] Complete a fresh SDK download, install, diagnostics and first-frame warmup.
+- [x] Run all 160 tests and verify the native desktop launcher.
+- [x] Retain sanitized evidence and report readiness for the Omarchy reboot.
+- **Evidence:** The unchanged prototype ZIP and delivery identity match the Linux
+  qualification. Python 3.11.9 and all ten pinned SDK distributions installed
+  from fresh downloads. Native warmup passed in 149.969 seconds; all 160 tests
+  passed in 140.770 seconds. Start Menu install/remove/reinstall passed; the actual
+  shortcut delivered a native frame in 6.844 seconds and closed with no remaining
+  application processes. Screenshot reviewed; sanitized results and private-log
+  hashes are in `verification/prototype-platform-review.json`. The worker is ready
+  for the operator to switch back to Omarchy.
+
+### [ ] APP-001 — Deliver an installed desktop application with a simulated SO-101 pair
+
+- **Priority:** high
+- **Owner:** Desktop Component and native delivery
+- **Direction:** Make LeRTX a proper application and preload a physically simulated SO-101 leader and follower pair.
+- **Resource blocker:** A native test overlap on the shared-memory Spark caused severe memory pressure; kernel logs show GPU allocation failures and a global OOM kill of an unrelated compiler. No further native qualification before enforced containment, headroom admission, and measured memory/performance evidence.
+- **Performance evidence:** [Omarchy measurements](../../verification/performance/omarchy-20260926/README.md) cover native throughput, actual Qt frame delivery, idle, ten resets, ten reopens, memory and shutdown. Corrected Qt scheduling restores 29.95 fps / 99.7% real-time simulation at 720p. Compact runtime snapshots reduce reopen cost. Reopen memory retention and late-Qt SDK initialization remain unresolved; APP-001 is not complete.
+- **Performance testing direction:** Run sequential contained performance tests on Omarchy, covering the default robot scene at supported viewport sizes, sustained motion, idle CPU/GPU work, repeated resets/reopens, startup and shutdown. Preserve raw measurements and state the test limits; Spark performs no native work.
+- **Additional direction:** Apply NVIDIA/skills to RTX views, robot USD authoring, simulation validation and explicit virtual-to-physical joint mapping; follow the pinned methodology in `docs/architecture/nvidia-methodology.md`.
+- **Conclusion:** Replace checkout-dependent delivery with a self-contained graphical installation and complete desktop behavior; qualify traceable articulated robot models and simulated following before claiming a working virtual robot.
+- **Depends on:** PORT-002
+- **Implementation:**
+  - [ ] Implement owned, relocatable application installation, upgrade, removal, icons and file opening without a system Python requirement.
+  - [x] Direct viewport joint manipulation: native RTX picking and outlines, shared hierarchy selection, bounded targets, coalesced pointer updates, cancellation and physics-driven paused previews. Windows passes seven focused input/runtime tests and the real Qt/RTX interaction check, including paused and playing motion; see `verification/windows-joint-interaction.json`. Runs were sequential under a 12 GiB committed-memory limit. This is feature evidence, not full APP-001 qualification.
+    Documentation discovery now includes the existing performance evidence and NVIDIA methodology. Project validation reaches the pre-existing stale documentation authority review; the complete APP-001 authority review and retained-source admission remain pending, with no receipt or review marker advanced by this feature check.
+  - [ ] Complete desktop menus, document identity, recent files, startup progress and actionable errors.
+  - [ ] Source and attribute SO-101 leader/follower models; implement actual joint dynamics, limits, grippers and simulated following in the default scene.
+- **Evidence:**
+  - [ ] Validate installed launch, upgrade, removal and native suites on Linux ARM64, Linux x86-64 and Windows.
+  - [ ] Test robot kinematics, commanded tracking, limit enforcement, leader/follower mapping, gripper motion, contacts, reset and saved-scene behavior.
+  - [ ] Review real installed UI screenshots and retain current framework acceptance and model provenance.

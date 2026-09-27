@@ -36,6 +36,8 @@ def build_application(argv: Optional[list] = None):
     app = QApplication.instance()
     if app is None:
         app = QApplication(argv or [])
+    from .branding import configure_application
+    configure_application(app)
     app.setStyleSheet(CHARCOAL_STYLESHEET)
     return app
 
@@ -421,7 +423,7 @@ def build_main_window(
     class MainWindow(QMainWindow):
         def __init__(self) -> None:
             super().__init__()
-            self.setWindowTitle("LeRTX")
+            self.setWindowTitle("Untitled — LeRTX")
             self.resize(1440, 900)
 
             self.profile = copy.deepcopy(initial_profile)
@@ -435,12 +437,16 @@ def build_main_window(
             self.reconstruction_probe = transport_module.ConnectionProbe(request_scene)
             from .devices import scan_result
             self.device_probe = transport_module.ConnectionProbe(scan_result)
+            self._hardware_windows = {}
             self.clock = SimulationClock(self.profile["physics"]["timestep_hz"])
             self._pending = []
             self._ready = False
             self._closing = False
             self._close_requested = False
             self._last_frame_at = time.monotonic()
+            self._last_tick_started = self._last_frame_at
+            self._next_frame_at = self._last_frame_at
+            self._idle_frame = False
             self._image = None
             self._scene_units = 1.0
             self._open_requested = False
@@ -451,12 +457,89 @@ def build_main_window(
             self._build_central_widget()
             self._build_docks()
             self._build_status_bar()
+            from .robot_ui import build_robot_panel
+            self.robot_panel = build_robot_panel(self)
+            self.robot_dock = QDockWidget("Robot simulation", self)
+            self.robot_dock.setObjectName("robotSimulation")
+            self.robot_dock.setWidget(self.robot_panel)
+            self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.robot_dock)
+            self.tabifyDockWidget(self.inspector_dock, self.robot_dock)
+            self.robot_dock.raise_()
 
             self._frame_timer = QTimer(self)
             self._frame_timer.timeout.connect(self._on_tick)
-            self._frame_timer.start(16)
+            self._frame_timer.start(4)
             self.inspector.apply_button.clicked.connect(self._apply_transform)
             self._apply_theme()
+            self._build_menus()
+            from .desktop_state import read_state
+            saved = read_state(self.config_path)
+            from PySide6.QtCore import QByteArray
+            for key,restore in [('geometry',self.restoreGeometry),('layout',self.restoreState)]:
+                if isinstance(saved.get(key),str) and (key != 'layout' or saved.get('layout_version') == 2):
+                    restore(QByteArray.fromBase64(saved[key].encode('ascii',errors='ignore')))
+
+        def _build_menus(self):
+            from PySide6.QtGui import QKeySequence
+            menu=self.menuBar().addMenu('&File')
+            actions={a.text():a for a in self.findChildren(QAction)}
+            for title,key in [('Open USD',QKeySequence.StandardKey.Open),('Save',QKeySequence.StandardKey.Save),('Save As',QKeySequence.StandardKey.SaveAs)]:
+                action=actions[title];action.setShortcut(key);menu.addAction(action)
+            self.recent_menu=menu.addMenu('Open &Recent')
+            self.recent_menu.aboutToShow.connect(self._update_recent)
+            menu.addSeparator();quit_action=menu.addAction('Quit');quit_action.setShortcut(QKeySequence.StandardKey.Quit);quit_action.triggered.connect(self.close)
+            view=self.menuBar().addMenu('&View')
+            for dock in self.findChildren(QDockWidget):
+                if not dock.objectName():dock.setObjectName(dock.windowTitle().replace(' ','').lower())
+                view.addAction(dock.toggleViewAction())
+            view.addAction(actions['Frame Selection'])
+            help_menu=self.menuBar().addMenu('&Help')
+            help_menu.addAction('Getting started',self._show_help)
+            help_menu.addAction('Open application logs',self._open_logs)
+            help_menu.addAction('About LeRTX',self._show_about)
+
+        def _update_recent(self):
+            from pathlib import Path
+            from .desktop_state import read_state
+            self.recent_menu.clear()
+            paths=read_state(self.config_path).get('recent',[])
+            if not isinstance(paths,list):paths=[]
+            for path in paths[:10]:
+                if not isinstance(path,str):continue
+                action=self.recent_menu.addAction(Path(path).name.replace('&','&&'))
+                action.setToolTip(path);action.setEnabled(Path(path).is_file())
+                action.triggered.connect(lambda checked=False,p=path:self._open_recent(p))
+            if not self.recent_menu.actions():self.recent_menu.addAction('No recent workspaces').setEnabled(False)
+
+        def _open_recent(self,path):
+            if self._pending:
+                self.statusBar().showMessage('Wait for the current scene operation to finish');return
+            self._after_discard_confirmation(lambda:self.open_scene(path))
+
+        def _show_help(self):
+            QMessageBox.information(self,'Getting started',
+                'Your workspace contains a teal SO-101 leader and an amber follower.\n\n'
+                'Use Robot simulation to choose joint targets, then Play. The follower tracks the simulated leader. Pause holds the pose; Reset restores the workspace.\n\n'
+                'Drag an arm link to manipulate its joint. Alt-drag to orbit, right-drag to pan, and scroll to zoom. Click an object to select it. Paused joint drags preview simulated physics; disable following before dragging the follower. Use File → Save As to keep a workspace.\n\n'
+                'These are simulated arms. No hardware port is opened. The leader trigger geometry and inertia are upstream estimates; contact hulls approximate individual mechanical parts.')
+
+        def _show_about(self):
+            from .branding import VERSION
+            QMessageBox.about(self,'About LeRTX',f'LeRTX {VERSION}\nA robot digital-twin workspace.\n\n'
+                'Rendering: NVIDIA OVRTX / OVStage\nPhysics: Newton\nSO-101 models: TheRobotStudio, Apache-2.0\n\n'
+                'Model licenses and provenance are included with the application.')
+
+        def _open_logs(self):
+            from PySide6.QtCore import QUrl
+            from PySide6.QtGui import QDesktopServices
+            from .desktop_entry import log_directory
+            path=log_directory();path.mkdir(parents=True,exist_ok=True)
+            QDesktopServices.openUrl(QUrl.fromLocalFile(str(path)))
+
+        def _remember_document(self,path):
+            from .desktop_state import remember_file
+            try:remember_file(self.config_path,path)
+            except OSError:self.statusBar().showMessage('Could not update recent workspaces')
 
         def _build_toolbar(self) -> None:
             toolbar = QToolBar("Main", self)
@@ -499,30 +582,15 @@ def build_main_window(
             self.reconstruction_warning.hide()
             layout.addWidget(self.reconstruction_warning)
 
-            owner = self
-            class Viewport(QLabel):
-                def mousePressEvent(self, event):
-                    self.last_position = event.position()
-                def mouseMoveEvent(self, event):
-                    if not hasattr(self, "last_position"):
-                        return
-                    delta = event.position() - self.last_position
-                    self.last_position = event.position()
-                    if event.buttons() & Qt.MouseButton.LeftButton:
-                        owner._camera(orbit=(-delta.x()*0.006, delta.y()*0.006))
-                    elif event.buttons() & Qt.MouseButton.RightButton:
-                        owner._camera(pan=(-delta.x()*0.002, delta.y()*0.002))
-                def wheelEvent(self, event):
-                    owner._camera(zoom=-event.angleDelta().y()/1200)
-                def resizeEvent(self, event):
-                    super().resizeEvent(event)
-                    owner._display_image()
-            self.viewport_label = Viewport()
+            from .viewport_ui import build_viewport
+            self.viewport_label = build_viewport(self)
             self.viewport_label.setObjectName("viewport")
             self.viewport_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.viewport_label.setMinimumSize(320, 180)
             self.viewport_label.setText("Empty — open a USD scene")
+            self.viewport_label.setToolTip('Drag an arm link to turn its joint. Alt-drag: orbit · Right-drag: pan · Scroll: zoom. Simulation only.')
             layout.addWidget(self.viewport_label, stretch=1)
+            layout.addWidget(QLabel('Grab a joint: drag an arm link · Alt-drag: orbit · Right-drag: pan · Scroll: zoom'))
 
             transport_row = QHBoxLayout()
             self.play_button = QPushButton("Play")
@@ -560,6 +628,7 @@ def build_main_window(
             self.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, hierarchy_dock)
 
             inspector_dock = QDockWidget("Inspector", self)
+            self.inspector_dock = inspector_dock
             self.inspector = InspectorPanel()
             self.inspector.setMinimumWidth(300)
             self.inspector.setMaximumWidth(420)
@@ -626,7 +695,13 @@ def build_main_window(
                 self.tree.blockSignals(False)
             self._on_search_changed(self.search_edit.text())
 
-        def _command(self, fn, callback=None):
+        def _command(self, fn, callback=None, *, rendering=False):
+            if not rendering:
+                if self._idle_frame:
+                    self._last_tick_started = time.monotonic()
+                self._idle_frame = False
+                self._next_frame_at = time.monotonic()
+                self._frame_timer.setInterval(4)
             if self.worker is None or self._closing:
                 return
             self._pending.append((self.worker.submit(fn), callback))
@@ -637,6 +712,9 @@ def build_main_window(
 
         def _on_selection_changed(self):
             path = self._selected_path()
+            if self._ready and self.worker and hasattr(self.worker, 'select'):
+                self._command(lambda: self.worker.select(path),
+                    lambda value:self.robot_panel.select_joint(value) if path==self._selected_path() else None)
             self.inspector.set_enabled_for_selection(False)
             if path is None:
                 self.inspector.show_prim("", "", False)
@@ -671,16 +749,22 @@ def build_main_window(
 
         def _apply_status(self, status):
             self.statusBar().clearMessage()
+            self.robot_panel.update_state(status.get("robots"))
             self.reconstruction_warning.setVisible(status.get("reconstruction_status") == "unverified")
             self._diagnostics = status.get("diagnostics", {})
             self._scene_units = status.get("meters_per_unit", 1.0)
             self.inspector.translate_label.setText(f'Translate ({self.profile["general"]["display_units"]})')
             self.current_scene_path = status["path"]
             self.has_unsaved_changes = status["dirty"]
+            from pathlib import Path
+            name = "Untitled" if self.requires_save_as else Path(self.current_scene_path).name
+            self.setWindowTitle(name + (" •" if self.has_unsaved_changes else "") + " — LeRTX")
             self.clock.playing = status["playing"]
             self.clock.sim_time = status["time"]
             self.play_button.setText("Pause" if status["playing"] else "Play")
             self.play_button.setEnabled(not status["physics_error"])
+            self._simulation_available=not status['physics_error']
+            if status.get('robots',{}).get('live_roles'):self.play_button.setEnabled(False)
             self.native_status_label.setText(status["physics_error"] or "Native: ready")
             self._ready = True
             hierarchy = status["hierarchy"]
@@ -739,6 +823,8 @@ def build_main_window(
             self._after_discard_confirmation(adopt)
 
         def open_scene(self, path):
+            self.viewport_label.cancel()
+            for panel in self._hardware_windows.values():panel.live.setChecked(False)
             if self.worker is None:
                 try:
                     self.worker = worker_factory()
@@ -754,6 +840,7 @@ def build_main_window(
                 if Path(status["path"]).resolve() != Path(previous_path).resolve():
                     self.requires_save_as = False
                 self._apply_status(status)
+                if not self.requires_save_as:self._remember_document(status["path"])
             self._command(lambda: self.worker.open_document(path), opened)
 
         def _on_save(self):
@@ -772,6 +859,7 @@ def build_main_window(
                         return
             def saved(status):
                 self.requires_save_as = False
+                self._remember_document(status["path"])
                 callback(status)
             self._command(lambda: self.worker.save(path), saved)
 
@@ -801,6 +889,7 @@ def build_main_window(
                 self._apply_theme()
                 self._apply_status(status)
             if self.worker:
+                self.viewport_label.cancel()
                 self._ready = False
                 self.native_status_label.setText("Native: applying settings")
                 self._command(lambda: self.worker.configure(profile, self.config_path), configured)
@@ -824,6 +913,15 @@ def build_main_window(
                 Path(self.config_path).parent / "devices.json", self)
             dialog.exec()
             dialog.deleteLater()
+
+        def open_hardware(self,candidate,role):
+            panel=self._hardware_windows.get(role)
+            if panel and panel.session._thread.is_alive():
+                panel.show();panel.raise_();panel.activateWindow();return
+            from .hardware_ui import build_hardware_panel
+            panel=build_hardware_panel(self,candidate,role)
+            self._hardware_windows[role]=panel
+            panel.show()
 
         def _display_factor(self):
             unit = self.profile["general"]["display_units"]
@@ -856,11 +954,13 @@ def build_main_window(
                 self._command(lambda: self.worker.set_playing(enabled), self._apply_status)
 
         def _on_reset(self):
+            self.viewport_label.cancel()
             if self._ready:
                 self._ready = False
                 self._command(self.worker.reset, self._apply_status)
 
         def _show_error(self, exc):
+            self.viewport_label.cancel()
             self.native_status_label.setText(f"Native: {type(exc).__name__}: {exc}")
             self.statusBar().showMessage(str(exc))
             if self.worker and self.worker._stop_event.is_set():
@@ -875,6 +975,11 @@ def build_main_window(
                     Qt.TransformationMode.SmoothTransformation))
 
         def _accept_frame(self, result):
+            if result.get("unchanged"):
+                self._idle_frame = True
+                self._frame_timer.setInterval(50)
+                self.frame_rate_label.setText("Paused")
+                return
             frame = result["frame"]
             if frame.dtype_name != "uint8" or frame.channels not in (3, 4):
                 raise ValueError("Unsupported native display frame format")
@@ -882,6 +987,10 @@ def build_main_window(
             self._image = QImage(frame.data, frame.width, frame.height,
                                  frame.width*frame.channels, fmt).copy()
             self._display_image()
+            self.robot_panel.update_state(result.get("robots"))
+            self.play_button.setEnabled(getattr(self,'_simulation_available',True) and not result.get('robots',{}).get('live_roles'))
+            if result.get('joint_target'):
+                self.robot_panel.show_target(*result['joint_target'])
             self.clock.sim_time = result["time"]
             self.clock.playing = result["playing"]
             self.play_button.setText("Pause" if result["playing"] else "Play")
@@ -903,6 +1012,8 @@ def build_main_window(
                 except Exception as exc:
                     self._show_error(exc)
             if self._closing:
+                if any(p.session._thread.is_alive() or (p.closing and not p.shutdown_complete) for p in self._hardware_windows.values()):
+                    return
                 if self.worker is None or self.worker._thread is None or not self.worker._thread.is_alive():
                     if self.worker:
                         self.worker.stop()
@@ -925,13 +1036,26 @@ def build_main_window(
                 self._settings_requested = False
                 self._on_open_settings()
                 return
-            if self._ready and not self._pending and time.monotonic()-self._last_frame_at >= 1/self.profile["rendering"]["target_fps"]:
-                elapsed = time.monotonic()-self._last_frame_at
-                self._command(lambda: self.worker.tick(elapsed), self._accept_frame)
+            now = time.monotonic()
+            self.viewport_label.flush()
+            if self._ready and not self._idle_frame and not self._pending and now >= self._next_frame_at:
+                # Schedule start-to-start. Waiting a frame interval after the
+                # previous completion added rendering time to every deadline
+                # and passed only that idle interval to the simulation clock.
+                elapsed = now-self._last_tick_started
+                self._last_tick_started = now
+                self._next_frame_at = max(now, self._next_frame_at + 1/self.profile["rendering"]["target_fps"])
+                self._command(lambda: self.worker.tick(elapsed), self._accept_frame, rendering=True)
 
         def closeEvent(self, event):
+            self.viewport_label.cancel()
+            for panel in self._hardware_windows.values():
+                if panel.session._thread.is_alive():panel.shutdown()
             if self._closing and self.worker is None:
                 self._frame_timer.stop()
+                from .desktop_state import save_state
+                try:save_state(self.config_path,{"layout_version":2,"geometry":bytes(self.saveGeometry().toBase64()).decode(),"layout":bytes(self.saveState().toBase64()).decode()})
+                except OSError:pass
                 event.accept()
                 return
             event.ignore()

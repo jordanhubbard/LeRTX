@@ -3,5 +3,7 @@ ovstage==0.2.0.377349
 newton==1.6.0
 warp-lang==1.17.0
 numpy==2.4.6
-usd-core==25.11
+usd-core==25.11; sys_platform != "linux" or (platform_machine != "aarch64" and platform_machine != "arm64")
+usd-exchange==3.0.0; sys_platform == "linux" and (platform_machine == "aarch64" or platform_machine == "arm64")
 PySide6==6.10.2
+pyserial==3.5

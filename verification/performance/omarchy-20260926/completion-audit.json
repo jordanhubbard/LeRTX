@@ -1,0 +1,19 @@
+{
+  "objective": "do performance testing on omarchy",
+  "criteria": {
+    "target": true,
+    "source_matches": true,
+    "native_matrix": true,
+    "sustained_default": true,
+    "startup_shutdown": true,
+    "idle": true,
+    "visible_window": true,
+    "reset_reopen": true,
+    "zero_swap": true,
+    "contained": true,
+    "regressions": true,
+    "clean_shutdown": true,
+    "limitations_recorded": true
+  },
+  "scope": "Performance testing completed; APP-001 remains open."
+}

@@ -1,0 +1,35 @@
+{
+  "global_installation_changed": false,
+  "hosted_ci": {
+    "conclusion": "success",
+    "run": 35971877165,
+    "url": "https://github.com/NVIDIA-dev/literate-ai/actions/runs/35971877165"
+  },
+  "original_windows_regression": {
+    "exit_code": 0,
+    "revision": "f99e4cb2db980c36611747932e083f1baa194602",
+    "seconds": 22.294,
+    "test": "tests.unit.test_repository_refresh_inputs.RepositoryRefreshInputTests.test_hydrated_lfs_identity_drift_is_not_admitted_as_false_observation",
+    "tests": 1
+  },
+  "qualification_manifest_identity": "sha256:59e98cc65cd29aef58b71ce185bffe7b0417fbf77689bc98795d6bac33605e4f",
+  "repairs": [
+    "Merged PR 482: full bounded directory artifact custody",
+    "Merged PR 491: encode oversized Windows filesystem identifiers without changing canonical signed-integer limits"
+  ],
+  "revision": "b2f8013491b7298b09a7d325f70595bf595bfe30",
+  "schema": "lertx/framework-platform-qualification@1",
+  "scope": "Exact upstream wheel adoption; application admission remains a separate gate",
+  "superseded_retry": {
+    "attempt": 3,
+    "result": "failed Windows wheel smoke on oversized filesystem identifier; matrix siblings cancelled",
+    "revision": "f99e4cb2db980c36611747932e083f1baa194602",
+    "run": 35478113877
+  },
+  "wheel": {
+    "identity": "sha256:0e4029294cd385dbd9b80f5f6e714267be56e27803e593e91f36aa8e6b824239",
+    "path": "literate_ai-1.1.0-py3-none-any.whl",
+    "role": "wheel",
+    "size": 3043063
+  }
+}

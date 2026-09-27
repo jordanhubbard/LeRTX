@@ -1,5 +1,54 @@
 # Retained LeRTX application
 
+SO-101 USB reads, explicitly armed manual writes and measured virtual bindings
+are described in the [hardware guide](../docs/user/hardware.md). Emulated-bus and
+native viewport checks pass; physical-arm qualification is still pending.
+
+## Development setup and launch
+
+Use Windows 11 x86-64 or Linux x86-64/ARM64 with an NVIDIA RTX GPU and
+working NVIDIA driver. Linux ARM64 needs glibc 2.39 or newer for Qt (Ubuntu
+24.04 or newer qualifies). Install Python 3.11 or `uv`, then from the repository:
+
+```sh
+python desktop/manage.py setup
+python desktop/manage.py doctor
+python desktop/manage.py install
+python desktop/manage.py run
+```
+
+Use `python3` if that is your system's Python command. Setup selects Python
+3.11 through `uv` when available; it keeps the runtime in `.venv` and downloads
+the large native SDK wheels from PyPI/NVIDIA. It does not install GPU drivers.
+Setup then renders a real test frame and prepares native caches, with a five-minute
+deadline. First-install shader compilation can take several minutes. A failed
+warmup is a setup failure; check available memory and the NVIDIA driver, then
+use `python desktop/manage.py warmup` to retry after addressing the cause.
+Linux ARM64 uses NVIDIA `usd-exchange` for `pxr`; other targets use `usd-core`.
+Do not install both USD distributions in the same environment.
+
+Open a document with `python desktop/manage.py run --scene workspace.usda`.
+Run all tests with `python desktop/manage.py test` in a graphical session.
+On a headless Linux worker use `xvfb-run -a python desktop/manage.py test`, or
+`QT_QPA_PLATFORM=offscreen python desktop/manage.py test` for offscreen Qt
+checks. Offscreen Qt still exercises the real NVIDIA renderer, but does not
+prove desktop compositor integration. Test the visible window separately.
+
+`install` adds LeRTX to the desktop application menu (Windows: Start Menu).
+`uninstall` removes the unchanged launcher created by this checkout and keeps
+your scenes, settings and `.venv`. To upgrade a checkout, close LeRTX, update
+the files, and run `setup` again. For a relocated checkout, uninstall its old
+launcher first, then install from the new location.
+
+`python desktop/manage.py package` creates `dist/LeRTX-prototype.zip` and a
+SHA-256 checksum. Extract the ZIP, enter `LeRTX`, and use the same setup commands.
+This source/setup bundle downloads pinned SDKs during setup and contains no
+credentials, native SDK binaries or private worker configuration. It is a
+development prototype bundle, not a formally admitted release.
+
+Installation preflight and platform eligibility are not application acceptance;
+the current cross-platform qualification remains tracked in PORT-001.
+
 The operator approved direct repair and retention of Litai-generated source on
 2026-09-16. `source/` is editable application source under that explicit exception.
 The Component specifications still define required behavior; all native and UI
@@ -13,8 +62,9 @@ the byte-preserving reference. Repaired code is not represented as an untouched
 generation or an accepted Standard lifecycle artifact.
 
 The retained application now has a Qt window, RTX viewport, Newton simulation,
-USD editing/saving, and settings. The 154-test snapshot passes on Linux and Windows,
-including real Qt launches, photo failure preservation and simulated telemetry.
+USD editing/saving, and settings. Current 160-test suites pass on Windows 11,
+Linux x86-64, Linux ARM64 and Omarchy, including real Qt launches, photo failure
+preservation and simulated telemetry.
 This is a development application, not a completed milestone or accepted
 distribution. Physical robot integration is not implemented.
 Do not use this application to actuate a physical robot.

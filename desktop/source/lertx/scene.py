@@ -17,7 +17,7 @@ class SimulationDisabledError(RuntimeError):
     """Raised when an authored prim cannot be simulated and identifies it."""
 
 
-def create_default_scene(usd_path: str) -> None:
+def create_default_scene(usd_path: str, *, include_robots=False) -> None:
     """Author an original metric Z-up default scene at ``usd_path``.
 
     Contains a work surface, a static box obstacle, a dynamic orange
@@ -78,6 +78,11 @@ def create_default_scene(usd_path: str) -> None:
 
     ensure_render_product(stage, camera_path="/World/Camera", width=1280, height=720)
 
+    if include_robots:
+        from .robot import author_pair
+        obstacle_xform.GetOrderedXformOps()[0].Set(Gf.Vec3d(.65, .45, .1))
+        sphere_xform.GetOrderedXformOps()[0].Set(Gf.Vec3d(0, .45, .5))
+        author_pair(stage)
     stage.GetRootLayer().Save()
 
 
@@ -260,8 +265,12 @@ class NativeWorker:
         # The worker owns that lifetime too: closing must release native work,
         # not leave a process-global rendering system alive until interpreter exit.
         config = ovrtx.RendererConfig(active_cuda_gpus=str(self._gpu_index),
+                                      selection_outline_enabled=True,
+                                      selection_outline_width=3,
                                       keep_system_alive=False)
         self._renderer = ovrtx.Renderer(config=config)
+        self._renderer.set_selection_group_styles({1: ovrtx.SelectionGroupStyle(
+            outline_color=(1., .65, .1, 1.), fill_color=(0., 0., 0., 0.))})
         self._stage = ovstage.Stage("lertx-runtime-stage")
         self._renderer.attach_ovstage(self._stage)
 
@@ -279,13 +288,22 @@ class NativeWorker:
         matrix_array = np.asarray(matrices, dtype=np.float64)
         if matrix_array.size == 0:
             return
+        # OVStage stores one matrix-valued element per prim. A plain N x 4 x 4
+        # scalar tensor can be misinterpreted as a different attribute column.
+        tensor = ovstage.make_dltensor(
+            matrix_array.reshape(-1, 16),
+            dtype=ovstage.DLDataType(code=ovstage.DLDataTypeCode.kDLFloat, bits=64, lanes=16),
+            shape=[len(matrix_array)],
+        )
         paths = ovstage.PathDictionary(self._stage)
         with paths.create_path_list_from_strings(mapping.paths_in_index_order()) as path_list:
             with self._stage.query_from_path_list(path_list) as query:
                 self._ordinal += 1
                 self._stage.write_attribute(
                     query, paths.intern_token("omni:xform"), ordinal=self._ordinal,
-                    tensors=matrix_array, is_array=False,
+                    tensors=tensor, is_array=False,
+                    semantic=ovstage.AttributeSemantic.MATRIX,
+                    prim_mode=ovstage.PrimMode.UPSERT,
                 ).wait()
                 self._stage.advance_write_floor(self._ordinal, ovstage.Scope.ALL).wait()
 

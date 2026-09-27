@@ -22,7 +22,7 @@ def _build_window():
 class MainWindowTests(unittest.TestCase):
     def test_main_window_has_required_title_and_controls(self):
         window = _build_window()
-        self.assertEqual(window.windowTitle(), "LeRTX")
+        self.assertEqual(window.windowTitle(), "Untitled — LeRTX")
         self.assertEqual(window.play_button.text(), "Play")
         self.assertEqual(window.reset_button.text(), "Reset")
 

@@ -45,7 +45,7 @@ entrypoints:
     path: run
 acceptance_contracts: []
 source_dependencies: []
-specification_roots: ["component.md", "telemetry-mock.md"]
+specification_roots: ["component.md", "telemetry-mock.md", "desktop-application.md", "hardware-control.md"]
 ---
 # LeRTX desktop workspace
 
@@ -288,3 +288,9 @@ pause with live camera, reset, edit/save/reopen and repeated cleanup on both
 Linux and Windows NVIDIA targets. UI tests cover actual visible controls and
 keyboard navigation, not only underlying functions. Missing native dependencies
 must not cause these integration tests to report a pass.
+
+## Installed application and articulated robot workspace
+
+`desktop-application.md` defines APP-001 and extends the default scene with the
+SO-101 leader and follower pair. It supersedes the simple demonstration scene
+only for the application default; basic rigid-body fixtures remain valid tests.

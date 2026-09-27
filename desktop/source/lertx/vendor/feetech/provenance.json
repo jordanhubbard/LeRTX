@@ -1,0 +1,17 @@
+{
+  "package": "feetech-servo-sdk",
+  "version": "1.0.0",
+  "source_sha256": "d4d3832e4b1b22a8222133a414db9f868224c2fb639426a1b11d96ddfe84e69c",
+  "url": "https://pypi.org/project/feetech-servo-sdk/1.0.0/",
+  "license": "Unlicense",
+  "modifications": [],
+  "files": {
+    "protocol_packet_handler.py": "9932c85b9e2ac671a7e33f39e8e80b05d6592280d9f2bcebd85103845e36e655",
+    "group_sync_write.py": "70d2a9e2157692932dd6e25515e53d600da9ca87ffab656c4660fb0de4d03476",
+    "scservo_def.py": "068f7ad5c453ad6e338543c706047253495fcd6bf9a632465501ace12fee0627",
+    "packet_handler.py": "96bb801133436122d39e868bc6492a226222a737c04560ea7a02d0c5eacef2fd",
+    "__init__.py": "c3047515bd2992e6fc209386f11fd4c80722c519b21be2a3a7a91f2d96222941",
+    "port_handler.py": "c8dbb189ca98705bd71066d5a9a691b4c80b484c77ebe8a9ccc2d6c46321e999",
+    "group_sync_read.py": "ccbbb3a864c047bf3a7808a0b455676b198645ee1caffa58dac562339a86ad76"
+  }
+}

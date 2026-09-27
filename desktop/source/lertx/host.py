@@ -9,7 +9,10 @@ import platform
 import sys
 
 _SUPPORTED_PYTHON = ((3, 11), (3, 12))
-_SUPPORTED_MACHINES = ("x86_64", "amd64")
+_SUPPORTED_MACHINES = {
+    "linux": ("x86_64", "amd64", "aarch64", "arm64"),
+    "win32": ("x86_64", "amd64"),
+}
 _SUPPORTED_PLATFORMS = ("linux", "win32")
 
 
@@ -27,15 +30,22 @@ def check_native_support() -> None:
         )
     if sys.platform not in _SUPPORTED_PLATFORMS:
         raise UnsupportedHostError(
-            "Native desktop execution requires Linux x86-64 or Windows x86-64; "
+            "Native desktop execution requires Linux x86-64/ARM64 or Windows 11 x86-64; "
             f"the running platform is {sys.platform!r}."
         )
     machine = platform.machine().lower()
-    if machine not in _SUPPORTED_MACHINES:
+    if machine not in _SUPPORTED_MACHINES[sys.platform]:
         raise UnsupportedHostError(
-            "Native desktop execution requires an x86-64 host; "
-            f"the running machine is {platform.machine()!r}."
+            "Native desktop execution requires Linux x86-64/ARM64 or Windows 11 x86-64; "
+            f"the running host is {sys.platform}/{platform.machine()}."
         )
+
+
+def usd_distribution() -> str:
+    """The one distribution providing pxr for this target's dependency closure."""
+    if sys.platform == "linux" and platform.machine().lower() in ("aarch64", "arm64"):
+        return "usd-exchange"
+    return "usd-core"
 
 
 def is_native_supported() -> bool:
