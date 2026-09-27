@@ -28,6 +28,11 @@ class SceneWorker(NativeWorker):
         self.distance = 3.
         self.azimuth = -0.8
         self.elevation = 0.55
+        self._cached_tick = None
+        self._cached_ordinal = None
+        self._settled_frames = 0
+        self._runtime_configuration = None
+        self._hardware_roles = set()
 
     def _initialize(self):
         # NativeWorker starts the command owner, but this session creates RTX
@@ -65,6 +70,11 @@ class SceneWorker(NativeWorker):
 
     def rebuild(self):
         from pxr import Gf, Usd, UsdGeom, UsdLux
+        self._selected_meshes = []
+        self._hardware_roles.clear()
+        self._cached_tick = None
+        self._cached_ordinal = None
+        self._settled_frames = 0
         self.clock.pause()
         self.clock.reset()
         self.physics = None
@@ -79,7 +89,7 @@ class SceneWorker(NativeWorker):
         if self._temporary is None:
             self._temporary = tempfile.TemporaryDirectory(prefix="lertx-runtime-")
         self._snapshot_number += 1
-        filename = Path(self._temporary.name) / f"scene-{self._snapshot_number}.usda"
+        filename = Path(self._temporary.name) / f"scene-{self._snapshot_number}.usdc"
         self.document.stage.Flatten().Export(str(filename))
         runtime = Usd.Stage.Open(str(filename))
         while runtime.GetPrimAtPath(self.camera_path):
@@ -97,16 +107,23 @@ class SceneWorker(NativeWorker):
         runtime = None
         # Release all previous renderer/stage state before opening a replacement.
         super()._cleanup()
+        # Prior snapshots are owned runtime output, not user documents. Once
+        # their renderer is closed they must not accumulate across reopens.
+        for previous in filename.parent.glob("scene-*"):
+            if previous != filename and previous.suffix in (".usda", ".usdc"):
+                previous.unlink()
         super()._initialize()
         self.open_usd(str(filename))
+        self._runtime_configuration = copy.deepcopy((self.profile["rendering"], self.profile["physics"]))
         return self.status()
 
     def status(self):
         from pxr import UsdGeom
         import importlib.metadata
         import warp as wp
+        from .host import usd_distribution
         diagnostics = {name: importlib.metadata.version(name) for name in
-                       ("ovrtx", "ovstage", "newton", "warp-lang", "usd-core", "PySide6")}
+                       ("ovrtx", "ovstage", "newton", "warp-lang", usd_distribution(), "PySide6")}
         diagnostics["gpu"] = wp.get_device(f"cuda:{self._gpu_index}").name
         diagnostics["workspace"] = str(self.document.path.parent)
         diagnostics["temporary_directory"] = tempfile.gettempdir()
@@ -117,9 +134,68 @@ class SceneWorker(NativeWorker):
                 "diagnostics": diagnostics,
                 "meters_per_unit": UsdGeom.GetStageMetersPerUnit(self.document.stage),
                 "hierarchy": self.document.hierarchy(), "time": self.clock.sim_time,
-                "playing": self.clock.playing, "physics_error": self.physics_error}
+                "playing": self.clock.playing, "physics_error": self.physics_error, "robots": self.robot_status()}
+
+    def robot_status(self):
+        if self.physics is None or not self.physics.robots:
+            return {}
+        return {"positions":self.physics.robot_positions(), "following":self.physics.following,
+                "live_roles":sorted(self._hardware_roles)}
+
+    def command_robot(self, role, positions=None, following=None):
+        if self._hardware_roles:
+            raise ValueError('Disable physical live view before commanding this simulated arm')
+        if self.physics is None:
+            raise ValueError("No simulated robot in this scene")
+        self.physics.command_robot(role,positions,following)
+        return self.status()
+
+    def pick(self, u, v):
+        from .picking import pick
+        return pick(self, u, v)
+
+    def select(self, path):
+        from .picking import select
+        return select(self, path)
+
+    def drag_joint(self, role, name, value, elapsed=0.):
+        if self._hardware_roles:
+            raise ValueError('Disable physical live view before dragging this arm')
+        if self.physics is None:
+            raise ValueError('No simulated robot in this scene')
+        self.physics.command_robot(role, {name: value})
+        if not self.clock.playing:
+            # Explicit manipulation previews real constraints/contact while paused.
+            # Bound every update; never reconstruct the renderer or teleport links.
+            for _ in range(4):
+                self.physics.step(self.clock.dt, self.profile['physics']['substeps'])
+                self.clock.sim_time += self.clock.dt
+            self.publish_transforms(self.physics.render_mapping, self.physics.render_matrices())
+        self._cached_tick = None
+        self._settled_frames = 0
+        return {**self.tick(elapsed if self.clock.playing else 0.), 'joint_target': (role, name, value)}
+
+    def hardware_pose(self, role, positions, captured_at=None):
+        import time
+        if captured_at is None or not 0<=time.monotonic()-captured_at<=.25:
+            raise ValueError('Physical observation expired before rendering')
+        if self.physics is None:
+            raise ValueError('Open the robot workspace before enabling physical live view')
+        self.clock.pause()
+        self.physics.apply_measured_pose(role,positions)
+        self._hardware_roles.add(role)
+        self.publish_transforms(self.physics.render_mapping,self.physics.render_matrices())
+        self._cached_tick=None;self._settled_frames=0
+        return self.tick(0.)
+
+    def release_hardware(self, role):
+        self._hardware_roles.discard(role)
+        self._cached_tick=None;self._settled_frames=0
+        return self.status()
 
     def set_playing(self, enabled):
+        if enabled and self._hardware_roles:
+            raise ValueError('Turn off physical live view before playing simulation')
         if enabled and (self.physics is None or self.physics_error):
             raise ValueError(self.physics_error or "No simulated scene")
         self.clock.play() if enabled else self.clock.pause()
@@ -157,14 +233,44 @@ class SceneWorker(NativeWorker):
     def tick(self, elapsed):
         # Only bounded catch-up is admitted; excess wall time is dropped.
         if self.physics is not None:
-            for _ in range(self.clock.advance(min(max(elapsed, 0), 0.1))):
+            steps = self.clock.advance(min(max(elapsed, 0), 0.1))
+            for _ in range(steps):
                 self.physics.step(self.clock.dt, self.profile["physics"]["substeps"])
-            self.publish_transforms(self.physics.mapping, self.physics.world_matrices())
+            if steps:
+                self.publish_transforms(self.physics.render_mapping, self.physics.render_matrices())
+        if self._cached_ordinal != self._ordinal:
+            self._settled_frames = 0
+        if not self.clock.playing and self._cached_tick is not None and self._settled_frames >= 4:
+            return {**self._cached_tick, "unchanged": True, "playing": False}
         frame = self.render("/Render/Product", max(0., elapsed))
-        return {"frame": frame, "time": self.clock.sim_time, "playing": self.clock.playing}
+        result = {"frame": frame, "time": self.clock.sim_time, "playing": self.clock.playing, "robots":self.robot_status()}
+        self._cached_tick = result
+        self._cached_ordinal = self._ordinal
+        self._settled_frames += 1
+        return result
 
     def reset(self):
-        return self.rebuild()
+        if self._hardware_roles:
+            raise ValueError('Turn off physical live view before resetting simulation')
+        if self._runtime_configuration != (self.profile["rendering"], self.profile["physics"]):
+            return self.rebuild()
+        # Reset changes simulation state, not the scene or renderer settings.
+        # Recreating RTX here adds seconds of latency and retains SDK caches.
+        self.clock.pause()
+        self.clock.reset()
+        self.physics = None
+        self.physics_error = ""
+        try:
+            self.physics = PhysicsScene(self.document.stage,
+                device=f"cuda:{self._gpu_index}", gravity=float(self.profile["physics"]["gravity_m_s2"]))
+        except SimulationDisabledError as exc:
+            self.physics_error = str(exc)
+        if self.physics is not None:
+            self.publish_transforms(self.physics.render_mapping, self.physics.render_matrices())
+        self._cached_tick = None
+        self._cached_ordinal = None
+        self._settled_frames = 0
+        return self.status()
 
     def edit(self, path, translation, rotation, scale):
         self.document.edit_transform(path, translation, rotation, scale)
@@ -205,7 +311,14 @@ class SceneWorker(NativeWorker):
         prim = self.document.stage.GetPrimAtPath(path) if path else self.document.stage.GetPseudoRoot()
         if not prim:
             raise ValueError("Select an existing prim")
-        box = UsdGeom.BBoxCache(Usd.TimeCode.Default(), ["default", "render", "proxy"]).ComputeWorldBound(prim).ComputeAlignedRange()
+        cache = UsdGeom.BBoxCache(Usd.TimeCode.Default(), ["default", "render", "proxy"])
+        box = cache.ComputeWorldBound(prim).ComputeAlignedRange()
+        if path is None:
+            from pxr import Gf
+            robots=[p for p in self.document.stage.Traverse() if p.GetAttribute('lertx:robotModel').Get()=='so101.v1']
+            if robots:
+                box=Gf.Range3d()
+                for robot in robots:box.UnionWith(cache.ComputeWorldBound(robot).ComputeAlignedRange())
         if box.IsEmpty():
             raise ValueError("Selected prim has no visible bounds")
         self.center = list(box.GetMidpoint())
@@ -217,6 +330,7 @@ class SceneWorker(NativeWorker):
         try:
             super()._cleanup()
         finally:
+            self._cached_tick = None
             self.physics = None
             self.document = None
             if self._temporary is not None:

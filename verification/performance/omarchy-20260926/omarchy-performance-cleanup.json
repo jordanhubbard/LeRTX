@@ -1,0 +1,6 @@
+{
+  "remaining_test_processes": [],
+  "available_bytes": 26020556800,
+  "gpu": "pid, process_name, used_gpu_memory [MiB]\n",
+  "gpu_memory": "memory.used [MiB], memory.free [MiB]\n3 MiB, 15879 MiB\n"
+}

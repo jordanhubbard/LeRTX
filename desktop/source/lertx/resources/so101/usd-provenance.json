@@ -1,0 +1,20 @@
+{
+  "adaptations": [
+    {
+      "action": "retain negligible-mass fixed tool frame as Xform, remove invalid rigid body and fixed joint",
+      "link": "gripper_frame_link",
+      "role": "follower"
+    }
+  ],
+  "converter": "urdf-usd-converter",
+  "files": {
+    "follower.usdc": "8dad5bad3f99aa5ec37183e08488d694bd742265922aec975f1a4f0f8eaab4f6",
+    "leader.usdc": "ba4ed7dee7263143455cc398a89f66a79ce69d3140a166e9bc60d8fb6f3a6166"
+  },
+  "options": [
+    "--no-layer-structure",
+    "--no-physics-scene"
+  ],
+  "skills_revision": "d8519c57da6db5d9bea274ec1724a4a7a56a3dee",
+  "version": "0.3.3"
+}

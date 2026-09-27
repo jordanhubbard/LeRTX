@@ -16,12 +16,13 @@ and the [runtime contract](docs/architecture/runtime.md).
 
 ## Run the development desktop
 
-On a provisioned Linux or Windows NVIDIA GPU machine, use the Python environment
-containing the pinned SDKs in `desktop/source/requirements.txt`:
+Use Windows 11 x86-64 or Linux x86-64/ARM64 with a working NVIDIA driver and
+Python 3.11 or `uv`. From the repository root:
 
 ```sh
-cd desktop/source
-python main.py '[{"command":"launch"}]'
+python desktop/manage.py setup
+python desktop/manage.py install
+python desktop/manage.py run
 ```
 
 This opens the actual Qt/RTX workspace, not the harness below. Wait for
@@ -30,9 +31,15 @@ to edit objects, and Save As to retain an untitled scene. Settings configures th
 LLM; its API key starts blank. Reconstruct Photo imports an explicitly unverified
 draft. Devices includes USB candidate discovery and a hardware-free telemetry mock.
 
+Use `python3` if needed on Linux. `doctor` checks the installation, `test` runs
+the full suite, and `package` creates a reproducible source/setup ZIP. Current
+160-test suites pass on Windows 11, Linux x86-64, Linux ARM64 and Omarchy;
+see the [platform evidence](verification/prototype-platform-review.json).
+
 See [desktop notes](desktop/README.md) for prerequisites and limitations. This is
-a development application: verifier-owned admission and end-user packaging are
-not complete. Mock telemetry does not yet drive rendered robot joints; physical
+a development prototype. Fresh Windows 11 and Omarchy installations pass the full
+160-test suite and native desktop launch checks.
+Mock telemetry does not yet drive rendered robot joints; physical
 servo synchronization, calibration and actuation are not implemented.
 
 ## Harness workflow

@@ -37,6 +37,12 @@ number. Persist confirmed identity-role assignments, show hotplug/disconnect
 status, and reacquire only an unambiguous matching device. Discovery and polling
 must not block rendering or the UI.
 
+The operator has now authorized explicit manual USB writes in addition to reads;
+`components/desktop/hardware-control.md` owns this extension. The paragraphs below
+describe the read-only connection boundary; armed manual sessions additionally
+permit verified volatile goal, speed, acceleration, torque-limit and torque-enable
+writes. They never invoke automatic EEPROM configuration.
+
 Use a pinned LeRobot motor-bus adapter, not a replacement servo protocol.
 Inspection of upstream revision
 `30074f7f1358b3c015ae1750017200e86e9c4eb6` found that the high-level
@@ -45,7 +51,7 @@ configures motor registers even when calibration is skipped. The adapter must
 therefore use the reviewed bus-level read path. Connection failure and disconnect
 must close the serial handle without torque writes; the upstream
 [bus disconnect](https://github.com/huggingface/lerobot/blob/30074f7f1358b3c015ae1750017200e86e9c4eb6/src/lerobot/motors/motors_bus.py)
-defaults to disabling torque, which is not read-only. Do not invoke setup,
+defaults to disabling torque, which is not read-only. In read-only sessions, do not invoke setup,
 calibration writes, goal-position writes, or high-level robot connect/disconnect.
 Dependency installation still requires a verified, pinned closure; this reviewed
 revision is not yet an admitted runtime dependency.

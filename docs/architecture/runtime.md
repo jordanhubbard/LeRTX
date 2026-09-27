@@ -64,6 +64,25 @@ native-runtime Python choice. Windows dependency qualification and the retained
 application tests now pass using the verified SDK and isolated Qt installation;
 large installations remain subject to the worker's limited disk headroom.
 
+PORT-001 extends the same native application to Linux ARM64 and Arch/Omarchy.
+ARM64 uses `usd-exchange==3.0.0` as its sole `pxr` provider because the pinned
+`usd-core` release has no Linux ARM64 wheel. The other SDK and Qt versions are
+unchanged; Qt requires glibc 2.39 on ARM64. `flavors/desktop-linux-arm64` binds
+the independently observed interpreter and verified native archives.
+The explicit setup helper provisions hash-locked wheels and performs a bounded
+real rendering warmup. First-install shader preparation is setup work, not a
+reason to weaken the application's first-frame acceptance deadline. Record
+warmup and cached application launch separately. GB10 shares system memory with
+CPU workloads; host memory pressure must be diagnosed independently of SDK
+availability or a passing `nvidia-smi` query.
+
+The current desktop lifecycle profile selects `desktop-linux-arm64` for the
+primary ARM64 development host. `desktop-linux` retains the separately observed
+x86-64 lock. A lifecycle qualification on another target must deliberately select
+and lock that target's Flavor; the source/setup helper selects its hash-locked
+runtime requirements from the actual host architecture without changing project
+authority.
+
 The probe's before/after frame artifacts and pose/hash evidence are retained in
 `verification/native/linux/`. This verifies native rendering and physics coupling,
 not application acceptance by itself. Subsequent retained-source application
@@ -81,7 +100,8 @@ Public sources:
 
 ## Acceptance
 
-Require Linux and Windows NVIDIA evidence for the claimed product platforms:
+Require Windows 11, Linux x86-64 (including Omarchy), and Linux ARM64 NVIDIA
+evidence for the claimed product platforms:
 actual output frames with correct dimensions and nonconstant pixels; a changed
 rendered body pose matching Newton state; pause/reset behavior; USD edit/save/reload
 round trips; and repeated scene open/close without leaked native resources. Record

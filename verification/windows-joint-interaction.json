@@ -1,0 +1,40 @@
+{
+  "complete": true,
+  "joint": {
+    "role": "leader",
+    "name": "shoulder_lift",
+    "link": "/World/Leader/Geometry/base_link/shoulder_link/upper_arm_link",
+    "low": -1.74533,
+    "high": 1.74533,
+    "value": 1.1233678917643708e-11,
+    "locked": false
+  },
+  "target": 0.5235987756095325,
+  "measured": 0.5351585745811462,
+  "paused": true,
+  "follower_locked": true,
+  "playing_drag_measured": 0.31483832001686096,
+  "playing_drag_advances_physics": true,
+  "authored_scene_unchanged": true,
+  "selected_path": "/World/Leader/Geometry/base_link/shoulder_link/upper_arm_link/upper_arm_so101_v1",
+  "seconds": 10.47,
+  "platform": "Windows 11 / RTX 5080 Laptop",
+  "portable_qt_runtime_tests": 7,
+  "main_window_tests": 9,
+  "process_commit_limit_bytes": 12884901888,
+  "observed_process_commit_bytes": 7366152192,
+  "observed_host_available_kib": 18552168,
+  "scope": "Focused worktree feature verification; not full application qualification or hardware USB integration",
+  "source_sha256": {
+    "desktop/source/lertx/joint_interaction.py": "b7ae0247954299c43347672675d4fc059bc02d8f9c57b552bc87bef768c29565",
+    "desktop/source/lertx/picking.py": "741feaa3d14c1ef55cd5139132d9e0eca7bd423aa43c3d5fcc21d7cb78673b13",
+    "desktop/source/lertx/viewport_ui.py": "436d6ce99b1092efafe9790ac342aecbca65a21ca23f389ac7a06bf72aeea727",
+    "desktop/source/lertx/runtime.py": "04c8fe69909ac51a049de71707acb319921f99e59adab1e9550c74f8cf1e9ada",
+    "desktop/source/lertx/scene.py": "b49fb340e270a8f08e548bfe9027049f1da92c646bab724602df337bfb5d034c",
+    "desktop/source/lertx/ui.py": "16c498992e4887e5c456e5aba6762a407d800bf7e99e6a4f5655e7832e1e774d",
+    "desktop/source/lertx/robot_ui.py": "26a35b02468e97c955dc49a4510bd14b4847af22d447a9c2c11193f4e6719d12",
+    "desktop/source/tests/test_joint_interaction.py": "9e2270077d5c3f24b9e13c6800c37112a3bbde3ceb7e7bf9c0f30c360e065c80",
+    "desktop/source/tests/test_ui.py": "19d305c183348f636c48303df0195c71e5f27aa2a1043473dad90506b40694e9",
+    "verification/joint_window.py": "0ace3b223f2f20a25a8b6c80ae812eb358a7db28777db7db58ac3df106f93aa1"
+  }
+}

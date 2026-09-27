@@ -17,7 +17,7 @@ from literate_ai.adapters.dependencies.python_lock import (
     parse_python_wheel_lock,
 )
 from literate_ai.adapters.dependencies.python_target import observe_python_wheel_target
-from native_wheels import PINS, ROOTS, inspect
+from native_wheels import compatibility, inspect, inventory
 
 
 def run(directory: Path, command: str, installer: Path, temporary_root: Path) -> dict:
@@ -26,6 +26,12 @@ def run(directory: Path, command: str, installer: Path, temporary_root: Path) ->
         raise ValueError("Archive verification failed")
     toolchain = discover_python_toolchain(pinned_command=command)
     target = observe_python_wheel_target(toolchain)
+    compatibility(archives, {
+        "schema": "lertx/native-python-target-review@1",
+        "environment": dict(target.environment), "tags": list(target.tags),
+        "target_identity": target.identity.uri,
+    })
+    pins, roots = inventory(archives["packages"])
     fields = (
         "name",
         "version",
@@ -40,7 +46,7 @@ def run(directory: Path, command: str, installer: Path, temporary_root: Path) ->
                 "schema": SCHEMA,
                 "environment": dict(target.environment),
                 "tags": list(target.tags),
-                "requirements": [f"{name}=={PINS[name]}" for name in ROOTS],
+                "requirements": [f"{name}=={pins[name]}" for name in roots],
                 "packages": sorted(
                     (
                         {key: package[key] for key in fields}

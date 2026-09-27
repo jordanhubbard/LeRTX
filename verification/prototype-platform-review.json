@@ -1,0 +1,246 @@
+{
+  "accepted_scope": {
+    "formal_release_packaging": "Separate follow-on work; the tested deliverable is the source/setup ZIP",
+    "operator_direction": "Limited Windows testing is acceptable; consider the prototype good if Linux is good.",
+    "prototype_complete": true,
+    "windows_clean_install": "Passed on an additional Windows 11 RTX 5080 Laptop target; earlier capacity limitation superseded."
+  },
+  "bundle": {
+    "bytes": 349907,
+    "entries": 64,
+    "filename": "LeRTX-prototype.zip",
+    "first_install_archive_sha256": "377651ee19d5be3149d989c6854c0503cda7575bdeb903101dea950eb6b86c33",
+    "fresh_install": "passed: new venv, hash-checked downloads, pip check, diagnostics and native warmup",
+    "fresh_install_target": "Omarchy x86-64",
+    "fresh_warmup_seconds": 99.094,
+    "post_upgrade_exit_code": 0,
+    "post_upgrade_seconds": 131.481,
+    "post_upgrade_tests": 160,
+    "sha256": "89f34813d8a08ab4015f4b773b2263e65cd84bc9356760797f9ece0420c49af0",
+    "upgrade_setup": "passed",
+    "windows_fresh_install": "Passed on Windows 11 Home with RTX 5080 Laptop GPU; all 160 tests and Start Menu launch passed",
+    "windows_linux_byte_identical": true
+  },
+  "date": "2026-09-26",
+  "delivery_identity": "7165c815a7259c23af7246525e4fc684048029043184a9dbb010ce2b908bd657",
+  "files": {
+    "desktop/locks/linux-arm64.txt": "1eb007247a6f2f6867989cb71e2c2174d5d771491ce33548ba8528314eacc736",
+    "desktop/locks/linux-x86_64.txt": "70ad725730d0f366a61ab6387820d2a2e6d88d64c91145060c9b0f4859a5b2b8",
+    "desktop/locks/windows-x86_64.txt": "70ad725730d0f366a61ab6387820d2a2e6d88d64c91145060c9b0f4859a5b2b8",
+    "desktop/manage.py": "d0f1a41d85251b2127b8d62c5e9159087e59c4eddd81abf2fdd9d7d04059517c",
+    "desktop/source/lertx/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "desktop/source/lertx/app.py": "4ab349fb05909b0316ea43e8f57bbfbea3ad4cb48c2e989b04c644541cbccef2",
+    "desktop/source/lertx/assets.py": "4670660bc86e0e9debea8cf12039963ad5538edf1ef3db238a7aa5ed71d6a30f",
+    "desktop/source/lertx/config.py": "ae1ca5fc2fdec0ac42122143a3e35b40e4749ae303e642a521132534b78fcadc",
+    "desktop/source/lertx/devices.py": "e53d52e039096420cd32c9609c49bb2ebb2da4a513092e14eb9a8db5231e1d37",
+    "desktop/source/lertx/devices_ui.py": "2a478cd437e879addb43e423dd82556708f3b4ba6234f22bac02e0c3b0bd9b29",
+    "desktop/source/lertx/diagnostics.py": "61fae61c00823b7e0dd16728bdb7d96bc76a12a5ce4d17f95057ac7a864e36a8",
+    "desktop/source/lertx/document.py": "47cec464320444084fba3ecea6827aacaf9d9520ddca82671a20b1d978b08efe",
+    "desktop/source/lertx/host.py": "08e6166c9c88310ad6eda33b37a11609367606bc979a3afe67cb484bba156df0",
+    "desktop/source/lertx/mock_ui.py": "eb79943a39817d68657fd765d86037d19ab04dc266409a189753413fb6ce253c",
+    "desktop/source/lertx/photo.py": "9ae34ddd28cfe46d95716b6a2ba4564355974923cfa25cb06127a7856b1680ca",
+    "desktop/source/lertx/photo_ui.py": "c072faee5a9a2ff3550972c4127723041b1e894d9e7a0bd750921dd2bbc35692",
+    "desktop/source/lertx/physics.py": "c93104bf48b52f7adce14685b603de1c7b7a72846c9d45b2992ec51e87b6efdb",
+    "desktop/source/lertx/reconstruction.py": "92c13293f3485815c992735f492a4af61b33e4e413136c04ed19bf676b2fa35b",
+    "desktop/source/lertx/runtime.py": "b0d6fcb092651da81d24f29d40d9f94bbe9879cf97bd6bb86f391b6d46130dd5",
+    "desktop/source/lertx/scene.py": "69cecbc3befad7371964a387fa9c28cc4c47a972bc9f2ac9febf952c8d118394",
+    "desktop/source/lertx/simulation.py": "a068e394b93afa25a24d01f8b47556cdd8d527a15060a1879f2fafebb94f036c",
+    "desktop/source/lertx/telemetry.py": "20578ae68ac89874eacb6fc12c3a55a8004089b6b8097f7a1ec4be8a312f8453",
+    "desktop/source/lertx/transport.py": "f4e759ddcfd7c3090c3c2b13b9d1c571336d2d2f5cb3695602231d5c17ea06c2",
+    "desktop/source/lertx/ui.py": "d4486bbb5dc8e835cd4917dfcc1d726af277e02141a1979a37b0f8a02e644d89",
+    "desktop/source/lertx/warmup.py": "4d4dcb52435c114582d66ec0b5fb744fd153f984f84db27ebc9087118621205f",
+    "desktop/source/main.py": "4d1e3fc24167ac32482c2aa7e2fa3c84b213d785ca5dad1d5a59d69aed512762",
+    "desktop/source/pytest.ini": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "desktop/source/requirements.txt": "6ae52c343c15388917a4b17544a89dc5f1a4c0187f9fb757ef745e343cf87b28",
+    "desktop/source/tests/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "desktop/source/tests/manifest.json": "6dd7f1c8424553330c03f3d48ae2dddd936cbe0b4079a50aeaa484f547421889",
+    "desktop/source/tests/manifest_cases.py": "7a1d17b669cffc484c02f33bf6db6b78b4440457f25f9ecafd8ce9fecbab9b77",
+    "desktop/source/tests/test_asset_policy.py": "550c810b28ec501fc495f7994773afd635d73141d86bd775c356e531fc82f93f",
+    "desktop/source/tests/test_cli.py": "b3e1d33a63d7ad050da181865eeba20ffc1afc0dc44988e0873fd0dd3cb1f6c4",
+    "desktop/source/tests/test_config.py": "5f23069f4031987554311e6c434c6f45e44abb1ca9a2e4e614542d898405e715",
+    "desktop/source/tests/test_connection_probe.py": "6976dbd3065f90879879c6f7efc62a131626f77884a16515a3a78e419e3cd1b1",
+    "desktop/source/tests/test_devices.py": "6f02b1aff1fd937a8b7a07001530bb245abb79bdeebfc92915627a8a3e5ef9f0",
+    "desktop/source/tests/test_devices_ui.py": "22b384d2881b502d6fa95b892d692286e670ec853e74e706c6dfdb7072f56453",
+    "desktop/source/tests/test_dispatch.py": "24485eed377657d70758ff3abc61b2d4e8e6a6dbd19da15d1f401e37a08eb95a",
+    "desktop/source/tests/test_document.py": "b800e1665ceac07d1caeaf2fd1f25ad31a6f3fcd5e2516108304e298b1a6bce1",
+    "desktop/source/tests/test_host.py": "4fd38557044336513c19c06037d56b33b4f5561ef7aa0ba2ed900e4bf3b64e71",
+    "desktop/source/tests/test_launch_native.py": "0b12746a0ede6a6a01d982caaf3686ff6cd6ff9d78d6ee27c89885ae983da97a",
+    "desktop/source/tests/test_manifest_cases.py": "63999257f67ffdcd856d7edfc6dc8ca1ff00170949fb140f7df1b1dcd4104adc",
+    "desktop/source/tests/test_mock_ui.py": "03d72e4f64c83f1d2f10c624e2604f9735a9448e13a7b185334b0be37c2e74d8",
+    "desktop/source/tests/test_native_integration.py": "c0b18843eb09e99a4584c25440b33579ffd136992b7138bd7f679edb0fc5ef7e",
+    "desktop/source/tests/test_photo.py": "3723ddf3a67ce27168ef83366371623ec56e36029f5cd3844dfce47c58b45f84",
+    "desktop/source/tests/test_photo_ui.py": "0e44b22fb8530fcba4c7f68557c543518e3f96ae656e924b7072cb784230b315",
+    "desktop/source/tests/test_photo_window_native.py": "b1952b89556053b8a1dbd2d5ffd3961c045d7b47219b2a2c107bceee76fdeda9",
+    "desktop/source/tests/test_physics_native.py": "e8db45cc095d8d397da9273a686a73355cacabedab00fa59c893b2217949f6f5",
+    "desktop/source/tests/test_reconstruction.py": "f1a23b6458565101e507460ab975d03be751903d2a2fad9c0d6caa2ae0bd6d4a",
+    "desktop/source/tests/test_reconstruction_native.py": "639016fc91a9f7b38df25802b9b6ca8afa28dfbd32908aa5c13f5a35991e35c4",
+    "desktop/source/tests/test_runtime_native.py": "ba913ea7b635baed2a84fdd9cb018afffe7c6878a78c5c097df1262b814c3995",
+    "desktop/source/tests/test_runtime_settings.py": "b5f27f58f745c0daa9a8096e2e04a66fe499978c9dbb76c38c32537be9a24bf2",
+    "desktop/source/tests/test_scene_mapping.py": "1b89577b280fd54808a78300b5b806972cfeb0aef124be20156964213452a1da",
+    "desktop/source/tests/test_settings_ui.py": "419616a619c0532348b270f57f5d8f7a23b92c283df0254d5a8c86972f076053",
+    "desktop/source/tests/test_simulation.py": "b8acb1db08c37c596f635a8eb8abb7753437684fb48be49c63c73a42e1200351",
+    "desktop/source/tests/test_telemetry.py": "8c150c00ea6c8f3dc7b8c2d07410049c6fabf8848755ab607485e4ad3177d291",
+    "desktop/source/tests/test_transport.py": "a0544163af300c0ddb610e165afedbc4822f01f3c8557405cefe94c7a8a706c3",
+    "desktop/source/tests/test_ui.py": "7fd316cdf64039547e4ffaa653ce72d4b8ad85d9b4ccc6228656a427d62be1c0",
+    "desktop/source/tests/test_window_native.py": "0af9844b42492552cc213b3f396729a18ded20691c2b84c66ae5b956ef57dd61",
+    "desktop/source/tests/test_worker.py": "3c4a58e766ba31fa452e0118e77797143e61280bd2cd0aff2e663eb50586bdbf",
+    "desktop/source/tools/run_tests.py": "52ec76af18838c92e562f489f6fc8a2b428f9f0d26060415e9752c457e78e05d",
+    "verification/acceptance/scenes/centimeters-y-up.usda": "bc7300c15b578b2f3e99acf3c24472fcc922e3242fe08650f81e52510da75b64",
+    "verification/acceptance/scenes/unsupported-collider.usda": "6436963ce8a3093f348ec4ebaa112a13111e6f4cd01cc9f485a99b20075cf455"
+  },
+  "identity_algorithm": "SHA256 of UTF-8 compact JSON object mapping sorted relative paths to file SHA256 values",
+  "limitations": [
+    "Application lifecycle admission and native artifact qualification are verifier-owned gates; see verification/current.json and framework-platform-qualification.json.",
+    "No physical LeRobot device, calibration or motor control was exercised.",
+    "Photo workflow tests use controlled responses; retained prior live inference evidence is separate.",
+    "The first cold Windows warmup failed before the shared deadline repair; the later normal test deadlines were unchanged.",
+    "ARM64 initially exhausted GPU-accessible host memory; native tests passed after recovering memory from verified inactive temporary snapshots."
+  ],
+  "logs": {
+    "arm64-suite-after-memory.log": {
+      "bytes": 25991,
+      "retention": "private worker log; summary above omits private filesystem paths",
+      "sha256": "ea2e57e773149afdf58afb1386db65a9194a9759220d7cd9d6b2919ce6a93f12"
+    },
+    "linux-x86-suite.log": {
+      "bytes": 33079,
+      "retention": "private worker log; summary above omits private filesystem paths",
+      "sha256": "6541f7b6b2a1d9206224c3a9911569cf1a62d9c873444c42580828ee687bf114"
+    },
+    "omarchy-wayland-suite.log": {
+      "bytes": 30749,
+      "retention": "private worker log; summary above omits private filesystem paths",
+      "sha256": "476b3009901ac8b82b29434024c52472a0610ae63096f6cd1badf64d54c9a3c3"
+    },
+    "windows-isolated-suite.log": {
+      "bytes": 28965,
+      "retention": "private worker log; summary above omits private filesystem paths",
+      "sha256": "dfba63d75325017dd60ebaba7915a3c88b5e82fe9e5a9a1954ed5492325729fa"
+    },
+    "windows-laptop-fresh-setup.log": {
+      "bytes": 5692,
+      "retention": "private worker log; summary omits private filesystem paths",
+      "sha256": "3fee354f2f2fb2742b2efbb6f452abff7f60b6ddf8d438968ea3403d39fd1b02"
+    },
+    "windows-laptop-native-suite.log": {
+      "bytes": 27972,
+      "retention": "private worker log; summary omits private filesystem paths",
+      "sha256": "6ffdd758da55f7dcf1ab9252e69b1b8735dc8fc7268edab9afb964882802ab46"
+    },
+    "windows-laptop-shortcut.log": {
+      "bytes": 1394,
+      "retention": "private worker log; summary omits private filesystem paths",
+      "sha256": "f7baadae9463e94324142c5e52af1ecd79d49ef167fab68e8717ee6888a15b04"
+    }
+  },
+  "platforms": [
+    {
+      "display": "real Qt; separate local window screenshot reviewed",
+      "driver": "595.84",
+      "exit_code": 0,
+      "gpu": "NVIDIA GB10",
+      "idempotent_setup": "passed: hash-locked pip install, pip check, diagnostics and real native warmup",
+      "installation": "isolated environment; strict offline installation and revalidation of 11212 files passed",
+      "python": "3.11.14",
+      "seconds": 211.522,
+      "target": "Linux ARM64",
+      "tests": 160,
+      "warmup_seconds": 10.919
+    },
+    {
+      "display": "Xvfb",
+      "driver": "595.84",
+      "exit_code": 0,
+      "gpu": "NVIDIA GeForce RTX 5090",
+      "installation": "existing exact SDK runtime",
+      "python": "3.11",
+      "seconds": 83.834,
+      "target": "Linux x86-64",
+      "tests": 160,
+      "warmup_seconds": 117.42
+    },
+    {
+      "display": "native Wayland",
+      "driver": "610.57.04",
+      "exit_code": 0,
+      "gpu": "NVIDIA GeForce RTX 5080 Laptop GPU",
+      "installation": "isolated project environment; desktop launcher install, removal and launch verified",
+      "python": "3.11.16",
+      "seconds": 108.239,
+      "target": "Omarchy 4.0.4 x86-64",
+      "tests": 160,
+      "warmup_seconds": 7.079
+    },
+    {
+      "driver": "595.97",
+      "exit_code": 0,
+      "gpu": "NVIDIA L40",
+      "idempotent_setup": "passed: hash-locked pip install, pip check, diagnostics and real native warmup",
+      "installation": "isolated environment using hard links to existing exact SDK files; insufficient free space for a clean SDK download and extraction",
+      "launcher": {
+        "closed_result": {
+          "application": "LeRTX",
+          "closed": true
+        },
+        "entry": "Start Menu shortcut via pythonw",
+        "first_frame_seconds": 17.844,
+        "installed": true,
+        "native_status": "Native: ready",
+        "remaining_application_processes": 0,
+        "removed_and_reinstalled": true,
+        "test_instrumentation": "Temporary inherited startup hook closes only after first native frame; installed source and shortcut unchanged"
+      },
+      "os_build": "10.0.26100",
+      "python": "3.12.10",
+      "seconds": 371.49,
+      "target": "Windows 11 Enterprise x86-64",
+      "tests": 160,
+      "warmup_seconds": 19.391
+    },
+    {
+      "delivery_identity": "7165c815a7259c23af7246525e4fc684048029043184a9dbb010ce2b908bd657",
+      "driver": "610.74",
+      "exit_code": 0,
+      "gpu": "NVIDIA GeForce RTX 5080 Laptop GPU",
+      "installation": "Fresh Python installation from signature-verified Python Software Foundation installer; fresh isolated environment and hash-checked SDK downloads; pip check and diagnostics passed",
+      "launcher": {
+        "closed_result": {
+          "application": "LeRTX",
+          "closed": true
+        },
+        "entry": "Start Menu shortcut via pythonw",
+        "first_frame_seconds": 6.844,
+        "installed": true,
+        "native_status": "Native: ready",
+        "remaining_application_processes": 0,
+        "removed_and_reinstalled": true,
+        "test_instrumentation": "Temporary inherited startup hook captures and closes the real window after its first native frame; source and shortcut unchanged"
+      },
+      "os_build": "10.0.26200",
+      "python": "3.11.9",
+      "seconds": 140.77,
+      "target": "Windows 11 Home x86-64 (fresh installation)",
+      "tests": 160,
+      "warmup_seconds": 149.969
+    }
+  ],
+  "schema": "lertx/prototype-platform-review@1",
+  "scope": "Native prototype runtime; not formal lifecycle admission or physical robot control",
+  "screenshots": {
+    "verification/native/prototype/linux-arm64.png": "630f4443ff81e7f270e0fd028b2af366a5abad793c053cb5517c7efed132a913",
+    "verification/native/prototype/omarchy-wayland.png": "dfc96d401e064ec7892f351d3914a3a2cd8adc05ceb01285ca1c4585d4760c52",
+    "verification/native/prototype/windows-laptop-shortcut.png": "b9d1b1ffbdc49a23543ea103b77d59a77b9e4efd6af648f8bcd86af2e6b39d9d",
+    "verification/native/prototype/windows-shortcut.png": "69806369df7962d77e6dcc6c40152ab8f67a5797f02128177d0387a719b56b4e"
+  },
+  "suite_identity": "addff3790218b838178fa014a74acb337542cd9d2204065db0123fd1c1ded985",
+  "suite_identity_scope": "desktop/source and acceptance scene fixtures, excluding the separately tested lertx/warmup.py installer utility",
+  "verified": [
+    "Actual RTX frames and Qt controls",
+    "Newton motion, pause, camera, reset and shutdown",
+    "USD editing, atomic save/reopen and failure preservation",
+    "Settings and bounded inference request handling",
+    "Photo draft rendering, editing, unverified status and cancellation",
+    "Explicitly simulated leader/follower telemetry",
+    "Windows and Linux platform/ABI and USD provider selection"
+  ]
+}

@@ -1,0 +1,7 @@
+[
+  {
+    "cpu_stat": "usage_usec 170717824\nuser_usec 155862728\nsystem_usec 14855096\nnice_usec 0\ncore_sched.force_idle_usec 0\nnr_periods 1603\nnr_throttled 54\nthrottled_usec 27719587\nnr_bursts 0\nburst_usec 0\n",
+    "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+    "cpu_max": "200000 100000\n"
+  }
+]

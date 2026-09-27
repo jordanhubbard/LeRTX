@@ -2,6 +2,34 @@
 
 ## Unreleased
 
+- Desktop hardware: explicit SO-101 USB telemetry, LeRobot calibration import,
+  motor arming, held bounded movement, torque-off stop and fault handling through
+  the pinned Feetech SDK. Measured joint bindings support live articulated viewing
+  and explicit virtual-pose targets. Added a Selected joint slider for simulation.
+  Software validation uses emulated motors; physical-arm qualification is pending.
+
+- Desktop: grab rendered SO-101 links to manipulate joints through bounded
+  Newton targets, with RTX selection outlines and synchronized hierarchy selection.
+  Paused drags preview physics; follower dragging requires following to be off.
+  Alt-drag orbits, right-drag pans, and scroll zooms. Physical USB control remains
+  unimplemented.
+
+- Omarchy performance testing of the SO-101 workspace: corrected frame scheduling
+  improves the actual 720p Qt window from 12.4 to 29.95 fps and simulation from
+  41.5% to 99.7% of wall time. Compact, bounded runtime snapshots reduce scene
+  reopen latency. Sequential memory-capped runs cover sustained rendering, idle,
+  ten resets and ten reopens; 11 focused regressions pass in desktop startup order.
+  Reopen memory retention and late-Qt SDK initialization remain unresolved.
+  See `verification/performance/omarchy-20260926/README.md`; this is worktree
+  performance evidence, not full application or release qualification.
+- Prototype platform support: Linux ARM64 uses the verified `usd-exchange`
+  provider; Windows and Linux x86-64 retain `usd-core`. Added per-platform hash
+  locks, isolated setup, diagnostics, renderer warmup, desktop launchers and a
+  reproducible source/setup ZIP. All 160 application tests pass on Windows 11,
+  Linux x86-64, Linux ARM64 and Omarchy. Windows Start Menu launch produces a
+  real frame and closes cleanly. ARM64 artifact admission and its full native suite
+  pass. Fresh Windows 11 installation on an RTX 5080 Laptop also passes all 160
+  tests and Start Menu launch; physical robot control is separate follow-on work.
 - Project checkpoint: consolidate all remaining framework qualification,
   application admission, Linux/Windows delivery, configuration/photo acceptance,
   robot telemetry, measured registration and deferred control work in the roadmap.

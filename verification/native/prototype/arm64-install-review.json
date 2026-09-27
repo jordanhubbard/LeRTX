@@ -1,0 +1,605 @@
+{
+  "schema": "lertx/native-wheel-install-review@1",
+  "scope": "disposable-offline-install-not-application-admission",
+  "target_identity": "sha256:e5af4d32a53c8188215400b3aeb944bce0a5326e699ed5ecb15455dd16020232",
+  "installer_identity": "sha256:3992bc9c31631db31d92d0e6f94290e50b7138cce0cffbfdeb41d26005390773",
+  "install_process_identity": "sha256:b7892cfc521fdc87feeff2fe6877db81a180213441637f37e145aabdc1d6955c",
+  "installed_tree_identity": "sha256:f60f3781d9930bf090428963e7f32885cb3ca7455683433b65997530045e3de8",
+  "installed_files": 11212,
+  "components": [
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/newton",
+      "name": "newton",
+      "version": "1.6.0",
+      "purl": "pkg:pypi/newton@1.6.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "6053ce31c8ec97b5cc7ec1a989dd7070d365712f2e6d37531d052f4e34003c5b"
+        }
+      ],
+      "properties": [
+        {
+          "name": "literate-ai:dependency-kind",
+          "value": "package"
+        },
+        {
+          "name": "literate-ai:dependency-scope",
+          "value": "runtime"
+        },
+        {
+          "name": "literate-ai:python-installed-tree-identity",
+          "value": "sha256:6053ce31c8ec97b5cc7ec1a989dd7070d365712f2e6d37531d052f4e34003c5b"
+        },
+        {
+          "name": "literate-ai:python-top-level-import",
+          "value": "newton"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/numpy",
+      "name": "numpy",
+      "version": "2.4.6",
+      "purl": "pkg:pypi/numpy@2.4.6",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "98a7f114cff25a7022071dd71a10989760bab8da60f92decececbb8bfc0778ac"
+        }
+      ],
+      "properties": [
+        {
+          "name": "literate-ai:dependency-kind",
+          "value": "package"
+        },
+        {
+          "name": "literate-ai:dependency-scope",
+          "value": "runtime"
+        },
+        {
+          "name": "literate-ai:python-installed-tree-identity",
+          "value": "sha256:98a7f114cff25a7022071dd71a10989760bab8da60f92decececbb8bfc0778ac"
+        },
+        {
+          "name": "literate-ai:python-top-level-import",
+          "value": "numpy"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/ovrtx",
+      "name": "ovrtx",
+      "version": "0.5.0.377615",
+      "purl": "pkg:pypi/ovrtx@0.5.0.377615",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "31321df4441bd693c6fffed0f4337e5eaaface25c6c8075fbb30a1784535285e"
+        }
+      ],
+      "properties": [
+        {
+          "name": "literate-ai:dependency-kind",
+          "value": "package"
+        },
+        {
+          "name": "literate-ai:dependency-scope",
+          "value": "runtime"
+        },
+        {
+          "name": "literate-ai:python-installed-tree-identity",
+          "value": "sha256:31321df4441bd693c6fffed0f4337e5eaaface25c6c8075fbb30a1784535285e"
+        },
+        {
+          "name": "literate-ai:python-top-level-import",
+          "value": "ovrtx"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/ovstage",
+      "name": "ovstage",
+      "version": "0.2.0.377349",
+      "purl": "pkg:pypi/ovstage@0.2.0.377349",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "63e84b17fccfa8bc5f1217bacd3130cbd7070e59cde497f063f58a4ac67a0dda"
+        }
+      ],
+      "properties": [
+        {
+          "name": "literate-ai:dependency-kind",
+          "value": "package"
+        },
+        {
+          "name": "literate-ai:dependency-scope",
+          "value": "runtime"
+        },
+        {
+          "name": "literate-ai:python-installed-tree-identity",
+          "value": "sha256:63e84b17fccfa8bc5f1217bacd3130cbd7070e59cde497f063f58a4ac67a0dda"
+        },
+        {
+          "name": "literate-ai:python-top-level-import",
+          "value": "ovstage"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/pyside6",
+      "name": "pyside6",
+      "version": "6.10.2",
+      "purl": "pkg:pypi/pyside6@6.10.2",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "7bdf8dcb97bec87952c80912d720f9cdf4675cf508f5723e0d31302bab3e8be6"
+        }
+      ],
+      "properties": [
+        {
+          "name": "literate-ai:dependency-kind",
+          "value": "package"
+        },
+        {
+          "name": "literate-ai:dependency-scope",
+          "value": "runtime"
+        },
+        {
+          "name": "literate-ai:python-installed-tree-identity",
+          "value": "sha256:7bdf8dcb97bec87952c80912d720f9cdf4675cf508f5723e0d31302bab3e8be6"
+        },
+        {
+          "name": "literate-ai:python-top-level-import",
+          "value": "PySide6"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/pyside6-addons",
+      "name": "pyside6-addons",
+      "version": "6.10.2",
+      "purl": "pkg:pypi/pyside6-addons@6.10.2",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "83106c945375e1dcac48289553c79c70510289555f7fef3778c426b0eef31c9c"
+        }
+      ],
+      "properties": [
+        {
+          "name": "literate-ai:dependency-kind",
+          "value": "package"
+        },
+        {
+          "name": "literate-ai:dependency-scope",
+          "value": "runtime"
+        },
+        {
+          "name": "literate-ai:python-installed-tree-identity",
+          "value": "sha256:83106c945375e1dcac48289553c79c70510289555f7fef3778c426b0eef31c9c"
+        },
+        {
+          "name": "literate-ai:python-top-level-import",
+          "value": "PySide6"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/pyside6-essentials",
+      "name": "pyside6-essentials",
+      "version": "6.10.2",
+      "purl": "pkg:pypi/pyside6-essentials@6.10.2",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "a2757e22795256a93e9070ad4d074acd648a6925d77eb37d624db09c986f62e7"
+        }
+      ],
+      "properties": [
+        {
+          "name": "literate-ai:dependency-kind",
+          "value": "package"
+        },
+        {
+          "name": "literate-ai:dependency-scope",
+          "value": "runtime"
+        },
+        {
+          "name": "literate-ai:python-installed-tree-identity",
+          "value": "sha256:a2757e22795256a93e9070ad4d074acd648a6925d77eb37d624db09c986f62e7"
+        },
+        {
+          "name": "literate-ai:python-top-level-import",
+          "value": "PySide6"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/shiboken6",
+      "name": "shiboken6",
+      "version": "6.10.2",
+      "purl": "pkg:pypi/shiboken6@6.10.2",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "70c993232d6c19eb881e3e00b8445e5cc0480228f8ad1f1d623a881ee9ebba77"
+        }
+      ],
+      "properties": [
+        {
+          "name": "literate-ai:dependency-kind",
+          "value": "package"
+        },
+        {
+          "name": "literate-ai:dependency-scope",
+          "value": "runtime"
+        },
+        {
+          "name": "literate-ai:python-installed-tree-identity",
+          "value": "sha256:70c993232d6c19eb881e3e00b8445e5cc0480228f8ad1f1d623a881ee9ebba77"
+        },
+        {
+          "name": "literate-ai:python-top-level-import",
+          "value": "shiboken6"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/usd-exchange",
+      "name": "usd-exchange",
+      "version": "3.0.0",
+      "purl": "pkg:pypi/usd-exchange@3.0.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "7b6a7fdadca89e9cf856dfbbdccf30cb0acd9a3606dcd26b046766b2636f7066"
+        }
+      ],
+      "properties": [
+        {
+          "name": "literate-ai:dependency-kind",
+          "value": "package"
+        },
+        {
+          "name": "literate-ai:dependency-scope",
+          "value": "runtime"
+        },
+        {
+          "name": "literate-ai:python-installed-tree-identity",
+          "value": "sha256:7b6a7fdadca89e9cf856dfbbdccf30cb0acd9a3606dcd26b046766b2636f7066"
+        },
+        {
+          "name": "literate-ai:python-top-level-import",
+          "value": "pxr"
+        },
+        {
+          "name": "literate-ai:python-top-level-import",
+          "value": "usdex"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/warp-lang",
+      "name": "warp-lang",
+      "version": "1.17.0",
+      "purl": "pkg:pypi/warp-lang@1.17.0",
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "0127a5aaac73d1a289bbedaaff854766d891ea071277b5ce79c024094f2814dc"
+        }
+      ],
+      "properties": [
+        {
+          "name": "literate-ai:dependency-kind",
+          "value": "package"
+        },
+        {
+          "name": "literate-ai:dependency-scope",
+          "value": "runtime"
+        },
+        {
+          "name": "literate-ai:python-installed-tree-identity",
+          "value": "sha256:0127a5aaac73d1a289bbedaaff854766d891ea071277b5ce79c024094f2814dc"
+        },
+        {
+          "name": "literate-ai:python-top-level-import",
+          "value": "warp"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    [
+      "@root",
+      "pkg:pypi/newton"
+    ],
+    [
+      "@root",
+      "pkg:pypi/numpy"
+    ],
+    [
+      "@root",
+      "pkg:pypi/ovrtx"
+    ],
+    [
+      "@root",
+      "pkg:pypi/ovstage"
+    ],
+    [
+      "@root",
+      "pkg:pypi/pyside6"
+    ],
+    [
+      "@root",
+      "pkg:pypi/usd-exchange"
+    ],
+    [
+      "@root",
+      "pkg:pypi/warp-lang"
+    ],
+    [
+      "pkg:pypi/newton",
+      "pkg:pypi/warp-lang"
+    ],
+    [
+      "pkg:pypi/pyside6",
+      "pkg:pypi/pyside6-addons"
+    ],
+    [
+      "pkg:pypi/pyside6",
+      "pkg:pypi/pyside6-essentials"
+    ],
+    [
+      "pkg:pypi/pyside6",
+      "pkg:pypi/shiboken6"
+    ],
+    [
+      "pkg:pypi/pyside6-addons",
+      "pkg:pypi/pyside6-essentials"
+    ],
+    [
+      "pkg:pypi/pyside6-addons",
+      "pkg:pypi/shiboken6"
+    ],
+    [
+      "pkg:pypi/pyside6-essentials",
+      "pkg:pypi/shiboken6"
+    ],
+    [
+      "pkg:pypi/warp-lang",
+      "pkg:pypi/numpy"
+    ]
+  ],
+  "packages": [
+    {
+      "name": "newton",
+      "version": "1.6.0",
+      "filename": "newton-1.6.0-py3-none-any.whl",
+      "sha256": "5eedebe17d7261ca39e8f97c2f2f20e22e7264d0aed01782f3cb1dd60180b872",
+      "bytes": 6159741,
+      "requires_python": ">=3.10",
+      "requires_dist": [
+        "alphashape>=1.3.1 ; extra == 'importers'",
+        "cbor2>=5.7.0 ; extra == 'examples'",
+        "coacd>=1.0.7 ; python_full_version < '3.14' and extra == 'importers'",
+        "coverage[toml]>=7.8.0 ; extra == 'dev'",
+        "fast-simplification>=0.1.11 ; extra == 'importers'",
+        "gitpython>=3.1.58 ; extra == 'docs'",
+        "gitpython>=3.1.58 ; extra == 'examples'",
+        "imgui-bundle>=1.92.0 ; extra == 'examples'",
+        "ipykernel>=6.0.0,<7.0.0 ; extra == 'docs'",
+        "jupyter-server-proxy>=4.5.0 ; extra == 'notebook'",
+        "jupyterlab>=4.5.7 ; extra == 'notebook'",
+        "meshio>=5.3.5 ; extra == 'importers'",
+        "mujoco-warp~=3.12.0 ; extra == 'sim'",
+        "mujoco~=3.12.0 ; extra == 'sim'",
+        "myst-parser>=3.0.1 ; extra == 'docs'",
+        "nbsphinx>=0.9.0 ; extra == 'docs'",
+        "newton-usd-schemas>=0.5.0 ; extra == 'importers'",
+        "newton[examples] ; extra == 'dev'",
+        "newton[examples] ; extra == 'notebook'",
+        "newton[examples] ; extra == 'torch-cu12'",
+        "newton[examples] ; extra == 'torch-cu13'",
+        "newton[importers] ; extra == 'docs'",
+        "newton[importers] ; extra == 'examples'",
+        "newton[importers] ; extra == 'rtx'",
+        "newton[onnx] ; extra == 'examples'",
+        "newton[sim] ; extra == 'examples'",
+        "open3d>=0.19.0 ; (python_full_version < '3.13' and platform_machine != 'aarch64' and extra == 'importers') or (python_full_version < '3.13' and sys_platform != 'linux' and extra == 'importers')",
+        "open3d>=0.19.0 ; (python_full_version < '3.13' and platform_machine != 'aarch64' and extra == 'remesh') or (python_full_version < '3.13' and sys_platform != 'linux' and extra == 'remesh')",
+        "ovrtx>=0.3 ; extra == 'rtx'",
+        "pillow>=11.3.0 ; extra == 'examples'",
+        "pycollada>=0.9 ; extra == 'importers'",
+        "pydata-sphinx-theme>=0.16.1 ; extra == 'docs'",
+        "pyfqmr>=0.5.0 ; extra == 'remesh'",
+        "pyglet>=2.1.6,<3 ; extra == 'examples'",
+        "pyglet>=2.1.6,<3 ; extra == 'rtx'",
+        "pypandoc-binary>=1.11 ; extra == 'docs'",
+        "pypandoc>=1.11 ; extra == 'docs'",
+        "pyyaml>=6.0.2 ; extra == 'examples'",
+        "requests>=2.25.0 ; extra == 'importers'",
+        "rerun-sdk[notebook]>=0.27.1 ; python_full_version < '3.14' and extra == 'notebook'",
+        "resolve-robotics-uri-py>=0.4.0 ; extra == 'importers'",
+        "scipy>=1.11.0 ; extra == 'importers'",
+        "sphinx-copybutton>=0.5.0 ; extra == 'docs'",
+        "sphinx-design>=0.5.0,<=0.6.1 ; extra == 'docs'",
+        "sphinx-tabs>=3.3.0 ; extra == 'docs'",
+        "sphinx>=7.4.7 ; extra == 'docs'",
+        "sphinxcontrib-mermaid>=1.0.0 ; extra == 'docs'",
+        "torch>=2.10.0 ; extra == 'torch-cu13'",
+        "torch>=2.7.0 ; extra == 'torch-cu12'",
+        "trimesh>=4.6.8 ; extra == 'importers'",
+        "usd-core>=25.5,<26.5 ; python_full_version < '3.14' and platform_machine != 'aarch64' and extra == 'importers'",
+        "usd-exchange>=2.2.0,<3 ; python_full_version < '3.13' and platform_machine == 'aarch64' and extra == 'importers'",
+        "viser==1.0.26 ; extra == 'docs'",
+        "viser==1.0.26 ; extra == 'notebook'",
+        "warp-lang>=1.17.0",
+        "warp-nn[onnx]==0.3.1 ; extra == 'onnx'"
+      ],
+      "status": "pass",
+      "members": 884,
+      "expanded_bytes": 27430780
+    },
+    {
+      "name": "numpy",
+      "version": "2.4.6",
+      "filename": "numpy-2.4.6-cp311-cp311-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl",
+      "sha256": "0ab0a9c4ffb1a6d95ef519fe4247dba8eb6b18ad93999f76b7f657039acabd47",
+      "bytes": 15966692,
+      "requires_python": ">=3.11",
+      "requires_dist": [],
+      "status": "pass",
+      "members": 1041,
+      "expanded_bytes": 55772341
+    },
+    {
+      "name": "ovrtx",
+      "version": "0.5.0.377615",
+      "filename": "ovrtx-0.5.0.377615-py3-none-manylinux_2_35_aarch64.whl",
+      "sha256": "77371fc8cfa6aceb660abe0a11978a4c7b608da7214ca22a5df1a3dd64111258",
+      "bytes": 1178661408,
+      "requires_python": ">=3.10",
+      "requires_dist": [],
+      "status": "pass",
+      "members": 4524,
+      "expanded_bytes": 2029232362
+    },
+    {
+      "name": "ovstage",
+      "version": "0.2.0.377349",
+      "filename": "ovstage-0.2.0.377349-py3-none-manylinux_2_35_aarch64.whl",
+      "sha256": "48622327aa693774e0f03a283e11aa25344119ff0cfc411867e4d03a38c6f4ea",
+      "bytes": 68611171,
+      "requires_python": ">=3.10",
+      "requires_dist": [],
+      "status": "pass",
+      "members": 261,
+      "expanded_bytes": 216693970
+    },
+    {
+      "name": "pyside6",
+      "version": "6.10.2",
+      "filename": "pyside6-6.10.2-cp39-abi3-manylinux_2_39_aarch64.whl",
+      "sha256": "0439f5e9b10ebe6177981bac9e219096ec970ac6ec215bef055279802ba50601",
+      "bytes": 563357,
+      "requires_python": "<3.15,>=3.9",
+      "requires_dist": [
+        "PySide6_Addons==6.10.2",
+        "PySide6_Essentials==6.10.2",
+        "shiboken6==6.10.2"
+      ],
+      "status": "pass",
+      "members": 66,
+      "expanded_bytes": 4817217
+    },
+    {
+      "name": "pyside6-addons",
+      "version": "6.10.2",
+      "filename": "pyside6_addons-6.10.2-cp39-abi3-manylinux_2_39_aarch64.whl",
+      "sha256": "fcee0373e3fd7b98f014094e5e37b4a39e4de7c5a47c13f654a7d557d4a426ad",
+      "bytes": 166423836,
+      "requires_python": "<3.15,>=3.9",
+      "requires_dist": [
+        "PySide6_Essentials==6.10.2",
+        "shiboken6==6.10.2"
+      ],
+      "status": "pass",
+      "members": 1285,
+      "expanded_bytes": 416366193
+    },
+    {
+      "name": "pyside6-essentials",
+      "version": "6.10.2",
+      "filename": "pyside6_essentials-6.10.2-cp39-abi3-manylinux_2_39_aarch64.whl",
+      "sha256": "c2b028e4c6f8047a02c31f373408e23b4eedfd405f56c6aba8d0525c29472835",
+      "bytes": 76114242,
+      "requires_python": "<3.15,>=3.9",
+      "requires_dist": [
+        "shiboken6==6.10.2"
+      ],
+      "status": "pass",
+      "members": 2337,
+      "expanded_bytes": 232175276
+    },
+    {
+      "name": "shiboken6",
+      "version": "6.10.2",
+      "filename": "shiboken6-6.10.2-cp39-abi3-manylinux_2_39_aarch64.whl",
+      "sha256": "f74d3ed1f92658077d0630c39e694eb043aeb1d830a5d275176c45d07147427f",
+      "bytes": 269868,
+      "requires_python": "<3.15,>=3.9",
+      "requires_dist": [],
+      "status": "pass",
+      "members": 56,
+      "expanded_bytes": 726865
+    },
+    {
+      "name": "usd-exchange",
+      "version": "3.0.0",
+      "filename": "usd_exchange-3.0.0-cp311-cp311-manylinux_2_35_aarch64.whl",
+      "sha256": "02b6f47f6d97b00c3c79a33862a5b7f53cac5e87311cc6b636a4742f7ba5270e",
+      "bytes": 26123597,
+      "requires_python": "<3.14,>=3.10",
+      "requires_dist": [
+        "usd-validation-nvidia<2,>=1.21.0; extra == 'test'"
+      ],
+      "status": "pass",
+      "members": 243,
+      "expanded_bytes": 205834172
+    },
+    {
+      "name": "warp-lang",
+      "version": "1.17.0",
+      "filename": "warp_lang-1.17.0-py3-none-manylinux_2_34_aarch64.whl",
+      "sha256": "5051271048da956a8b94e2db9771ce60ce9591a3ac5bb49037f3d6812d1eea00",
+      "bytes": 172665443,
+      "requires_python": ">=3.10",
+      "requires_dist": [
+        "blosc>=1.11.1; (sys_platform != \"win32\" or (platform_machine != \"ARM64\" and platform_machine != \"arm64\" and platform_machine != \"aarch64\")) and extra == \"examples\"",
+        "coverage[toml]; extra == \"dev\"",
+        "matplotlib>=3.7.5; extra == \"examples\"",
+        "ml-dtypes>=0.5.4; extra == \"dev\"",
+        "myst_parser; extra == \"docs\"",
+        "numpy",
+        "nvidia-sphinx-theme; extra == \"docs\"",
+        "nvtx; (sys_platform != \"win32\" or (platform_machine != \"ARM64\" and platform_machine != \"arm64\" and platform_machine != \"aarch64\")) and extra == \"dev\"",
+        "pillow>=10.4.0; extra == \"examples\"",
+        "pre-commit; extra == \"docs\"",
+        "psutil>=7.1.0; extra == \"examples\"",
+        "pyglet>=2.1.9; extra == \"examples\"",
+        "sphinx-copybutton; extra == \"docs\"",
+        "torch>=2.7.0; extra == \"torch-cu12\"",
+        "torch>=2.9.0; extra == \"torch-cu13\"",
+        "usd-core>=25.5; ((sys_platform != \"linux\" or platform_machine != \"aarch64\") and (sys_platform != \"win32\" or (platform_machine != \"ARM64\" and platform_machine != \"arm64\" and platform_machine != \"aarch64\"))) and extra == \"benchmark\"",
+        "usd-core>=25.5; ((sys_platform != \"linux\" or platform_machine != \"aarch64\") and (sys_platform != \"win32\" or (platform_machine != \"ARM64\" and platform_machine != \"arm64\" and platform_machine != \"aarch64\"))) and extra == \"examples\"",
+        "usd-exchange>=2.2; (python_version >= \"3.10\" and python_version < \"3.13\" and sys_platform == \"linux\" and platform_machine == \"aarch64\") and extra == \"benchmark\"",
+        "usd-exchange>=2.2; (python_version >= \"3.10\" and python_version < \"3.13\" and sys_platform == \"linux\" and platform_machine == \"aarch64\") and extra == \"examples\"",
+        "warp-lang[docs]; extra == \"dev\"",
+        "warp-lang[examples]; extra == \"dev\"",
+        "warp-lang[examples]; extra == \"torch-cu12\"",
+        "warp-lang[examples]; extra == \"torch-cu13\""
+      ],
+      "status": "pass",
+      "members": 593,
+      "expanded_bytes": 479059486
+    }
+  ],
+  "revalidation": "pass",
+  "verifier_sha256": "5ce3f75b7e7975c5755d2332aa9777322c388b4f87539199e899e440475fb1f5",
+  "status": "pass",
+  "cleanup": "pass"
+}

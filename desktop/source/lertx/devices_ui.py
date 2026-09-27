@@ -19,7 +19,7 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
             note = QLabel("Metadata discovery does not open serial ports. Candidates are not yet verified SO-101 robots. "
                           "Assign leader/follower explicitly. Unique USB serial identities are remembered; ambiguous "
                           "or absent serial IDs are session-only and cleared when disconnected or this panel closes. "
-                          "Telemetry and actuation are unavailable until the LeRobot adapter is qualified.")
+                          "Open a hardware panel for explicit read-only connection, calibration and manual motor controls.")
             note.setWordWrap(True)
             layout.addWidget(note)
             self.tree = QTreeWidget()
@@ -32,6 +32,7 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
             self.role_labels = {}
             self.assign_buttons = {}
             self.clear_buttons = {}
+            self.hardware_buttons = {}
             for role in ROLES:
                 row = QHBoxLayout()
                 label = QLabel(role + ": unassigned")
@@ -46,6 +47,9 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
                 clear.clicked.connect(lambda checked=False, role=role: self.unassign(role))
                 self.clear_buttons[role] = clear
                 row.addWidget(clear)
+                hardware=QPushButton('Open hardware controls')
+                hardware.clicked.connect(lambda checked=False,role=role:self.open_hardware(role))
+                self.hardware_buttons[role]=hardware;row.addWidget(hardware)
                 layout.addLayout(row)
             self.scan_button = QPushButton("Scan now")
             self.scan_button.clicked.connect(self.scan)
@@ -81,6 +85,13 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
             dialog.exec()
             dialog.deleteLater()
 
+        def open_hardware(self,role):
+            if not self.roles or not self.last_scan_ok:return
+            state,candidate=self.roles.resolve(role,self.candidates)
+            if state=='assigned' and parent and hasattr(parent,'open_hardware'):
+                parent.open_hardware(candidate,role)
+                self.accept()
+
         def selected(self):
             item = self.tree.currentItem()
             return item.data(0, Qt.ItemDataRole.UserRole) if item else None
@@ -100,6 +111,8 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
                 self.role_labels[role].setText(role + ": " + message)
                 self.assign_buttons[role].setEnabled(self.roles is not None and selected is not None and self.last_scan_ok)
                 self.clear_buttons[role].setEnabled(self.roles is not None)
+                assigned=self.roles.resolve(role,self.candidates)[0]=='assigned' if self.roles else False
+                self.hardware_buttons[role].setEnabled(assigned and self.last_scan_ok)
 
         def scan(self):
             if not self.active or self.ticket is not None:

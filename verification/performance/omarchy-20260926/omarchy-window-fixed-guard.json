@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "memory_limit_bytes": 8589934592,
+  "reserve_bytes": 17179869184,
+  "swap_limit_bytes": 0,
+  "timeout_seconds": 120.0,
+  "launched": true,
+  "initial_available_bytes": 26591510528,
+  "minimum_available_bytes": 23353561088,
+  "seconds": 35.814,
+  "returncode": 0
+}

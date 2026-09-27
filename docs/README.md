@@ -6,6 +6,8 @@ running OVRTX / OVStage viewport with Newton physics.
 
 See the [runtime contract](architecture/runtime.md) for integration boundaries
 and the required hardware acceptance evidence.
+The [NVIDIA methodology](architecture/nvidia-methodology.md) guides native
+viewport interactions, USD robot assets and simulation validation.
 The [configuration contract](architecture/configuration.md) defines LLM defaults,
 credential handling, and application settings behavior.
 The [digital-twin contract](architecture/digital-twin.md) defines milestone-three
@@ -13,6 +15,8 @@ photo reconstruction and measurement uncertainty, plus separately scoped
 follow-on read-only SO-101 telemetry.
 
 Start with [getting started](user/getting-started.md) for installation and usage.
+See [hardware controls](user/hardware.md) for USB connection, calibration, manual
+movement and measured physical-to-virtual bindings.
 See [active work](roadmap/active-work.md) for current development status.
 
 ## Development

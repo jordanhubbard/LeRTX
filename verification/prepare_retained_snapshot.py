@@ -2,8 +2,9 @@
 
 Run on the admission worker using the qualified project-local Litai interpreter
 and the same coding-provider selection as rebuild. Existing application modules
-are copied byte-for-byte into a new snapshot; only the stale manifest recipe is
-updated, and current pre-build SBOM/wheel-lock declarations are added. Package
+are copied byte-for-byte into a new snapshot; the manifest recipe is updated,
+requirements markers are resolved for the target, and current pre-build
+SBOM/wheel-lock declarations are added. Package
 hashes and aliases come from separately verified archive/installation reports.
 The actual lifecycle must reverify target, archives and installed payloads.
 """
@@ -14,6 +15,8 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+from packaging.requirements import Requirement
+from packaging.utils import canonicalize_name
 
 from literate_ai.adapters.dependencies import build_cyclonedx_bom
 from literate_ai.adapters.dependencies.python_lock import (
@@ -32,7 +35,7 @@ from literate_ai.adapters.models.coding_cli import (
     _require_recipe_authority_sbom,
 )
 from literate_ai.application.generation_preparation import GenerationPreparationRequest
-from literate_ai.contracts import CycloneDxLifecycle
+from literate_ai.contracts import CycloneDxLifecycle, canonical_json_bytes
 from literate_ai.generated_tests import validate_generated_test_suite
 from literate_ai.projects import discover_project
 
@@ -42,7 +45,8 @@ def encoded(value):
 
 
 def prepare(
-    project_root: Path, output: Path, target_report: Path, install_report: Path
+    project_root: Path, output: Path, target_report: Path, install_report: Path,
+    flavor_selectors: tuple[str, ...] = (), target_profile: str = "host",
 ):
     project_root = project_root.resolve(strict=True)
     source = project_root / "desktop/source"
@@ -53,7 +57,7 @@ def prepare(
     component = project_root / "components/desktop"
     prepared = FilesystemLockedGenerationApplicationAdapter().prepare(
         GenerationPreparationRequest(
-            component, "host", project.flavor_selectors_for(component, ())
+            component, target_profile, project.flavor_selectors_for(component, flavor_selectors)
         )
     )
     # Standard rebuild projects a model-bound node recipe, not the standalone
@@ -86,7 +90,16 @@ def prepare(
         "requires_python",
         "requires_dist",
     )
-    requirements = sorted(source.joinpath("requirements.txt").read_text().splitlines())
+    requirements = []
+    for line in source.joinpath("requirements.txt").read_text().splitlines():
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        requirement = Requirement(line)
+        if requirement.marker is None or requirement.marker.evaluate(target["environment"]):
+            requirement.marker = None
+            requirement.name = canonicalize_name(requirement.name)
+            requirements.append(str(requirement))
+    requirements.sort()
     lock_value = {
         "schema": SCHEMA,
         "environment": target["environment"],
@@ -152,10 +165,11 @@ def prepare(
             data.decode("utf-8")
             original[path.relative_to(source).as_posix()] = data
     files = dict(original)
+    files["requirements.txt"] = ("\n".join(requirements) + "\n").encode()
     manifest = json.loads(files["tests/manifest.json"])
     previous_recipe = manifest["recipe_identity"]
     manifest["recipe_identity"] = recipe.identity
-    files["tests/manifest.json"] = encoded(manifest)
+    files["tests/manifest.json"] = canonical_json_bytes(manifest)
     suite = validate_generated_test_suite(
         files["tests/manifest.json"],
         recipe_identity=recipe.identity,
@@ -180,9 +194,10 @@ def prepare(
         "previous_recipe_identity": previous_recipe,
         "original_files": len(original),
         "snapshot_files": len(files),
-        "preserved_files": len(original) - 1,
+        "preserved_files": sum(files[name] == data for name, data in original.items()),
         "test_cases": len(suite.cases),
         "metadata_changes": [
+            "requirements.txt",
             "tests/manifest.json",
             "python-wheel-lock.json",
             ".literate/sbom.cdx.json",
@@ -201,9 +216,12 @@ if __name__ == "__main__":
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--target", type=Path, required=True)
     parser.add_argument("--installation", type=Path, required=True)
+    parser.add_argument("--flavor", action="append", default=[])
+    parser.add_argument("--profile", default="host")
     args = parser.parse_args()
     print(
         json.dumps(
-            prepare(args.project, args.output, args.target, args.installation), indent=2
+            prepare(args.project, args.output, args.target, args.installation,
+                    tuple(args.flavor), args.profile), indent=2
         )
     )

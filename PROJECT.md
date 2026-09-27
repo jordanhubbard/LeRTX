@@ -2,7 +2,7 @@
 
 ## Goals
 
-Create a beautiful Linux and Windows application for NVIDIA GPUs that makes a
+Create a beautiful Windows 11, Linux x86-64 and Linux ARM64 application for NVIDIA GPUs that makes a
 LeRobot robot and its workspace a usable digital twin. Start with the SO-101
 leader and follower, connected by USB with device discovery and persistent role
 assignment. Use Hugging Face LeRobot code and models.
@@ -38,18 +38,14 @@ Literate AI is pinned by its initialization lineage and lifecycle identity.
 Milestone two requires compatible OVRTX and OVStage SDK artifacts, Newton, and an
 accessible Linux or Windows NVIDIA GPU execution target. Exact SDK versions are
 selected in the native Python Flavor. RTX/OVStage/Newton application scene and
-Qt control tests now pass on Linux and Windows; release-ready packaging and full
-application acceptance remain outstanding. Windows also passes native fixture authoring using the
-unmodified, archive-verified USD Python wheel. A reproducible local metadata-only
-repair of the Linux USD wheel now passes unchanged strict archive validation;
-the complete Linux closure passes disposable installation and revalidation using
-the exact qualified framework wheel. That framework is now bound locally;
-full application admission remains outstanding.
+Qt control tests pass on Linux and Windows. Linux ARM64 retained-source admission,
+independent acceptance, sealed dependency validation and all 160 tests against
+the admitted artifact now pass. Formal release packaging remains separate work.
 The Astra endpoint is `https://inference-api.nvidia.com/v1/responses`, using model
 `azure/openai/gpt-6-astra` and an initial output limit of 512 tokens. An authorized
 live text request and a synthetic-image reconstruction succeeded. The image
-workflow and validated local USD construction are implemented; full current
-acceptance remains outstanding. Follow-on physical synchronization requires the
+workflow and validated local USD construction are implemented and covered by the
+current native prototype tests. Follow-on physical synchronization requires the
 SO-101 devices and calibration data, but is not a milestone-three gate.
 
 ## Completeness
@@ -58,31 +54,55 @@ SO-101 devices and calibration data, but is not a milestone-three gate.
 | --- | --- |
 | Literate AI creation | Canonical application scaffold initialized with litai 1.1.0 |
 | Host development profile | Python / Make / macOS bootstrap; not a GPU product target |
-| Production targets | Linux RTX 5090 and Windows L40 development tests pass; Windows fresh-install staging requires a new capacity check. Historical free-space measurements are not current readiness evidence |
+| Production targets | Current 160-test suites pass on Linux ARM64 GB10, Linux x86-64 RTX 5090, Omarchy RTX 5080 Laptop, and Windows 11 L40; fresh Windows 11 RTX 5080 Laptop installation also passes all 160 tests and Start Menu launch |
 | Starter Component | Framework greeting sample; not the LeRTX application |
 | LeRTX harness Component | `components/harness`: generated, built, launched; 13 tests passed on the bootstrap Mac |
-| Application window and real rendered frames | Retained Qt application renders on both GPU targets; visible controls tested and screenshots reviewed; full acceptance pending |
+| Application window and real rendered frames | Retained Qt application renders on all four tested targets; visible controls and screenshots reviewed; ARM64 artifact acceptance passed |
 | OVRTX / OVStage / Newton integration | Application session tests verify motion, pause/camera, reset, edit/save/reopen and cleanup on both targets |
 | Native USD authoring | Private document layers, atomic save, transform editing and failure recovery tested; broader asset/interaction coverage remains |
-| USB, models, Astra, robot calibration | Photo preview/upload, Astra draft import and persistent unverified warning implemented; live synthetic-image inference succeeds; robot telemetry and measured registration not implemented |
-| LLM configuration | Settings UI and bounded asynchronous connection tests implemented; blank-key persistence and staged settings tested; complete acceptance pending |
+| USB, models, Astra, robot calibration | Explicit SO-101 USB reads, bounded manual writes, calibration import and measured joint binding implemented with emulated-bus tests; physical-arm qualification and world registration pending. Photo reconstruction remains unverified geometry |
+| LLM configuration | Settings UI and bounded asynchronous connection tests implemented; blank-key persistence and staged settings tested in the passing native suites |
 
 ## Current work
+
+APP-001 delivers a self-contained installed desktop application and a preloaded,
+physically simulated SO-101 leader/follower workspace. The prototype qualification
+is its baseline, not the completion criterion. Application installation must be
+independent of this checkout; robot behavior needs articulation and contact tests.
+
+PORT-001 completed the native prototype expansion to Linux ARM64 and an additional
+Arch/Omarchy GPU target, with reproducible isolated setup and real application
+verification on each platform. The operator accepted limited Windows testing;
+native platform support is not proof of physical SO-101 control. The operator
+has authorized copying to the additional worker's source directory, provisioning
+project environments and running the application tests over SSH.
 
 See [active work](docs/roadmap/active-work.md). HARNESS-001 establishes milestone
 one; RENDER-001 owns milestone two. Product vision beyond those milestones is
 preserved above without treating it as implemented behavior.
 CONFIG-001 owns application settings and the inference adapter. TWIN-001 owns
 milestone-three photo reconstruction. ROBOT-001 owns separately scoped follow-on
-mock support and SO-101 synchronization. Physical actuation and automatic motor-register
-calibration writes are not authorized.
+mock support and SO-101 synchronization. The operator now authorizes implementing
+manual USB reads/writes, explicit motor arming, bounded motion and measured
+virtual binding. Connections remain read-only until armed. Automatic EEPROM
+calibration writes and autonomous execution remain separate work; physical
+qualification follows when the operator connects the hardware.
 
-The roadmap's 2026-09-20 open-items checkpoint is the current execution order.
-The renderer-fixed source passes 158 Linux tests and eight targeted Windows
-tests; a full latest-source Windows run remains open. Litai PR #482 supersedes
-the local package-count patch, but its merged-revision CI has a failed Windows
-test shard. Local exact-wheel qualification passed; application rebind, admission,
-current receipts, end-user packaging and clean-install verification remain open.
+PORT-001 records the current cross-platform delivery work. All four current
+native suites pass 160 tests, including a second Windows run in the isolated
+launcher environment. Setup uses platform-specific hash locks and a bounded real
+render warmup. The project has been copied to the additional Omarchy worker;
+desktop launcher installation and removal are implemented. Detailed evidence is
+in `verification/prototype-platform-review.json`.
+The project now binds the qualified framework revision containing both the
+directory-artifact count repair and oversized Windows filesystem-identifier
+repair. Its exact merged revision passes the full hosted matrix; the supported
+rebind preserves the policy and required receipt evidence. `litai verify` remains
+the authority for current application admission and passes all applicable gates.
+The admitted ARM64 artifact passes all 160 tests; the source/setup ZIP passes a
+fresh Omarchy installation, upgrade and all 160 tests. A fresh Windows 11 installation now passes all 160 tests and the real Start Menu
+launch, closing the earlier capacity-limited installation gap.
+The source/setup ZIP is a development bundle, not a published release.
 Measured registration, licensed robot kinematics, read-only physical telemetry
 and any later model/task-control workflow are separate follow-on work.
 

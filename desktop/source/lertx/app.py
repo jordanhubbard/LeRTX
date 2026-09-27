@@ -68,7 +68,7 @@ def _launch(scene_path: Any) -> dict:
     try:
         if temporary:
             scene_path = os.path.join(temporary.name, "untitled.usda")
-            scene_module.create_default_scene(scene_path)
+            scene_module.create_default_scene(scene_path, include_robots=True)
         application = ui_module.build_application()
         window = ui_module.build_main_window(
             profile, lambda: SceneWorker(profile), scene_path, config_path,

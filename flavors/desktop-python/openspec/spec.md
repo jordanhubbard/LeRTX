@@ -4,7 +4,9 @@
 
 Implement `source/main.py` with callable `main(payload)` and the JSON argument
 array wrapper from the selected application implementation skill. Use Python
-3.11 or 3.12 for native GPU execution on Linux x86-64 and Windows x86-64. The
+3.11 or 3.12 for native GPU execution on Linux x86-64, Linux ARM64 and Windows
+11 x86-64. Linux includes Ubuntu and Arch/Omarchy; ARM64 requires glibc 2.39
+or newer for the pinned Qt wheels. The
 defaults command and portable tests must also run on the macOS bootstrap Python
 without importing unavailable native packages. Native commands must reject an
 unsupported host or Python ABI with an actionable error before SDK initialization.
@@ -12,7 +14,14 @@ unsupported host or Python ABI with an actionable error before SDK initializatio
 Use these exact runtime distributions and declare them honestly in requirements
 and the source SBOM: `ovrtx==0.5.0.377615`, `ovstage==0.2.0.377349`,
 `newton==1.6.0`, `warp-lang==1.17.0`, `numpy==2.4.6`, `usd-core==25.11`,
-`PySide6==6.10.2`. Qt dependencies are `PySide6_Addons==6.10.2`,
+`PySide6==6.10.2`, `pyserial==3.5`. The unchanged, vendored
+`feetech-servo-sdk==1.0.0` source and license are part of the application payload,
+with archive/file hashes in `lertx/vendor/feetech/provenance.json`.
+On Linux ARM64 use `usd-exchange==3.0.0` instead of
+`usd-core`: its wheel supplies the native `pxr` bindings and OpenUSD libraries.
+Never install both USD distributions into one environment. Acquire the exact
+OVRTX wheel from NVIDIA's public Python index when PyPI only provides a stub.
+Qt dependencies are `PySide6_Addons==6.10.2`,
 `PySide6_Essentials==6.10.2`, `shiboken6==6.10.2`. Do not substitute mock SDKs or
 hide requirements to evade a dependency gate. Pillow is an independent verifier
 dependency, not required by the application. Network transport may use the
@@ -36,6 +45,26 @@ disabled, write derived artifacts outside `source/`, and never import generated
 manifest data as an expected-results oracle. Use the desktop-wheels packaging
 profile without a competing Make profile. Its tree export contains application
 modules, framework test modes and independently verified retained dependencies.
+
+The retained desktop provides `python desktop/manage.py setup|doctor|run|test`,
+plus `warmup`, `install`, `uninstall` and `package`.
+Setup creates a project-local virtual environment and installs the declared
+native dependency closure with required archive hashes; it does not change global
+Python or drivers. Before reporting setup complete, a bounded native warmup
+authors a temporary default scene, renders meaningful pixels and shuts down,
+so first-install shader preparation happens during setup. Warmup may take up to
+five minutes and must report failures; it does not replace full acceptance or
+weaken the 90-second application first-frame test. Doctor
+reports exact dependency versions, platform eligibility and driver availability,
+including a conflicting USD provider, without claiming rendered acceptance.
+Run opens the real application and accepts an optional `--scene` local path.
+Test runs the complete native and Qt suite and propagates failures.
+Install creates a per-user desktop/Start Menu launcher. Uninstall removes only
+the unchanged launcher owned by this checkout, preserving documents and the
+runtime directory. Package creates a deterministic source/setup ZIP and checksum
+with dependency locks and native fixtures; it must not include credentials,
+environments, caches or private worker configuration. This prototype bundle is
+distinct from a verifier-admitted release artifact.
 
 #### Scenario: Native desktop target is admitted
 

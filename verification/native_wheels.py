@@ -36,8 +36,22 @@ PINS = {
     "pyside6-addons": "6.10.2",
     "pyside6-essentials": "6.10.2",
     "shiboken6": "6.10.2",
+    "pyserial": "3.5",
 }
-ROOTS = ("newton", "numpy", "ovrtx", "ovstage", "pyside6", "usd-core", "warp-lang")
+ROOTS = ("newton", "numpy", "ovrtx", "ovstage", "pyside6", "usd-core", "warp-lang", "pyserial")
+
+
+def inventory(packages):
+    """Permit exactly one platform's declared USD provider, never both."""
+    expected = dict(PINS)
+    roots = ROOTS
+    if any(package["name"] == "usd-exchange" for package in packages):
+        del expected["usd-core"]
+        expected["usd-exchange"] = "3.0.0"
+        roots = tuple("usd-exchange" if name == "usd-core" else name for name in ROOTS)
+    if {p["name"]: p["version"] for p in packages} != expected or len(packages) != len(expected):
+        raise ValueError("Native application wheel inventory differs from the declared closure")
+    return expected, roots
 
 
 def compatibility(archives: dict, target: dict) -> dict:
@@ -47,10 +61,11 @@ def compatibility(archives: dict, target: dict) -> dict:
     if target.get("schema") != "lertx/native-python-target-review@1":
         raise ValueError("Target input is not a native interpreter observation")
     packages = archives["packages"]
-    if {p["name"]: p["version"] for p in packages} != PINS or len(packages) != len(
-        PINS
-    ):
-        raise ValueError("Compatibility inventory differs from native application pins")
+    pins, roots = inventory(packages)
+    environment = target["environment"]
+    arm_linux = environment["sys_platform"] == "linux" and environment["platform_machine"].lower() in ("arm64", "aarch64")
+    if ("usd-exchange" in pins) != arm_linux:
+        raise ValueError("USD provider differs from the target platform policy")
     fields = (
         "name",
         "version",
@@ -59,7 +74,7 @@ def compatibility(archives: dict, target: dict) -> dict:
         "requires_python",
         "requires_dist",
     )
-    requirements = [f"{name}=={PINS[name]}" for name in ROOTS]
+    requirements = [f"{name}=={pins[name]}" for name in roots]
     lock = parse_python_wheel_lock(
         json.dumps(
             {
@@ -102,7 +117,8 @@ def inspect(directory: Path) -> dict:
                     raise ValueError("Wheel metadata is ambiguous or oversized")
                 metadata = BytesParser().parsebytes(archive.read(entries[0]))
             name = canonicalize_name(metadata["Name"])
-            if name in seen or PINS.get(name) != metadata["Version"]:
+            allowed = {**PINS, "usd-exchange": "3.0.0"}
+            if name in seen or allowed.get(name) != metadata["Version"]:
                 raise ValueError("Wheel inventory differs from native application pins")
             seen.add(name)
             package = LockedPythonWheel(
@@ -132,8 +148,7 @@ def inspect(directory: Path) -> dict:
             except DependencyObservationError as exc:
                 result.update(status="fail", error=str(exc))
             results.append(result)
-    if seen != set(PINS):
-        raise ValueError("Native application wheel inventory is incomplete")
+    inventory(results)
     return {
         "schema": "lertx/native-wheel-archive-review@1",
         "scope": "archive-integrity-only-not-execution-admission",
