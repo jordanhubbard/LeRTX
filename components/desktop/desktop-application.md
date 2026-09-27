@@ -1,3 +1,8 @@
+---
+name: Installed LeRTX application
+summary: Desktop delivery, articulated robots, guided controls and photo reconstruction
+kind: feature
+---
 # Installed LeRTX application
 
 ## Desktop delivery
@@ -102,9 +107,76 @@ between tick starts. Idle polling remains inexpensive. Use compact runtime USD
 snapshots, and discard previous owned snapshots after their native stage closes;
 reopening a document must not retain every prior runtime export until app exit.
 
+## Photo reconstruction workflow (milestone three)
+
+The milestone-three toolbar offers Reconstruct Photo. A modal dialog previews a
+user-selected PNG/JPEG and names the configured destination before an explicit
+Upload and Reconstruct action. Never scan for images or credentials. Bound input
+to 8 MiB and 16 million pixels, resize the upload to at most 2048 pixels per side,
+and re-encode it without source metadata. Explain this transformation before
+upload. Bind provenance to the actual uploaded bytes. Use a Responses user message
+with input_text and a base64 input_image data URL. Use the model, token budget
+and timeout explicitly selected in the photo dialog, as defined in
+`desktop-application.md`; its configured-model option uses saved settings.
+Never silently increase the selected budget or change the destination. Reject
+incomplete, failed, oversized, malformed or schema-invalid output. Reject
+redirects and suppress raw provider failures. Cancel invalidates late results
+without claiming server-side cancellation. Allow only one in-flight request per
+window, including after a cancelled dialog is closed.
+
+On success, ask before discarding unsaved work, then construct and adopt the
+validated draft on the native worker. Mark it dirty and require Save As outside
+the temporary workspace. Keep a visible unverified/estimated-dimensions warning
+when such USD is loaded again. Preserve existing scene state on invalid results;
+do not claim readiness until native initialization completes. Image inference is
+distinct from the inexpensive Intelligence connection test. Test with injected
+Responses transports plus separate live endpoint image-capability verification.
+
 ## Photo request feedback
 
 The photo dialog must show missing credentials before upload, provide a masked
 in-memory API key field, and focus that field when an upload is blocked. Preserve
 the selected image for retries, show in-flight progress, and clear the dialog key
 on close. Do not persist or log the key or send the image before explicit Upload.
+
+For the OpenRouter Responses endpoint, request strict schema-constrained scene
+JSON and require provider support. Mesh triangles remain a flat integer array.
+The local parser still validates bounds, unique identities, nondegenerate meshes
+and aggregate budgets before importing USD; provider schema compliance is not
+trusted as a replacement. Other configured endpoints keep their request format.
+
+
+### Guided controls and photo quality
+
+Keep joint manipulation instructions visible above an arm selector, semantic joint
+selector and angle slider. Selecting a joint by name must pick its actual USD link
+and work while paused. Preserve requests made while the native owner is busy.
+Place advanced target/readback rows in an expandable area and allow scrolling.
+Expose “Set up real arms” in the toolbar and robot controls. The modeless setup
+wizard keeps the native viewport visible throughout reference alignment and each
+joint's measured range/direction check. Label provisional calibration poses distinctly
+from verified physical telemetry. Never enable motor torque in the wizard.
+
+On OpenRouter, photo upload defaults to the high-reasoning detailed-shape preset
+(openai/gpt-6-astra, high reasoning, 24576 output tokens, 300-second transport
+read timeout). Offer a cheaper coarse-layout preset and the configured model;
+never change saved connection settings or silently switch the destination/key.
+Explain latency, cost and colored-mesh limitations before upload. Instruct the
+model to preserve the main subject's silhouette and appendages, and omit large
+background proxies. Report primitive/mesh counts and offer a named initial focus before the user opens the draft;
+a schema-valid scene is not proof of visual fidelity. Only a native-rendered review
+of the user's actual input establishes whether a model trial improved shape.
+
+
+## Verified robot resource packaging
+
+For lifecycle admission, package the exact SO-101 resource tree (USD, STL, URDF,
+collision hulls, licenses and provenance) as the platform-independent
+`lertx-robot-assets==1.0.0` wheel. Its archive hash belongs in each target dependency
+lock; the offline installer verifies it alongside the SDK. A deterministic local
+builder must reproduce the wheel and compare every resource byte to the reviewed
+source tree. Retained source snapshots omit that resource subtree only when the
+verified asset wheel contains the identical complete tree. Keep application Python
+modules byte-identical to the retained source. Checkout launches may use their
+adjacent resource tree; admitted exports resolve the installed asset package.
+No asset fetch, conversion, or network access occurs on application startup.

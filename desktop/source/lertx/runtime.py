@@ -55,9 +55,11 @@ class SceneWorker(NativeWorker):
         self.rebuild()
         return self.status()
 
-    def import_photo_draft(self, text, image_sha256, model):
+    def import_photo_draft(self, text, image_sha256, model, focus_id=None):
         from uuid import uuid4
-        from .reconstruction import build_draft_stage
+        from .reconstruction import build_draft_stage,parse_scene
+        if focus_id is not None and focus_id not in {o["id"] for o in parse_scene(text)["objects"]}:
+            raise ValueError("Photo focus must name an object in the generated draft")
         stage = build_draft_stage(text, image_sha256, model)
         if self._drafts is None:
             self._drafts = tempfile.TemporaryDirectory(prefix="lertx-photo-")
@@ -65,6 +67,9 @@ class SceneWorker(NativeWorker):
         if not stage.GetRootLayer().Export(str(path)):
             raise OSError("Could not create draft workspace")
         self.open_document(str(path))
+        if focus_id is not None:
+            self.frame_selection('/World/Objects/'+focus_id)
+            self.move_camera(zoom=.6)  # Keep nearby appendages/parts in view too.
         self.document.dirty = True
         return self.status()
 
@@ -72,6 +77,7 @@ class SceneWorker(NativeWorker):
         from pxr import Gf, Usd, UsdGeom, UsdLux
         self._selected_meshes = []
         self._hardware_roles.clear()
+        self._setup_roles=set()
         self._cached_tick = None
         self._cached_ordinal = None
         self._settled_frames = 0
@@ -140,7 +146,15 @@ class SceneWorker(NativeWorker):
         if self.physics is None or not self.physics.robots:
             return {}
         return {"positions":self.physics.robot_positions(), "following":self.physics.following,
-                "live_roles":sorted(self._hardware_roles)}
+                "live_roles":sorted(self._hardware_roles),"setup_roles":sorted(getattr(self,'_setup_roles',set()))}
+
+    def select_joint(self,role,name):
+        from .robot import description,JOINT_NAMES
+        if self.physics is None or role not in self.physics.robots or name not in JOINT_NAMES:
+            raise ValueError('Open the robot workspace and choose a valid joint')
+        link=description(role)[2][name].find('child').get('link')
+        body=self.physics.robots[role]['bodies'][link]
+        return self.select(self.physics.mapping.index_to_path[body])
 
     def command_robot(self, role, positions=None, following=None):
         if self._hardware_roles:
@@ -184,12 +198,28 @@ class SceneWorker(NativeWorker):
         self.clock.pause()
         self.physics.apply_measured_pose(role,positions)
         self._hardware_roles.add(role)
+        if hasattr(self,'_setup_roles'):self._setup_roles.discard(role)
+        self.publish_transforms(self.physics.render_mapping,self.physics.render_matrices())
+        self._cached_tick=None;self._settled_frames=0
+        return self.tick(0.)
+
+    def setup_pose(self,role,positions,captured_at=None):
+        """Explicit guide/provisional encoder preview, never a verified observation."""
+        import time
+        if captured_at is not None and not 0<=time.monotonic()-captured_at<=.25:
+            raise ValueError('Calibration observation expired; waiting for fresh telemetry')
+        if self.physics is None:raise ValueError('Open the robot workspace for calibration preview')
+        self.clock.pause();self.physics.apply_measured_pose(role,positions)
+        self._hardware_roles.add(role)
+        if not hasattr(self,'_setup_roles'):self._setup_roles=set()
+        self._setup_roles.add(role)
         self.publish_transforms(self.physics.render_mapping,self.physics.render_matrices())
         self._cached_tick=None;self._settled_frames=0
         return self.tick(0.)
 
     def release_hardware(self, role):
         self._hardware_roles.discard(role)
+        if hasattr(self,'_setup_roles'):self._setup_roles.discard(role)
         self._cached_tick=None;self._settled_frames=0
         return self.status()
 

@@ -84,9 +84,12 @@ CONFIG-001 owns application settings and the inference adapter. TWIN-001 owns
 milestone-three photo reconstruction. ROBOT-001 owns separately scoped follow-on
 mock support and SO-101 synchronization. The operator now authorizes implementing
 manual USB reads/writes, explicit motor arming, bounded motion and measured
-virtual binding. Connections remain read-only until armed. Automatic EEPROM
-calibration writes and autonomous execution remain separate work; physical
-qualification follows when the operator connects the hardware.
+virtual binding. The operator also authorizes a guided SO-101 setup/calibration
+wizard with torque-off homing and measured-limit EEPROM writes, a durable original
+register backup and rollback on cancellation. Connections initially read only;
+calibration and motor arming are separate explicit workflows. Autonomous execution
+remains separate work; physical qualification follows when the operator connects
+the hardware.
 
 PORT-001 records the current cross-platform delivery work. All four current
 native suites pass 160 tests, including a second Windows run in the isolated
@@ -115,6 +118,7 @@ frames with Newton motion and has passing Qt interaction tests on both GPU targe
 The 122-test photo-workflow snapshot passes on both GPU targets. Tests do not yet prove
 every product requirement or a distributable installation; see the current evidence
 and remaining checks in the active-work queue. Milestone-three photo inference,
-validation and local draft construction are implemented; physical telemetry and
-measured calibration remain unimplemented. A separate native import-order repair
+validation and local draft construction are implemented. USB telemetry, guided
+calibration and measured virtual binding now have SDK/emulated-arm coverage;
+qualification with physical arms remains pending. A separate native import-order repair
 passes fresh-process existing-file launch tests on both platforms.

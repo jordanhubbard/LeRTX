@@ -154,10 +154,18 @@ def prepare(
         ),
     )
     _require_recipe_authority_sbom(sbom, recipe)
+    from robot_asset_wheel import verify, FILENAME
+    resource_root=source/"lertx/resources/so101"
+    wheel=project_root/"desktop/wheels"/FILENAME
+    verify(resource_root,wheel)
+    asset_package=next(p for p in lock.packages if p.name=="lertx-robot-assets")
+    if hashlib.sha256(wheel.read_bytes()).hexdigest()!=asset_package.sha256:
+        raise ValueError("Asset wheel does not match verified dependency closure")
     original = {}
     for path in sorted(source.rglob("*")):
         if path.is_symlink():
             raise ValueError("Source links are not eligible for copying")
+        if path.is_relative_to(resource_root):continue
         if "__pycache__" in path.parts or path.suffix in {".pyc", ".pyo"}:
             continue
         if path.is_file():
@@ -186,9 +194,13 @@ def prepare(
     for name, data in original.items():
         if source.joinpath(name).read_bytes() != data:
             raise ValueError("Source changed during snapshot preparation")
+    verify(resource_root,wheel)
+    if hashlib.sha256(wheel.read_bytes()).hexdigest()!=asset_package.sha256:
+        raise ValueError("Asset wheel changed during snapshot preparation")
     return {
         "schema": "lertx/retained-snapshot-preparation@1",
         "admitted": False,
+        "externalized_resources": {"path":"lertx/resources/so101","wheel_sha256":asset_package.sha256},
         "recipe_identity": recipe.identity,
         "coding_provider": planned.coding_cli.name,
         "previous_recipe_identity": previous_recipe,

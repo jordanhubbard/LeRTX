@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "date": "2026-09-27",
+  "base_commit": "b1d058eb22bb6fcc0c2b50692aafd367c104122c",
+  "scope": "Uncommitted development implementation; not a release or physical hardware attestation.",
+  "procedure": "LeRobot e595b790 half-turn homing, recorded ranges and full wrist-roll encoder range; explicit CAD reference and measured direction for the twin.",
+  "target": "Windows 11 / RTX 5080 Laptop GPU",
+  "containment": {
+    "sequential_native_runs": true,
+    "job_commit_limit_bytes": 12884901888,
+    "linux_gpu_used": false
+  },
+  "tests": {
+    "windows_portable_and_qt": {
+      "run": 62,
+      "passed": 61,
+      "skipped": 1,
+      "skip_reason": "POSIX serial-endpoint test on Windows",
+      "seconds": 10.072
+    },
+    "linux_sdk_and_photo": {
+      "run": 43,
+      "passed": 43
+    },
+    "native_guided_setup": {
+      "complete": true,
+      "physical_hardware_tested": false,
+      "named_joint_slider": true,
+      "paused_kinematics": true,
+      "measured_radians": 0.3653404414653778,
+      "mirrored_joints": 6,
+      "calibration_saved": true,
+      "torque_never_enabled": true,
+      "register_backup": true,
+      "provisional_preview_label": true,
+      "seconds": 24.84
+    },
+    "native_photo_window": {
+      "passed": true,
+      "tests": 2,
+      "seconds": 23.365,
+      "coverage": [
+        "failed inference preserves authored and unsaved scene",
+        "explicit result review and named focus",
+        "native rendering",
+        "save and reopen"
+      ]
+    }
+  },
+  "safety_checks": [
+    "Connection sends no writes",
+    "Calibration rejects torque-on motors",
+    "Backup precedes persistent writes",
+    "All homing and limit writes require matching motor identity, torque off, ACK and readback",
+    "Cancel/shutdown restore original homing and ranges",
+    "Unconfirmed restoration or torque release remains a visible fault",
+    "Six joint previews pass through FK into native RTX",
+    "Wizard never enables torque"
+  ],
+  "limits": [
+    "Physical arms have not been connected or qualified",
+    "Individual motor-ID commissioning is not implemented; IDs 1-6 and 1 Mbps are prerequisites, with the official setup guide linked in the wizard",
+    "Guide and encoder previews require operator reference/direction verification",
+    "Framework authority, locks and receipt remain stale (three failing verify gates)"
+  ],
+  "source_sha256": {
+    "desktop/source/lertx/hardware.py": "b25f49bfedfb0c0de54c091c63e9e0d790f9831b4357290a5c2428437382f130",
+    "desktop/source/lertx/usb_bus.py": "ff57183414f364afb2f18e5abd2b6b01eeb51d61d745a5f5715dddce5fe4e0d8",
+    "desktop/source/lertx/setup_ui.py": "d649f4757dae2d56c2a4bfee39d595127b7da8695d3b7542eb42e9c624563493",
+    "desktop/source/lertx/setup_calibration.py": "df85f74fd64143b6b3d81746f3dc36aa8f1bf72500637f5e753ec6b776732512",
+    "desktop/source/lertx/runtime.py": "c0fde5baae8230ef750b9e5a997b53de577e0dd200b77c011412ad07abf28b1c",
+    "desktop/source/lertx/robot_ui.py": "146d7b466aa97ce17d5b80b112df76dbea437136da46874137c21ed8e4c7dd26",
+    "desktop/source/lertx/ui.py": "6f291177c371bf3acfcb5ff157428ed73df2dfc4d311530c1ec014b6b0f0e9f9",
+    "desktop/source/lertx/photo.py": "58d31b0f57527c5b639ed228c93fe4001567b06dfd06fff48ccddf1a1451375d",
+    "desktop/source/lertx/photo_ui.py": "8905553e1e4be3f15dbb00621651df232e8a75cce0718e29fdfb625f77214525",
+    "desktop/source/lertx/reconstruction.py": "04ac1527696d5b2e8b52406be33b4e6d90646d1e4b140cffd31dd40b952cdd16"
+  }
+}

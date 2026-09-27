@@ -43,7 +43,7 @@ def setup():
         "windows-x86_64" if os.name == "nt" else "linux-x86_64")
     lock = ROOT / "desktop" / "locks" / f"{target}.txt"
     run([PYTHON, "-m", "pip", "install", "--only-binary=:all:",
-         "--require-hashes", "--extra-index-url", "https://pypi.nvidia.com",
+         "--require-hashes", "--find-links", ROOT / "desktop/wheels", "--extra-index-url", "https://pypi.nvidia.com",
          "-r", lock])
     run([PYTHON, "-m", "pip", "check"])
     run([PYTHON, "-B", "-c", "from lertx.diagnostics import main; main()"], cwd=SOURCE)
@@ -136,6 +136,7 @@ def package():
     for name in ("tests", "tools"):
         files.extend((SOURCE / name).glob("*.py"))
     files.extend((ROOT / "desktop/locks").glob("*.txt"))
+    files.extend((ROOT / "desktop/wheels").glob("*.whl"))
     files.extend((ROOT / "verification/acceptance/scenes").glob("*.usda"))
     # The small source bundle needs no compressor. Storing entries also avoids
     # platform zlib differences, so Windows and Linux produce identical bytes.

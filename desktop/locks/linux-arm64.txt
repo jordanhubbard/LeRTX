@@ -126,3 +126,5 @@ warp-lang==1.17.0 \
     --hash=sha256:f2fec43afb81caa2190c0b7fa3aaf4d869f3599839f0c40b9ead84331f91e993
 pyserial==3.5 \
     --hash=sha256:c4451db6ba391ca6ca299fb3ec7bae67a5c55dde170964c7a14ceefec02f2cf0
+
+lertx-robot-assets==1.0.0 --hash=sha256:69fa417e81e0faa0c5f476adc04932b2842fb8db8d9e07253b47ce8f501acb24

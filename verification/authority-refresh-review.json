@@ -1,0 +1,277 @@
+{
+  "admission": {
+    "component_lock_identity": "sha256:5e1ad078119d315999436f011e304fdd4859811e2694e4208c9ada4dd5226232",
+    "finalized_candidate_identity": "sha256:6eb101a08afb124663d4ec73215b8c4674d40637ee171361051e1e0746034860",
+    "framework_distribution_identity": "sha256:119009a00d7144a477934f1b5d7201aad084f99ec4e9b92cdd60aa048a24ee8d",
+    "lifecycle_result_identity": "sha256:3567d89bcca104133bd47a013fb2fc33087bfc9f7cb795b2188be670a08ef507",
+    "passed": true,
+    "project_revision_identity": "sha256:b98466d01320f6635eeeb4b5ccb5ca10db9cf3266a722cff8f0f3bcfcd2b3a26",
+    "receipt_identity": "sha256:6359968ecfc70e96b6d89c4c4bd1a79620584915e484135475b07092fb2e4fa0",
+    "source_generation": {
+      "sha256:f99b783f73f3d3c47be8aaf2807af99f15799ee68cf50e90f821f2a608da2c95": "retained"
+    },
+    "test_summary": {
+      "failed": 0,
+      "passed": 30,
+      "skipped": 0,
+      "total": 30
+    }
+  },
+  "admitted_artifact_comparison": {
+    "application_and_test_python_files_equal": 89,
+    "original_robot_resource_files_equal": 26
+  },
+  "date": "2026-09-27",
+  "independent_acceptance": {
+    "cases": 3,
+    "expectations_changed": false,
+    "oracle": "verification/acceptance/desktop.json",
+    "passed": true
+  },
+  "limitations": [
+    "Physical SO-101 arms have not been connected or qualified.",
+    "No Linux GPU work ran during this repair.",
+    "The lifecycle tests exercise the portable contract; separate Windows native evidence does not establish complete release qualification.",
+    "The stale framework gate limitation in guided-setup-review.json is superseded by this current receipt and verify result."
+  ],
+  "offline_install": {
+    "installed_files": 11284,
+    "installed_tree_identity": "sha256:9832e53b1cb55c8c8d707b50ef790771d2ad219dad4886e5874d501ac7082edb",
+    "installer_identity": "sha256:3992bc9c31631db31d92d0e6f94290e50b7138cce0cffbfdeb41d26005390773",
+    "status": "pass",
+    "target_identity": "sha256:e5af4d32a53c8188215400b3aeb944bce0a5326e699ed5ecb15455dd16020232"
+  },
+  "prior_feature_evidence": [
+    "verification/guided-setup-review.json",
+    "verification/turtle-photo-review.json"
+  ],
+  "repairs": [
+    "Reconciled explicit photo presets with configured-provider authority.",
+    "Added required metadata to the existing desktop and hardware specification roots.",
+    "Moved detailed photo requirements into the desktop feature specification to respect root prose limits.",
+    "Packaged original SO-101 binary resources as a hash-locked offline wheel without changing model bytes.",
+    "Refreshed exact dependency closures with pyserial and robot resources.",
+    "Selected the independently observed CPython 3.11.14 interpreter and provisioned the pinned offline installer alongside runtime wheels.",
+    "Reviewed all three independent settings oracle cases against current specification rules; rebound only the specification identity, preserving inputs and expected results."
+  ],
+  "reproduction": {
+    "interpreter": "Set PYTHON to the independently observed application CPython 3.11.14 executable, not the framework CLI interpreter.",
+    "sequence": [
+      "native_target.py",
+      "native_install.py",
+      "prepare_retained_snapshot.py",
+      "litai rebuild components/desktop --retained-source <snapshot> --retained-source-plan",
+      "litai rebuild components/desktop --retained-source <snapshot> --authorize-retained-source <reviewed-identity> --allow-host-execution --update-receipt",
+      "litai verify"
+    ],
+    "wheelhouse": "LITAI_PYTHON_WHEELHOUSE must name an absolute verified wheel directory containing the runtime closure and pip-26.2.1-py3-none-any.whl."
+  },
+  "resource_wheel": {
+    "original_files": 26,
+    "path": "desktop/wheels/lertx_robot_assets-1.0.0-py3-none-any.whl",
+    "repeatability_and_drift_tests_passed": 2,
+    "sha256": "69fa417e81e0faa0c5f476adc04932b2842fb8db8d9e07253b47ce8f501acb24"
+  },
+  "schema": "lertx/authority-refresh-review@1",
+  "scope": "Current development application admission and Windows package delivery; not a release or physical-arm qualification.",
+  "source_preparation": {
+    "admitted": false,
+    "coding_provider": "codex",
+    "externalized_resources": {
+      "path": "lertx/resources/so101",
+      "wheel_sha256": "69fa417e81e0faa0c5f476adc04932b2842fb8db8d9e07253b47ce8f501acb24"
+    },
+    "files": {
+      ".literate/sbom.cdx.json": "d6b97fc9ddcdcc4e73861e67b5ed7bf1484b0ecc0748b356415ed62566b914d2",
+      "desktop_main.py": "b774e50a945b668ed9c8f43dec424c058b580311c6c72f9fc1a7e8f7cab74a55",
+      "lertx/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "lertx/app.py": "32349345df7e24948e0ecc02b532c8925c3720ab16a6d884c86630d4c5af581e",
+      "lertx/assets.py": "4670660bc86e0e9debea8cf12039963ad5538edf1ef3db238a7aa5ed71d6a30f",
+      "lertx/binding_ui.py": "fc0ba586b41f5d9f48bf10213015d76e52a61362d8af2d9d35f93f32ef46cf14",
+      "lertx/branding.py": "d120dd0a3cfa5821c188dc0b4c89c846d1606f8150f622bcff0110cba889bded",
+      "lertx/config.py": "ae1ca5fc2fdec0ac42122143a3e35b40e4749ae303e642a521132534b78fcadc",
+      "lertx/desktop_entry.py": "8a53b3c7c2b4a60d11ef07bb16a30ce2d6b291288d311c2b5566f2b2b358de36",
+      "lertx/desktop_state.py": "7e37d19a42d02603670358c41ab0ca6b41ac7837a78891a68449046e42254337",
+      "lertx/devices.py": "e53d52e039096420cd32c9609c49bb2ebb2da4a513092e14eb9a8db5231e1d37",
+      "lertx/devices_ui.py": "05bdabeec2ff9e89dfb5ed24d9db685457b001e8bdee775bfc6c9e44ada3d690",
+      "lertx/diagnostics.py": "08745b9921d4fa77f8d3fc7d6f677345615f966de13eccc25b594bfdda5622a1",
+      "lertx/document.py": "8129c0ac237f5a6196da8d17df6e18649b03234be5edae3ffeb24544d96ca985",
+      "lertx/hardware.py": "b25f49bfedfb0c0de54c091c63e9e0d790f9831b4357290a5c2428437382f130",
+      "lertx/hardware_calibration.py": "d9c5416f46e42107a12f987ec122fb230bf73dbf9544d68c9bee5cb1fbd8ab69",
+      "lertx/hardware_ui.py": "fe0ff23bd89edb00834ccd1cb9dac4e6c7b943ec74ba2ce78798a178c8dcb0d7",
+      "lertx/host.py": "08e6166c9c88310ad6eda33b37a11609367606bc979a3afe67cb484bba156df0",
+      "lertx/joint_binding.py": "00d2905350dbafd23a64f62f8881784799228e0aa00a8d04e04ccceff80ece3b",
+      "lertx/joint_interaction.py": "b7ae0247954299c43347672675d4fc059bc02d8f9c57b552bc87bef768c29565",
+      "lertx/mock_ui.py": "eb79943a39817d68657fd765d86037d19ab04dc266409a189753413fb6ce253c",
+      "lertx/photo.py": "58d31b0f57527c5b639ed228c93fe4001567b06dfd06fff48ccddf1a1451375d",
+      "lertx/photo_ui.py": "8905553e1e4be3f15dbb00621651df232e8a75cce0718e29fdfb625f77214525",
+      "lertx/physics.py": "e59b672c83a6ce6428a9b9f3843f55c05ec3f6f079c0a167cdc0b7f0d99d2a5e",
+      "lertx/picking.py": "b5fdbd611bc0eaf4d187bc1b953b1d3c9e480a33a850f3c5c0158ec7c8714417",
+      "lertx/reconstruction.py": "04ac1527696d5b2e8b52406be33b4e6d90646d1e4b140cffd31dd40b952cdd16",
+      "lertx/resources/branding/lertx.svg": "b8456f9627165dcf56fa42ff097db24be5744765d06995731a82a6c47d496146",
+      "lertx/robot.py": "7844d3329637875b074002b051a4797f4e6b72be77a475bbeeea1f94f8316e9e",
+      "lertx/robot_ui.py": "146d7b466aa97ce17d5b80b112df76dbea437136da46874137c21ed8e4c7dd26",
+      "lertx/runtime.py": "c0fde5baae8230ef750b9e5a997b53de577e0dd200b77c011412ad07abf28b1c",
+      "lertx/scene.py": "b49fb340e270a8f08e548bfe9027049f1da92c646bab724602df337bfb5d034c",
+      "lertx/setup_calibration.py": "df85f74fd64143b6b3d81746f3dc36aa8f1bf72500637f5e753ec6b776732512",
+      "lertx/setup_ui.py": "d649f4757dae2d56c2a4bfee39d595127b7da8695d3b7542eb42e9c624563493",
+      "lertx/simulation.py": "a068e394b93afa25a24d01f8b47556cdd8d527a15060a1879f2fafebb94f036c",
+      "lertx/telemetry.py": "20578ae68ac89874eacb6fc12c3a55a8004089b6b8097f7a1ec4be8a312f8453",
+      "lertx/transport.py": "f4e759ddcfd7c3090c3c2b13b9d1c571336d2d2f5cb3695602231d5c17ea06c2",
+      "lertx/ui.py": "6f291177c371bf3acfcb5ff157428ed73df2dfc4d311530c1ec014b6b0f0e9f9",
+      "lertx/usb_bus.py": "ff57183414f364afb2f18e5abd2b6b01eeb51d61d745a5f5715dddce5fe4e0d8",
+      "lertx/vendor/__init__.py": "9b43b6eeaf7f3e1cc8abba9c8b38c5999f6a6098e86bf89c203f7daa1373d562",
+      "lertx/vendor/feetech/LICENSE": "436a6d536138f203ac333858cff92a568be62797752b3adb94bcaa0f6ffe7ef6",
+      "lertx/vendor/feetech/__init__.py": "c3047515bd2992e6fc209386f11fd4c80722c519b21be2a3a7a91f2d96222941",
+      "lertx/vendor/feetech/group_sync_read.py": "ccbbb3a864c047bf3a7808a0b455676b198645ee1caffa58dac562339a86ad76",
+      "lertx/vendor/feetech/group_sync_write.py": "70d2a9e2157692932dd6e25515e53d600da9ca87ffab656c4660fb0de4d03476",
+      "lertx/vendor/feetech/packet_handler.py": "96bb801133436122d39e868bc6492a226222a737c04560ea7a02d0c5eacef2fd",
+      "lertx/vendor/feetech/port_handler.py": "c8dbb189ca98705bd71066d5a9a691b4c80b484c77ebe8a9ccc2d6c46321e999",
+      "lertx/vendor/feetech/protocol_packet_handler.py": "9932c85b9e2ac671a7e33f39e8e80b05d6592280d9f2bcebd85103845e36e655",
+      "lertx/vendor/feetech/provenance.json": "418f949fc4ee2f28248beda135aa75ccc660e0d8ee6db30f3f622a01c8a33780",
+      "lertx/vendor/feetech/scservo_def.py": "068f7ad5c453ad6e338543c706047253495fcd6bf9a632465501ace12fee0627",
+      "lertx/viewport_ui.py": "a4216afeead917ac0c55e89a83219213d1bd9584aec985988e0f381c0f0f343d",
+      "lertx/warmup.py": "4d4dcb52435c114582d66ec0b5fb744fd153f984f84db27ebc9087118621205f",
+      "main.py": "4d1e3fc24167ac32482c2aa7e2fa3c84b213d785ca5dad1d5a59d69aed512762",
+      "pytest.ini": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "python-wheel-lock.json": "cb9713d7337439693480d3752d3c87ed2736fcc82b73a92bb5dd19cd3af758f7",
+      "requirements.txt": "fb6e45c5c751da4cddf6aa25a9798620dd1f80fc80183ab7f7bd400d9c4a676f",
+      "tests/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "tests/manifest.json": "ef812a50273a4c04365f9c25a7dd0c5b4f12b635f95e23115ff7b60bf81fd4fa",
+      "tests/manifest_cases.py": "7a1d17b669cffc484c02f33bf6db6b78b4440457f25f9ecafd8ce9fecbab9b77",
+      "tests/test_asset_policy.py": "550c810b28ec501fc495f7994773afd635d73141d86bd775c356e531fc82f93f",
+      "tests/test_cli.py": "b3e1d33a63d7ad050da181865eeba20ffc1afc0dc44988e0873fd0dd3cb1f6c4",
+      "tests/test_config.py": "5f23069f4031987554311e6c434c6f45e44abb1ca9a2e4e614542d898405e715",
+      "tests/test_connection_probe.py": "6976dbd3065f90879879c6f7efc62a131626f77884a16515a3a78e419e3cd1b1",
+      "tests/test_devices.py": "6f02b1aff1fd937a8b7a07001530bb245abb79bdeebfc92915627a8a3e5ef9f0",
+      "tests/test_devices_ui.py": "22b384d2881b502d6fa95b892d692286e670ec853e74e706c6dfdb7072f56453",
+      "tests/test_dispatch.py": "24485eed377657d70758ff3abc61b2d4e8e6a6dbd19da15d1f401e37a08eb95a",
+      "tests/test_document.py": "b800e1665ceac07d1caeaf2fd1f25ad31a6f3fcd5e2516108304e298b1a6bce1",
+      "tests/test_hardware.py": "f3d8f734df564482caa9e73fca2e5fbce2eec8417c5c7b3d83d6fbcaab71da0d",
+      "tests/test_hardware_ui.py": "c4deb9d991278e4008107d862c34ad4a793993c7b32e634c2b966bdb5806b31f",
+      "tests/test_host.py": "4fd38557044336513c19c06037d56b33b4f5561ef7aa0ba2ed900e4bf3b64e71",
+      "tests/test_joint_binding.py": "d0bfed9c0c930359cc3490f812a46c99de2247ebc99b16e6108b9e2b4bcf1d0d",
+      "tests/test_joint_interaction.py": "9e2270077d5c3f24b9e13c6800c37112a3bbde3ceb7e7bf9c0f30c360e065c80",
+      "tests/test_launch_native.py": "0b12746a0ede6a6a01d982caaf3686ff6cd6ff9d78d6ee27c89885ae983da97a",
+      "tests/test_manifest_cases.py": "63999257f67ffdcd856d7edfc6dc8ca1ff00170949fb140f7df1b1dcd4104adc",
+      "tests/test_mock_ui.py": "03d72e4f64c83f1d2f10c624e2604f9735a9448e13a7b185334b0be37c2e74d8",
+      "tests/test_native_integration.py": "c0b18843eb09e99a4584c25440b33579ffd136992b7138bd7f679edb0fc5ef7e",
+      "tests/test_photo.py": "a9f0fe721914fd3639aad30ca402c11ac2948ab713129110ec7e62efc4530105",
+      "tests/test_photo_ui.py": "bf48a0ad8193df595639bc54bc09bc8070ce19d8de5bce8a30af533a0b450840",
+      "tests/test_photo_window_native.py": "75e53c5a7b71946ff0183bb4aedadb89ff5ee04f30e545096a4c8d908472b238",
+      "tests/test_physics_native.py": "e8db45cc095d8d397da9273a686a73355cacabedab00fa59c893b2217949f6f5",
+      "tests/test_reconstruction.py": "f1a23b6458565101e507460ab975d03be751903d2a2fad9c0d6caa2ae0bd6d4a",
+      "tests/test_reconstruction_native.py": "639016fc91a9f7b38df25802b9b6ca8afa28dfbd32908aa5c13f5a35991e35c4",
+      "tests/test_robot_assets.py": "e23e4920d16482547508c6807811888fd361dad813b2acd69f018dbf7c1a5a39",
+      "tests/test_robot_dynamics.py": "a3c48962553f17e5d407c507abdd55294f3a24a1928322ab59f0b42e6338a6bf",
+      "tests/test_robot_render_native.py": "7021637acb64ed6b3162e5dbb1923846c525725b1413ac30280d359169aa0061",
+      "tests/test_runtime_idle.py": "7ba19c0e62df9a719234d77e9d1573949779456d394278732578bdee2187b074",
+      "tests/test_runtime_native.py": "ba913ea7b635baed2a84fdd9cb018afffe7c6878a78c5c097df1262b814c3995",
+      "tests/test_runtime_settings.py": "b5f27f58f745c0daa9a8096e2e04a66fe499978c9dbb76c38c32537be9a24bf2",
+      "tests/test_scene_mapping.py": "1b89577b280fd54808a78300b5b806972cfeb0aef124be20156964213452a1da",
+      "tests/test_settings_ui.py": "419616a619c0532348b270f57f5d8f7a23b92c283df0254d5a8c86972f076053",
+      "tests/test_setup.py": "99a42e6f794ec8919179a97c0221dba4a111030bf166a94318e14a71e32679a1",
+      "tests/test_setup_ui.py": "ec6ecd9608382031254609688e8b5157a67310a7211ec83634cab7520743f166",
+      "tests/test_simulation.py": "b8acb1db08c37c596f635a8eb8abb7753437684fb48be49c63c73a42e1200351",
+      "tests/test_telemetry.py": "8c150c00ea6c8f3dc7b8c2d07410049c6fabf8848755ab607485e4ad3177d291",
+      "tests/test_transport.py": "a0544163af300c0ddb610e165afedbc4822f01f3c8557405cefe94c7a8a706c3",
+      "tests/test_ui.py": "19d305c183348f636c48303df0195c71e5f27aa2a1043473dad90506b40694e9",
+      "tests/test_window_native.py": "0af9844b42492552cc213b3f396729a18ded20691c2b84c66ae5b956ef57dd61",
+      "tests/test_worker.py": "3c4a58e766ba31fa452e0118e77797143e61280bd2cd0aff2e663eb50586bdbf",
+      "tools/run_tests.py": "52ec76af18838c92e562f489f6fc8a2b428f9f0d26060415e9752c457e78e05d"
+    },
+    "metadata_changes": [
+      "requirements.txt",
+      "tests/manifest.json",
+      "python-wheel-lock.json",
+      ".literate/sbom.cdx.json"
+    ],
+    "original_files": 95,
+    "preserved_files": 93,
+    "previous_recipe_identity": "sha256:5966b75bd8876599e2881702e8d99d59b2a94e9fcd07c302d8571425a8d3745c",
+    "recipe_identity": "sha256:988f95558734033886fdaeaf11d6185228b4f4e0c8fa96f8316fdae98e9c4509",
+    "schema": "lertx/retained-snapshot-preparation@1",
+    "snapshot_files": 97,
+    "source_sbom": {
+      "bom_identity": {
+        "algorithm": "sha256",
+        "digest": "d6b97fc9ddcdcc4e73861e67b5ed7bf1484b0ecc0748b356415ed62566b914d2",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "component_count": 18,
+      "edge_count": 22,
+      "graph_identity": {
+        "algorithm": "sha256",
+        "digest": "67ff574bb8d4861567846730e590fff460b97554266c001efee178137ae09200",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "lifecycle": "pre-build",
+      "managed_graph_identity": {
+        "algorithm": "sha256",
+        "digest": "464bd4a52e270d61f32e7273aac6c4c00f28458d8831af18b322bae137534f5b",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "resolved_graph_identity": {
+        "algorithm": "sha256",
+        "digest": "5e1ad078119d315999436f011e304fdd4859811e2694e4208c9ada4dd5226232",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "root_ref": "urn:literate-ai:component:f99b783f73f3d3c47be8aaf2807af99f15799ee68cf50e90f821f2a608da2c95",
+      "schema": "urn:literate-ai:schema:v2:cyclonedx-bom-binding",
+      "source_bom_identity": null
+    },
+    "test_cases": 30
+  },
+  "verification": {
+    "counts": {
+      "fail": 0,
+      "pass": 3,
+      "skipped": 2
+    },
+    "gates": [
+      {
+        "detail": "project authority and documentation review",
+        "gate": "authority",
+        "state": "pass"
+      },
+      {
+        "detail": "3 committed lock(s) current",
+        "gate": "locks",
+        "state": "pass"
+      },
+      {
+        "detail": "project selects provider 'none'",
+        "gate": "source-intelligence",
+        "state": "skipped"
+      },
+      {
+        "artifacts": [],
+        "detail": "no declared HTML artifacts to verify",
+        "gate": "html-observability",
+        "state": "skipped"
+      },
+      {
+        "detail": "committed test receipt is current",
+        "gate": "receipt",
+        "state": "pass"
+      }
+    ],
+    "ok": true,
+    "project": ".",
+    "schema": "literate-ai/project-verify@1"
+  },
+  "windows": {
+    "delivered_files_matched": 130,
+    "existing_interactive_session_preserved": true,
+    "fresh_restart_claimed": false,
+    "mismatches": 0,
+    "package_manifest_sha256": "5a7b158a9ef44e3d34d3a09eed44d784e3d040b136d8cacfe73f7b25c23b8cc4",
+    "packaged_fallback": {
+      "resource_files_equal": 26,
+      "urdf_identity_verified": true,
+      "usd_stages_opened": 2
+    },
+    "robot_asset_test_seconds": 0.452,
+    "robot_asset_tests_passed": 3
+  }
+}

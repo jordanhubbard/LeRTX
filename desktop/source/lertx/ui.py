@@ -461,7 +461,9 @@ def build_main_window(
             self.robot_panel = build_robot_panel(self)
             self.robot_dock = QDockWidget("Robot simulation", self)
             self.robot_dock.setObjectName("robotSimulation")
-            self.robot_dock.setWidget(self.robot_panel)
+            from PySide6.QtWidgets import QScrollArea
+            robot_scroll=QScrollArea();robot_scroll.setWidgetResizable(True);robot_scroll.setWidget(self.robot_panel)
+            self.robot_dock.setWidget(robot_scroll)
             self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.robot_dock)
             self.tabifyDockWidget(self.inspector_dock, self.robot_dock)
             self.robot_dock.raise_()
@@ -568,6 +570,9 @@ def build_main_window(
             devices_action = QAction("Devices", self)
             devices_action.triggered.connect(self._on_devices)
             toolbar.addAction(devices_action)
+            setup_action = QAction('Set up real arms', self)
+            setup_action.triggered.connect(self.open_setup)
+            toolbar.addAction(setup_action)
 
             frame_action = QAction("Frame Selection", self)
             frame_action.triggered.connect(self._on_frame_selection)
@@ -713,8 +718,11 @@ def build_main_window(
         def _on_selection_changed(self):
             path = self._selected_path()
             if self._ready and self.worker and hasattr(self.worker, 'select'):
-                self._command(lambda: self.worker.select(path),
-                    lambda value:self.robot_panel.select_joint(value) if path==self._selected_path() else None)
+                def selected_joint(value):
+                    if path==self._selected_path():
+                        self.robot_panel.select_joint(value)
+                        if value.get('joint'):self.robot_dock.show();self.robot_dock.raise_()
+                self._command(lambda: self.worker.select(path),selected_joint)
             self.inspector.set_enabled_for_selection(False)
             if path is None:
                 self.inspector.show_prim("", "", False)
@@ -819,7 +827,7 @@ def build_main_window(
                     self.requires_save_as = True
                     self._apply_status(status)
                 self._command(lambda: self.worker.import_photo_draft(result["scene_text"],
-                    result["image_sha256"], result["model"]), adopted)
+                    result["image_sha256"], result["model"], result.get("focus_id")), adopted)
             self._after_discard_confirmation(adopt)
 
         def open_scene(self, path):
@@ -922,6 +930,14 @@ def build_main_window(
             panel=build_hardware_panel(self,candidate,role)
             self._hardware_windows[role]=panel
             panel.show()
+
+        def open_setup(self):
+            previous=getattr(self,'_setup_window',None)
+            if previous and previous.isVisible():
+                previous.raise_();previous.activateWindow();return
+            from .setup_ui import build_setup_wizard
+            self._setup_window=build_setup_wizard(self)
+            self._setup_window.show()
 
         def _display_factor(self):
             unit = self.profile["general"]["display_units"]
@@ -1051,7 +1067,7 @@ def build_main_window(
         def closeEvent(self, event):
             self.viewport_label.cancel()
             for panel in self._hardware_windows.values():
-                if panel.session._thread.is_alive():panel.shutdown()
+                if panel.session and panel.session._thread.is_alive():panel.shutdown()
             if self._closing and self.worker is None:
                 self._frame_timer.stop()
                 from .desktop_state import save_state

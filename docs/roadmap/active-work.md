@@ -30,6 +30,14 @@ CONFIG-001, TWIN-001 and ROBOT-001 remain open at the boundaries listed here.
 
 ### RENDER-001: qualification, admission and delivery
 
+Current repair: photo preset authority and specification metadata are reconciled;
+all three component locks are refreshed through the supported CLI. The exact
+SO-101 resource wheel preserves original model bytes and provenance while keeping
+retained source text-only. `verification/authority-refresh-review.json` records
+current application admission and gate results; `litai verify` is the authority
+for freshness. Physical-arm acceptance remains separate.
+
+
 - [x] Diagnose the failed Windows shard and adopt an exact framework revision
   with green full-matrix CI. PRs #482 and #491 supply the required repairs;
   preserve canonical integer bounds and full artifact-custody validation.
@@ -76,9 +84,12 @@ independent hardware workers, read/arm/move/stop controls and measured virtual
 binding. Connect/reconnect stays read-only. SDK byte-stream, OS serial endpoint,
 failure-path, Qt and native RTX checks are recorded in
 `verification/usb-control-review.json`. The Windows development app is deployed;
-formal framework authority/lock/receipt admission remains stale and is not claimed.
+Current framework authority/lock/receipt results are tracked separately in
+`verification/authority-refresh-review.json`; software checks do not qualify hardware.
 Actual leader/follower qualification remains pending for the connected arms.
-EEPROM setup, automatic calibration writes and autonomous policies are separate.
+Guided torque-off homing/range calibration now has a separate explicit write path
+and original-register backup. Individual motor-ID commissioning and autonomous
+policies remain separate; the wizard links the official fresh-motor setup guide.
 
 - [ ] Finish and verify USB candidate discovery, persistent explicit roles,
   ambiguous/missing serial handling, hotplug/reconnect and stale-state behavior.
@@ -937,6 +948,10 @@ queue item or let `docs/roadmap/` become a plan archive.
 
 ### [ ] TWIN-001 — Milestone three: Astra photo-to-USD reconstruction
 
+- **Photo quality follow-up:** The operator turtle photograph became a blue block. The high-reasoning OpenRouter preset now produces a recognizable low-poly turtle from that exact input, verified in native Windows RTX. The final request took 301.43 seconds and reported $1.06554 for 29 parts (27 meshes). The dialog explains cost/latency, offers coarse/configured alternatives, shows geometry counts and lets the operator choose the initial view. See `verification/turtle-photo-review.json`. This qualifies an approximate colored-mesh improvement, not faithful textured reconstruction or measured collision geometry.
+
+- **OpenRouter trial:** Operator requested GPT-5 Mini after NVIDIA throttling. Two authenticated image requests completed but emitted nested mesh indices, rejected by the local flat-index contract. Add strict JSON-schema output for the OpenRouter Responses route, preserve independent scene validation, verify a live synthetic-image request through USD construction, and configure the Windows deployment with its own encrypted provider credential. Live structured-output request passed: three objects, 15.46 seconds, USD 0.003351. Windows passes 18 photo/UI/reconstruction tests and constructs the returned USD stage. Visible RTX validation passed on Windows with the imported cube, sphere and platform and the unverified-draft warning. No operator photo or robot actuation is part of this trial.
+
 - **Current usability repair:** The visible Windows dialog rejects upload because the session key is missing, but the small status message is easily missed. Add an inline password field, preflight feedback and visible in-flight progress while preserving the chosen photo; verify missing-key, success and failure paths without transmitting the operator photo during tests. Windows Qt verification passes missing-key, inline-key success, authentication failure/retry and cancellation cases. Live provider acceptance still requires the operator credential.
 
 - **Scope clarification:** The operator explicitly selected Astra photo-to-USD
@@ -1033,6 +1048,8 @@ queue item or let `docs/roadmap/` become a plan archive.
 
 ### [ ] ROBOT-001 — SO-101 USB control and physical twin
 
+- **Guided setup direction:** Build in-window USB identification, role assignment, six-motor checks, explicit torque release, LeRobot-compatible reference homing and individual range capture, live provisional mirroring with direction verification, and paired calibration/binding export. The new calibration request authorizes scoped persistent homing/range writes after the wizard confirmation; ordinary hardware control still cannot write EEPROM. Back up original registers before writes, restore on cancellation/failure where possible, and report unconfirmed restoration. Verify with SDK emulator, Qt interaction and bounded Windows rendering; real-arm acceptance remains pending.
+
 - **Priority:** P1
 - **Owner:** desktop device and LeRobot adapters
 - **Direction:** Build robot support and a hardware-free mock; the physical devices are not currently attached.
@@ -1041,6 +1058,8 @@ queue item or let `docs/roadmap/` become a plan archive.
 - **Implementation:**
   - [x] Provide isolated simulated leader/follower streams with connection, pose, freeze and stale controls.
   - [x] Implement explicit discovery/roles, the pinned Feetech SDK, calibration import and separately armed manual controls.
+  - [x] Add the modeless six-joint calibration wizard, durable register backup/rollback, verified torque-off writes and provisional native preview. SDK/Qt/native evidence is in `verification/guided-setup-review.json`; assembled arms require motor IDs 1–6 at 1 Mbps.
+  - [ ] Qualify homing, travel, direction and cancellation on the physical leader and follower before treating this as hardware acceptance.
   - [x] Publish calibrated observations through SO-101 kinematics to the native viewport without conflicting Newton control or automatic motor writes.
 - **Evidence:**
   - [x] Exercise mock states, sample validation and cleanup on Linux and Windows.
@@ -1148,6 +1167,8 @@ queue item or let `docs/roadmap/` become a plan archive.
 
 ### [ ] APP-001 — Deliver an installed desktop application with a simulated SO-101 pair
 
+- **Discoverability direction:** Provide persistent on-screen joint instructions, named joint selection, direct angle controls, contextual lock recovery and an obvious real-arm setup entry point. Test the visible Windows flow without relying on the scene tree or undocumented gestures.
+
 - **Current interaction repair:** The selected follower joint is locked by leader-following. Provide an explicit action beside the selected joint to disable following, retain toggle requests while the native worker is busy, and verify subsequent slider and pointer motion. Windows verification passes the busy-worker regression and visible native follower unlock plus slider motion (20 degree target, 21.8 degree measured paused pose, changed RTX frame). Physical motor control is unchanged.
 
 - **Priority:** high
@@ -1163,6 +1184,7 @@ queue item or let `docs/roadmap/` become a plan archive.
   - [ ] Implement owned, relocatable application installation, upgrade, removal, icons and file opening without a system Python requirement.
   - [x] Direct viewport joint manipulation: native RTX picking and outlines, shared hierarchy selection, bounded targets, coalesced pointer updates, cancellation and physics-driven paused previews. Windows passes seven focused input/runtime tests and the real Qt/RTX interaction check, including paused and playing motion; see `verification/windows-joint-interaction.json`. Runs were sequential under a 12 GiB committed-memory limit. This is feature evidence, not full APP-001 qualification.
     Documentation discovery now includes the existing performance evidence and NVIDIA methodology. Project validation reaches the pre-existing stale documentation authority review; the complete APP-001 authority review and retained-source admission remain pending, with no receipt or review marker advanced by this feature check.
+  - [x] Add persistent joint instructions, semantic joint selection, a prominent angle slider and a setup entry point; verify paused movement and all six calibration previews on Windows RTX.
   - [ ] Complete desktop menus, document identity, recent files, startup progress and actionable errors.
   - [ ] Source and attribute SO-101 leader/follower models; implement actual joint dynamics, limits, grippers and simulated following in the default scene.
 - **Evidence:**

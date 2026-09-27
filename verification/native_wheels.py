@@ -37,8 +37,9 @@ PINS = {
     "pyside6-essentials": "6.10.2",
     "shiboken6": "6.10.2",
     "pyserial": "3.5",
+    "lertx-robot-assets": "1.0.0",
 }
-ROOTS = ("newton", "numpy", "ovrtx", "ovstage", "pyside6", "usd-core", "warp-lang", "pyserial")
+ROOTS = ("newton", "numpy", "ovrtx", "ovstage", "pyside6", "usd-core", "warp-lang", "pyserial", "lertx-robot-assets")
 
 
 def inventory(packages):
@@ -51,7 +52,7 @@ def inventory(packages):
         roots = tuple("usd-exchange" if name == "usd-core" else name for name in ROOTS)
     if {p["name"]: p["version"] for p in packages} != expected or len(packages) != len(expected):
         raise ValueError("Native application wheel inventory differs from the declared closure")
-    return expected, roots
+    return expected, tuple(sorted(roots))
 
 
 def compatibility(archives: dict, target: dict) -> dict:

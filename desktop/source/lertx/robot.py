@@ -14,6 +14,9 @@ import struct
 import xml.etree.ElementTree as ET
 
 RESOURCES = Path(__file__).with_name('resources') / 'so101'
+if not RESOURCES.is_dir():
+    import lertx_robot_assets
+    RESOURCES = Path(lertx_robot_assets.__file__).parent / 'so101'
 JOINT_NAMES = ('shoulder_pan', 'shoulder_lift', 'elbow_flex', 'wrist_flex', 'wrist_roll', 'gripper')
 ROLES = ('leader', 'follower')
 ROOTS = {role: '/World/' + role.title() for role in ROLES}

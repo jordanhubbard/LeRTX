@@ -35,6 +35,25 @@ class PhotoTests(unittest.TestCase):
         image_url = body["input"][0]["content"][1]["image_url"]
         self.assertEqual(base64.b64decode(image_url.split(",")[1]), self.image)
         self.assertNotIn("injected-test-key", json.dumps(result))
+        self.assertNotIn('text', body)
+        self.assertNotIn('provider', body)
+
+    def test_openrouter_enforces_shape_but_still_checks_mesh_semantics(self):
+        self.profile['llm']['endpoint']='https://openrouter.ai/api/v1/responses'
+        self.profile['llm']['model']='openai/gpt-5-mini'
+        self.profile['llm']['max_output_tokens']=8192
+        def transport(url,headers,body,timeout):
+            request=json.loads(body)
+            self.assertTrue(request['text']['format']['strict'])
+            self.assertTrue(request['provider']['require_parameters'])
+            geometry=request['text']['format']['schema']['properties']['objects']['items']['properties']['geometry']
+            mesh=next(v for v in geometry['anyOf'] if v['properties']['type']['enum']==['mesh'])
+            self.assertEqual(mesh['properties']['triangles']['items']['type'],'integer')
+            scene=scene_payload()
+            # Valid JSON-schema shape, invalid physical geometry: collinear triangle.
+            scene['objects'][0]['geometry']={'type':'mesh','points':[[0,0,0],[1,0,0],[2,0,0]],'triangles':[0,1,2]}
+            return self.response(json.dumps(scene))
+        self.assertEqual(request_scene(self.profile,self.image,transport),{'state':'invalid_scene'})
 
     def test_cancel_before_and_during_request(self):
         token = CancelToken()
@@ -71,3 +90,19 @@ class PhotoTests(unittest.TestCase):
         def timeout(*args):
             raise TimeoutTransportError("private")
         self.assertEqual(request_scene(self.profile, self.image, timeout), {"state":"timeout"})
+
+    def test_detailed_preset_sets_reasoning_and_preserves_provider(self):
+        from lertx.photo import photo_profile
+        self.profile['llm']['endpoint']='https://openrouter.ai/api/v1/responses'
+        profile=photo_profile(self.profile,'detail')
+        def transport(url,headers,body,timeout):
+            payload=json.loads(body)
+            self.assertEqual(payload['reasoning'],{'effort':'high'})
+            self.assertEqual(payload['model'],'openai/gpt-6-astra')
+            self.assertEqual(timeout,300)
+            self.assertEqual(payload['max_output_tokens'],24576)
+            return self.response()
+        self.assertEqual(request_scene(profile,self.image,transport)['state'],'success')
+        self.assertEqual(self.profile['llm']['max_output_tokens'],512)
+        self.profile['llm']['endpoint']='https://example.com/v1/responses'
+        with self.assertRaises(ValueError):photo_profile(self.profile,'detail')

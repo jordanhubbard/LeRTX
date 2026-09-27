@@ -1,10 +1,12 @@
 """Explicit photo inference, independent of the inexpensive connection probe."""
+import copy
 import base64
 import hashlib
 import json
+from urllib.parse import urlsplit
 
 from .config import validate_profile
-from .reconstruction import parse_scene
+from .reconstruction import parse_scene, scene_json_schema
 from .transport import MAX_RESPONSE_BYTES, TimeoutTransportError, _extract_output_text, default_transport
 
 MAX_IMAGE_BYTES = 8 * 1024 * 1024
@@ -26,7 +28,29 @@ rotation within +/-360 degrees; colors/confidence 0..1. Box dimensions/radius
 0.0001..100m; local mesh coordinates within +/-100m. At most 64 unobserved strings,
 each 1..512 characters. No other fields, URLs, code, references or asset paths.
 Dimensions are guesses from one photo, not measured calibration. Preserve visible
-object relationships and provide conservative confidence, not certainty."""
+object relationships and provide conservative confidence, not certainty.
+Reconstruct recognizable visible subjects, preserving their silhouette, proportions,
+pose and colors. Use separate low-poly meshes for curved anatomy and major appendages;
+do not replace an organic subject with a box. Spend the detail budget on the subject,
+not distant rubble. Do not create large background walls or water volumes: describe
+background atmosphere in unobserved. This output is a colored mesh approximation,
+not a textured photogrammetry reconstruction."""
+
+
+DETAIL_MODEL = 'openai/gpt-6-astra'
+
+
+def photo_profile(profile, quality='configured'):
+    """Per-request preset; never changes the user's saved endpoint or credentials."""
+    result=copy.deepcopy(profile)
+    if quality in ('detail','fast'):
+        if urlsplit(result['llm']['endpoint']).hostname != 'openrouter.ai':
+            raise ValueError('These model presets require the OpenRouter destination')
+        result['llm'].update(model=DETAIL_MODEL if quality=='detail' else 'openai/gpt-5-mini',
+            max_output_tokens=24576 if quality=='detail' else 8192,
+            timeout_seconds=300 if quality=='detail' else 120)
+    elif quality!='configured':raise ValueError('Unknown photo quality')
+    return result
 
 
 def request_scene(profile, image, transport=None, cancel_token=None):
@@ -41,10 +65,16 @@ def request_scene(profile, image, transport=None, cancel_token=None):
         return {"state": "missing_key"}
     if not isinstance(image, bytes) or not image.startswith(b"\x89PNG\r\n\x1a\n") or len(image) > MAX_IMAGE_BYTES:
         return {"state": "invalid_image"}
-    body = json.dumps({"model": llm["model"], "max_output_tokens": llm["max_output_tokens"],
+    payload = {"model": llm["model"], "max_output_tokens": llm["max_output_tokens"],
         "input": [{"role": "user", "content": [
             {"type": "input_text", "text": PROMPT},
-            {"type": "input_image", "image_url": "data:image/png;base64," + base64.b64encode(image).decode("ascii")}]}]}).encode("utf-8")
+            {"type": "input_image", "image_url": "data:image/png;base64," + base64.b64encode(image).decode("ascii")}]}]}
+    if urlsplit(llm['endpoint']).hostname == 'openrouter.ai':
+        payload['text'] = {'format': {'type': 'json_schema', 'name': 'lertx_photo_scene',
+                                     'strict': True, 'schema': scene_json_schema()}}
+        payload['provider'] = {'require_parameters': True}
+        if llm['model']==DETAIL_MODEL:payload['reasoning']={'effort':'high'}
+    body = json.dumps(payload).encode('utf-8')
     try:
         status, _, raw = (transport or default_transport)(llm["endpoint"],
             {"Authorization": "Bearer " + llm["api_key"], "Content-Type": "application/json"},

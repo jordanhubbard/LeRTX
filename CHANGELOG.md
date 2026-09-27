@@ -2,6 +2,25 @@
 
 ## Unreleased
 
+- Verification: reconcile photo-preset authority and specification metadata;
+  package exact SO-101 resources as a hash-locked offline dependency so retained
+  application admission includes binary models without weakening source limits.
+  Current authority, component locks and receipt are checked by `litai verify`.
+
+- Desktop: persistent joint instructions, named joint selection and a prominent
+  angle slider. Added a modeless SO-101 USB calibration wizard with reference
+  alignment, six individual range/direction checks, live provisional RTX mirroring,
+  torque-off homing/limit writes, original-register backup and cancellation rollback.
+  Exports LeRobot calibration and the matching virtual binding. Tested with the
+  pinned SDK's emulated serial stream and Windows RTX; physical-arm acceptance is pending.
+- Photos: OpenRouter defaults to GPT-6 Astra with high reasoning for detailed
+  shapes, with explicit cost/latency guidance and a cheaper layout option.
+  Generated drafts show geometry counts before opening. The actual turtle photo
+  produced a recognizable low-poly turtle in native RTX, rather than a single box;
+  this remains approximate colored geometry, not textured photogrammetry.
+
+- Desktop: request schema-constrained photo scenes from OpenRouter while retaining local geometry validation; verified GPT-5 Mini image inference and Windows USD import.
+
 - Desktop: make locked follower joints directly unlockable, retain following changes while rendering, and provide an inline photo API-key field with explicit upload progress and retry feedback.
 
 - Desktop hardware: explicit SO-101 USB telemetry, LeRobot calibration import,
