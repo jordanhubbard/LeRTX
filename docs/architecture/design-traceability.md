@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:98cc0159106ee8ba4515c83e654ab851f17238751a8f923b56256b57c00fbce3 -->
+<!-- literate-ai:authority-reviewed sha256:78105c3443755b275b8405a7d870cf7a96e384fb82d2386a5198b215f480b833 -->
 
 [Project guide](../README.md) → design traceability
 
@@ -13,3 +13,8 @@ derived evidence outside source authority. Changes should update the owning arti
 its nearby explanation or diagram,
 and an end-to-end test. Illustrations aid understanding; prose requirements and
 acceptance scenarios remain normative. See the [project map](../user/project-layout.md).
+
+The desktop joint-control contract owns right-click sliders and middle-button
+panning on every platform. The Qt input regression and native context-window
+verification cover that interaction through the existing simulated command path;
+physical controls retain their separate hardware workflow.

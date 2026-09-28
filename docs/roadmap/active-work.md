@@ -1167,6 +1167,24 @@ queue item or let `docs/roadmap/` become a plan archive.
 
 ### [ ] APP-001 — Deliver an installed desktop application with a simulated SO-101 pair
 
+- **Contextual joint controls:** The operator reports that joint movement remains
+  difficult to discover. Implement cross-platform right-click joint controls with
+  a visible bounded slider, angle input and lock explanation; reserve middle-drag
+  for panning and keep camera input separate. Reuse the native picker and simulated
+  command path. Windows is a validation target, not an implementation constraint.
+  The operator also authorizes contained Linux ARM64 GPU validation for this work.
+  - [x] Implement contextual controls, cancellation and updated input guidance.
+  - [x] Verify delayed picking, slider coalescing, limits, locks and camera routing.
+  - [x] Verify actual picked-joint motion and rendered frames on Linux ARM64 and Windows.
+  Native context-window checks pass on both platforms: a 25 degree target moves
+  the picked leader shoulder joint to approximately 26.1 degrees in the bounded
+  paused preview, changes RTX pixels, preserves authored USD, pans with the
+  middle button and shuts down cleanly. See `verification/joint-context-review.json`.
+  All 24 focused input/UI regressions pass on each platform. Retained-source
+  admission passes 30 contract tests and three unchanged independent acceptance
+  cases; all 90 application/test Python files match the admitted artifact.
+  The pinned framework's `litai verify` passes all three applicable gates.
+
 - **Discoverability direction:** Provide persistent on-screen joint instructions, named joint selection, direct angle controls, contextual lock recovery and an obvious real-arm setup entry point. Test the visible Windows flow without relying on the scene tree or undocumented gestures.
 
 - **Current interaction repair:** The selected follower joint is locked by leader-following. Provide an explicit action beside the selected joint to disable following, retain toggle requests while the native worker is busy, and verify subsequent slider and pointer motion. Windows verification passes the busy-worker regression and visible native follower unlock plus slider motion (20 degree target, 21.8 degree measured paused pose, changed RTX frame). Physical motor control is unchanged.

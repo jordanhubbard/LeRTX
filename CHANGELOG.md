@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Desktop: right-click an arm link to open a joint slider with a numeric target,
+  limits and follower-unlock action. Middle-drag pans; Alt-left-drag orbits;
+  wheel and trackpad scroll zoom. The shared controls are verified with actual
+  RTX picking and paused simulated motion on Linux ARM64 and Windows.
+
 - Verification: reconcile photo-preset authority and specification metadata;
   package exact SO-101 resources as a hash-locked offline dependency so retained
   application admission includes binary models without weakening source limits.

@@ -16,7 +16,7 @@ def build_robot_panel(window):
             self.setMinimumWidth(370)
             self.setMaximumWidth(480)
             layout=QVBoxLayout(self)
-            note=QLabel('MOVE A VIRTUAL JOINT\n1. Choose an arm and joint below, or click a colored arm link.\n2. Drag the angle slider. Motion works while paused.\n3. For the follower, disable leader-following when prompted.\n\nMouse: hold left button on a link and drag right/up to increase its angle; left/down decreases it. Alt + drag rotates the camera. Right-drag pans; wheel zooms.')
+            note=QLabel('MOVE A VIRTUAL JOINT\n1. Right-click a colored arm link for its joint slider, or choose an arm and joint below.\n2. Drag the slider or enter a target. Motion works while paused.\n3. For the follower, choose Manipulate follower independently.\n\nMouse: left-drag a link to move it directly. Alt-left-drag rotates the camera. Middle-drag pans; wheel or trackpad scroll zooms.')
             note.setWordWrap(True);layout.addWidget(note)
             setup=QPushButton('Set up and calibrate real USB arms…');setup.clicked.connect(window.open_setup);layout.addWidget(setup)
             self.follow=QCheckBox('Follower tracks the simulated leader')

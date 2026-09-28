@@ -1,0 +1,141 @@
+"""Qualify right-click joint controls against actual Qt, RTX picking and physics.
+
+Run under native_guard.py on Linux or a bounded Windows Job Object.
+"""
+import argparse
+import copy
+import json
+import math
+from pathlib import Path
+import sys
+import tempfile
+import time
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT/'desktop/source'))
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--report', type=Path, required=True)
+    args = parser.parse_args()
+    args.report.parent.mkdir(parents=True, exist_ok=True)
+    from lertx.ui import build_application, build_main_window
+    app = build_application([])
+    from PySide6.QtCore import QTimer, Qt, QPoint
+    from PySide6.QtTest import QTest
+    from lertx.config import DEFAULT_PROFILE
+    from lertx.runtime import SceneWorker
+    from lertx.scene import create_default_scene
+    profile = copy.deepcopy(DEFAULT_PROFILE)
+    profile['rendering'].update(width=640, height=360, target_fps=15)
+    result = {'complete': False, 'physical_hardware_tested': False}
+    state = {'phase': 'startup'}
+    started = time.monotonic()
+    with tempfile.TemporaryDirectory() as directory:
+        scene = Path(directory)/'pair.usdc'
+        create_default_scene(str(scene), include_robots=True)
+        window = build_main_window(profile, lambda: SceneWorker(profile), str(scene),
+                                   str(Path(directory)/'settings.json'))
+        window.show()
+        window.open_scene(str(scene))
+        timer = QTimer(window)
+
+        def finish(error=None):
+            timer.stop()
+            result.update(complete=error is None, seconds=round(time.monotonic()-started, 3))
+            if error:
+                result['error'] = str(error)
+            window.viewport_label.cancel()
+            window.close()
+
+        def picked(hit):
+            assert hit, 'Native picker did not find a leader joint'
+            u, v, joint = hit
+            state.update(phase='popup', joint=joint)
+            view = window.viewport_label
+            left, top, width, height = view.image_rect()
+            QTest.mouseClick(view, Qt.MouseButton.RightButton,
+                             pos=QPoint(round(left+u*width), round(top+v*height)))
+
+        def inspect_motion():
+            joint = state['joint']
+            role, name = joint['role'], joint['name']
+            target = window.worker.physics.targets[role][name]
+            measured = window.worker.physics.robot_positions()[role][name]
+            assert abs(target-state['target']) < 1e-6, (target, state['target'])
+            assert abs(measured-joint['value']) > .005, (measured, joint['value'])
+            assert not window.worker.clock.playing
+            assert not window.worker.document.dirty
+            return dict(target_radians=target, measured_radians=measured,
+                        initial_radians=joint['value'], paused=True,
+                        authored_scene_unchanged=True)
+
+        def verified(value):
+            result.update(value)
+            assert window._image != state['before'], 'Rendered image did not change'
+            assert window._selected_path(), 'Native pick did not synchronize selection'
+            result.update(rendered_motion=True, selected_path=window._selected_path())
+            window.grab().save(str(args.report.with_suffix('.png')))
+            window.viewport_label.popup.grab().save(str(args.report.with_name(args.report.stem+'-popup.png')))
+            state['before_pan'] = window._image.copy()
+            window.viewport_label.popup.close()
+            view = window.viewport_label
+            QTest.mousePress(view, Qt.MouseButton.MiddleButton, pos=QPoint(200,150))
+            QTest.mouseMove(view, QPoint(240,170))
+            QTest.mouseRelease(view, Qt.MouseButton.MiddleButton, pos=QPoint(240,170))
+            state['phase'] = 'pan'
+
+        def tick():
+            try:
+                if time.monotonic()-started > 150:
+                    raise AssertionError('Native context-control verification timed out: '+state['phase'])
+                if window._pending or not window._ready:
+                    return
+                if state['phase'] == 'startup' and window._image is not None and window._idle_frame:
+                    image = window._image
+                    candidates = []
+                    for y in range(8, image.height(), 12):
+                        for x in range(8, image.width(), 12):
+                            color = image.pixelColor(x,y)
+                            if color.green() > color.red()*1.25 and color.green() > 60:
+                                candidates.append((x/image.width(), y/image.height()))
+                    def probe():
+                        for u, v in candidates:
+                            joint = window.worker.pick(u,v)['joint']
+                            if joint and joint['role'] == 'leader' and joint['name'] != 'gripper':
+                                return u, v, joint
+                    state['phase'] = 'pick'
+                    window._command(probe, picked)
+                elif state['phase'] == 'popup' and window.viewport_label.popup is not None:
+                    popup = window.viewport_label.popup
+                    assert popup.isVisible() and popup.slider.isEnabled()
+                    assert popup.screen().availableGeometry().contains(popup.frameGeometry())
+                    joint = state['joint']
+                    target = min(joint['high'], joint['value']+math.radians(25))
+                    fraction = round(1000*(target-joint['low'])/(joint['high']-joint['low']))
+                    state['target'] = joint['low']+(joint['high']-joint['low'])*fraction/1000
+                    state['before'] = window._image.copy()
+                    popup.slider.setValue(max(0, fraction-20))
+                    popup.slider.setValue(fraction)
+                    state['phase'] = 'motion'
+                elif state['phase'] == 'motion' and window.viewport_label.intent is None and window._idle_frame:
+                    state['phase'] = 'verify'
+                    window._command(inspect_motion, verified)
+                elif state['phase'] == 'pan' and window._idle_frame:
+                    assert window._image != state['before_pan'], 'Middle-drag did not change rendered camera'
+                    result['middle_drag_pan'] = True
+                    finish()
+            except Exception as error:
+                finish(repr(error))
+
+        timer.timeout.connect(tick)
+        timer.start(40)
+        app.exec()
+        result['clean_shutdown'] = window.worker is None
+    args.report.write_text(json.dumps(result, indent=2)+'\n')
+    return 0 if result['complete'] and result['clean_shutdown'] else 1
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

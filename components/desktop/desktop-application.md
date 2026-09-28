@@ -53,12 +53,20 @@ individual robot link must not break its articulation silently.
 Allow grabbing a rendered arm link and dragging its associated joint. Native RTX
 picking must respect image scaling and letterboxing, and agree with hierarchy
 selection. Show the selected joint and target; clamp targets to model limits.
-Left drag manipulates joints, Alt-left drag orbits, right drag pans and the wheel
-zooms. A paused drag advances a bounded physics preview and remains paused;
+Right-clicking a rendered joint opens an adjacent control with its arm and joint
+name, a visible slider, numeric target and model limits in degrees (normalized
+travel percent for a gripper). Opening the control never moves a joint. Explain
+locks inline and expose explicit follower-unlock without enabling physical writes.
+Support native trackpad context-menu events and keyboard access to the controls.
+Left drag manipulates joints, Alt-left drag orbits, middle drag pans and the wheel
+or trackpad scroll zooms. A paused drag advances a bounded physics preview and remains paused;
 playing drags update targets through the normal simulation loop. Following must
 be disabled before manipulating the follower. Coalesce drag updates, preserve
 the final released target, and cancel gestures on reset, scene change or focus
 loss. Never teleport links or route these gestures to a physical USB device.
+Slider updates use the same coalesced simulated command path and preserve the final
+value when dismissed normally. Escape, focus loss, reset and scene changes cancel
+unsent input and stale pick callbacks. Controls must remain inside the active screen.
 
 ## Qualification
 

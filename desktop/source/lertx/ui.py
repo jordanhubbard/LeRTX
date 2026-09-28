@@ -522,7 +522,7 @@ def build_main_window(
             QMessageBox.information(self,'Getting started',
                 'Your workspace contains a teal SO-101 leader and an amber follower.\n\n'
                 'Use Robot simulation to choose joint targets, then Play. The follower tracks the simulated leader. Pause holds the pose; Reset restores the workspace.\n\n'
-                'Drag an arm link to manipulate its joint. Alt-drag to orbit, right-drag to pan, and scroll to zoom. Click an object to select it. Paused joint drags preview simulated physics; disable following before dragging the follower. Use File → Save As to keep a workspace.\n\n'
+                'Right-click an arm link to open its joint slider and numeric target. Left-drag a link to move it directly. Alt-left-drag to orbit, middle-drag to pan, and wheel or trackpad scroll to zoom. Click an object to select it. Joint controls work while paused; choose Manipulate follower independently to unlock the follower. Use File → Save As to keep a workspace.\n\n'
                 'These are simulated arms. No hardware port is opened. The leader trigger geometry and inertia are upstream estimates; contact hulls approximate individual mechanical parts.')
 
         def _show_about(self):
@@ -593,9 +593,11 @@ def build_main_window(
             self.viewport_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.viewport_label.setMinimumSize(320, 180)
             self.viewport_label.setText("Empty — open a USD scene")
-            self.viewport_label.setToolTip('Drag an arm link to turn its joint. Alt-drag: orbit · Right-drag: pan · Scroll: zoom. Simulation only.')
+            self.viewport_label.setToolTip('Right-click an arm link for its joint slider. Left-drag: move joint · Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom. Simulation only.')
             layout.addWidget(self.viewport_label, stretch=1)
-            layout.addWidget(QLabel('Grab a joint: drag an arm link · Alt-drag: orbit · Right-drag: pan · Scroll: zoom'))
+            hint = QLabel('Right-click a joint: slider · Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom')
+            hint.setWordWrap(True)
+            layout.addWidget(hint)
 
             transport_row = QHBoxLayout()
             self.play_button = QPushButton("Play")
@@ -721,7 +723,8 @@ def build_main_window(
                 def selected_joint(value):
                     if path==self._selected_path():
                         self.robot_panel.select_joint(value)
-                        if value.get('joint'):self.robot_dock.show();self.robot_dock.raise_()
+                        if value.get('joint') and self.viewport_label.popup is None:
+                            self.robot_dock.show();self.robot_dock.raise_()
                 self._command(lambda: self.worker.select(path),selected_joint)
             self.inspector.set_enabled_for_selection(False)
             if path is None:
@@ -758,6 +761,7 @@ def build_main_window(
         def _apply_status(self, status):
             self.statusBar().clearMessage()
             self.robot_panel.update_state(status.get("robots"))
+            self.viewport_label.update_joint_state(status.get("robots"))
             self.reconstruction_warning.setVisible(status.get("reconstruction_status") == "unverified")
             self._diagnostics = status.get("diagnostics", {})
             self._scene_units = status.get("meters_per_unit", 1.0)
@@ -1004,6 +1008,7 @@ def build_main_window(
                                  frame.width*frame.channels, fmt).copy()
             self._display_image()
             self.robot_panel.update_state(result.get("robots"))
+            self.viewport_label.update_joint_state(result.get("robots"))
             self.play_button.setEnabled(getattr(self,'_simulation_available',True) and not result.get('robots',{}).get('live_roles'))
             if result.get('joint_target'):
                 self.robot_panel.show_target(*result['joint_target'])
