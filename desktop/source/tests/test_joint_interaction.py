@@ -102,118 +102,57 @@ class JointPointerTests(unittest.TestCase):
         self.event('press', 100, 100, mouse_button=Qt.MouseButton.RightButton)
         self.event('release', 100, 100, mouse_button=Qt.MouseButton.RightButton)
 
-    def test_context_slider_delayed_pick_coalesces_and_keeps_dismissed_target(self):
-        self.right_click()
-        self.assertIsNone(self.view.popup)
-        self.assertEqual(len(self.owner._pending), 1)
-        self.drain()
-        popup = self.view.popup
-        self.assertTrue(popup.isVisible())
-        self.assertEqual(self.commands, [])
-        self.assertEqual(self.camera, [])
-        self.assertIn('Shoulder Pan', popup.slider.accessibleName())
-        for value in (600, 750, 1000):
-            popup.slider.setValue(value)
-        self.assertAlmostEqual(popup.value.value(), math.degrees(1), places=2)
-        popup.close()
-        self.view.flush(); self.drain()
-        self.assertEqual(self.commands, [('leader', 'shoulder_pan', 1.)])
-
-    def test_context_cancel_and_scene_change_discard_stale_input(self):
+    def test_right_drag_moves_the_joint_exactly_like_left_drag(self):
         from PySide6.QtCore import Qt
-        from PySide6.QtTest import QTest
-        self.right_click(); self.view.cancel(); self.drain()
-        self.assertIsNone(self.view.popup)
+        self.event('press', 100, 100, mouse_button=Qt.MouseButton.RightButton)
+        for x in range(110, 201, 10):
+            self.event('move', x, 100, mouse_button=Qt.MouseButton.RightButton)
+        self.event('release', 200, 100, mouse_button=Qt.MouseButton.RightButton)
+        self.assertEqual(len(self.owner._pending), 1)
+        self.drain(); self.view.flush(); self.drain()
+        self.assertEqual(len(self.commands), 1)
+        self.assertAlmostEqual(self.commands[0][2], math.radians(50))
+        self.assertIsNone(self.view.press)
+
+    def test_right_click_without_drag_selects_but_commands_nothing(self):
         self.right_click(); self.drain()
-        popup = self.view.popup
-        popup.slider.setValue(800)
-        QTest.keyClick(popup.slider, Qt.Key.Key_Escape)
-        self.view.flush(); self.drain()
-        self.assertIsNone(self.view.popup)
         self.assertEqual(self.commands, [])
+        self.assertIsNone(self.view.press)
 
-    def test_context_lock_unlock_and_live_view_lock(self):
-        from types import SimpleNamespace
-        following = []
-        self.owner.robot_panel = SimpleNamespace(state={}, set_following=following.append)
-        self.joint.update(role='follower', locked=True)
-        self.right_click(); self.drain()
-        popup = self.view.popup
-        self.assertFalse(popup.slider.isEnabled())
-        popup.slide(900)
-        self.assertIsNone(self.view.intent)
-        popup.unlock.click()
-        self.assertEqual(following, [False])
-        self.assertFalse(popup.slider.isEnabled())
-        self.view.update_joint_state(dict(positions={'follower': {}}, following=False))
-        self.assertTrue(popup.slider.isEnabled())
-        popup.slider.setValue(900)
-        self.view.update_joint_state(dict(positions={'follower': {}}, following=False, live_roles=['leader']))
-        self.assertFalse(popup.slider.isEnabled())
-        self.assertFalse(popup.unlock.isVisible())
-        self.assertIn('physical live view', popup.note.text())
-        self.view.flush(); self.drain()
-        self.assertEqual(self.commands, [])
-
-    def test_native_trackpad_context_and_gripper_units(self):
-        from PySide6.QtCore import QPoint
-        from PySide6.QtGui import QContextMenuEvent
-        self.joint.update(name='gripper', low=.1, high=.9, value=.5)
-        event = QContextMenuEvent(QContextMenuEvent.Reason.Mouse, QPoint(100,100), QPoint(100,100))
-        self.app.sendEvent(self.view, event); self.drain()
-        popup = self.view.popup
-        self.assertEqual(popup.value.value(), 50.)
-        self.assertEqual(popup.value.suffix(), ' %')
-        popup.value.setValue(100)
-        self.view.flush(); self.drain()
-        self.assertAlmostEqual(self.commands[-1][2], .9)
-
-    def test_middle_pan_and_right_drag_do_not_move_joints(self):
-        from PySide6.QtCore import Qt, QPoint
-        from PySide6.QtGui import QContextMenuEvent
-        for button in (Qt.MouseButton.MiddleButton, Qt.MouseButton.RightButton):
-            self.event('press', 100, 100, mouse_button=button)
-            self.event('move', 180, 100, mouse_button=button)
-            self.event('release', 180, 100, mouse_button=button)
-        self.app.sendEvent(self.view, QContextMenuEvent(QContextMenuEvent.Reason.Mouse,
-                           QPoint(180,100), QPoint(180,100)))
+    def test_middle_drag_only_pans(self):
+        from PySide6.QtCore import Qt
+        self.event('press', 100, 100, mouse_button=Qt.MouseButton.MiddleButton)
+        self.event('move', 180, 100, mouse_button=Qt.MouseButton.MiddleButton)
+        self.event('release', 180, 100, mouse_button=Qt.MouseButton.MiddleButton)
         self.assertEqual(len(self.camera), 1)
         self.assertIn('pan', self.camera[0])
         self.assertEqual(self.owner._pending, [])
         self.assertEqual(self.commands, [])
 
-    def test_context_empty_hit_and_letterbox_never_open_control(self):
-        from PySide6.QtCore import QPoint
+    def test_letterbox_click_reports_status_and_queues_no_pick(self):
         from PySide6.QtGui import QPixmap
-        self.joint = None
-        self.right_click(); self.drain()
-        self.assertIsNone(self.view.popup)
-        self.view.setPixmap(QPixmap(200,100))
-        self.view.open_joint_control(QPoint(0,0), QPoint(0,0))
+        self.view.setPixmap(QPixmap(200, 100))  # smaller than the 400x300 view: a letterboxed margin exists
+        self.event('press', 0, 0)
+        self.event('release', 0, 0)
         self.assertEqual(self.owner._pending, [])
+        self.assertIn('outside the rendered image', self.owner.statusBar().currentMessage())
 
-    def test_popup_focus_loss_discards_unsent_target(self):
-        from PySide6.QtCore import QEvent
-        self.right_click(); self.drain()
-        self.view.popup.slider.setValue(900)
-        self.app.sendEvent(self.owner, QEvent(QEvent.Type.ApplicationDeactivate))
-        self.view.flush(); self.drain()
-        self.assertIsNone(self.view.popup)
+    def test_click_with_no_joint_hit_reports_status_and_stays_idle(self):
+        self.joint = None
+        self.event('press', 100, 100); self.drain()
+        self.event('release', 100, 100)
+        self.assertIsNone(self.view.press)
+        self.assertIn('no movable joint', self.owner.statusBar().currentMessage())
         self.assertEqual(self.commands, [])
 
-    def test_platform_context_event_does_not_duplicate_right_release(self):
-        from PySide6.QtCore import QPoint
-        from PySide6.QtGui import QContextMenuEvent
-        self.right_click()
-        self.app.sendEvent(self.view, QContextMenuEvent(QContextMenuEvent.Reason.Mouse,
-                           QPoint(100,100), QPoint(100,100)))
-        self.assertEqual(len(self.owner._pending), 1)
-        self.drain()
-        popup = self.view.popup
-        popup.value.setValue(9999)
+    def test_application_deactivate_discards_unsent_drag(self):
+        from PySide6.QtCore import QEvent
+        self.event('press', 100, 100); self.drain()
+        self.event('move', 200, 100)
+        self.app.sendEvent(self.owner, QEvent(QEvent.Type.ApplicationDeactivate))
         self.view.flush(); self.drain()
-        self.assertLessEqual(self.commands[-1][2], 1.)
-        self.assertGreater(self.commands[-1][2], .99)
+        self.assertIsNone(self.view.press)
+        self.assertEqual(self.commands, [])
 
     def test_trackpad_pixel_scroll_zooms_without_joint_input(self):
         from PySide6.QtCore import QPoint, QPointF, Qt

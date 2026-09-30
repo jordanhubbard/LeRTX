@@ -163,12 +163,9 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             generation=self.preview_generation;issued_step=self.step;self.preview_pending=True
             def work():
                 try:
-                    selected=None
                     if self.capture and 3<=self.step<=8 and hasattr(owner.worker,'select_joint'):
-                        selected=owner.worker.select_joint(self.role,JOINT_NAMES[self.step-3])
-                    frame=owner.worker.setup_pose(self.role,positions,timestamp)
-                    if selected:frame['setup_selection']=selected
-                    return frame
+                        owner.worker.select_joint(self.role,JOINT_NAMES[self.step-3])
+                    return owner.worker.setup_pose(self.role,positions,timestamp)
                 except Exception as exc:return {'setup_error':str(exc)}
             def done(frame):
                 self.preview_pending=False
@@ -178,7 +175,6 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     if timestamp is None:self.guide_shown=False
                 else:
                     owner._accept_frame(frame)
-                    if frame.get('setup_selection'):owner.robot_panel.select_joint(frame['setup_selection'])
                     if timestamp is None:self.guide_ready=True
                     elif issued_step==self.step:self.preview_step=issued_step
             owner._command(work,done)

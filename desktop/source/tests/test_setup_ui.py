@@ -78,14 +78,11 @@ class SetupUITests(unittest.TestCase):
         w.advance();self.assertEqual(w.step,3)
         w.confirm.setChecked(True);w.advance();self.assertEqual(w.step,3)
         self.assertIn('100 encoder ticks',w.status.text())
-    def test_named_joint_can_be_selected_while_worker_busy(self):
+    def test_named_joint_slider_sets_intent_even_while_worker_busy(self):
         from lertx.robot import home_positions
         p=self.owner.robot_panel;p.update_state({'positions':{'leader':home_positions('leader')},'following':True})
         self.owner._pending=[object()]
-        p.joint_choice.setCurrentIndex(2)
-        self.assertEqual(p.pending_joint,('leader','shoulder_lift'))
-        calls=[]
-        def select(role,name):
-            calls.append((role,name));return {'path':'/joint','joint':dict(role=role,name=name,low=-1.,high=1.,value=0.,locked=False)}
-        self.owner.worker.select_joint=select;self.owner._pending=[];p.flush()
-        self.assertEqual(calls,[('leader','shoulder_lift')]);self.assertTrue(p.joint_slider.isEnabled())
+        low,high=p._range['leader','shoulder_lift']
+        p.sliders['leader','shoulder_lift'].setValue(1000)
+        self.assertEqual(self.owner.viewport_label.intent,('leader','shoulder_lift',high))
+        self.owner._pending=[]

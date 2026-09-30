@@ -2,10 +2,21 @@
 
 ## Unreleased
 
-- Desktop: right-click an arm link to open a joint slider with a numeric target,
-  limits and follower-unlock action. Middle-drag pans; Alt-left-drag orbits;
-  wheel and trackpad scroll zoom. The shared controls are verified with actual
-  RTX picking and paused simulated motion on Linux ARM64 and Windows.
+- Desktop: left- or right-drag an arm link to move its joint directly, following
+  the mouse; both buttons grab and drive the joint the same way, and the earlier
+  right-click popup is gone. Every leader and follower joint (12 total) now has
+  its own labeled slider and numeric field, always visible in the Robot
+  simulation panel — no joint picker or hidden toggle required. Alt-left-drag
+  orbits, middle-drag pans, and wheel or trackpad scroll zooms. Clicking outside
+  the rendered image or on a non-joint link now reports a status message instead
+  of doing nothing. Verified with actual RTX picking and paused simulated motion
+  on Linux ARM64.
+
+- Desktop: grouped the toolbar with separators, added a leader/follower color
+  legend under the viewport matching the rendered arm colors, colorized device
+  role status, gave the device-assignment failure message concrete next steps,
+  stripped the raw Python exception type name from native error text, and added
+  a Back button plus joint-count/completion cues to the SO-101 setup wizard.
 
 - Verification: reconcile photo-preset authority and specification metadata;
   package exact SO-101 resources as a hash-locked offline dependency so retained
