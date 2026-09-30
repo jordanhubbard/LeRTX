@@ -48,6 +48,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.status=QLabel();self.status.setWordWrap(True);self.status.setTextFormat(Qt.TextFormat.PlainText);layout.addWidget(self.status)
             self.preview_status=QLabel();self.preview_status.setWordWrap(True);layout.addWidget(self.preview_status)
             self.next_button=QPushButton();self.next_button.clicked.connect(self.advance);layout.addWidget(self.next_button)
+            self.back_button=QPushButton('Back to previous joint');self.back_button.clicked.connect(self.go_back);layout.addWidget(self.back_button)
             self.cancel_button=QPushButton('Cancel setup');self.cancel_button.clicked.connect(self.close);layout.addWidget(self.cancel_button)
             self.reset_button=QPushButton('Start again after a connection fault');self.reset_button.clicked.connect(self.restart);layout.addWidget(self.reset_button);self.reset_button.hide()
             self.timer=QTimer(self);self.timer.timeout.connect(self.poll);self.timer.start(50)
@@ -56,8 +57,16 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
         def render_step(self):
             self.status.clear()
             names=['Choose arm and USB port','Check the arm and release torque','Match the reference pose']+[n.replace('_',' ').title() for n in JOINT_NAMES]+['Review and save','Setup complete']
-            self.heading.setText(f'{min(self.step+1,11)} / 11 · '+names[self.step]);self.progress.setValue(self.step)
             joint=3<=self.step<=8
+            if self.step==10:
+                self.heading.setText('Setup complete · '+names[self.step])
+            elif joint:
+                self.heading.setText(f'{self.step+1} / 11 · joint {self.step-2} of 6 · '+names[self.step])
+            else:
+                self.heading.setText(f'{min(self.step+1,11)} / 11 · '+names[self.step])
+            self.progress.setValue(self.step)
+            self.progress.setVisible(self.step<10)
+            self.back_button.setVisible(4<=self.step<=9)
             for widget in (self.role_box,self.ports,self.scan_button):widget.setVisible(self.step==0)
             self.support.setVisible(self.step==1);self.release.setVisible(self.step==1)
             self.reference_check.setVisible(self.step==2)
@@ -130,6 +139,10 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     self.session.request('setup_save',cal);self.pending=True
                 elif self.step==10:self.finish_setup()
             except Exception as exc:self.status.setText(str(exc))
+
+        def go_back(self):
+            if 4<=self.step<=9:
+                self.step-=1;self.confirm.setChecked(False);self.sequence=-1;self.preview_step=None;self.render_step()
 
         def require_sample(self):
             s=self.session.snapshot() if self.session else {};sample=s.get('sample')

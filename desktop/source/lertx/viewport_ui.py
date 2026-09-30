@@ -12,6 +12,9 @@ def build_viewport(owner):
             self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
             self.generation = 0
             self.popup = None
+            self._robot_state = None
+            self.keyboard_focus = None
+            self.keyboard_focus_joint = None
             self.cancel()
             QApplication.instance().installEventFilter(self)
 
@@ -39,6 +42,20 @@ def build_viewport(owner):
                 self.cancel()
             return False
 
+        def open_popup_for_joint(self, joint, global_position):
+            if not joint:
+                owner.statusBar().showMessage('Right-click a movable arm link, or arrow-key to a joint, to control it.')
+                return
+            from .joint_popup import build_joint_popup
+            self.popup = popup = build_joint_popup(self, owner, joint)
+            popup.adjustSize()
+            screen = QApplication.screenAt(global_position) or self.screen()
+            area = screen.availableGeometry()
+            popup.move(max(area.left(), min(global_position.x(), area.right()-popup.width()+1)),
+                       max(area.top(), min(global_position.y(), area.bottom()-popup.height()+1)))
+            popup.show()
+            popup.slider.setFocus()
+
         def open_joint_control(self, position, global_position):
             if not owner._ready:
                 return
@@ -60,23 +77,64 @@ def build_viewport(owner):
                     owner.tree.scrollToItem(item)
                 else:
                     owner.tree.clearSelection()
-                joint = result['joint']
-                if not joint:
-                    owner.statusBar().showMessage('Right-click a movable arm link to control its joint.')
-                    return
-                from .joint_popup import build_joint_popup
-                self.popup = popup = build_joint_popup(self, owner, joint)
-                popup.adjustSize()
-                screen = QApplication.screenAt(global_position) or self.screen()
-                area = screen.availableGeometry()
-                popup.move(max(area.left(), min(global_position.x(), area.right()-popup.width()+1)),
-                           max(area.top(), min(global_position.y(), area.bottom()-popup.height()+1)))
-                popup.show()
-                popup.slider.setFocus()
+                self.open_popup_for_joint(result['joint'], global_position)
 
             owner._command(lambda: owner.worker.pick(*uv), picked)
 
+        def _joint_order(self):
+            from .robot import JOINT_NAMES
+            positions = ((self._robot_state or {}).get('positions')) or {}
+            return [(role, name) for role in ('leader', 'follower') if role in positions
+                    for name in JOINT_NAMES]
+
+        def cycle_keyboard_focus(self, direction):
+            if not owner._ready:
+                return
+            order = self._joint_order()
+            if not order:
+                owner.statusBar().showMessage(
+                    'Open a workspace with a leader or follower arm to select its joints.')
+                return
+            if self.keyboard_focus in order:
+                index = (order.index(self.keyboard_focus) + direction) % len(order)
+            else:
+                index = 0 if direction > 0 else len(order) - 1
+            role, name = self.keyboard_focus = order[index]
+            self.keyboard_focus_joint = None
+            generation = self.generation
+
+            def selected(value):
+                if generation != self.generation:
+                    return
+                self.keyboard_focus_joint = value.get('joint')
+                item = owner._tree_items.get(value['path'])
+                if item:
+                    owner.search_edit.clear()
+                    owner.tree.setCurrentItem(item)
+                    owner.tree.scrollToItem(item)
+                else:
+                    owner.tree.clearSelection()
+                joint = self.keyboard_focus_joint
+                label = f"{role.title()} · {name.replace('_', ' ').title()} ({index+1}/{len(order)})"
+                if joint and joint['locked']:
+                    owner.statusBar().showMessage(
+                        label + ' — ' + joint.get('lock_reason', 'Locked.'))
+                else:
+                    owner.statusBar().showMessage(
+                        label + ' — arrows: next/previous joint · Enter: open joint control')
+
+            owner._command(lambda: owner.worker.select_joint(role, name), selected)
+
+        def open_keyboard_focused_joint(self):
+            if self.keyboard_focus is None:
+                owner.statusBar().showMessage(
+                    'Use the arrow keys to select a joint first, then Enter to open its control.')
+                return
+            self.open_popup_for_joint(self.keyboard_focus_joint,
+                                       self.mapToGlobal(self.rect().center()))
+
         def update_joint_state(self, state):
+            self._robot_state = state
             if self.popup is None:
                 return
             if not state or not state.get('positions'):
@@ -229,6 +287,11 @@ def build_viewport(owner):
         def keyPressEvent(self, event):
             if event.key() == Qt.Key.Key_Escape:
                 self.cancel()
+            elif (self.popup is None and self.press is None and
+                    event.key() in (Qt.Key.Key_Right, Qt.Key.Key_Down, Qt.Key.Key_Left, Qt.Key.Key_Up)):
+                self.cycle_keyboard_focus(1 if event.key() in (Qt.Key.Key_Right, Qt.Key.Key_Down) else -1)
+            elif self.popup is None and event.key() in (Qt.Key.Key_Return, Qt.Key.Key_Enter):
+                self.open_keyboard_focused_joint()
             else:
                 super().keyPressEvent(event)
 

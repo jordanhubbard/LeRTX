@@ -101,6 +101,7 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
             for role in ROLES:
                 if self.roles is None:
                     message = "configuration unavailable"
+                    color = "#e2687a"
                 else:
                     state, candidate = self.roles.resolve(role, self.candidates)
                     message = candidate.port + " (unverified; telemetry disconnected)" if candidate else state
@@ -108,7 +109,14 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
                         message += " — session-only"
                     if not self.last_scan_ok:
                         message += " — discovery unknown"
+                    if not self.last_scan_ok:
+                        color = "#e2687a"
+                    elif candidate:
+                        color = "#4caf7a"
+                    else:
+                        color = ""
                 self.role_labels[role].setText(role + ": " + message)
+                self.role_labels[role].setStyleSheet(f"color: {color};" if color else "")
                 self.assign_buttons[role].setEnabled(self.roles is not None and selected is not None and self.last_scan_ok)
                 self.clear_buttons[role].setEnabled(self.roles is not None)
                 assigned=self.roles.resolve(role,self.candidates)[0]=='assigned' if self.roles else False
@@ -167,7 +175,10 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
                 mode = self.roles.assign(role, candidate, self.candidates)
                 self.status.setText(f"Assigned {role} ({mode}); no port opened or motor commands sent.")
             except (ValueError, OSError):
-                self.status.setText("Assignment failed; unassign any conflicting role and check configuration access.")
+                self.status.setText(
+                    f"Could not assign {role}: this device may already be assigned to another role, or the "
+                    "device role file could not be written. Unassign the conflicting role, or check that "
+                    f"{roles_path} is writable, then try again.")
             self.refresh_roles()
 
         def unassign(self, role):

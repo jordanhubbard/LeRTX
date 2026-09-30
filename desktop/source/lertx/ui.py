@@ -421,6 +421,9 @@ def build_main_window(
             self.set_enabled_for_selection(editable, reason)
 
     class MainWindow(QMainWindow):
+        LEADER_COLOR = "#1FAD9E"
+        FOLLOWER_COLOR = "#F2A31F"
+
         def __init__(self) -> None:
             super().__init__()
             self.setWindowTitle("Untitled — LeRTX")
@@ -452,6 +455,7 @@ def build_main_window(
             self._open_requested = False
             self._photo_requested = False
             self._settings_requested = False
+            self._selected_joint = None
 
             self._build_toolbar()
             self._build_central_widget()
@@ -495,6 +499,7 @@ def build_main_window(
                 if not dock.objectName():dock.setObjectName(dock.windowTitle().replace(' ','').lower())
                 view.addAction(dock.toggleViewAction())
             view.addAction(actions['Frame Selection'])
+            view.addAction(self.joint_control_action)
             help_menu=self.menuBar().addMenu('&Help')
             help_menu.addAction('Getting started',self._show_help)
             help_menu.addAction('Open application logs',self._open_logs)
@@ -520,9 +525,9 @@ def build_main_window(
 
         def _show_help(self):
             QMessageBox.information(self,'Getting started',
-                'Your workspace contains a teal SO-101 leader and an amber follower.\n\n'
+                'Your workspace contains a teal SO-101 leader and an amber follower (see the color key under the viewport).\n\n'
                 'Use Robot simulation to choose joint targets, then Play. The follower tracks the simulated leader. Pause holds the pose; Reset restores the workspace.\n\n'
-                'Right-click an arm link to open its joint slider and numeric target. Left-drag a link to move it directly. Alt-left-drag to orbit, middle-drag to pan, and wheel or trackpad scroll to zoom. Click an object to select it. Joint controls work while paused; choose Manipulate follower independently to unlock the follower. Use File → Save As to keep a workspace.\n\n'
+                'Right-click an arm link to open its joint slider and numeric target. Left-drag a link to move it directly. Alt-left-drag to orbit, middle-drag to pan, and wheel or trackpad scroll to zoom. Click an object to select it. Keyboard alternative: click the viewport, then use the arrow keys to cycle through the leader and follower joints (the focused link outlines in the viewport) and press Enter to open its slider. You can also select a link in the Scene panel and press Ctrl+J (or View → Open Joint Control). Joint controls work while paused; choose Manipulate follower independently to unlock the follower. Use File → Save As to keep a workspace.\n\n'
                 'These are simulated arms. No hardware port is opened. The leader trigger geometry and inertia are upstream estimates; contact hulls approximate individual mechanical parts.')
 
         def _show_about(self):
@@ -544,16 +549,13 @@ def build_main_window(
             except OSError:self.statusBar().showMessage('Could not update recent workspaces')
 
         def _build_toolbar(self) -> None:
+            from PySide6.QtGui import QKeySequence
             toolbar = QToolBar("Main", self)
             self.addToolBar(toolbar)
 
             open_action = QAction("Open USD", self)
             open_action.triggered.connect(self._on_open)
             toolbar.addAction(open_action)
-
-            photo_action = QAction("Reconstruct Photo", self)
-            photo_action.triggered.connect(self._on_photo)
-            toolbar.addAction(photo_action)
 
             save_action = QAction("Save", self)
             save_action.triggered.connect(self._on_save)
@@ -563,9 +565,7 @@ def build_main_window(
             save_as_action.triggered.connect(self._on_save_as)
             toolbar.addAction(save_as_action)
 
-            settings_action = QAction("Settings", self)
-            settings_action.triggered.connect(self._on_open_settings)
-            toolbar.addAction(settings_action)
+            toolbar.addSeparator()
 
             devices_action = QAction("Devices", self)
             devices_action.triggered.connect(self._on_devices)
@@ -574,9 +574,33 @@ def build_main_window(
             setup_action.triggered.connect(self.open_setup)
             toolbar.addAction(setup_action)
 
+            toolbar.addSeparator()
+
+            photo_action = QAction("Reconstruct Photo", self)
+            photo_action.triggered.connect(self._on_photo)
+            toolbar.addAction(photo_action)
+
+            toolbar.addSeparator()
+
             frame_action = QAction("Frame Selection", self)
             frame_action.triggered.connect(self._on_frame_selection)
             toolbar.addAction(frame_action)
+
+            self.joint_control_action = QAction("Open Joint Control", self)
+            self.joint_control_action.setShortcut(QKeySequence("Ctrl+J"))
+            self.joint_control_action.setToolTip(
+                "Open the joint slider for the selected arm link — keyboard-accessible "
+                "alternative to right-clicking the link in the viewport."
+            )
+            self.joint_control_action.setEnabled(False)
+            self.joint_control_action.triggered.connect(self._open_selected_joint)
+            toolbar.addAction(self.joint_control_action)
+
+            toolbar.addSeparator()
+
+            settings_action = QAction("Settings", self)
+            settings_action.triggered.connect(self._on_open_settings)
+            toolbar.addAction(settings_action)
 
         def _build_central_widget(self) -> None:
             central = QWidget()
@@ -593,9 +617,21 @@ def build_main_window(
             self.viewport_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.viewport_label.setMinimumSize(320, 180)
             self.viewport_label.setText("Empty — open a USD scene")
-            self.viewport_label.setToolTip('Right-click an arm link for its joint slider. Left-drag: move joint · Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom. Simulation only.')
+            self.viewport_label.setToolTip('Right-click an arm link for its joint slider. Left-drag: move joint · Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom. Keyboard: click the viewport then use arrow keys to cycle joints and Enter to open the control (or select a link and press Ctrl+J). Simulation only.')
             layout.addWidget(self.viewport_label, stretch=1)
-            hint = QLabel('Right-click a joint: slider · Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom')
+
+            legend_row = QHBoxLayout()
+            legend_row.setContentsMargins(0, 0, 0, 0)
+            for swatch_color, name in ((self.LEADER_COLOR, "Leader"), (self.FOLLOWER_COLOR, "Follower")):
+                swatch = QLabel()
+                swatch.setFixedSize(12, 12)
+                swatch.setStyleSheet(f"background-color: {swatch_color}; border-radius: 2px;")
+                legend_row.addWidget(swatch)
+                legend_row.addWidget(QLabel(name))
+            legend_row.addStretch(1)
+            layout.addLayout(legend_row)
+
+            hint = QLabel('Right-click a joint: slider · Arrow keys: cycle joints, Enter: open control · Ctrl+J: open control for current selection · Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom')
             hint.setWordWrap(True)
             layout.addWidget(hint)
 
@@ -723,11 +759,15 @@ def build_main_window(
                 def selected_joint(value):
                     if path==self._selected_path():
                         self.robot_panel.select_joint(value)
+                        self._selected_joint = value.get('joint')
+                        self.joint_control_action.setEnabled(bool(self._selected_joint))
                         if value.get('joint') and self.viewport_label.popup is None:
                             self.robot_dock.show();self.robot_dock.raise_()
                 self._command(lambda: self.worker.select(path),selected_joint)
             self.inspector.set_enabled_for_selection(False)
             if path is None:
+                self._selected_joint = None
+                self.joint_control_action.setEnabled(False)
                 self.inspector.show_prim("", "", False)
                 return
             def selected(value):
@@ -935,6 +975,25 @@ def build_main_window(
             self._hardware_windows[role]=panel
             panel.show()
 
+        def _open_selected_joint(self):
+            if not self._ready:
+                self.statusBar().showMessage('Open a ready workspace before opening a joint control.')
+                return
+            joint = self._selected_joint
+            if not joint:
+                self.statusBar().showMessage(
+                    'Select an arm link with a joint (Scene panel or Robot simulation) to open its control.')
+                return
+            self.viewport_label.cancel()
+            from .joint_popup import build_joint_popup
+            popup = build_joint_popup(self.viewport_label, self, joint)
+            self.viewport_label.popup = popup
+            popup.adjustSize()
+            center = self.viewport_label.mapToGlobal(self.viewport_label.rect().center())
+            popup.move(center.x() - popup.width() // 2, center.y() - popup.height() // 2)
+            popup.show()
+            popup.slider.setFocus()
+
         def open_setup(self):
             previous=getattr(self,'_setup_window',None)
             if previous and previous.isVisible():
@@ -981,7 +1040,7 @@ def build_main_window(
 
         def _show_error(self, exc):
             self.viewport_label.cancel()
-            self.native_status_label.setText(f"Native: {type(exc).__name__}: {exc}")
+            self.native_status_label.setText(f"Native: {exc}")
             self.statusBar().showMessage(str(exc))
             if self.worker and self.worker._stop_event.is_set():
                 self._ready = False
