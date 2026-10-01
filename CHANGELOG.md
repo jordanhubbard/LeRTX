@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- Desktop: left- or right-drag now moves *any* object in the viewport, not
+  just arm joints — the ball, the obstacle, the work surface all follow the
+  mouse directly, the same gesture used for joints. The final position is
+  saved to the workspace on release. Non-editable prims (animated, singular,
+  or part of a robot's articulated geometry) report why they can't be moved.
+
+- Desktop: the Robot simulation panel's Load/Save pose row was sitting below
+  the entire 12-slider grid, off-screen in most window sizes. Moved it to the
+  top of the panel, right under the instructions, with a "Saved poses"
+  heading.
+
 ## v0.2.0
 
 - Desktop: selecting any non-robot object (the ball, the obstacle, the work

@@ -20,8 +20,19 @@ def build_robot_panel(window):
             note=QLabel('Drag any slider below (or type a value) to move that joint directly. Motion works '
                 'while paused. You can also right-click or left-drag an arm link in the viewport — both grab '
                 "and drive the joint the same way. Alt-left-drag orbits the camera; middle-drag pans; wheel "
-                'or trackpad scroll zooms. Load a saved pose below, or save the current one for later.')
+                'or trackpad scroll zooms.')
             note.setWordWrap(True);layout.addWidget(note)
+
+            layout.addWidget(QLabel('<b>Saved poses</b>'))
+            preset_row=QHBoxLayout()
+            self.preset_combo=QComboBox();preset_row.addWidget(self.preset_combo,1)
+            self.load_button=QPushButton('Load');self.load_button.clicked.connect(self.load_preset)
+            preset_row.addWidget(self.load_button)
+            self.save_button=QPushButton('Save current as…');self.save_button.clicked.connect(self.save_preset)
+            preset_row.addWidget(self.save_button)
+            layout.addLayout(preset_row)
+            self.refresh_presets()
+
             setup=QPushButton('Set up and calibrate real USB arms…');setup.clicked.connect(window.open_setup);layout.addWidget(setup)
             self.follow=QCheckBox('Follower tracks the simulated leader')
             self.follow.setChecked(True);layout.addWidget(self.follow)
@@ -54,15 +65,6 @@ def build_robot_panel(window):
                     slider.valueChanged.connect(lambda v,r=role,n=name:self._slide(r,n,v))
                     value.valueChanged.connect(lambda v,r=role,n=name:self._enter_value(r,n,v))
             layout.addLayout(grid)
-
-            preset_row=QHBoxLayout()
-            self.preset_combo=QComboBox();preset_row.addWidget(self.preset_combo,1)
-            self.load_button=QPushButton('Load');self.load_button.clicked.connect(self.load_preset)
-            preset_row.addWidget(self.load_button)
-            self.save_button=QPushButton('Save current as…');self.save_button.clicked.connect(self.save_preset)
-            preset_row.addWidget(self.save_button)
-            layout.addLayout(preset_row)
-            self.refresh_presets()
 
             self.status=QLabel('Waiting for robot workspace…');self.status.setWordWrap(True);layout.addWidget(self.status)
             layout.addStretch(1)

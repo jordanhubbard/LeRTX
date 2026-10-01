@@ -20,6 +20,9 @@ def build_viewport(owner):
             self.button = None
             self.joint = None
             self.intent = None
+            self.object = None
+            self.object_intent = None
+            self.object_pending = False
             self.mode = None
             self.released = False
             self.pick_pending = False
@@ -58,7 +61,7 @@ def build_viewport(owner):
                     owner.statusBar().showMessage(
                         'That click landed outside the rendered image. Click directly on an arm link.')
                     self.cancel(); return
-                self.mode = 'joint'
+                self.mode = 'grab'
                 self.pick_pending = True
                 generation = self.generation
                 def picked(result):
@@ -82,11 +85,36 @@ def build_viewport(owner):
                     elif self.joint:
                         self.setCursor(Qt.CursorShape.ClosedHandCursor)
                         self.update_intent()
+                    elif path:
+                        self.object_pending = True
+                        def inspected(value):
+                            if generation != self.generation or not owner._ready:
+                                return
+                            self.object_pending = False
+                            if 'error' in value:
+                                owner.statusBar().showMessage(value['error'])
+                                QToolTip.showText(self.mapToGlobal(self.press.toPoint()), value['error'], self)
+                            else:
+                                self.object = dict(path=path, translation=value['translation'],
+                                    rotation=value['rotation'], scale=value['scale'],
+                                    camera_right=value['camera_right'], camera_up=value['camera_up'],
+                                    distance=value['distance'])
+                                self.setCursor(Qt.CursorShape.ClosedHandCursor)
+                                self.update_object_intent()
+                            if self.released and self.intent is None and self.object_intent is None:
+                                self.cancel()
+                        def begin_drag():
+                            try:
+                                return dict(owner.worker.begin_object_drag(path))
+                            except ValueError as exc:
+                                return {'error': str(exc)}
+                        owner._command(begin_drag, inspected)
+                        return
                     else:
-                        message = 'That link has no movable joint. Click and drag an arm link to drive it.'
+                        message = 'Nothing there to select or move.'
                         owner.statusBar().showMessage(message)
                         QToolTip.showText(self.mapToGlobal(self.press.toPoint()), message, self)
-                    if self.released and self.intent is None:
+                    if self.released and self.intent is None and self.object_intent is None:
                         self.cancel()
                 owner._command(lambda: owner.worker.pick(*uv), picked)
             else:
@@ -105,32 +133,68 @@ def build_viewport(owner):
             import math
             owner.statusBar().showMessage(f"{joint['role'].title()} · {joint['name'].replace('_', ' ')}: {math.degrees(value):.1f}° target · simulated")
 
-        def flush(self):
-            if self.intent is None or owner._pending or not owner._ready:
+        def update_object_intent(self):
+            if self.object is None or self.press is None:
                 return
-            intent, self.intent = self.intent, None
-            import time
-            now = time.monotonic()
-            elapsed = now-getattr(owner, '_last_tick_started', now)
-            owner._last_tick_started = now
-            generation = self.generation
-            def accepted(frame):
-                if generation == self.generation:
+            delta = self.last-self.press
+            if not self.dragged and delta.manhattanLength() < QApplication.startDragDistance():
+                return
+            self.dragged = True
+            obj = self.object
+            right, up = obj['camera_right'], obj['camera_up']
+            factor = .002*obj['distance']
+            translation = [obj['translation'][i] + (right[i]*delta.x() - up[i]*delta.y())*factor for i in range(3)]
+            self.object_intent = (obj['path'], translation, obj['rotation'], obj['scale'])
+            name = obj['path'].rsplit('/', 1)[-1]
+            owner.statusBar().showMessage(f'Moving {name} · simulated')
+
+        def flush(self):
+            if owner._pending or not owner._ready:
+                return
+            if self.intent is not None:
+                intent, self.intent = self.intent, None
+                import time
+                now = time.monotonic()
+                elapsed = now-getattr(owner, '_last_tick_started', now)
+                owner._last_tick_started = now
+                generation = self.generation
+                def accepted(frame):
+                    if generation == self.generation:
+                        owner._accept_frame(frame)
+                owner._command(lambda: owner.worker.drag_joint(*intent, elapsed=elapsed), accepted)
+                if self.released:
+                    # Preserve this queued final value; discard only later gestures.
+                    self.press = self.last = None
+                    self.joint = None
+                    self.mode = None
+            elif self.object_intent is not None:
+                intent, self.object_intent = self.object_intent, None
+                released = self.released
+                path, translation, rotation, scale = intent
+                generation = self.generation
+                def accepted(frame):
+                    if generation != self.generation:
+                        return
                     owner._accept_frame(frame)
-            owner._command(lambda: owner.worker.drag_joint(*intent, elapsed=elapsed), accepted)
-            if self.released:
-                # Preserve this queued final value; discard only later gestures.
-                self.press = self.last = None
-                self.joint = None
-                self.mode = None
+                    target = translation
+                    if frame.get('object_target') and frame['object_target'][0] == path:
+                        target = frame['object_target'][1]
+                    if released:
+                        owner._command(lambda: owner.worker.edit(path, target, rotation, scale), owner._apply_status)
+                owner._command(lambda: owner.worker.drag_object(path, translation, rotation, scale), accepted)
+                if released:
+                    self.press = self.last = None
+                    self.object = None
+                    self.mode = None
 
         def mouseMoveEvent(self, event):
             if self.press is None or self.released:
                 return
             delta = event.position()-self.last
             self.last = event.position()
-            if self.mode == 'joint':
+            if self.mode == 'grab':
                 self.update_intent()
+                self.update_object_intent()
             elif self.mode == 'orbit':
                 owner._camera(orbit=(-delta.x()*.006, delta.y()*.006))
             elif self.mode == 'pan':
@@ -142,10 +206,12 @@ def build_viewport(owner):
             self.last = event.position()
             self.released = True
             self.unsetCursor()
-            if self.mode == 'joint':
+            if self.mode == 'grab':
                 self.update_intent()
-                # The pick may still be in flight; its callback retains release.
-                if not self.pick_pending and self.intent is None:
+                self.update_object_intent()
+                # The pick/inspect may still be in flight; its callback retains release.
+                if (not self.pick_pending and not self.object_pending
+                        and self.intent is None and self.object_intent is None):
                     self.cancel()
             else:
                 self.cancel()

@@ -313,6 +313,33 @@ class SceneWorker(NativeWorker):
     def inspect(self, path):
         return self.document.transform(path)
 
+    def begin_object_drag(self, path):
+        """Current transform plus the camera basis needed to drag it in screen space."""
+        from pxr import Gf
+        transform = self.document.transform(path)
+        matrix = self.camera_matrix()
+        right = matrix.TransformDir(Gf.Vec3d(1., 0., 0.))
+        up = matrix.TransformDir(Gf.Vec3d(0., 1., 0.))
+        return {**transform,
+                "camera_right": [float(right[0]), float(right[1]), float(right[2])],
+                "camera_up": [float(up[0]), float(up[1]), float(up[2])],
+                "distance": self.distance}
+
+    def drag_object(self, path, translation, rotation, scale, elapsed=0.):
+        """Cheap live preview: publish a new pose without the full edit+rebuild cost."""
+        from pxr import Gf
+        t = Gf.Transform()
+        t.SetTranslation(Gf.Vec3d(*translation))
+        r = Gf.Rotation(Gf.Vec3d(1., 0., 0.), rotation[0])
+        r *= Gf.Rotation(Gf.Vec3d(0., 1., 0.), rotation[1])
+        r *= Gf.Rotation(Gf.Vec3d(0., 0., 1.), rotation[2])
+        t.SetRotation(r)
+        t.SetScale(Gf.Vec3d(*scale))
+        self.publish_transforms(BodyMapping({0: path}), [t.GetMatrix()])
+        self._cached_tick = None
+        self._settled_frames = 0
+        return {**self.tick(elapsed if self.clock.playing else 0.), "object_target": (path, translation)}
+
     def camera_matrix(self):
         from pxr import Gf, UsdGeom
         axis = str(UsdGeom.GetStageUpAxis(self.document.stage))

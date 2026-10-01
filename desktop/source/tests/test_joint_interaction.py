@@ -137,12 +137,45 @@ class JointPointerTests(unittest.TestCase):
         self.assertEqual(self.owner._pending, [])
         self.assertIn('outside the rendered image', self.owner.statusBar().currentMessage())
 
-    def test_click_with_no_joint_hit_reports_status_and_stays_idle(self):
+    def test_click_on_empty_space_reports_status_and_stays_idle(self):
         self.joint = None
         self.event('press', 100, 100); self.drain()
         self.event('release', 100, 100)
         self.assertIsNone(self.view.press)
-        self.assertIn('no movable joint', self.owner.statusBar().currentMessage())
+        self.assertIn('Nothing there', self.owner.statusBar().currentMessage())
+        self.assertEqual(self.commands, [])
+
+    def test_click_on_non_robot_object_drags_it_like_a_joint(self):
+        self.joint = None
+        self.owner.worker.pick = lambda *uv: dict(path='/World/Ball', joint=None)
+        self.owner.worker.begin_object_drag = lambda path: dict(
+            translation=[0., 0., 0.], rotation=[0., 0., 0.], scale=[1., 1., 1.],
+            camera_right=[1., 0., 0.], camera_up=[0., 1., 0.], distance=3.)
+        self.owner.worker.drag_object = lambda path, translation, rotation, scale, elapsed=0.: (
+            self.commands.append((path, translation, rotation, scale)) or {})
+        self.owner.worker.edit = lambda path, translation, rotation, scale: {}
+        self.owner._apply_status = lambda status: None
+        self.event('press', 100, 100); self.drain()
+        for x in range(110, 151, 10):
+            self.event('move', x, 100)
+        self.event('release', 150, 100)
+        self.drain(); self.view.flush(); self.drain()
+        self.assertEqual(len(self.commands), 1)
+        path, translation, rotation, scale = self.commands[0]
+        self.assertEqual(path, '/World/Ball')
+        self.assertGreater(translation[0], 0.)
+        self.assertEqual(rotation, [0., 0., 0.])
+        self.assertEqual(scale, [1., 1., 1.])
+
+    def test_non_editable_object_reports_the_reason_and_does_not_drag(self):
+        self.joint = None
+        self.owner.worker.pick = lambda *uv: dict(path='/World/Leader/shoulder_link', joint=None)
+        def fail(path):
+            raise ValueError('Use the robot joint controls; articulated links cannot be transformed independently')
+        self.owner.worker.begin_object_drag = fail
+        self.event('press', 100, 100); self.drain()
+        self.event('release', 100, 100)
+        self.assertIn('Use the robot joint controls', self.owner.statusBar().currentMessage())
         self.assertEqual(self.commands, [])
 
     def test_application_deactivate_discards_unsent_drag(self):
