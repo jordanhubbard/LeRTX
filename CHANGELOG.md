@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Packaging: added a Windows installer (`desktop/packaging/windows/LeRTX.iss`,
+  built with Inno Setup) that gives end users a normal double-click install
+  instead of opening a terminal. It installs a real Python 3.11 if needed
+  (detecting and bypassing the Microsoft Store's broken `python.exe`/`py`
+  stubs), runs the existing `manage.py setup` flow, and creates a Start Menu
+  shortcut via the installer's own icon management so uninstall cleanly
+  removes everything. Verified with a full install→launch→uninstall cycle on
+  a real Windows 10 RTX 5080 Laptop machine.
+
 - Desktop: an animated progress bar and status message now show while a USD
   scene is loading (initial open, File → Open, photo-draft import, or
   applying rendering settings) — previously the viewport kept showing the

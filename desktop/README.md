@@ -40,6 +40,30 @@ your scenes, settings and `.venv`. To upgrade a checkout, close LeRTX, update
 the files, and run `setup` again. For a relocated checkout, uninstall its old
 launcher first, then install from the new location.
 
+### Windows installer
+
+For end users who don't want to open a terminal: `desktop/packaging/windows/LeRTX.iss`
+is an [Inno Setup](https://jrsoftware.org/isinfo.php) script that builds a normal
+double-click `LeRTX-Setup-<version>.exe`. Build it on Windows with Inno Setup 6
+or newer installed:
+
+```powershell
+"C:\Program Files\Inno Setup 6\ISCC.exe" desktop\packaging\windows\LeRTX.iss
+```
+
+Produces `dist\LeRTX-Setup-<version>.exe`. Running that installer copies the
+application into `%LOCALAPPDATA%\Programs\LeRTX` (no admin rights needed),
+installs a real Python 3.11 if one isn't already on PATH (the Microsoft Store's
+`python.exe`/`py` stubs don't count and are detected/skipped), runs the same
+`manage.py setup` flow as the manual path above, and creates a Start Menu
+shortcut via the installer's own icon management. Uninstalling from "Apps &
+features" removes the application directory and shortcut cleanly; your
+settings and saved poses (outside the install directory) are preserved.
+This still needs network access on first run to download the pinned NVIDIA
+SDK wheels — it is not a fully offline single-file installer, because those
+wheels are multi-gigabyte, GPU-specific native binaries unsuited to freezing
+into one executable.
+
 `python desktop/manage.py package` creates `dist/LeRTX-prototype.zip` and a
 SHA-256 checksum. Extract the ZIP, enter `LeRTX`, and use the same setup commands.
 This source/setup bundle downloads pinned SDKs during setup and contains no
