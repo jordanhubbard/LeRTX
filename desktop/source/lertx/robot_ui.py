@@ -6,7 +6,8 @@ import math
 
 def build_robot_panel(window):
     from PySide6.QtCore import Qt
-    from PySide6.QtWidgets import QWidget, QVBoxLayout, QGridLayout, QLabel, QDoubleSpinBox, QCheckBox, QPushButton, QSlider
+    from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, QLabel, QDoubleSpinBox,
+        QCheckBox, QPushButton, QSlider, QComboBox, QInputDialog)
     from .robot import JOINT_NAMES, joint_limits
 
     class RobotPanel(QWidget):
@@ -19,7 +20,7 @@ def build_robot_panel(window):
             note=QLabel('Drag any slider below (or type a value) to move that joint directly. Motion works '
                 'while paused. You can also right-click or left-drag an arm link in the viewport — both grab '
                 "and drive the joint the same way. Alt-left-drag orbits the camera; middle-drag pans; wheel "
-                'or trackpad scroll zooms.')
+                'or trackpad scroll zooms. Load a saved pose below, or save the current one for later.')
             note.setWordWrap(True);layout.addWidget(note)
             setup=QPushButton('Set up and calibrate real USB arms…');setup.clicked.connect(window.open_setup);layout.addWidget(setup)
             self.follow=QCheckBox('Follower tracks the simulated leader')
@@ -53,6 +54,16 @@ def build_robot_panel(window):
                     slider.valueChanged.connect(lambda v,r=role,n=name:self._slide(r,n,v))
                     value.valueChanged.connect(lambda v,r=role,n=name:self._enter_value(r,n,v))
             layout.addLayout(grid)
+
+            preset_row=QHBoxLayout()
+            self.preset_combo=QComboBox();preset_row.addWidget(self.preset_combo,1)
+            self.load_button=QPushButton('Load');self.load_button.clicked.connect(self.load_preset)
+            preset_row.addWidget(self.load_button)
+            self.save_button=QPushButton('Save current as…');self.save_button.clicked.connect(self.save_preset)
+            preset_row.addWidget(self.save_button)
+            layout.addLayout(preset_row)
+            self.refresh_presets()
+
             self.status=QLabel('Waiting for robot workspace…');self.status.setWordWrap(True);layout.addWidget(self.status)
             layout.addStretch(1)
             self.follow.toggled.connect(self.set_following)
@@ -66,6 +77,55 @@ def build_robot_panel(window):
             if self.pending_follow is not None and window._ready and not window._pending:
                 value,self.pending_follow=self.pending_follow,None
                 window._command(lambda:window.worker.command_robot('leader',following=value),window._apply_status)
+
+        def refresh_presets(self):
+            from .robot_poses import list_presets
+            self.preset_combo.clear()
+            presets=list_presets(window.config_path)
+            for label,path,builtin in presets:
+                self.preset_combo.addItem(label if builtin else label+' (custom)',str(path))
+            if not presets:
+                self.preset_combo.addItem('No saved poses yet',None)
+
+        def load_preset(self):
+            path=self.preset_combo.currentData()
+            if path is None:
+                self.status.setText('No pose selected to load.');return
+            if not window._ready or window._pending:
+                self.status.setText('Wait for the current scene operation to finish, then try Load again.');return
+            from .robot_poses import load_pose
+            try:
+                fractions=load_pose(path)
+            except (OSError,ValueError) as exc:
+                self.status.setText(f'Could not load pose: {exc}');return
+            positions={role:{name:self._range[role,name][0]+(self._range[role,name][1]-self._range[role,name][0])*value
+                for name,value in fractions[role].items()} for role in ('leader','follower')}
+            label=self.preset_combo.currentText()
+            self.status.setText(f'Loading pose "{label}"…')
+            def follower_done(status):
+                window._apply_status(status)
+            def leader_done(status):
+                window._apply_status(status)
+                window._command(lambda:window.worker.command_robot('follower',positions['follower']),follower_done)
+            window._command(lambda:window.worker.command_robot('leader',positions['leader'],following=False),leader_done)
+
+        def save_preset(self):
+            positions=self.state.get('positions') or {}
+            if 'leader' not in positions or 'follower' not in positions:
+                self.status.setText('Open a workspace with both arms before saving a pose.');return
+            name,ok=QInputDialog.getText(self,'Save pose','Pose name:')
+            if not ok or not name.strip():
+                return
+            fractions={role:{name_:(positions[role][name_]-self._range[role,name_][0])/
+                (self._range[role,name_][1]-self._range[role,name_][0]) for name_ in JOINT_NAMES}
+                for role in ('leader','follower')}
+            from .robot_poses import save_pose
+            try:
+                save_pose(window.config_path,name,fractions)
+            except (OSError,ValueError) as exc:
+                self.status.setText(f'Could not save pose: {exc}');return
+            self.refresh_presets()
+            self.status.setText(f'Saved pose "{name.strip()}".')
 
         def _locked(self,role,name):
             live=self.state.get('live_roles') or []

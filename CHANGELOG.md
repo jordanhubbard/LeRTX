@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- Desktop: the Robot simulation panel can now save the current leader/follower
+  joint positions as a named pose and load it back later. Two bundled presets
+  ship with the app — "Danger" (arms raised, claws open) and "The Signal" (arm
+  extended, pointing) — alongside any poses you save, which are stored under
+  the settings directory. Loading a pose commands both arms to it directly,
+  independent of follower tracking.
+
 - Desktop: left- or right-drag an arm link to move its joint directly, following
   the mouse; both buttons grab and drive the joint the same way, and the earlier
   right-click popup is gone. Every leader and follower joint (12 total) now has

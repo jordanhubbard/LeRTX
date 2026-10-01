@@ -1,7 +1,11 @@
 """Qt tests for the always-visible leader/follower joint slider grid."""
 import copy
 import math
+import tempfile
 import unittest
+from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 from lertx import config, ui
 from lertx.robot import JOINT_NAMES, home_positions
@@ -77,6 +81,62 @@ class RobotPanelTests(unittest.TestCase):
         self.panel.sliders['leader', 'shoulder_lift'].setValue(1000)
         self.assertEqual(self.owner.viewport_label.intent, ('leader', 'shoulder_lift', high))
         self.owner._pending = []
+        self.owner._ready = False
+
+
+class RobotPosePresetTests(unittest.TestCase):
+    def setUp(self):
+        self.directory = tempfile.TemporaryDirectory()
+        self.addCleanup(self.directory.cleanup)
+        self.config_path = str(Path(self.directory.name) / 'settings.json')
+        ui.build_application([])
+        self.owner = ui.build_main_window(
+            copy.deepcopy(config.DEFAULT_PROFILE),
+            worker_factory=lambda: (_ for _ in ()).throw(RuntimeError("no native worker in this test")),
+            default_scene_path="unused.usda",
+            config_path=self.config_path,
+        )
+        self.owner._frame_timer.stop()
+        self.panel = self.owner.robot_panel
+        self.addCleanup(self.owner.deleteLater)
+
+    def test_bundled_presets_are_listed(self):
+        labels = [self.panel.preset_combo.itemText(i) for i in range(self.panel.preset_combo.count())]
+        self.assertIn('Danger', labels)
+        self.assertIn('The Signal', labels)
+
+    def test_save_and_load_round_trip(self):
+        self.owner._ready = True
+        low, high = self.panel._range['leader', 'shoulder_pan']
+        leader = dict(home_positions('leader'), shoulder_pan=low + (high - low) * .75)
+        # save_preset reads the confirmed server-reported state (self.state), the same
+        # value the live frame loop keeps in sync after a drag — not the raw widget value.
+        self.panel.update_state({'positions': {'leader': leader, 'follower': home_positions('follower')},
+                                  'following': True})
+
+        with patch('PySide6.QtWidgets.QInputDialog.getText', return_value=('Test Pose', True)):
+            self.panel.save_preset()
+
+        saved_path = Path(self.directory.name) / 'poses' / 'Test Pose.json'
+        self.assertTrue(saved_path.is_file())
+        labels = [self.panel.preset_combo.itemText(i) for i in range(self.panel.preset_combo.count())]
+        self.assertIn('Test Pose (custom)', labels)
+
+        calls = []
+        def command_robot(role, positions=None, following=None):
+            calls.append((role, positions, following))
+            return {}
+        self.owner.worker = SimpleNamespace(command_robot=command_robot)
+        self.owner._command = lambda fn, callback=None: (callback(fn()) if callback else fn())
+        self.owner._apply_status = lambda status: None
+        self.owner._pending = []
+        self.panel.preset_combo.setCurrentIndex(self.panel.preset_combo.findText('Test Pose (custom)'))
+        self.panel.load_preset()
+
+        self.assertEqual(calls[0][0], 'leader')
+        self.assertAlmostEqual(calls[0][1]['shoulder_pan'], low + (high - low) * .75, places=3)
+        self.assertEqual(calls[0][2], False)
+        self.assertEqual(calls[1][0], 'follower')
         self.owner._ready = False
 
 
