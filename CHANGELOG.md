@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.3.0
+
 - Packaging: added a Windows installer (`desktop/packaging/windows/LeRTX.iss`,
   built with Inno Setup) that gives end users a normal double-click install
   instead of opening a terminal. It installs a real Python 3.11 if needed
