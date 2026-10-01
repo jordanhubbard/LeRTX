@@ -206,13 +206,49 @@ def build_main_window(
             layout.addRow(status_note)
             tabs.addTab(page, "Workspace")
 
+        PROVIDER_PRESETS = {
+            "NVIDIA": ("https://inference-api.nvidia.com/v1/responses", "azure/openai/gpt-6-astra"),
+            "OpenAI": ("https://api.openai.com/v1/responses", "gpt-5"),
+            "OpenRouter": ("https://openrouter.ai/api/v1/responses", "openai/gpt-5-mini"),
+        }
+
         def _build_intelligence_tab(self, tabs: QTabWidget) -> None:
             page = QWidget()
             layout = QFormLayout(page)
+
+            provider = QComboBox()
+            provider.addItems(list(self.PROVIDER_PRESETS) + ["Custom"])
+            note = QLabel(
+                "Presets fill in a known-working endpoint and model; edit them afterward if you like. "
+                "Only OpenAI Responses-API-compatible endpoints work here — many providers (e.g. Anthropic) "
+                "use a different API shape and need Custom with a compatible gateway such as OpenRouter.")
+            note.setWordWrap(True)
+            layout.addRow("Provider", provider)
+            layout.addRow(note)
             endpoint = QLineEdit(self._staged["llm"]["endpoint"])
             self._row(layout, "Endpoint", endpoint, "llm.endpoint")
             model = QLineEdit(self._staged["llm"]["model"])
             self._row(layout, "Model", model, "llm.model")
+
+            def _sync_provider_from_fields():
+                current = (endpoint.text(), model.text())
+                for name, preset in self.PROVIDER_PRESETS.items():
+                    if current == preset:
+                        provider.blockSignals(True); provider.setCurrentText(name); provider.blockSignals(False)
+                        return
+                provider.blockSignals(True); provider.setCurrentText("Custom"); provider.blockSignals(False)
+
+            def _apply_provider(name):
+                preset = self.PROVIDER_PRESETS.get(name)
+                if preset:
+                    endpoint.setText(preset[0])
+                    model.setText(preset[1])
+                    _clear_credential_on_endpoint_change(preset[0])
+
+            provider.currentTextChanged.connect(_apply_provider)
+            self._sync_provider_from_fields = _sync_provider_from_fields
+            self._provider_combo = provider
+            _sync_provider_from_fields()
 
             key_row = QHBoxLayout()
             self._key_edit = QLineEdit(self._staged["llm"]["api_key"])
@@ -275,6 +311,8 @@ def build_main_window(
                 self._connection_status.setText("")
 
             endpoint.textEdited.connect(_clear_credential_on_endpoint_change)
+            endpoint.textEdited.connect(lambda _: _sync_provider_from_fields())
+            model.textEdited.connect(lambda _: _sync_provider_from_fields())
             for field in (model, self._key_edit):
                 field.textChanged.connect(lambda _: self._invalidate_connection())
             tokens.valueChanged.connect(lambda _: self._invalidate_connection())
@@ -358,6 +396,8 @@ def build_main_window(
                     widget.setValue(value)
                 else:
                     widget.setText(",".join(value) if isinstance(value, list) else str(value))
+            if hasattr(self, "_sync_provider_from_fields"):
+                self._sync_provider_from_fields()
             self._validation_label.setText("Defaults staged. Save to apply, or Cancel to discard.")
 
         def result_profile(self) -> Optional[dict]:

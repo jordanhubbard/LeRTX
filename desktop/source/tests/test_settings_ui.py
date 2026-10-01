@@ -222,3 +222,44 @@ class SettingsUiTests(unittest.TestCase):
         finally:
             release.set()
             timer.stop()
+
+
+class ProviderPresetTests(unittest.TestCase):
+    def setUp(self):
+        self.app = build_application([])
+        self.directory = tempfile.TemporaryDirectory()
+        self.profile = copy.deepcopy(DEFAULT_PROFILE)
+        self.window = build_main_window(self.profile, lambda: None, "", self.directory.name+"/settings.json")
+        self.dialog = self.window.create_settings_dialog()
+        self.dialog.show()
+
+    def tearDown(self):
+        self.dialog.reject()
+        self.window._frame_timer.stop()
+        self.window.deleteLater()
+        self.app.processEvents()
+        self.directory.cleanup()
+
+    def test_default_profile_shows_nvidia_preset_selected(self):
+        self.assertEqual(self.dialog._provider_combo.currentText(), "NVIDIA")
+
+    def test_selecting_a_preset_fills_endpoint_and_model_and_clears_key(self):
+        self.dialog._key_edit.setText("some-key")
+        self.dialog._provider_combo.setCurrentText("OpenRouter")
+        endpoint, model = self.dialog.PROVIDER_PRESETS["OpenRouter"]
+        self.assertEqual(self.dialog._fields["llm.endpoint"].text(), endpoint)
+        self.assertEqual(self.dialog._fields["llm.model"].text(), model)
+        self.assertEqual(self.dialog._key_edit.text(), "")
+
+    def test_editing_endpoint_away_from_a_preset_switches_to_custom(self):
+        endpoint = self.dialog._fields["llm.endpoint"]
+        endpoint.setText("https://my-own-gateway.example/v1/responses")
+        endpoint.textEdited.emit(endpoint.text())
+        self.assertEqual(self.dialog._provider_combo.currentText(), "Custom")
+
+    def test_restore_defaults_resyncs_provider_combo_to_nvidia(self):
+        from PySide6.QtWidgets import QDialogButtonBox
+        self.dialog._provider_combo.setCurrentText("OpenAI")
+        buttons = self.dialog.findChild(QDialogButtonBox)
+        buttons.button(QDialogButtonBox.StandardButton.RestoreDefaults).click()
+        self.assertEqual(self.dialog._provider_combo.currentText(), "NVIDIA")

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- Desktop: Settings → Intelligence now has a Provider dropdown with NVIDIA
+  (default, matching the blank-API-key-by-default requirement), OpenAI and
+  OpenRouter presets, plus Custom for anything else. Picking a preset fills
+  in a known-working endpoint and model (still editable); editing either
+  field away from a preset's values switches the dropdown back to Custom.
+  Only providers compatible with this app's OpenAI Responses-API request
+  format are offered as presets — others (e.g. Anthropic, which uses a
+  different API shape entirely) need Custom with a compatible gateway.
+
 - Desktop: left- or right-drag now moves *any* object in the viewport, not
   just arm joints — the ball, the obstacle, the work surface all follow the
   mouse directly, the same gesture used for joints. The final position is
