@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v0.2.0
+
 - Desktop: selecting any non-robot object (the ball, the obstacle, the work
   surface) now automatically raises the Inspector tab so its Translate/
   Rotate/Scale fields are immediately visible, instead of staying hidden
@@ -20,6 +22,8 @@
   extended, pointing) — alongside any poses you save, which are stored under
   the settings directory. Loading a pose commands both arms to it directly,
   independent of follower tracking.
+
+## v0.1.0
 
 - Desktop: left- or right-drag an arm link to move its joint directly, following
   the mouse; both buttons grab and drive the joint the same way, and the earlier
