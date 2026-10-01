@@ -525,7 +525,8 @@ def build_main_window(
             QMessageBox.information(self,'Getting started',
                 'Your workspace contains a teal SO-101 leader and an amber follower (see the color key under the viewport).\n\n'
                 'Use Robot simulation to choose joint targets, then Play. The follower tracks the simulated leader. Pause holds the pose; Reset restores the workspace.\n\n'
-                'Left- or right-drag an arm link in the viewport to move its joint directly, following the mouse. Alt-left-drag orbits the camera, middle-drag pans, and wheel or trackpad scroll zooms. Every leader and follower joint also has its own labeled slider in the Robot simulation panel — drag a slider or type a value there for the same live control without touching the viewport. Joint controls work while paused; uncheck Follower tracks the simulated leader to move the follower independently. Use File → Save As to keep a workspace.\n\n'
+                'Left- or right-drag an arm link in the viewport to move its joint directly, following the mouse. Alt-left-drag orbits the camera, middle-drag pans, and wheel or trackpad scroll zooms. Every leader and follower joint also has its own labeled slider in the Robot simulation panel — drag a slider or type a value there for the same live control without touching the viewport. Joint controls work while paused; uncheck Follower tracks the simulated leader to move the follower independently.\n\n'
+                'To move anything else in the workspace — the ball, the obstacle, the work surface — click it to select it (in the viewport or the Scene panel), switch to the Inspector tab next to Robot simulation, edit its Translate/Rotate/Scale, and click Apply transform. Use File → Save As to keep a workspace.\n\n'
                 'These are simulated arms. No hardware port is opened. The leader trigger geometry and inertia are upstream estimates; contact hulls approximate individual mechanical parts.')
 
         def _show_about(self):
@@ -604,7 +605,7 @@ def build_main_window(
             self.viewport_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.viewport_label.setMinimumSize(320, 180)
             self.viewport_label.setText("Empty — open a USD scene")
-            self.viewport_label.setToolTip('Left- or right-drag an arm link to move its joint, following the mouse. Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom. Every joint also has a labeled slider in Robot simulation. Simulation only.')
+            self.viewport_label.setToolTip('Left- or right-drag an arm link to move its joint, following the mouse. Click any other object (ball, obstacle, surface) to select it, then edit its position in the Inspector tab. Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom. Every joint also has a labeled slider in Robot simulation. Simulation only.')
             layout.addWidget(self.viewport_label, stretch=1)
 
             legend_row = QHBoxLayout()
@@ -618,7 +619,7 @@ def build_main_window(
             legend_row.addStretch(1)
             layout.addLayout(legend_row)
 
-            hint = QLabel('Left- or right-drag a link: move its joint · Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom · Or use the labeled sliders in Robot simulation')
+            hint = QLabel('Left- or right-drag a link: move its joint · Click any other object: select it, then edit position in the Inspector tab · Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom')
             hint.setWordWrap(True)
             layout.addWidget(hint)
 
@@ -758,6 +759,7 @@ def build_main_window(
                     self.inspector.show_prim(path, self._prim_types.get(path, ""), False, value["error"])
                     return
                 self.inspector.show_prim(path, self._prim_types.get(path, ""), True)
+                self.inspector_dock.show();self.inspector_dock.raise_()
                 for spins, name in ((self.inspector.translate, "translation"),
                                     (self.inspector.rotate, "rotation"), (self.inspector.scale, "scale")):
                     for spin, component in zip(spins, value[name]):

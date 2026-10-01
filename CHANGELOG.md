@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Desktop: selecting any non-robot object (the ball, the obstacle, the work
+  surface) now automatically raises the Inspector tab so its Translate/
+  Rotate/Scale fields are immediately visible, instead of staying hidden
+  behind the Robot simulation tab. Hint text, tooltip and Help now explain
+  that this is how you move anything other than an arm joint.
+
 - Desktop: dragging a locked follower link (while "Follower tracks the
   simulated leader" is checked) now shows a tooltip right at the cursor
   explaining why, in addition to the status bar message — the status bar
