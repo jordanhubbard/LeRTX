@@ -65,6 +65,7 @@ def build_main_window(
         QLineEdit,
         QMainWindow,
         QMessageBox,
+        QProgressBar,
         QPushButton,
         QSpinBox,
         QSizePolicy,
@@ -639,12 +640,25 @@ def build_main_window(
             self.reconstruction_warning.hide()
             layout.addWidget(self.reconstruction_warning)
 
+            self.loading_row = QWidget()
+            loading_layout = QHBoxLayout(self.loading_row)
+            loading_layout.setContentsMargins(0, 0, 0, 4)
+            self.loading_bar = QProgressBar()
+            self.loading_bar.setRange(0, 0)  # indeterminate: pulses while the duration is unknown
+            self.loading_bar.setTextVisible(False)
+            self.loading_bar.setFixedHeight(6)
+            self.loading_label = QLabel("Loading workspace…")
+            loading_layout.addWidget(self.loading_bar, 1)
+            loading_layout.addWidget(self.loading_label)
+            self.loading_row.hide()
+            layout.addWidget(self.loading_row)
+
             from .viewport_ui import build_viewport
             self.viewport_label = build_viewport(self)
             self.viewport_label.setObjectName("viewport")
             self.viewport_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.viewport_label.setMinimumSize(320, 180)
-            self.viewport_label.setText("Empty — open a USD scene")
+            self.viewport_label.setText("Loading workspace…")
             self.viewport_label.setToolTip('Left- or right-drag an arm link to move its joint, or any other object (ball, obstacle, surface) to move it directly — both follow the mouse. Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom. Every joint also has a labeled slider in Robot simulation; any object\'s exact position is in the Inspector tab.')
             layout.addWidget(self.viewport_label, stretch=1)
 
@@ -821,7 +835,12 @@ def build_main_window(
             self._ready = False
             self._command(lambda: self.worker.edit(path, *values), self._apply_status)
 
+        def _set_loading(self, active, message="Loading workspace…"):
+            self.loading_label.setText(message)
+            self.loading_row.setVisible(active)
+
         def _apply_status(self, status):
+            self._set_loading(False)
             self.statusBar().clearMessage()
             self.robot_panel.update_state(status.get("robots"))
             self.reconstruction_warning.setVisible(status.get("reconstruction_status") == "unverified")
@@ -889,6 +908,7 @@ def build_main_window(
             def adopt():
                 self._ready = False
                 self.native_status_label.setText("Native: loading photo draft")
+                self._set_loading(True, "Loading photo draft…")
                 def adopted(status):
                     self.requires_save_as = True
                     self._apply_status(status)
@@ -897,6 +917,7 @@ def build_main_window(
             self._after_discard_confirmation(adopt)
 
         def open_scene(self, path):
+            from pathlib import Path
             self.viewport_label.cancel()
             for panel in self._hardware_windows.values():panel.live.setChecked(False)
             if self.worker is None:
@@ -908,6 +929,7 @@ def build_main_window(
                     return
             self._ready = False
             self.native_status_label.setText("Native: loading")
+            self._set_loading(True, f"Loading {Path(path).name}…")
             previous_path = self.current_scene_path
             def opened(status):
                 from pathlib import Path
@@ -966,6 +988,7 @@ def build_main_window(
                 self.viewport_label.cancel()
                 self._ready = False
                 self.native_status_label.setText("Native: applying settings")
+                self._set_loading(True, "Applying settings…")
                 self._command(lambda: self.worker.configure(profile, self.config_path), configured)
             else:
                 try:
@@ -1043,6 +1066,7 @@ def build_main_window(
 
         def _show_error(self, exc):
             self.viewport_label.cancel()
+            self._set_loading(False)
             self.native_status_label.setText(f"Native: {exc}")
             self.statusBar().showMessage(str(exc))
             if self.worker and self.worker._stop_event.is_set():

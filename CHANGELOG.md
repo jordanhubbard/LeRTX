@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Desktop: an animated progress bar and status message now show while a USD
+  scene is loading (initial open, File → Open, photo-draft import, or
+  applying rendering settings) — previously the viewport kept showing the
+  stale "Empty — open a USD scene" placeholder the whole time, which made it
+  look like the app needed input when it was actually still working.
+
 - Desktop: Settings → Intelligence now has a Provider dropdown with NVIDIA
   (default, matching the blank-API-key-by-default requirement), OpenAI and
   OpenRouter presets, plus Custom for anything else. Picking a preset fills
