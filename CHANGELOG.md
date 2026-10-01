@@ -11,6 +11,15 @@
   removes everything. Verified with a full install→launch→uninstall cycle on
   a real Windows 10 RTX 5080 Laptop machine.
 
+- Packaging: added a macOS app bundle builder
+  (`desktop/packaging/macos/build.sh`), producing a double-clickable
+  `LeRTX.app`/`LeRTX.dmg`. macOS is not yet a supported LeRTX rendering
+  target (no pinned SDK wheels exist for it, and no current Mac has a
+  compatible NVIDIA GPU), so this is a wrapper for the future: it correctly
+  finds a real Python, stages the app past Gatekeeper translocation, and
+  fails fast with a clear explanatory dialog instead of silently doing
+  nothing. Verified on a real Apple Silicon Mac.
+
 - Desktop: an animated progress bar and status message now show while a USD
   scene is loading (initial open, File → Open, photo-draft import, or
   applying rendering settings) — previously the viewport kept showing the

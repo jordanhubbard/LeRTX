@@ -64,6 +64,31 @@ SDK wheels — it is not a fully offline single-file installer, because those
 wheels are multi-gigabyte, GPU-specific native binaries unsuited to freezing
 into one executable.
 
+### macOS app bundle
+
+**macOS is not yet a supported LeRTX rendering target.** There is no
+`desktop/locks/darwin-*.txt` — the pinned NVIDIA OVRTX/OVStage/Newton wheels
+are not published for macOS, and no current Mac has a compatible NVIDIA GPU.
+`desktop/packaging/macos/build.sh [version]` still builds a real
+`dist/LeRTX.app` (and `dist/LeRTX-<version>.dmg`) so the wrapper experience is
+ready for the day a macOS SDK path exists:
+
+```sh
+desktop/packaging/macos/build.sh 0.2.0
+```
+
+Double-clicking the bundle finds a real Python 3.11/3.12 (Homebrew or
+python.org; the Xcode Command Line Tools' `/usr/bin/python3` doesn't count),
+stages the bundled source into `~/Library/Application Support/LeRTX/checkout`
+(required because Gatekeeper may run the bundle from a read-only translocated
+path), and runs the same `manage.py setup`/`run` flow as the other platforms.
+Today that setup step fails fast with a clear dialog explaining why, instead
+of silently doing nothing or downloading incompatible wheels — verified on a
+real Apple Silicon Mac. No Python auto-install is attempted here (unlike
+Windows): installing Python system-wide on macOS needs admin rights, so the
+dialog points you to python.org or `brew install python@3.11` instead of
+silently requesting elevated privileges.
+
 `python desktop/manage.py package` creates `dist/LeRTX-prototype.zip` and a
 SHA-256 checksum. Extract the ZIP, enter `LeRTX`, and use the same setup commands.
 This source/setup bundle downloads pinned SDKs during setup and contains no
