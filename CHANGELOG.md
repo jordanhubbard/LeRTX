@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Desktop: dragging a locked follower link (while "Follower tracks the
+  simulated leader" is checked) now shows a tooltip right at the cursor
+  explaining why, in addition to the status bar message — the status bar
+  alone was easy to miss while looking at the 3D viewport. Disabled follower
+  sliders in the Robot simulation panel now explain themselves on hover too.
+
 - Desktop: the Robot simulation panel can now save the current leader/follower
   joint positions as a named pose and load it back later. Two bundled presets
   ship with the app — "Danger" (arms raised, claws open) and "The Signal" (arm

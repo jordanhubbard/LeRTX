@@ -131,6 +131,14 @@ def build_robot_panel(window):
             live=self.state.get('live_roles') or []
             return bool(live) or (role=='follower' and self.state.get('following'))
 
+        def _lock_reason(self,role):
+            live=self.state.get('live_roles') or []
+            if live:
+                return 'Disable physical live view before simulated manipulation.'
+            if role=='follower' and self.state.get('following'):
+                return 'Uncheck "Follower tracks the simulated leader" above to move the follower directly.'
+            return ''
+
         def _slide(self,role,name,slider_value):
             if not self.sliders[role,name].isEnabled() or not window._ready:
                 return
@@ -179,10 +187,12 @@ def build_robot_panel(window):
             live=state.get('live_roles',[])
             self.follow.setEnabled(not live)
             for role,values in state['positions'].items():
+                reason=self._lock_reason(role)
                 for name,value in values.items():
                     locked=self._locked(role,name)
                     slider=self.sliders[role,name];spin=self.values[role,name]
                     slider.setEnabled(not locked);spin.setEnabled(not locked)
+                    slider.setToolTip(reason if locked else '');spin.setToolTip(reason if locked else '')
                     if slider.isSliderDown() or spin.hasFocus():
                         continue
                     self._set_display(role,name,value)

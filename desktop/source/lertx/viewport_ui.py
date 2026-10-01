@@ -4,7 +4,7 @@ from .joint_interaction import image_coordinates, drag_target
 
 def build_viewport(owner):
     from PySide6.QtCore import Qt, QEvent
-    from PySide6.QtWidgets import QLabel, QApplication
+    from PySide6.QtWidgets import QLabel, QApplication, QToolTip
 
     class Viewport(QLabel):
         def __init__(self):
@@ -75,13 +75,17 @@ def build_viewport(owner):
                         owner.tree.clearSelection()
                     self.joint = result['joint']
                     if self.joint and self.joint['locked']:
-                        owner.statusBar().showMessage(self.joint.get('lock_reason','Disable following in Robot Controls before dragging the follower.'))
+                        reason = self.joint.get('lock_reason','Disable following in Robot Controls before dragging the follower.')
+                        owner.statusBar().showMessage(reason)
+                        QToolTip.showText(self.mapToGlobal(self.press.toPoint()), reason, self)
                         self.joint = None
                     elif self.joint:
                         self.setCursor(Qt.CursorShape.ClosedHandCursor)
                         self.update_intent()
                     else:
-                        owner.statusBar().showMessage('That link has no movable joint. Click and drag an arm link to drive it.')
+                        message = 'That link has no movable joint. Click and drag an arm link to drive it.'
+                        owner.statusBar().showMessage(message)
+                        QToolTip.showText(self.mapToGlobal(self.press.toPoint()), message, self)
                     if self.released and self.intent is None:
                         self.cancel()
                 owner._command(lambda: owner.worker.pick(*uv), picked)
