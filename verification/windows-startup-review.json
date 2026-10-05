@@ -4,14 +4,14 @@
   "python": "3.11.9",
   "gpu": "NVIDIA GeForce RTX 5080 Laptop GPU",
   "checks": {
-    "startup_regressions": {"command": "python -B verification/test_desktop_manage.py", "tests": 10, "result": "passed"},
+    "startup_regressions": {"command": "python -B verification/test_desktop_manage.py", "tests": 12, "result": "passed"},
     "fresh_pinned_setup": {"command": "python desktop/manage.py setup", "result": "passed", "native_warmup_seconds": 124.516},
     "repeated_pinned_setup": {"result": "passed", "native_warmup_seconds": 12.875},
     "native_cli_and_robot_assets": {"tests": 4, "result": "passed", "seconds": 23.906},
     "development_guidance": {"result": "passed"},
-    "project_validation": {"result": "blocked", "code": "project.skill_invalid", "path": "skills/specification-to-source/backend-application/python-service-application/SKILL.md"},
+    "project_validation": {"result": "passed", "note": "Canonical LF checkout and supported documentation-review record repair completed."},
     "peer_survey": {"result": "blocked", "reason": "Tracker CLI gh unavailable"},
-    "cross_platform_ci": {"result": "pending", "platforms": ["Windows", "Linux", "macOS"], "python": ["3.11", "3.12"]}
+    "cross_platform_ci": {"result": "initial ten-test matrix passed; final twelve-test matrix pending", "run_id": 37271031449, "platforms": ["Windows", "Linux", "macOS"], "python": ["3.11", "3.12"]}
   },
   "limitations": [
     "Native rendering is qualified locally on Windows only by these focused checks.",

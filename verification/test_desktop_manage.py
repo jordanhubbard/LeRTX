@@ -102,7 +102,14 @@ class StartupTests(unittest.TestCase):
         self.assertTrue(paths)
         for path in paths:
             with self.subTest(path=str(path.relative_to(ROOT))):
-                self.assertNotIn(b"\r\n", path.read_bytes())
+                self.assertTrue(b"\r\n" not in path.read_bytes(), "Noncanonical CRLF checkout")
+
+    def test_vendor_sdk_retains_checksum_pinned_bytes(self):
+        vendor = ROOT / "desktop/source/lertx/vendor/feetech"
+        provenance = json.loads((vendor / "provenance.json").read_text())
+        for name, expected in provenance["files"].items():
+            with self.subTest(file=name):
+                self.assertEqual(hashlib.sha256((vendor / name).read_bytes()).hexdigest(), expected)
 
     @unittest.skipUnless(sys.platform == "win32", "Windows entry point")
     def test_powershell_wrapper_forwards_paths_and_exit_code(self):

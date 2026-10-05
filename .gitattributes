@@ -9,3 +9,4 @@ verification/generated-baseline/** -text
 
 # These upstream bytes are checked against provenance.json at runtime.
 desktop/source/lertx/resources/so101/*.urdf -text
+desktop/source/lertx/vendor/feetech/** -text
