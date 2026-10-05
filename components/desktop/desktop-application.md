@@ -185,6 +185,19 @@ wizard keeps the native viewport visible throughout reference alignment and each
 joint's measured range/direction check. Label provisional calibration poses distinctly
 from verified physical telemetry. Never enable motor torque in the wizard.
 
+The wizard itself displays the shared native RTX image beside the instructions,
+with an illustrated, numbered base-to-hand joint map. Introduce joints by physical
+location and motion (base turn, upper-arm hinge, middle hinge, wrist tilt, wrist
+twist, claw/trigger), then show the technical name and motor ID. Highlight the
+current joint in the diagram and native scene, identify actual moving joints,
+and show recorded travel, direction confirmation, review and explicit completion.
+Explain that the initial reference is a stationary pose to copy; raw movement
+indicators remain available before calibration establishes the reference.
+Keep instructions scrollable and navigation reachable at laptop window sizes.
+Live calibration and subsequent hardware viewing retain one pending update while
+the renderer is busy, use fresh telemetry when it executes, and invalidate
+cancelled or superseded work. Stale data cannot satisfy visual confirmation.
+
 On OpenRouter, photo upload defaults to the high-reasoning detailed-shape preset
 (openai/gpt-6-astra, high reasoning, 24576 output tokens, 300-second transport
 read timeout). Offer a cheaper coarse-layout preset and the configured model;
