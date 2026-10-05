@@ -6,9 +6,9 @@ from .devices import scan_result,RoleAssignments
 from .transport import ConnectionProbe
 from .hardware import HardwareSession
 from .robot import JOINT_NAMES,ROOTS
-from .setup_calibration import RangeCapture,reference_pose,save_json
+from .setup_calibration import RangeCapture,JointSweep,reference_pose,save_json
 from .hardware_calibration import save_binding
-from .setup_visuals import JOINT_GUIDES,JointMap,NativeSetupView
+from .setup_visuals import JOINT_GUIDES,JointMap,SetupPreviewWindow
 
 def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
     from PySide6.QtCore import Qt,QTimer
@@ -16,30 +16,30 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
     class SetupWizard(QDialog):
         def __init__(self):
             super().__init__(owner)
-            self.setWindowTitle('SO-101 · guided arm setup');self.resize(1120,760);self.setModal(False)
+            self.setWindowTitle('SO-101 · guided arm setup');self.resize(560,760);self.setModal(False)
             self.session=None;self.step=0;self.capture=None;self.candidate=None;self.role='follower'
             self.closing=False;self.shutdown_complete=False;self.transferred=False;self.pending=False
             self.guide_ready=False;self.preview_step=None;self.guide_shown=False;self.sequence=-1;self.preview_pending=False;self.preview_generation=0;self.observation=None
-            self.preview_at=0.;self.preview_error='';self.last_raw=None;self.moved_at={};self.selected_joint=None
+            self.preview_at=0.;self.preview_error='';self.selected_joint=None
+            self.sweep=None;self.auto_due=None;self.rendered_sequence=-1
+            self.preview_window=SetupPreviewWindow(owner)
+            self.native_view=self.preview_window.view;self.preview_title=self.preview_window.heading
+            self.preview_status=self.preview_window.status
             self.probe=scanner or ConnectionProbe(scan_result);self.ticket=None;self.candidates=[]
             self.run_dir=Path(owner.config_path).parent/'calibration'/uuid4().hex
             outer=QVBoxLayout(self)
             title=QLabel('Meet your arm');title.setStyleSheet('font-size: 24px; font-weight: bold;');outer.addWidget(title)
             self.stage_label=QLabel('Connect  →  Prepare  →  Learn six joints  →  Save  →  Done');outer.addWidget(self.stage_label)
             body=QHBoxLayout();outer.addLayout(body,1)
-            scroll=QScrollArea();scroll.setWidgetResizable(True);scroll.setMinimumWidth(345);scroll.setMaximumWidth(430)
+            scroll=QScrollArea();scroll.setWidgetResizable(True);scroll.setMinimumWidth(345)
             scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff);self.controls_scroll=scroll
             controls=QWidget();layout=QVBoxLayout(controls);scroll.setWidget(controls);body.addWidget(scroll,2)
-            visual=QVBoxLayout();body.addLayout(visual,3)
-            self.preview_title=QLabel('Your arm in 3D');self.preview_title.setWordWrap(True);visual.addWidget(self.preview_title)
-            self.native_view=NativeSetupView();visual.addWidget(self.native_view,1)
-            self.preview_status=QLabel('Connect your arm to begin.');self.preview_status.setWordWrap(True);visual.addWidget(self.preview_status)
-            self.map_title=QLabel('Find the joint · schematic side view, numbered from base to hand');self.map_title.setWordWrap(True);visual.addWidget(self.map_title)
-            self.joint_map=JointMap();visual.addWidget(self.joint_map)
-            key=QLabel('Gold: this step   ·   Green ring: movement detected   ·   Green number: confirmed');key.setWordWrap(True);visual.addWidget(key)
+            self.show_preview_button=QPushButton('Open live RTX 3D window');self.show_preview_button.clicked.connect(self.open_preview);layout.addWidget(self.show_preview_button)
             self.heading=QLabel();self.heading.setWordWrap(True);self.heading.setStyleSheet('font-size: 20px; font-weight: bold;');layout.addWidget(self.heading)
             self.progress=QProgressBar();self.progress.setRange(0,10);layout.addWidget(self.progress)
             self.instructions=QLabel();self.instructions.setWordWrap(True);layout.addWidget(self.instructions)
+            self.map_toggle=QCheckBox('Show joint-location diagram (reference only)');layout.addWidget(self.map_toggle)
+            self.joint_map=JointMap();layout.addWidget(self.joint_map);self.joint_map.hide();self.map_toggle.toggled.connect(self.joint_map.setVisible)
             self.movement=QLabel();self.movement.setWordWrap(True);layout.addWidget(self.movement)
             self.travel=QProgressBar();self.travel.setRange(0,100);self.travel.setFormat('Waiting for travel');layout.addWidget(self.travel)
             self.role_box=QComboBox();self.role_box.addItems(['follower','leader']);layout.addWidget(self.role_box)
@@ -49,7 +49,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.release=QPushButton('Release torque for hand movement');self.release.clicked.connect(self.release_torque);layout.addWidget(self.release)
             self.reference_check=QCheckBox('My arm matches the reference pose');layout.addWidget(self.reference_check)
             self.direction=QCheckBox('Reverse this joint in the preview');self.direction.toggled.connect(self.reverse);layout.addWidget(self.direction)
-            self.confirm=QCheckBox('Full travel and direction checked');layout.addWidget(self.confirm)
+            self.confirm=QCheckBox('Recorded travel and 3D directions match my arm');layout.addWidget(self.confirm)
             self.live=QCheckBox('Mirror my arm in 3D');self.live.setChecked(True);self.live.toggled.connect(self.live_changed);layout.addWidget(self.live)
             self.readings=QLabel();self.readings.setWordWrap(True);self.readings.setTextFormat(Qt.TextFormat.PlainText);layout.addWidget(self.readings)
             self.connection=QLabel();self.connection.setWordWrap(True);layout.addWidget(self.connection)
@@ -71,9 +71,11 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             names=['Choose arm and USB port','Support the arm','Match the reference pose']+[JOINT_GUIDES[n][0] for n in JOINT_NAMES]+['Review all six joints','You are ready']
             joint=3<=self.step<=8
             active=JOINT_NAMES[self.step-3] if joint else None
+            self.sweep=JointSweep(self.role,active) if joint else None;self.auto_due=None;self.rendered_sequence=-1
+            self.preview_window.role=self.role
             self.joint_map.set_state(active,confirmed=self.capture.confirmed if self.capture else ())
             self.travel.setVisible(joint);self.movement.setVisible(joint)
-            self.movement.setText('Move the highlighted joint. Watch for its green movement ring.')
+            self.movement.setText(self.sweep.prompt if self.sweep else '')
             self.travel.setValue(0)
             self.preview_title.setText(('Joint '+str(self.step-2)+' · '+JOINT_GUIDES[active][0]+' ('+JOINT_GUIDES[active][1]+')') if joint else 'Your '+self.role+' · '+('reference pose' if self.step==2 else '3D preview'))
             if self.step==10:
@@ -88,14 +90,14 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             for widget in (self.role_box,self.ports,self.scan_button):widget.setVisible(self.step==0)
             self.support.setVisible(self.step==1);self.release.setVisible(self.step==1)
             self.reference_check.setVisible(self.step==2)
-            self.direction.setVisible(joint);self.confirm.setVisible(joint)
+            self.direction.setVisible(joint);self.confirm.setVisible(self.step==9)
             self.live.setVisible(self.step>=3)
             self.confirm.setChecked(False)
             if joint:
                 n=JOINT_NAMES[self.step-3]
                 self.direction.blockSignals(True);self.direction.setChecked(self.capture.directions[n]<0);self.direction.blockSignals(False)
-                text=f'FIND IT · Motor {self.step-2}\n'+JOINT_GUIDES[n][2]+'\n\nTRY IT\nMove this joint slowly to each comfortable end of its travel. The highlighted 3D link should follow your hand. Stop at the mechanical limit; never force it.\n\nCHECK IT\nIf the 3D link moves the opposite way, use Reverse below. Confirm only after checking both ends and the direction.'
-                self.next_button.setText('Confirm this joint and continue')
+                text=f'FIND IT · Motor {self.step-2}\n'+JOINT_GUIDES[n][2]+'\n\nMOVE, PAUSE, AND RETURN\nMove this joint to one comfortable end and pause briefly. Then move to the other end and pause. Finally return to the first end and pause. Never force the mechanism.\n\nOther joints can move naturally as you support the arm. Only this joint counts toward this step. Watch the solid arm in the RTX window; Reverse changes its direction if needed. The wizard continues automatically after a repeatable sweep.'
+                self.next_button.setText('Waiting for the selected joint…');self.next_button.setEnabled(False)
             elif self.step==0:
                 text='For an assembled SO-101 with motor IDs 1–6 already assigned at 1 Mbps: connect one arm’s USB cable and motor power. Choose whether this is the follower (robot hand) or leader (hand-operated controller). If the port is unclear, unplug its USB cable, refresh, then reconnect and refresh. Connection reads registers only; it never enables motors.'
                 self.next_button.setText('Connect and check six motors')
@@ -103,10 +105,10 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                 text='The arm must be assembled with STS3215 motor IDs 1–6 at 1 Mbps. Support it before releasing torque. If a motor is missing, check power/cables and its ID; newly unconfigured motors must be assigned individually before calibration.'
                 self.next_button.setText('Show the reference pose')
             elif self.step==2:
-                text='Match the 3D reference on the right:\n1. Center the rotating base (1).\n2. Put the first long link upright using the low hinge (2).\n3. Put the next link approximately horizontal using the middle hinge (3).\n4. Straighten the hand (4), center its twist (5), and half-open the claw / trigger (6).\n\nThis is a stationary pose to copy. Green rings on the diagram show which real joint you are moving. Live 3D mirroring starts after you capture this reference. Hold still when you continue; this saves a backup and sets the homing offsets.'
+                text='Match the solid arm in the RTX window:\n1. Center the rotating base (1).\n2. Put the first long link upright using the low hinge (2).\n3. Put the next link approximately horizontal using the middle hinge (3).\n4. Straighten the hand (4), center its twist (5), and half-open the claw / trigger (6).\n\nThis initial reference is a stationary pose to copy. Live 3D mirroring starts after you capture it. Hold still when you continue; this saves a backup and sets the homing offsets.'
                 self.next_button.setText('Capture reference and begin calibration')
             elif self.step==9:
-                text='All six joints are recorded. Review the travel and mirrored direction. Save writes the measured limits to the arm and exports LeRobot calibration plus its virtual binding. Motors remain off. The backup permits recovery if calibration is interrupted.'
+                text='All six joint sweeps were captured automatically. Move the whole arm and review its live 3D motion. Check that you explored each comfortable travel limit and the directions match. Use Back to repeat a joint if needed. Confirm below, then Save writes the recorded limits and exports calibration plus the virtual binding. Motors remain off.'
                 self.next_button.setText('Save calibration to arm and files')
             else:
                 text='Calibration is saved and verified against the arm. Continue to hardware controls for measured live view. Motor enabling and held movement remain separate explicit actions. Repeat setup for the other arm.'
@@ -121,6 +123,19 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
         def scan(self):
             if self.ticket is None:
                 self.ticket=self.probe.start(());self.scan_button.setEnabled(False)
+        def showEvent(self,event):
+            super().showEvent(event)
+            if not self.closing and not self.transferred:self.open_preview(activate=False)
+        def open_preview(self,checked=False,*,activate=True):
+            if self.preview_window.disposed:return
+            self.preview_window.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen,self.testAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen))
+            if not self.preview_window.isVisible():
+                available=self.screen().availableGeometry()
+                x=self.frameGeometry().right()+12
+                if x+self.preview_window.width()>available.right():x=max(available.left(),available.right()-self.preview_window.width())
+                self.preview_window.move(x,max(available.top(),self.y()))
+            self.preview_window.show()
+            if activate:self.preview_window.raise_();self.preview_window.activateWindow()
         def release_torque(self):
             if self.session and self.support.isChecked():self.session.stop(force=True)
             else:self.status.setText('Confirm that the arm is supported first.')
@@ -149,10 +164,12 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     self.status.setText('Backing up registers and setting homing offsets… hold the arm still.')
                 elif 3<=self.step<=8:
                     self.require_sample()
-                    if not self.live.isChecked() or self.preview_step!=self.step or time.monotonic()-self.preview_at>1.:raise ValueError('Wait for this joint’s measured movement to appear in the viewport first.')
-                    if not self.confirm.isChecked():raise ValueError('Verify the range and mirrored direction before continuing.')
-                    self.capture.confirm(JOINT_NAMES[self.step-3]);self.step+=1;self.render_step()
+                    if not self.sweep.complete:raise ValueError(self.sweep.prompt)
+                    if not self.preview_is_current():raise ValueError('Open the RTX window and wait for the current measured pose.')
+                    n=JOINT_NAMES[self.step-3];self.capture.ranges[n]=self.sweep.bounds
+                    self.capture.confirm(n);self.step+=1;self.render_step()
                 elif self.step==9:
+                    if not self.confirm.isChecked():raise ValueError('Review all recorded travel and 3D directions, then confirm before saving.')
                     self.require_sample();cal=self.capture.calibration();binding=self.capture.binding(self.session.device_id)
                     # Save pending artifacts before the hardware commit; never mark them accepted yet.
                     save_json(self.run_dir/'pending-calibration.json',cal.values)
@@ -160,6 +177,11 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     self.session.request('setup_save',cal);self.pending=True
                 elif self.step==10:self.finish_setup()
             except Exception as exc:self.status.setText(str(exc))
+
+        def preview_is_current(self):
+            return (self.live.isChecked() and self.preview_window.isVisible() and self.preview_step==self.step
+                and time.monotonic()-self.preview_at<=1. and self.sweep is not None and self.sweep.complete
+                and self.rendered_sequence>=self.sweep.ready_sequence)
 
         def go_back(self):
             if not self.pending and 4<=self.step<=9:
@@ -175,7 +197,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             if self.capture and 3<=self.step<=8:
                 self.capture.directions[JOINT_NAMES[self.step-3]]=-1 if checked else 1
                 self.capture.confirmed.discard(JOINT_NAMES[self.step-3])
-                self.confirm.setChecked(False);self.sequence=-1;self.preview_step=None;self.preview_generation+=1
+                self.confirm.setChecked(False);self.sequence=-1;self.preview_step=None;self.preview_generation+=1;self.auto_due=None
         def live_changed(self,enabled):
             self.sequence=-1;self.preview_generation+=1;self.preview_step=None
             if not enabled:self.preview_status.setText('3D mirroring paused. Enable it to check this joint.')
@@ -202,7 +224,8 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                         owner.worker.select_joint(self.role,selected);self.selected_joint=selected
                     if timestamp is None and hasattr(owner.worker,'frame_selection'):
                         owner.worker.frame_selection(ROOTS[self.role])
-                    return owner.worker.setup_pose(self.role,current_positions,current_timestamp)
+                    result=owner.worker.setup_pose(self.role,current_positions,current_timestamp)
+                    return {**result,'setup_sequence':sample['sequence'] if timestamp is not None else -1}
                 except Exception as exc:return {'setup_error':str(exc)}
             def done(frame):
                 self.preview_pending=False
@@ -215,6 +238,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     self.preview_error='';self.preview_at=time.monotonic()
                     owner._accept_frame(frame)
                     self.native_view.set_image(getattr(owner,'_image',None))
+                    self.rendered_sequence=frame['setup_sequence']
                     if timestamp is None:self.guide_ready=True
                     elif issued_step==self.step and not self.session.snapshot()['stale']:self.preview_step=issued_step
             owner._command(work,done)
@@ -226,6 +250,10 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             for n,spin in panel.targets.items():spin.setRange(*panel.calibration.limits(n))
             panel.calibration_label.setText('Wizard calibration verified · '+str(self.run_dir/'calibration.json'))
             panel.binding_label.setText('Verified reference and joint directions loaded')
+            panel.preview_window=self.preview_window
+            self.preview_window.heading.setText(self.role.title()+' · live physical arm · NVIDIA RTX')
+            self.preview_window.status.setText('Measured live view · motors remain off until explicitly enabled')
+            show=QPushButton('Open live RTX 3D window');show.clicked.connect(self.preview_window.show);panel.layout().addWidget(show)
             owner._hardware_windows.pop('setup',None);owner._hardware_windows[self.role]=panel
             self.transferred=True;self.timer.stop();self.preview_generation+=1
             panel.live.setChecked(True);panel.show();self.done(1)
@@ -234,7 +262,8 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                 self.session.stop(shutdown=True,force=False);self.status.setText('Closing the previous connection; click again when it has stopped.');return
             owner._hardware_windows.pop('setup',None)
             self.session=None;self.capture=None;self.step=0;self.pending=False
-            self.last_raw=None;self.moved_at={};self.selected_joint=None;self.preview_error=''
+            self.selected_joint=None;self.preview_error='';self.sweep=None;self.auto_due=None
+            self.native_view.set_image(None)
             self.guide_ready=False;self.preview_step=None;self.guide_shown=False;self.sequence=-1;self.preview_generation+=1
             self.reference_check.setChecked(False);self.support.setChecked(False);self.live.setChecked(True)
             self.run_dir=Path(owner.config_path).parent/'calibration'/uuid4().hex
@@ -259,6 +288,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     self.done(0)
                 return
             self.next_button.setEnabled(not self.pending and bool(sample) and not s['stale'])
+            if 3<=self.step<=8:self.next_button.setEnabled(False)
             self.back_button.setEnabled(not self.pending)
             if s['state']=='fault':
                 self.pending=False;self.status.setText(s['error']);self.next_button.setEnabled(False);self.reset_button.show()
@@ -275,25 +305,25 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     self.pending=False;self.step=10;self.render_step()
                 except Exception as exc:self.status.setText('Calibration is on the arm but saving files failed: '+str(exc));return
             if sample and not s['stale']:
-                now=time.monotonic();raw={n:sample['motors'][i]['position'] for i,n in enumerate(JOINT_NAMES,1)}
-                if self.last_raw:
-                    for n in JOINT_NAMES:
-                        if abs(raw[n]-self.last_raw[n])>=3:self.moved_at[n]=now
-                self.last_raw=raw
-                moving={n for n,t in self.moved_at.items() if now-t<.6}
+                now=time.monotonic()
                 active=JOINT_NAMES[self.step-3] if 3<=self.step<=8 else None
-                self.joint_map.set_state(active,moving,self.capture.confirmed if self.capture else ())
+                self.joint_map.set_state(active,confirmed=self.capture.confirmed if self.capture else ())
                 if self.capture and 3<=self.step<=8:
                     n=JOINT_NAMES[self.step-3]
-                    try:self.capture.observe(sample,n)
+                    try:
+                        self.capture.observe(sample,n)
+                        self.sweep.observe(sample)
                     except ValueError as exc:self.status.setText(str(exc));self.next_button.setEnabled(False);return
                     low,high=self.capture.ranges[n]
-                    self.travel.setValue(min(100,high-low))
-                    self.travel.setFormat('Movement recorded' if high-low>=100 else 'Waiting for travel')
-                    others=moving-{n}
-                    self.movement.setText(('Movement detected: '+JOINT_GUIDES[n][0]) if n in moving else
-                        ('You are moving '+', '.join(JOINT_GUIDES[x][0] for x in JOINT_NAMES if x in others)+'. Try joint '+str(self.step-2)+'.') if others else
-                        'Waiting for movement of '+JOINT_GUIDES[n][0]+'.')
+                    self.travel.setValue(self.sweep.progress)
+                    self.travel.setFormat('Sweep captured' if self.sweep.complete else f'Hold {self.sweep.phase+1} of 3 · %p%')
+                    self.movement.setText(self.sweep.prompt)
+                    if self.sweep.complete:
+                        if self.preview_is_current() and not self.pending:
+                            if self.auto_due is None:self.auto_due=now+.6
+                            self.next_button.setText('Joint captured — continuing…')
+                            if now>=self.auto_due:self.advance();return
+                        else:self.auto_due=None
                     self.readings.setText(f'Motor {self.step-2} · {n.replace("_"," ")}\nEncoder now: {sample["motors"][self.step-2]["position"]}\nRecorded travel: {low} → {high} ({high-low} ticks)')
                 elif self.capture:self.readings.setText('\n'.join(str(i)+' · '+JOINT_GUIDES[n][0]+': confirmed · '+str(self.capture.ranges[n][1]-self.capture.ranges[n][0])+' ticks' for i,n in enumerate(JOINT_NAMES,1)))
                 else:self.readings.setText('\n'.join(f'Motor {i} · {JOINT_NAMES[i-1]} · encoder {m["position"]} · torque '+('ON' if m['torque'] else 'off') for i,m in sample['motors'].items()))
@@ -303,13 +333,16 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     self.preview_status.setText(self.preview_error or (label+('\nVirtual limits reached: '+', '.join(JOINT_GUIDES[n][0] for n in clipped) if clipped else '')))
                     if self.publish(positions,sample['timestamp']):self.sequence=sample['sequence']
                 elif self.step==2 and not self.pending and not self.guide_shown:
-                    self.preview_status.setText('REFERENCE GUIDE · copy this pose; green rings show real movement')
+                    self.preview_status.setText('REFERENCE GUIDE · copy this pose, then capture to begin live motion')
                     self.guide_shown=bool(self.publish(reference_pose(self.role),None))
                 if not self.pending:self.connection.setText('Connected · motors remain off' if not any(m['torque'] for m in sample['motors'].values()) else 'Torque is ON. Support the arm and release torque.')
             elif s['stale']:
                 self.preview_status.setText('Telemetry is stale. Mirroring stopped.');self.next_button.setEnabled(False);self.preview_step=None
+                self.auto_due=None
+                if self.sweep:self.sweep.reset_hold()
         def shutdown(self):
             self.closing=True;self.live.setChecked(False);self.preview_generation+=1
+            self.preview_window.dispose()
             if self.session:self.session.stop(shutdown=True,force=False)
             else:self.timer.stop();self.shutdown_complete=True;self.done(0)
         def closeEvent(self,event):

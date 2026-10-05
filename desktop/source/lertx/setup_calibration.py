@@ -25,6 +25,104 @@ def reference_pose(role):
     return {n:(sum(joint_limits(role)[n])/2 if n=='gripper' else 0.) for n in JOINT_NAMES}
 
 
+class JointSweep:
+    """Collect a prompted end-to-end-and-back sweep of one motor only.
+
+    A held encoder value is evidence of an operator pause, not a detected physical
+    hard stop. The UI asks the operator to choose the comfortable travel limits.
+    """
+    HOLD_SECONDS = .7
+    MIN_SAMPLES = 6
+    JITTER = 12
+    MAX_GAP = .25
+
+    def __init__(self, role, name):
+        self.name = name
+        self.motor = JOINT_NAMES.index(name)+1
+        low, high = joint_limits(role)[name]
+        self.minimum_span = max(160, min(600, round((high-low)*4095/(2*math.pi)*.25)))
+        self.phase = 0
+        self.first = self.second = self.start = None
+        self.first_interval = self.second_interval = None
+        self.ready_sequence = None
+        self.last_sequence = -1
+        self.last_timestamp = None
+        self.reset_hold()
+
+    def reset_hold(self):
+        self.anchor = None
+        self.held_since = None
+        self.held_values = []
+        self.hold_fraction = 0.
+
+    @property
+    def complete(self):
+        return self.phase == 3
+
+    @property
+    def progress(self):
+        return 100 if self.complete else round((self.phase+self.hold_fraction)/3*100)
+
+    @property
+    def prompt(self):
+        return ('Move to one comfortable end of travel, then pause briefly.',
+                'First end recorded. Move to the opposite end, then pause briefly.',
+                'Both ends recorded. Return to the first end and pause to check repeatability.',
+                'Sweep captured. Waiting for the live 3D frame before continuing.')[self.phase]
+
+    @property
+    def bounds(self):
+        if not self.complete:
+            raise ValueError('Complete the end-to-end-and-back sweep first.')
+        return [min(*self.first_interval, *self.second_interval),
+                max(*self.first_interval, *self.second_interval)]
+
+    def observe(self, sample):
+        sequence, timestamp = sample['sequence'], sample['timestamp']
+        if self.complete or sequence <= self.last_sequence:
+            return
+        if any(m['torque'] for m in sample['motors'].values()):
+            self.reset_hold()
+            raise ValueError('Release motor torque before capturing travel.')
+        if self.last_timestamp is not None:
+            if timestamp <= self.last_timestamp:
+                self.reset_hold()
+                return
+            if timestamp-self.last_timestamp > self.MAX_GAP:
+                self.reset_hold()
+        self.last_sequence, self.last_timestamp = sequence, timestamp
+        value = sample['motors'][self.motor]['position']
+        if self.start is None:
+            self.start = value
+        if self.phase == 0:
+            eligible = abs(value-self.start) >= 80
+        elif self.phase == 1:
+            eligible = abs(value-self.first) >= self.minimum_span
+        else:
+            eligible = abs(value-self.first) <= max(24, min(48, abs(self.second-self.first)*.03))
+        if not eligible:
+            self.reset_hold()
+            return
+        if self.anchor is None or abs(value-self.anchor) > self.JITTER:
+            self.anchor, self.held_since, self.held_values = value, timestamp, []
+        self.held_values.append(value)
+        self.hold_fraction = min(1., (timestamp-self.held_since)/self.HOLD_SECONDS)
+        if self.hold_fraction < 1 or len(self.held_values) < self.MIN_SAMPLES:
+            return
+        interval = (min(self.held_values), max(self.held_values))
+        middle = sum(interval)/2
+        if self.phase == 0:
+            self.first, self.first_interval = middle, interval
+        elif self.phase == 1:
+            self.second, self.second_interval = middle, interval
+        else:
+            self.first_interval = (min(self.first_interval[0], interval[0]),
+                                   max(self.first_interval[1], interval[1]))
+            self.ready_sequence = sequence
+        self.phase += 1
+        self.reset_hold()
+
+
 class RangeCapture:
     def __init__(self,role,homings):
         self.role=role;self.homings=homings

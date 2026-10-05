@@ -123,6 +123,9 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             self.connect_button.setEnabled(state in ('disconnected','fault') and not self.closing)
             self.import_button.setEnabled(state not in ('armed','arming','connecting') and not self.closing)
             healthy=bool(sample and not stale and sample['observations'] and not sample['calibration_error'])
+            if hasattr(self,'preview_window') and not self.preview_window.disposed:
+                self.preview_window.status.setText('Measured physical motion · NVIDIA RTX' if self.live.isChecked() and healthy else
+                    'Physical mirroring paused · '+(snapshot['error'] or ('telemetry stale' if stale else state)))
             self.arm_button.setEnabled(state=='read-only' and healthy and not any(m['torque'] for m in sample['motors'].values()))
             self.move_button.setEnabled(armed);self.virtual_button.setEnabled(armed and bool(self.binding))
             self.binding_button.setEnabled(bool(self.calibration) and not armed)
@@ -186,6 +189,7 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
 
         def shutdown(self):
             self.closing=True;self.move_button.setDown(False);self.live.setChecked(False)
+            if hasattr(self,'preview_window'):self.preview_window.dispose()
             self.session.stop(shutdown=True,force=False)
 
         def closeEvent(self,event):

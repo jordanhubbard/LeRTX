@@ -2,12 +2,15 @@
 
 ## Unreleased
 
-- SO-101 setup: show the live native 3D preview inside the wizard alongside a
-  numbered joint-location diagram, plain-language instructions, movement feedback
-  and per-joint travel/direction checks. Calibration and subsequent live viewing
+- SO-101 setup: open a dedicated solid RTX arm window with camera controls and
+  live motion of all six joints. Guide each selected joint through two held
+  endpoints and a repeat visit, then advance automatically. Ignore incidental
+  movement of other joints and encoder jitter; require fresh samples and a
+  current rendered frame. Keep the schematic optional and retain explicit final
+  travel/direction review before saving. Calibration and subsequent live viewing
   queue a bounded fresh update when rendering is busy, so physical motion is not
   silently skipped. Verified with emulated hardware and native RTX frames for all
-  six joints; physical-arm qualification remains separate.
+  six automatic joint transitions; physical-arm qualification remains separate.
 
 - Desktop contributor startup: `make run` now uses the Windows PowerShell
   launcher or Linux management flow without a Unix-only build prerequisite.

@@ -49,7 +49,7 @@ def build_main_window(
     config_path: str,
 ):
     """Construct and return the LeRTX main window (real Qt widgets)."""
-    from PySide6.QtCore import Qt, QTimer
+    from PySide6.QtCore import Qt, QTimer, Signal
     from PySide6.QtGui import QAction, QImage, QPixmap
     from PySide6.QtWidgets import (
         QComboBox,
@@ -462,6 +462,7 @@ def build_main_window(
             self.set_enabled_for_selection(editable, reason)
 
     class MainWindow(QMainWindow):
+        native_frame_ready = Signal(object)
         LEADER_COLOR = "#1FAD9E"
         FOLLOWER_COLOR = "#F2A31F"
 
@@ -1093,6 +1094,7 @@ def build_main_window(
             self._image = QImage(frame.data, frame.width, frame.height,
                                  frame.width*frame.channels, fmt).copy()
             self._display_image()
+            self.native_frame_ready.emit(self._image)
             self.robot_panel.update_state(result.get("robots"))
             self.play_button.setEnabled(getattr(self,'_simulation_available',True) and not result.get('robots',{}).get('live_roles'))
             if result.get('joint_target'):

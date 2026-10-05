@@ -77,6 +77,30 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Operator follow-up (2026-10-05), implemented: tolerate incidental motion of
+unselected joints, make each joint capture advance automatically, and give the
+solid native RTX arm a dedicated live window. The current three-tick movement
+message is too sensitive, and the schematic is being mistaken for live geometry.
+Desktop owns this correction. Gather two deliberately held endpoints and a
+repeat visit to the first endpoint using only the selected motor, with minimum
+travel, sample-count, dwell and freshness gates. A valid rendered observation must
+precede automatic advancement. Keep reference capture and final hardware save
+explicit; the operator reviews travel and direction once before saving.
+
+- [x] Add automatic sweep capture with jitter, incidental-motion, stale-data and
+  duplicate-sample regressions; do not infer full mechanical travel from a twitch.
+- [x] Open a dedicated solid RTX preview window, stream every native frame to it,
+  keep all six measured joints moving, and demote the schematic to optional help.
+- [x] Verify automatic six-joint progression and actual changing native frames,
+  cancellation/recovery, review/save and preview-window lifecycle, then commit and
+  push the correction. Physical-arm acceptance remains the operator's check.
+
+Evidence: `verification/guided-setup-auto-review.json` records 74 passing tests
+and one POSIX-only skip, all six automatic joint transitions, native joint
+readback and changing RTX frame bytes, explicit final save with torque off, and
+the separate live-window lifecycle. Next: check this revision on the physical
+arm after saving the current workspace and finishing/cancelling its calibration.
+
 Current operator correction (2026-10-05): first physical follower setup exposes
 missing visible motion and unfamiliar anatomical joint names. Implemented:
 make calibration a self-contained visual wizard owned by the desktop Component.
