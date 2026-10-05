@@ -1167,6 +1167,43 @@ queue item or let `docs/roadmap/` become a plan archive.
 
 ### [ ] APP-001 — Deliver an installed desktop application with a simulated SO-101 pair
 
+- **Portable Make entry point:** The operator requests `make run` on Windows,
+  Linux and macOS. Route Windows to the existing PowerShell launcher and Linux
+  to the automatic management setup/launch path, removing the Unix-only build
+  prerequisite from `run`. macOS must report the existing unsupported NVIDIA
+  renderer contract before setup; this request cannot create missing Mac SDKs.
+  - [x] Update the Make target, startup contract and contributor instructions.
+  - [ ] Verify actual GNU Make routing, checkout paths with spaces and failure
+    propagation locally and in the six-job Windows/Linux/macOS CI matrix.
+    Local Windows passes all thirteen startup tests. Actual `make run` reaches
+    a native RTX frame and clean shutdown with exit zero using the bounded
+    integration hook; project validation passes. Hosted matrix pending.
+
+- **Windows contributor startup:** The operator requests one command to build and
+  run a checkout. Added `run.ps1` and automatic setup for `manage.py run`,
+  retain successful setup evidence keyed to pinned dependency inputs, and preserve
+  checksum-sensitive robot model bytes across Windows checkouts. This is local
+  contributor startup; installed application delivery remains below.
+  - [x] Implement first-run setup, unchanged-input reuse, invalidation and failure recovery.
+  - [x] Verify startup control flow, PowerShell entry point and pinned model identities.
+    Twelve startup regressions pass on Windows with Python 3.11.9, including
+    canonical LF authoring and byte-preserved vendored SDK checks.
+  - [x] Verify native warmup and launch in the updated checkout; interactive desktop
+    visibility requires the operator's session, not the coding sandbox.
+    Fresh setup warmup passed in 124.516 seconds; repeated warmup passed in
+    12.875 seconds. The real CLI first-frame/shutdown check and three robot
+    asset tests pass. See `verification/windows-startup-review.json`.
+  - [x] Run startup regressions in GitHub CI on Windows, Linux and macOS with
+    Python 3.11 and 3.12. The initial ten-test matrix passed all six jobs in
+    run 37271031449. The final twelve-test matrix at a3c425c passed all six jobs
+    in run 37271796770. The actual `run.ps1` command with its setup receipt
+    removed completed pinned setup, native warmup, first frame and clean shutdown.
+  - **Tooling limitation:** The local framework source CLI now runs and its
+    development guidance and project validation succeed after the LF checkout
+    repair and supported documentation review. The prescribed peer survey needs
+    unavailable `gh`. Framework admission is not advanced. GitHub API reads CI;
+    PR creation is unavailable through the connector and browser access was denied.
+
 - **Contextual joint controls:** The operator reports that joint movement remains
   difficult to discover. Implement cross-platform right-click joint controls with
   a visible bounded slider, angle input and lock explanation; reserve middle-drag

@@ -1,0 +1,23 @@
+{
+  "scope": "contributor-checkout-startup-not-release-admission",
+  "platform": "Windows AMD64",
+  "python": "3.11.9",
+  "gpu": "NVIDIA GeForce RTX 5080 Laptop GPU",
+  "checks": {
+    "startup_regressions": {"command": "python -B verification/test_desktop_manage.py", "tests": 12, "result": "passed"},
+    "fresh_pinned_setup": {"command": "python desktop/manage.py setup", "result": "passed", "native_warmup_seconds": 124.516},
+    "repeated_pinned_setup": {"result": "passed", "native_warmup_seconds": 12.875},
+    "native_cli_and_robot_assets": {"tests": 4, "result": "passed", "seconds": 23.906},
+    "one_command_build_and_run": {"command": "run.ps1", "result": "passed", "setup_receipt_initially_present": false, "native_warmup_seconds": 11.656, "first_frame": true, "clean_shutdown": true, "exit_code": 0},
+    "development_guidance": {"result": "passed"},
+    "project_validation": {"result": "passed", "note": "Canonical LF checkout and supported documentation-review record repair completed."},
+    "peer_survey": {"result": "blocked", "reason": "Tracker CLI gh unavailable"},
+    "cross_platform_ci": {"result": "passed", "run_id": 37271796770, "source_commit": "a3c425c38fcd7a218d144bbea3ef18dd2200a9f2", "jobs_passed": 6, "platforms": ["Windows", "Linux", "macOS"], "python": ["3.11", "3.12"]}
+  },
+  "limitations": [
+    "Native rendering is qualified locally on Windows only by these focused checks.",
+    "Hosted startup checks require no GPU; macOS is not a supported NVIDIA rendering target.",
+    "Interactive desktop visibility requires launch in the operator's session.",
+    "The earlier full application suite failed a timing test and hung in a UI layout case; this change does not claim to repair or qualify the full suite."
+  ]
+}

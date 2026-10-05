@@ -6,6 +6,21 @@ native viewport checks pass; physical-arm qualification is still pending.
 
 ## Development setup and launch
 
+Use `make run` from the repository root with GNU Make installed. On Windows it
+uses `run.ps1`; on Linux it uses `python3 desktop/manage.py run` (select another
+interpreter with `make run PYTHON=python3.11`). It builds missing or stale
+environments before launch. On macOS it exits before setup with an explanation
+that the pinned NVIDIA renderer is unavailable; see the macOS section below.
+
+Windows contributors can build and launch from the repository root with
+`.\run.ps1` in PowerShell. `python desktop/manage.py run` also performs setup
+automatically when no current successful setup receipt exists. A receipt is
+written only after dependency installation, diagnostics and native warmup pass;
+changed locks, bundled wheels, requirements or setup code trigger setup again.
+An interrupted or failed setup is retried on the next launch. Explicit `setup`
+still forces a refresh. This command launches in the invoking user's desktop
+session; a coding sandbox's desktop may not be visible to the operator.
+
 Use Windows 11 x86-64 or Linux x86-64/ARM64 with an NVIDIA RTX GPU and
 working NVIDIA driver. Linux ARM64 needs glibc 2.39 or newer for Qt (Ubuntu
 24.04 or newer qualifies). Install Python 3.11 or `uv`, then from the repository:

@@ -16,6 +16,30 @@ and the [runtime contract](docs/architecture/runtime.md).
 
 ## Run the development desktop
 
+With GNU Make installed, from the checkout on Windows or Linux:
+
+```sh
+make run
+```
+
+This prepares dependencies when needed and launches LeRTX. Windows uses the
+PowerShell launcher below; Linux uses `python3` (override with `make run
+PYTHON=python3.11` if needed). On macOS the same target exits with an explanation:
+the pinned NVIDIA renderer has no Mac build. It does not create an environment
+or download incompatible SDKs there.
+
+On Windows, from PowerShell in the checkout, build and run with one command:
+
+```powershell
+.\run.ps1
+```
+
+This prepares the isolated environment and checks a real GPU frame on first run,
+then opens LeRTX. Later runs reuse successful setup until the pinned dependency
+inputs change. Requires a real Python 3.11/3.12 or `uv` and an NVIDIA driver.
+If PowerShell blocks scripts, use `python desktop/manage.py run` instead.
+To open a scene: `.\run.ps1 -Scene C:\scenes\workspace.usda`.
+
 Use Windows 11 x86-64 or Linux x86-64/ARM64 with a working NVIDIA driver and
 Python 3.11 or `uv`. From the repository root:
 
