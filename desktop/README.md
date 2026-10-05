@@ -6,6 +6,12 @@ native viewport checks pass; physical-arm qualification is still pending.
 
 ## Development setup and launch
 
+Use `make run` from the repository root with GNU Make installed. On Windows it
+uses `run.ps1`; on Linux it uses `python3 desktop/manage.py run` (select another
+interpreter with `make run PYTHON=python3.11`). It builds missing or stale
+environments before launch. On macOS it exits before setup with an explanation
+that the pinned NVIDIA renderer is unavailable; see the macOS section below.
+
 Windows contributors can build and launch from the repository root with
 `.\run.ps1` in PowerShell. `python desktop/manage.py run` also performs setup
 automatically when no current successful setup receipt exists. A receipt is

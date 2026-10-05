@@ -5,7 +5,16 @@
 # logic. Requires Linux x86-64/ARM64 or Windows 11 with an NVIDIA RTX GPU
 # and driver, plus Python 3.11 or `uv` (see desktop/README.md for details).
 
+ifeq ($(OS),Windows_NT)
+PYTHON  ?= python
+RUN := powershell -NoProfile -ExecutionPolicy Bypass -File "./run.ps1"
+else
 PYTHON  ?= python3
+RUN = $(MANAGE) run
+ifeq ($(shell uname -s),Darwin)
+RUN := printf '%s\n' 'LeRTX cannot render on macOS: the pinned NVIDIA SDKs require Linux or Windows with an NVIDIA GPU.' >&2; exit 2
+endif
+endif
 MANAGE  := $(PYTHON) desktop/manage.py
 
 VENV_PYTHON := .venv/bin/python
@@ -34,8 +43,10 @@ $(VENV_PYTHON): desktop/manage.py desktop/source/requirements.txt
 	$(MANAGE) setup
 	@touch "$@"
 
-run: build
-	$(MANAGE) run
+# manage.py run owns setup freshness and failure recovery. In particular, this
+# target must not inherit build's Unix-only touch recipe on Windows.
+run:
+	$(RUN)
 
 test: build
 	$(MANAGE) test

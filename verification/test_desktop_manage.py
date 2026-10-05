@@ -2,6 +2,7 @@
 import importlib.util
 import hashlib
 import json
+import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -123,6 +124,29 @@ class StartupTests(unittest.TestCase):
                                 capture_output=True, text=True)
         self.assertEqual(result.returncode, 7, result.stderr)
         self.assertEqual(json.loads(result.stdout), ["run", "--scene", "scene with spaces.usda"])
+
+    def test_make_run_routes_launch_and_propagates_failure(self):
+        make = shutil.which("make") or shutil.which("gmake")
+        self.assertIsNotNone(make, "GNU Make is required for the startup CI gate")
+        root = self.env / "make checkout with spaces"
+        (root / "desktop").mkdir(parents=True)
+        for name in ("Makefile", "run.ps1"):
+            (root / name).write_bytes((ROOT / name).read_bytes())
+        marker = root / "invocation.json"
+        (root / "desktop/manage.py").write_text(
+            "import json,pathlib,sys; "
+            "pathlib.Path('invocation.json').write_text(json.dumps(sys.argv[1:])); "
+            "sys.exit(7)", encoding="utf-8")
+        result = subprocess.run([make, "run", f'PYTHON="{sys.executable}"'],
+                                cwd=root, capture_output=True, text=True, timeout=60)
+        self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
+        self.assertFalse((root / ".venv").exists())
+        if sys.platform == "darwin":
+            self.assertIn("LeRTX cannot render on macOS", result.stderr)
+            self.assertFalse(marker.exists(), "Unsupported Mac must not start setup")
+        else:
+            self.assertEqual(json.loads(marker.read_text()), ["run"])
+            self.assertIn("7", result.stderr)
 
 
 if __name__ == "__main__":

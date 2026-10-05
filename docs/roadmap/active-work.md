@@ -1167,6 +1167,18 @@ queue item or let `docs/roadmap/` become a plan archive.
 
 ### [ ] APP-001 — Deliver an installed desktop application with a simulated SO-101 pair
 
+- **Portable Make entry point:** The operator requests `make run` on Windows,
+  Linux and macOS. Route Windows to the existing PowerShell launcher and Linux
+  to the automatic management setup/launch path, removing the Unix-only build
+  prerequisite from `run`. macOS must report the existing unsupported NVIDIA
+  renderer contract before setup; this request cannot create missing Mac SDKs.
+  - [x] Update the Make target, startup contract and contributor instructions.
+  - [ ] Verify actual GNU Make routing, checkout paths with spaces and failure
+    propagation locally and in the six-job Windows/Linux/macOS CI matrix.
+    Local Windows passes all thirteen startup tests. Actual `make run` reaches
+    a native RTX frame and clean shutdown with exit zero using the bounded
+    integration hook; project validation passes. Hosted matrix pending.
+
 - **Windows contributor startup:** The operator requests one command to build and
   run a checkout. Added `run.ps1` and automatic setup for `manage.py run`,
   retain successful setup evidence keyed to pinned dependency inputs, and preserve
