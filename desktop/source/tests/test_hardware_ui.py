@@ -147,3 +147,32 @@ class HardwareUITests(unittest.TestCase):
             panel.sliders['follower','wrist_roll'].setValue(800)
             self.assertAlmostEqual(owner.viewport_label.intent[2],low+(high-low)*.8)
         finally:owner._ready=False;owner.worker=None;owner._pending=[]
+
+    def test_live_view_queues_behind_renderer_and_cancels_superseded_work(self):
+        from types import SimpleNamespace
+        from lertx.joint_binding import JointBinding,RobotBinding
+        from lertx.robot import JOINT_NAMES,joint_limits
+        self.connect();p=self.panel;p.timer.stop();owner=self.owner;owner._frame_timer.stop()
+        joints=[]
+        for i,name in enumerate(JOINT_NAMES,1):
+            low,high=joint_limits('follower')[name]
+            joints.append(JointBinding(name,i,'percent' if name=='gripper' else 'degrees',
+                (20.,80.) if name=='gripper' else (-10.,10.),(low+(high-low)*.4,low+(high-low)*.6)))
+        p.binding=RobotBinding('follower',p.session.device_id,p.calibration.identity,tuple(joints))
+        commands=[];frames=[]
+        owner._ready=True;owner._pending=[object()]
+        owner.worker=SimpleNamespace(hardware_pose=lambda *args:frames.append(args) or {},release_hardware=lambda role:{})
+        owner._command=lambda fn,callback=None:commands.append((fn,callback))
+        owner._accept_frame=lambda frame:None;owner._apply_status=lambda state:None
+        try:
+            p.live.setChecked(True);p.poll()
+            self.assertEqual(len(commands),1)
+            p.poll();self.assertEqual(len(commands),1)
+            fn,callback=commands.pop(0);callback(fn())
+            self.assertEqual(len(frames),1)
+            p.sequence=-1;p.poll();p.live.setChecked(False)
+            fn,callback=commands.pop(0);callback(fn())
+            self.assertEqual(len(frames),1)
+            self.assertEqual(self.serial.writes,[])
+        finally:
+            owner._ready=False;owner._pending=[];owner.worker=None

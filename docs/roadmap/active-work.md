@@ -77,6 +77,30 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Current operator correction (2026-10-05): first physical follower setup exposes
+missing visible motion and unfamiliar anatomical joint names. Implemented:
+make calibration a self-contained visual wizard owned by the desktop Component.
+Keep the native RTX preview next to plain-language, numbered joint identification,
+show measured movement and completion per joint, and retain pending preview intent
+while rendering is busy. Preserve torque-off calibration and rollback semantics.
+
+- [x] Add illustrated joint locations, individual instructions, travel feedback,
+  integrated native preview, review and explicit completion.
+- [x] Prevent renderer scheduling from starving calibration and subsequent live view;
+  reject stale observations and invalidate cancelled/in-flight preview work.
+- [x] Verify busy-renderer, stale/disconnect, all-six-joint and cancellation paths
+  with emulated hardware, Qt and native RTX evidence; record physical qualification
+  separately from software verification.
+
+Evidence: `verification/guided-setup-visual-review.json` records 54 passing focused
+tests (one POSIX-only skip), native RTX readback and changing frame bytes for all
+six joints, torque-off save and compact-layout inspection. The Component lock is
+refreshed. The pre-existing formal lifecycle test receipt still needs renewal;
+this retained-source development change is not a release attestation. Next:
+operator checks the new wizard against the physical follower after cancelling or
+finishing the old setup and restarting the application.
+
+
 Current direction supersedes the earlier read-only boundary: the user explicitly
 requested USB reads and writes before taking the app to the physical SO-101 pair.
 Implemented: pinned Feetech SDK transport, LeRobot calibration validation,

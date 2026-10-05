@@ -6,9 +6,29 @@ use an emulated arm; physical qualification on the user's arms is still pending.
 
 ## First connection
 
+For an assembled arm with motor IDs already assigned, choose **Set up real arms**
+in the toolbar. The wizard walks through connection, support/torque release, a
+reference pose, six individual joints, review and saving. Its right-hand 3D view
+shows the same native rendering as the workspace. The numbered diagram locates
+each joint: base turn, upper-arm hinge, middle hinge, wrist tilt, wrist twist and
+claw (or the leader's trigger). A green ring identifies the joint you actually
+move; the gold number identifies the joint for the current step.
+
+The reference pose is initially stationary: copy it with the physical arm, then
+confirm and capture it. Live 3D mirroring begins after that capture. Move each
+joint gently through both ends of its comfortable travel, check the mirrored
+direction, and confirm it. The travel indicator means movement was detected;
+you still need to check the full travel yourself. Use **Reverse** if needed.
+Review all six joints and save. **Finish and open live hardware controls** keeps
+the connection and enables measured live viewing. Motors stay off throughout.
+Cancel restores the original calibration when the bus remains available.
+
+To use an existing LeRobot calibration instead:
+
 1. If the motors have not been configured, complete the official
    [LeRobot SO-101 setup and calibration](https://huggingface.co/docs/lerobot/so101)
-   first. LeRTX does not assign motor IDs or rewrite EEPROM calibration. Keep the
+   first. LeRTX does not assign motor IDs; its explicit wizard can write homing
+   offsets and measured limits with torque off and a register backup. Keep the
    separate leader and follower calibration JSON files.
 2. Connect motor power and USB. The bus adapter must appear as a COM port on
    Windows or a serial device on Linux. Install the adapter manufacturer's driver

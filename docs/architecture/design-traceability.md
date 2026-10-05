@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:68884b4740262152b9780e46e2662fd48b4e5aed8febbca2ff1e333460629982 -->
+<!-- literate-ai:authority-reviewed sha256:8fe9f79d9570647ffa48a493e6bea4347593ab838f6216bae379d8fd8e71d865 -->
 
 [Project guide](../README.md) → design traceability
 
@@ -18,3 +18,9 @@ The desktop joint-control contract owns right-click sliders and middle-button
 panning on every platform. The Qt input regression and native context-window
 verification cover that interaction through the existing simulated command path;
 physical controls retain their separate hardware workflow.
+
+The desktop application's guided-setup contract owns the integrated native view,
+numbered joint explanations, measured movement feedback and bounded preview queue.
+The hardware guide describes the same reference/capture/review workflow. Emulated
+SDK/Qt tests and the native six-joint frame-change regression provide software
+evidence; they do not replace qualification on the operator's physical arm.

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "date": "2026-10-05",
+  "scope": "Retained-source development; not release or physical-arm qualification",
+  "platform": "Windows / NVIDIA GeForce RTX 5080 Laptop GPU",
+  "focused_tests": {
+    "command": "python -m unittest tests.test_setup_ui tests.test_setup tests.test_hardware_ui tests.test_hardware tests.test_joint_binding -q",
+    "run": 55,
+    "passed": 54,
+    "skipped": 1,
+    "skip_reason": "POSIX serial endpoint test on Windows",
+    "seconds": 10.314,
+    "coverage": [
+      "One pending preview even when the renderer is busy",
+      "Latest complete observation read when queued work executes",
+      "Disabled or superseded preview cannot publish",
+      "Stale telemetry cannot satisfy preview confirmation",
+      "Moving joint identified independently of the requested joint",
+      "Pending save prevents duplicate submission and back navigation",
+      "Calibration backup, torque-off writes, save, cancellation and failed restoration",
+      "Hardware live-view queuing and cancellation without motor writes"
+    ]
+  },
+  "native_test": {
+    "harness": "verification/setup_window.py",
+    "qt_platform": "windows",
+    "isolated_test_profile": true,
+    "serial_transport": "Pinned SDK with CalibrationSerial emulator",
+    "complete": true,
+    "seconds": 13.19,
+    "physical_hardware_tested": false,
+    "mirrored_joints": 6,
+    "joint_readback_and_changed_frame_bytes": [
+      "shoulder_pan", "shoulder_lift", "elbow_flex",
+      "wrist_flex", "wrist_roll", "gripper"
+    ],
+    "calibration_saved": true,
+    "torque_never_enabled": true,
+    "register_backup": true,
+    "provisional_preview_label": true,
+    "layouts_reviewed_logical_pixels": [[1120,760],[960,640]],
+    "compact_controls_fit_without_horizontal_overflow": true,
+    "screenshot": "guided-setup-visual.png"
+  },
+  "verification_limits": [
+    "Physical follower must be checked by the operator after application restart",
+    "Initial reference is stationary; live 3D mirroring starts after reference capture",
+    "Formal lifecycle receipt was stale before this change and remains separate work",
+    "Initial offscreen Qt native attempt timed out; Windows Qt native path passed",
+    "Existing native harness referenced a removed joint_choice control; updated to current sliders"
+  ]
+}

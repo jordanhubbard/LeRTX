@@ -86,3 +86,52 @@ class SetupUITests(unittest.TestCase):
         p.sliders['leader','shoulder_lift'].setValue(1000)
         self.assertEqual(self.owner.viewport_label.intent,('leader','shoulder_lift',high))
         self.owner._pending=[]
+
+    def test_busy_renderer_queues_one_preview_and_uses_latest_sample(self):
+        self.begin();w=self.wizard;w.timer.stop();w.sequence=-1
+        commands=[];self.owner._pending=[object()]
+        self.owner._command=lambda fn,callback=None:commands.append((fn,callback))
+        w.poll()
+        self.assertEqual(len(commands),1,'Busy rendering must not starve telemetry')
+        for _ in range(5):w.poll()
+        self.assertEqual(len(commands),1,'Do not build an unbounded preview queue')
+        self.serial.registers[1][56:58]=(2250).to_bytes(2,'little')
+        self.wait(lambda:w.session.snapshot()['sample']['motors'][1]['position']==2250)
+        fn,callback=commands.pop(0);callback(fn())
+        self.assertAlmostEqual(self.frames[-1][1]['shoulder_pan'],(2250-2047)*2*3.141592653589793/4095)
+        self.assertEqual(w.preview_step,3)
+        self.owner._pending=[]
+
+    def test_cancelled_preview_cannot_publish_after_live_view_disabled(self):
+        self.begin();w=self.wizard;w.timer.stop();w.sequence=-1;commands=[]
+        self.owner._command=lambda fn,callback=None:commands.append((fn,callback))
+        w.poll();count=len(self.frames);w.live.setChecked(False)
+        fn,callback=commands[0];callback(fn())
+        self.assertEqual(len(self.frames),count)
+        self.assertIsNone(w.preview_step)
+
+    def test_stale_queued_sample_is_not_rendered(self):
+        self.begin();w=self.wizard;w.timer.stop();w.sequence=-1;commands=[]
+        self.owner._command=lambda fn,callback=None:commands.append((fn,callback))
+        w.poll();count=len(self.frames)
+        original=w.session.snapshot
+        w.session.snapshot=lambda:{**original(),'stale':True}
+        fn,callback=commands[0];callback(fn())
+        self.assertEqual(len(self.frames),count)
+        self.assertIn('stale',w.preview_status.text())
+        self.assertIsNone(w.preview_step)
+        w.session.snapshot=original
+
+    def test_joint_guide_detects_the_actual_moving_joint(self):
+        self.begin();w=self.wizard
+        self.serial.registers[3][56:58]=(2250).to_bytes(2,'little')
+        self.wait(lambda:'Middle hinge' in w.movement.text())
+        self.assertEqual(w.joint_map.active,'shoulder_pan')
+        self.assertIn('elbow_flex',w.joint_map.moving)
+        self.assertIn('rotating platform',w.instructions.text())
+        self.assertTrue(w.native_view.isVisible())
+
+    def test_pending_save_blocks_back_and_duplicate_submission(self):
+        self.begin();w=self.wizard;w.step=9;w.pending=True
+        w.go_back();w.advance()
+        self.assertEqual(w.step,9)

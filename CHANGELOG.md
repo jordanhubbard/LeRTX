@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- SO-101 setup: show the live native 3D preview inside the wizard alongside a
+  numbered joint-location diagram, plain-language instructions, movement feedback
+  and per-joint travel/direction checks. Calibration and subsequent live viewing
+  queue a bounded fresh update when rendering is busy, so physical motion is not
+  silently skipped. Verified with emulated hardware and native RTX frames for all
+  six joints; physical-arm qualification remains separate.
+
 - Desktop contributor startup: `make run` now uses the Windows PowerShell
   launcher or Linux management flow without a Unix-only build prerequisite.
   On macOS it reports the unavailable NVIDIA renderer before any setup.

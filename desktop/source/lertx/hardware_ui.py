@@ -15,6 +15,7 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             super().__init__(owner)
             self.role=role;self.calibration=None;self.binding=None;self.closing=False;self.sequence=-1
             self.shutdown_complete=False
+            self.preview_pending=False;self.preview_generation=0
             self.session=session_factory(candidate,role)
             self.setWindowTitle('SO-101 hardware · '+role+' · '+candidate.port)
             self.resize(920,570);self.setModal(False)
@@ -105,6 +106,7 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             except Exception as exc:self.message.setText(str(exc))
 
         def live_changed(self,enabled):
+            self.preview_generation+=1;self.sequence=-1
             if not enabled:
                 self.sequence=-1
                 if owner.worker and owner._ready:
@@ -143,23 +145,32 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             if self.live.isChecked():
                 if not healthy or state not in ('read-only','armed'):
                     self.live.setChecked(False);self.message.setText('Live view stopped: physical telemetry is unavailable or stale.')
-                elif sample['sequence']!=self.sequence and not owner._pending and owner._ready:
+                elif sample['sequence']!=self.sequence and not self.preview_pending and owner._ready:
                     try:
-                        observations={n+'.pos':v for n,v in sample['observations'].items()}
-                        mapped=self.binding.map_observation(observations,device_id=self.session.device_id,
-                            calibration_id=self.calibration.identity,captured_at=sample['timestamp'],now=time.monotonic())
-                        positions={path.rsplit('/',1)[-1]:v for path,v in mapped.items()}
                         self.sequence=sample['sequence']
-                        captured_at=sample['timestamp']
+                        generation=self.preview_generation;binding=self.binding;calibration=self.calibration
+                        self.preview_pending=True
                         def publish():
-                            try:return owner.worker.hardware_pose(role,positions,captured_at)
+                            try:
+                                if generation!=self.preview_generation:return {'hardware_cancelled':True}
+                                latest=self.session.snapshot();current=latest['sample']
+                                if latest['stale'] or latest['state'] not in ('read-only','armed') or not current or current['calibration_error']:
+                                    raise ValueError('Live view stopped: physical telemetry is unavailable or stale.')
+                                mapped=binding.map_observation({n+'.pos':v for n,v in current['observations'].items()},
+                                    device_id=self.session.device_id,calibration_id=calibration.identity,
+                                    captured_at=current['timestamp'],now=time.monotonic())
+                                positions={path.rsplit('/',1)[-1]:v for path,v in mapped.items()}
+                                return owner.worker.hardware_pose(role,positions,current['timestamp'])
                             except Exception as exc:return {'hardware_error':str(exc)}
                         def displayed(frame):
+                            self.preview_pending=False
+                            if generation!=self.preview_generation or frame.get('hardware_cancelled'):return
                             if 'hardware_error' in frame:
                                 self.live.setChecked(False);self.message.setText(frame['hardware_error'])
                             elif self.live.isChecked():owner._accept_frame(frame)
                         owner._command(publish,displayed)
                     except Exception as exc:
+                        self.preview_pending=False
                         self.live.setChecked(False);self.message.setText(str(exc))
             if self.closing and not snapshot['alive']:
                 self.timer.stop()
