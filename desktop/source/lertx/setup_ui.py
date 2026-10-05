@@ -1,5 +1,5 @@
 """Guided SO-101 setup with torque-off calibration and visible measured preview."""
-import math,time
+import copy,math,time
 from pathlib import Path
 from uuid import uuid4
 from .devices import scan_result,RoleAssignments
@@ -9,10 +9,14 @@ from .robot import JOINT_NAMES,ROOTS
 from .setup_calibration import RangeCapture,JointSweep,reference_pose,save_json
 from .hardware_calibration import save_binding
 from .setup_visuals import JOINT_GUIDES,JointMap,SetupPreviewWindow
+from .arm_colors import role_color,ROLE_NAMES
 
 def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
     from PySide6.QtCore import Qt,QTimer
-    from PySide6.QtWidgets import QDialog,QVBoxLayout,QHBoxLayout,QLabel,QPushButton,QComboBox,QCheckBox,QProgressBar,QMessageBox,QWidget,QScrollArea
+    from PySide6.QtWidgets import QDialog,QVBoxLayout,QHBoxLayout,QLabel,QPushButton,QComboBox,QCheckBox,QProgressBar,QMessageBox,QWidget,QScrollArea,QColorDialog
+    from .role_ui import widgets
+    QLabel,QPushButton,QCheckBox=widgets(lambda: owner.profile)
+
     class SetupWizard(QDialog):
         def __init__(self):
             super().__init__(owner)
@@ -22,6 +26,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.guide_ready=False;self.preview_step=None;self.guide_shown=False;self.sequence=-1;self.preview_pending=False;self.preview_generation=0;self.observation=None
             self.preview_at=0.;self.preview_error='';self.selected_joint=None
             self.sweep=None;self.auto_due=None;self.rendered_sequence=-1
+            self.color_pending=False
             self.preview_window=SetupPreviewWindow(owner)
             self.native_view=self.preview_window.view;self.preview_title=self.preview_window.heading
             self.preview_status=self.preview_window.status
@@ -30,6 +35,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             outer=QVBoxLayout(self)
             title=QLabel('Meet your arm');title.setStyleSheet('font-size: 24px; font-weight: bold;');outer.addWidget(title)
             self.stage_label=QLabel('Connect  →  Prepare  →  Learn six joints  →  Save  →  Done');outer.addWidget(self.stage_label)
+            self.identity=QLabel();self.identity.setWordWrap(True);outer.addWidget(self.identity)
             body=QHBoxLayout();outer.addLayout(body,1)
             scroll=QScrollArea();scroll.setWidgetResizable(True);scroll.setMinimumWidth(345)
             scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff);self.controls_scroll=scroll
@@ -43,6 +49,9 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.movement=QLabel();self.movement.setWordWrap(True);layout.addWidget(self.movement)
             self.travel=QProgressBar();self.travel.setRange(0,100);self.travel.setFormat('Waiting for travel');layout.addWidget(self.travel)
             self.role_box=QComboBox();self.role_box.addItems(['follower','leader']);layout.addWidget(self.role_box)
+            self.role_box.currentTextChanged.connect(self.change_role)
+            self.color_button=QPushButton('Match printed-part color…');self.color_button.clicked.connect(self.choose_color);layout.addWidget(self.color_button)
+            self.color_button.setToolTip('Choose a saved display color for this role before connecting. Both arms keep their text labels.')
             self.ports=QComboBox();self.ports.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon);self.ports.setMinimumContentsLength(12);layout.addWidget(self.ports)
             self.scan_button=QPushButton('Refresh USB ports');self.scan_button.clicked.connect(self.scan);layout.addWidget(self.scan_button)
             self.support=QCheckBox('Arm supported; power switch within reach');layout.addWidget(self.support)
@@ -72,7 +81,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             joint=3<=self.step<=8
             active=JOINT_NAMES[self.step-3] if joint else None
             self.sweep=JointSweep(self.role,active) if joint else None;self.auto_due=None;self.rendered_sequence=-1
-            self.preview_window.role=self.role
+            self.sync_identity()
             self.joint_map.set_state(active,confirmed=self.capture.confirmed if self.capture else ())
             self.travel.setVisible(joint);self.movement.setVisible(joint)
             self.movement.setText(self.sweep.prompt if self.sweep else '')
@@ -87,7 +96,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.progress.setValue(self.step)
             self.progress.setVisible(self.step<10)
             self.back_button.setVisible(4<=self.step<=9)
-            for widget in (self.role_box,self.ports,self.scan_button):widget.setVisible(self.step==0)
+            for widget in (self.role_box,self.ports,self.scan_button,self.color_button):widget.setVisible(self.step==0)
             self.support.setVisible(self.step==1);self.release.setVisible(self.step==1)
             self.reference_check.setVisible(self.step==2)
             self.direction.setVisible(joint);self.confirm.setVisible(self.step==9)
@@ -120,6 +129,50 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                 self.instructions.setText(text+'<br><br><a href="https://huggingface.co/docs/lerobot/so101">New motors? Follow the official wiring and individual motor-ID setup guide first.</a>')
                 self.instructions.setOpenExternalLinks(True)
 
+        def sync_identity(self):
+            from .role_ui import role_icon
+            color=role_color(owner.profile,self.role)
+            for i in range(self.role_box.count()):
+                self.role_box.setItemIcon(i,role_icon(self.role_box.itemText(i),owner.profile))
+            self.setWindowIcon(role_icon(self.role,owner.profile))
+            self.identity.setText('Setting up: '+ROLE_NAMES[self.role])
+            self.identity.setStyleSheet(f'border-left: 12px solid {color}; padding: 8px; font-size: 16px; font-weight: bold;')
+            self.setWindowTitle(self.role.capitalize()+' · guided SO-101 setup')
+            self.preview_window.set_role(self.role)
+            self.joint_map.role_color=color;self.joint_map.update()
+
+        def change_role(self,role):
+            if self.step==0 and not self.session:
+                self.role=role;self.render_step()
+
+        def choose_color(self):
+            from PySide6.QtGui import QColor
+            color=QColorDialog.getColor(QColor(role_color(owner.profile,self.role)),self,
+                'Printed-part color · '+self.role.capitalize())
+            if color.isValid():self.apply_color(color.name())
+
+        def apply_color(self,color):
+            if self.session or self.color_pending or self.step!=0:return
+            if not owner._ready or owner.worker is None:
+                self.status.setText('Wait for the workspace to finish loading.');return
+            if any(getattr(p,'session',None) and p.session._thread.is_alive() for p in owner._hardware_windows.values()):
+                self.status.setText('Close hardware sessions before changing arm colors.');return
+            profile=copy.deepcopy(owner.profile);profile['general'][self.role+'_color']=color
+            self.color_pending=True;self.role_box.setEnabled(False);self.color_button.setEnabled(False)
+            self.status.setText('Applying printed-part color…')
+            def work():
+                try:return {'status':owner.worker.configure(profile,owner.config_path)}
+                except Exception as exc:return {'error':str(exc)}
+            def done(result):
+                self.color_pending=False
+                if 'error' not in result:
+                    owner.profile=profile;owner.refresh_arm_colors();owner._apply_status(result['status'])
+                if self.closing:return
+                self.role_box.setEnabled(True);self.color_button.setEnabled(True)
+                if 'error' in result:self.status.setText(result['error']);return
+                self.sync_identity();self.status.setText('Color saved for '+self.role+'. Choose the USB port to continue.')
+            owner._command(work,done)
+
         def scan(self):
             if self.ticket is None:
                 self.ticket=self.probe.start(());self.scan_button.setEnabled(False)
@@ -140,7 +193,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             if self.session and self.support.isChecked():self.session.stop(force=True)
             else:self.status.setText('Confirm that the arm is supported first.')
         def advance(self):
-            if self.pending or self.closing:return
+            if self.pending or self.color_pending or self.closing:return
             try:
                 if self.step==0:
                     if not self.candidates:raise ValueError('No USB arm found. Connect USB and power, then refresh.')
@@ -278,7 +331,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     for c in self.candidates:self.ports.addItem(c.port+' · '+c.description+(' · '+c.serial if c.serial else ' · no unique serial'))
                     self.status.setText('Choose the port for this arm.' if self.candidates else 'No USB ports found. Check the cable, motor power and USB driver, then refresh.')
             if not self.session:
-                self.next_button.setEnabled(bool(self.candidates));return
+                self.next_button.setEnabled(bool(self.candidates) and not self.color_pending);return
             self.session.heartbeat(False);s=self.session.snapshot();sample=s['sample'];setup=s.get('setup') or {}
             if self.closing:
                 if not s['alive']:

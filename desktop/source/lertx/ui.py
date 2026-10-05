@@ -78,6 +78,10 @@ def build_main_window(
         QWidget,
     )
 
+    from .role_ui import widgets, dot
+    role_profile=[initial_profile]
+    QLabel,QPushButton,QCheckBox=widgets(lambda:role_profile[0])
+
     class SettingsDialog(QDialog):
         def __init__(self, profile: dict, parent=None) -> None:
             super().__init__(parent)
@@ -463,8 +467,6 @@ def build_main_window(
 
     class MainWindow(QMainWindow):
         native_frame_ready = Signal(object)
-        LEADER_COLOR = "#1FAD9E"
-        FOLLOWER_COLOR = "#F2A31F"
 
         def __init__(self) -> None:
             super().__init__()
@@ -564,12 +566,13 @@ def build_main_window(
             self._after_discard_confirmation(lambda:self.open_scene(path))
 
         def _show_help(self):
-            QMessageBox.information(self,'Getting started',
-                'Your workspace contains a teal SO-101 leader and an amber follower (see the color key under the viewport).\n\n'
+            from .role_ui import role_html
+            QMessageBox.information(self,'Getting started',role_html(
+                'Your workspace contains an SO-101 leader and follower (see the color key under the viewport). Change their printed-part colors in device setup before connecting.\n\n'
                 'Use Robot simulation to choose joint targets, then Play. The follower tracks the simulated leader. Pause holds the pose; Reset restores the workspace.\n\n'
                 'Left- or right-drag an arm link in the viewport to move its joint directly, following the mouse. Alt-left-drag orbits the camera, middle-drag pans, and wheel or trackpad scroll zooms. Every leader and follower joint also has its own labeled slider in the Robot simulation panel — drag a slider or type a value there for the same live control without touching the viewport. Joint controls work while paused; uncheck Follower tracks the simulated leader to move the follower independently.\n\n'
                 'To move anything else in the workspace — the ball, the obstacle, the work surface — left- or right-drag it in the viewport, same as an arm link. Selecting it also switches to the Inspector tab next to Robot simulation, where you can type exact Translate/Rotate/Scale values and click Apply transform. Use File → Save As to keep a workspace.\n\n'
-                'These are simulated arms. No hardware port is opened. The leader trigger geometry and inertia are upstream estimates; contact hulls approximate individual mechanical parts.')
+                'These are simulated arms. No hardware port is opened. The leader trigger geometry and inertia are upstream estimates; contact hulls approximate individual mechanical parts.',self.profile))
 
         def _show_about(self):
             from .branding import VERSION
@@ -665,12 +668,17 @@ def build_main_window(
 
             legend_row = QHBoxLayout()
             legend_row.setContentsMargins(0, 0, 0, 0)
-            for swatch_color, name in ((self.LEADER_COLOR, "Leader"), (self.FOLLOWER_COLOR, "Follower")):
+            self.arm_swatches = {}
+            from .arm_colors import role_color
+            for role, name in (("leader", "Leader"), ("follower", "Follower")):
+                swatch_color = role_color(self.profile, role)
                 swatch = QLabel()
-                swatch.setFixedSize(12, 12)
-                swatch.setStyleSheet(f"background-color: {swatch_color}; border-radius: 2px;")
+                self.arm_swatches[role] = swatch
+                swatch.setFixedSize(16, 16)
+                swatch.setPixmap(dot(swatch_color))
                 legend_row.addWidget(swatch)
-                legend_row.addWidget(QLabel(name))
+                from PySide6.QtWidgets import QLabel as PlainLabel
+                legend_row.addWidget(PlainLabel(name))
             legend_row.addStretch(1)
             layout.addLayout(legend_row)
 
@@ -723,7 +731,8 @@ def build_main_window(
             self.resizeDocks([hierarchy_dock, inspector_dock], [240, 360], Qt.Orientation.Horizontal)
 
         def _build_status_bar(self) -> None:
-            self.setStatusBar(QStatusBar())
+            from .role_ui import status_bar
+            self.setStatusBar(status_bar(lambda:self.profile))
 
         def _on_search_changed(self, text: str) -> None:
             lowered = text.lower()
@@ -766,6 +775,8 @@ def build_main_window(
                 for prim in sorted(hierarchy, key=lambda prim: (prim["path"].count("/"), prim["path"])):
                     path = prim["path"]
                     item = QTreeWidgetItem([path.rsplit("/", 1)[-1] or path])
+                    from .role_ui import role_icon
+                    item.setIcon(0,role_icon(item.text(0),self.profile))
                     item.setData(0, Qt.ItemDataRole.UserRole, path)
                     item.setToolTip(0, path)
                     parent = self._tree_items.get(path.rsplit("/", 1)[0])
@@ -976,6 +987,11 @@ def build_main_window(
                 dialog.deleteLater()
             if profile is None:
                 return
+            from .arm_colors import role_color
+            if any(role_color(profile,r)!=role_color(self.profile,r) for r in ('leader','follower')) and any(
+                    p.session and p.session._thread.is_alive() for p in self._hardware_windows.values()):
+                self._show_error(ValueError('Close hardware sessions before changing arm colors.'))
+                return
             restart = profile["rendering"] != self.profile["rendering"]
             if restart and QMessageBox.question(self, "Restart renderer",
                     "Apply rendering settings and restart the renderer?",
@@ -983,6 +999,7 @@ def build_main_window(
                 return
             def configured(status):
                 self.profile = copy.deepcopy(profile)
+                self.refresh_arm_colors()
                 self._apply_theme()
                 self._apply_status(status)
             if self.worker:
@@ -998,11 +1015,27 @@ def build_main_window(
                     self._show_error(exc)
                     return
                 self.profile = copy.deepcopy(profile)
+                self.refresh_arm_colors()
                 self._apply_theme()
                 self.statusBar().clearMessage()
 
         def create_settings_dialog(self):
             return SettingsDialog(self.profile, self)
+
+        def refresh_arm_colors(self):
+            from .arm_colors import role_color
+            role_profile[0]=self.profile
+            for role, swatch in self.arm_swatches.items():
+                swatch.setPixmap(dot(role_color(self.profile, role)))
+            from PySide6.QtWidgets import QWidget
+            for child in self.findChildren(QWidget):
+                refresh=getattr(child,'refresh_role_colors',None)
+                if refresh:refresh()
+            from .role_ui import role_icon
+            for item in getattr(self,'_tree_items',{}).values():
+                item.setIcon(0,role_icon(item.text(0),self.profile))
+            wizard=getattr(self,'_setup_window',None)
+            if wizard and not wizard.closing:wizard.sync_identity()
 
         def _on_devices(self):
             from pathlib import Path

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Device setup keeps Leader/Follower identity visible throughout calibration,
+  with matching diagram, viewport and RTX material colors. Choose saved custom
+  printed-part colors before connecting; existing preferences migrate intact.
+  Outlined role dots accompany labels, selectors, buttons and status messages
+  across setup, simulation and hardware controls, preserving readable text.
+
 - SO-101 setup: open a dedicated solid RTX arm window with camera controls and
   live motion of all six joints. Guide each selected joint through two held
   endpoints and a repeat visit, then advance automatically. Ignore incidental

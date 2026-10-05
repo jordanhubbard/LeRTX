@@ -6,6 +6,9 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
     from PySide6.QtCore import Qt, QTimer
     from PySide6.QtWidgets import QDialog, QHBoxLayout, QLabel, QPushButton, QTreeWidget, QTreeWidgetItem, QVBoxLayout
 
+    from .role_ui import widgets
+    QLabel,QPushButton,QCheckBox=widgets(lambda: parent.profile if parent and hasattr(parent,'profile') else profile)
+
     class DevicesDialog(QDialog):
         def __init__(self):
             super().__init__(parent)

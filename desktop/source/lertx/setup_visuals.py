@@ -3,6 +3,7 @@ from PySide6.QtCore import Qt, QRectF, QPointF
 from PySide6.QtGui import QColor, QPainter, QPen, QFont
 from PySide6.QtWidgets import QWidget, QSizePolicy, QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from .robot import JOINT_NAMES
+from .arm_colors import role_color, ROLE_NAMES, DEFAULT_COLORS
 
 # User-facing names describe the part before introducing the robot terminology.
 JOINT_GUIDES = {
@@ -63,6 +64,8 @@ class SetupPreviewWindow(QDialog):
     """
     def __init__(self, owner):
         super().__init__(owner)
+        from .role_ui import widgets
+        QLabel,_,_=widgets(lambda:owner.profile)
         self.owner = owner
         self.role = 'follower'
         self.disposed = False
@@ -71,6 +74,11 @@ class SetupPreviewWindow(QDialog):
         self.setMinimumSize(480, 400)
         self.setModal(False)
         layout = QVBoxLayout(self)
+        self.identity = QLabel()
+        self.identity.setWordWrap(True)
+        layout.addWidget(self.identity)
+        self.legend = QLabel()
+        layout.addWidget(self.legend)
         self.heading = QLabel('SO-101 · live 3D arm')
         self.heading.setWordWrap(True)
         self.heading.setStyleSheet('font-size: 20px; font-weight: bold;')
@@ -92,6 +100,18 @@ class SetupPreviewWindow(QDialog):
         fit.clicked.connect(lambda:self.camera(None))
         row.addWidget(fit)
         owner.native_frame_ready.connect(self.view.set_image)
+
+    def set_role(self, role):
+        self.role = role
+        color = role_color(self.owner.profile, role)
+        self.setWindowTitle(role.capitalize()+' · live NVIDIA RTX view')
+        from .role_ui import role_icon
+        self.setWindowIcon(role_icon(role,self.owner.profile))
+        self.identity.setText('Selected: '+ROLE_NAMES[role])
+        self.identity.setStyleSheet(f'border-left: 12px solid {color}; padding: 8px; font-weight: bold;')
+        self.legend.setText(' · '.join(
+            r.capitalize()+(' (selected)' if r==role else ' (other arm)')
+            for r in ('leader','follower')))
 
     def camera(self, kwargs):
         if not self.owner._ready or self.owner.worker is None:
@@ -119,6 +139,7 @@ class JointMap(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.active = None
+        self.role_color = DEFAULT_COLORS['follower']
         self.moving = set()
         self.confirmed = set()
         self.setMinimumHeight(205)
@@ -150,7 +171,7 @@ class JointMap(QWidget):
         p.drawLine(463, 114, 478, 102)
         for i, (name, point, label, text) in enumerate(zip(JOINT_NAMES, points, labels, short), 1):
             selected = name == self.active
-            color = QColor('#ffc36b' if selected else '#58d6b1' if name in self.confirmed else '#b1c2d6')
+            color = QColor(self.role_color if selected else '#58d6b1' if name in self.confirmed else '#b1c2d6')
             p.setPen(QPen(color, 1.5))
             p.drawLine(QPointF(*point), QPointF(label[0]+16, label[1]-9))
             if name in self.moving:
@@ -158,10 +179,10 @@ class JointMap(QWidget):
                 p.setBrush(Qt.BrushStyle.NoBrush)
                 p.drawEllipse(QPointF(*point), 20, 20)
             p.setPen(QPen(color, 2))
-            p.setBrush(QColor('#ffc36b' if selected else '#26384c'))
+            p.setBrush(QColor(self.role_color if selected else '#26384c'))
             p.drawEllipse(QPointF(*point), 13, 13)
             p.setFont(QFont('Segoe UI', 10, QFont.Weight.Bold))
-            p.setPen(QColor('#17202b') if selected else color)
+            p.setPen(QColor('white' if color.lightnessF()<.5 else '#17202b') if selected else color)
             p.drawText(QRectF(point[0]-13, point[1]-13, 26, 26), Qt.AlignmentFlag.AlignCenter, str(i))
             p.setPen(color)
             p.setFont(QFont('Segoe UI', 10, QFont.Weight.Bold if selected else QFont.Weight.Normal))

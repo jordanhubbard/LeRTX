@@ -10,6 +10,9 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
     from PySide6.QtCore import Qt,QTimer,QEvent
     from PySide6.QtWidgets import QDialog,QVBoxLayout,QHBoxLayout,QLabel,QPushButton,QGridLayout,QDoubleSpinBox,QFileDialog,QCheckBox,QMessageBox
 
+    from .role_ui import widgets
+    QLabel,QPushButton,QCheckBox=widgets(lambda: owner.profile)
+
     class HardwarePanel(QDialog):
         def __init__(self):
             super().__init__(owner)
@@ -18,8 +21,11 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             self.preview_pending=False;self.preview_generation=0
             self.session=session_factory(candidate,role)
             self.setWindowTitle('SO-101 hardware · '+role+' · '+candidate.port)
+            from .role_ui import role_icon
+            self.setWindowIcon(role_icon(role,owner.profile))
             self.resize(920,570);self.setModal(False)
             layout=QVBoxLayout(self)
+            layout.addWidget(QLabel(role.capitalize()+' · physical USB controls'))
             note=QLabel('Physical USB controls · Connect reads only. Import this arm’s LeRobot calibration before enabling motors. Hold Move to execute targets; release to hold position. Stop releases torque — support the arm. Keep the motor power switch accessible.')
             note.setWordWrap(True);layout.addWidget(note)
             row=QHBoxLayout();layout.addLayout(row)

@@ -77,6 +77,27 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Operator follow-up: keep the selected leader/follower unmistakable throughout
+setup. Desktop owns persistent role labels and a shared palette for the wizard,
+reference diagram, viewport legend and rendered printed parts. Allow saved custom
+colors before connection to match printed arms; retain textual role identification
+even when colors are identical. Color changes must not alter motor assignments,
+calibration, authored geometry or hardware state.
+Extend the same color dots to role references throughout controls, device assignment,
+simulation, mock telemetry and selection UI. Use dual light/dark outlines so user
+colors remain visible on either theme while keeping text at normal contrast.
+
+- [x] Implement shared role colors, persistent selection labels and saved choices.
+- [x] Verify role switching, persistence/migration, material colors and setup UI.
+  Windows passes 89 focused configuration, settings, setup, simulation, device,
+  mock and hardware UI tests, plus two role-dot contrast/text tests. The settings
+  test teardown now drains deferred Qt deletion to avoid retaining prior dialogs.
+  Native RTX verification captures the custom purple follower, consistent labels
+  and all six automatic joint transitions in 34.94 seconds. See
+  `verification/arm-colors-review.json`; hardware was emulated. Formal lifecycle
+  admission remains stale and is not advanced by these feature checks.
+
+
 Operator follow-up (2026-10-05), implemented: tolerate incidental motion of
 unselected joints, make each joint capture advance automatically, and give the
 solid native RTX arm a dedicated live window. The current three-tick movement

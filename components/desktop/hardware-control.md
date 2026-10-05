@@ -5,6 +5,20 @@ kind: feature
 ---
 # SO-101 USB hardware controls
 
+Setup must persistently name the selected Leader (hand-operated controller) or
+Follower (robot hand), including during joint capture and in the RTX companion
+window. Use the same role palette in the diagram, selection banner, viewport
+legend and rendered printed parts. Offer custom colors before connecting an arm,
+saved as general.leader_color and general.follower_color (#RRGGBB); defaults are
+#1FAD9E and #F2A31F. Migrate older saved profiles by adding only these defaults.
+Keep role text visible for identical colors and color-vision differences. Apply
+colors to runtime printed-part materials only, preserving authored USD and motor
+state. Changes are unavailable during a connected hardware session.
+Role references in labels, selectors, buttons and simulation/device controls also
+carry small shared color dots. Dots have contrasting light and dark outlines so
+black, white or background-matching custom colors remain visible in either theme;
+the role text keeps normal readable contrast and remains accessible as text.
+
 Implement explicit manual hardware reads/writes, superseding earlier blanket
 read-only restrictions. Discovery and role assignment still perform no motor I/O.
 Open only an explicitly selected, revalidated USB attachment. Use the pinned

@@ -7,10 +7,12 @@ from __future__ import annotations
 import copy
 import json
 import os
+import re
 import tempfile
 from decimal import Decimal, InvalidOperation
 from typing import Any, Callable
 from urllib.parse import unquote, urlsplit
+from .arm_colors import DEFAULT_COLORS
 
 DEFAULT_PROFILE: dict = {
     "llm": {
@@ -24,6 +26,8 @@ DEFAULT_PROFILE: dict = {
     "general": {
         "theme": "dark",
         "display_units": "m",
+        "leader_color": DEFAULT_COLORS['leader'],
+        "follower_color": DEFAULT_COLORS['follower'],
     },
     "rendering": {
         "device": 0,
@@ -142,6 +146,8 @@ FIELDS: dict = {
     "general": {
         "theme": _validate_enum(("dark", "light")),
         "display_units": _validate_enum(("m", "cm", "mm")),
+        "leader_color": lambda v: isinstance(v, str) and bool(re.fullmatch(r'#[0-9a-fA-F]{6}', v)),
+        "follower_color": lambda v: isinstance(v, str) and bool(re.fullmatch(r'#[0-9a-fA-F]{6}', v)),
     },
     "rendering": {
         "device": _validate_int_min(0),
@@ -251,6 +257,9 @@ def load_profile(config_path: str) -> dict:
             loaded = json.load(handle)
         except ValueError:
             return copy.deepcopy(DEFAULT_PROFILE)
+    if isinstance(loaded, dict) and isinstance(loaded.get('general'), dict):
+        for role in ('leader', 'follower'):
+            loaded['general'].setdefault(role+'_color', DEFAULT_PROFILE['general'][role+'_color'])
     if not validate_profile(loaded)["valid"]:
         return copy.deepcopy(DEFAULT_PROFILE)
     return loaded

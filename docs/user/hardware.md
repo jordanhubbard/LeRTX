@@ -1,5 +1,14 @@
 # Connecting the SO-101 arms
 
+The setup header and separate RTX window always name the selected arm: **Leader**
+is the hand-operated controller; **Follower** is the robot hand. Their color key
+matches the rendered printed parts. Before connecting, choose a role and use
+**Match printed-part color…** to match your own prints. Colors are saved for future
+sessions; labels still distinguish the arms when their colors are the same.
+Small outlined color dots also identify roles in selectors, buttons, simulation
+controls, device assignments and status messages. Light and dark rings keep the
+dots visible even for black, white or background-colored prints.
+
 LeRTX now implements manual USB reads and writes for a configured SO-101 arm with
 six Feetech STS3215 motors, IDs 1–6, position mode and a 1 Mbps bus. Software tests
 use an emulated arm; physical qualification on the user's arms is still pending.

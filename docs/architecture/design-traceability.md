@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:9a70c1e5da3ad69ec474be2b74295b519607e27249f5e719ed1230f077bb7e35 -->
+<!-- literate-ai:authority-reviewed sha256:be9d0007bd42ca74707a90774908dbfdc828d8311dd82ba11308ee66ef988405 -->
 
 [Project guide](../README.md) → design traceability
 
@@ -26,3 +26,8 @@ reference/sweep/final-review workflow. Stable endpoints and a return visit are
 operator-demonstrated data, not software detection of hard stops. Emulated
 SDK/Qt tests and the native six-joint frame-change regression provide software
 evidence; they do not replace qualification on the operator's physical arm.
+
+The hardware contract also owns persistent role identity and configurable printed
+part colors. One palette drives Qt labels/diagrams and linear-light USD material
+inputs in the runtime snapshot; authored scenes and hardware roles are unchanged.
+Legacy profile migration adds only the two new color defaults.

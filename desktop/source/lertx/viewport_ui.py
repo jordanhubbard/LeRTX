@@ -5,6 +5,7 @@ from .joint_interaction import image_coordinates, drag_target
 def build_viewport(owner):
     from PySide6.QtCore import Qt, QEvent
     from PySide6.QtWidgets import QLabel, QApplication, QToolTip
+    from .role_ui import role_html
 
     class Viewport(QLabel):
         def __init__(self):
@@ -80,7 +81,7 @@ def build_viewport(owner):
                     if self.joint and self.joint['locked']:
                         reason = self.joint.get('lock_reason','Disable following in Robot Controls before dragging the follower.')
                         owner.statusBar().showMessage(reason)
-                        QToolTip.showText(self.mapToGlobal(self.press.toPoint()), reason, self)
+                        QToolTip.showText(self.mapToGlobal(self.press.toPoint()), role_html(reason,owner.profile), self)
                         self.joint = None
                     elif self.joint:
                         self.setCursor(Qt.CursorShape.ClosedHandCursor)
