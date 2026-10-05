@@ -25,6 +25,10 @@ class SettingsUiTests(unittest.TestCase):
         self.dialog.reject()
         self.window._frame_timer.stop()
         self.window.deleteLater()
+        # processEvents alone does not drain DeferredDelete without an exec loop.
+        # Dispose previous dialogs/timers before the next responsiveness check.
+        from PySide6.QtCore import QCoreApplication,QEvent
+        QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete)
         self.app.processEvents()
         self.directory.cleanup()
 

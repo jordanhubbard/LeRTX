@@ -53,6 +53,31 @@ class SetupUITests(unittest.TestCase):
         self.wait(lambda:bool(self.frames));self.assertIsNone(self.frames[-1][2])
         w.reference_check.setChecked(True);w.advance()
         self.wait(lambda:w.step==3)
+    def test_role_identity_remains_visible_through_joint_steps(self):
+        w=self.wizard;w.role_box.setCurrentText('leader')
+        self.assertEqual(w.role,'leader')
+        self.assertIn('Leader',w.identity.text())
+        self.assertIn('#1FAD9E',w.identity.styleSheet())
+        self.begin()
+        self.assertFalse(w.role_box.isVisible())
+        self.assertTrue(w.identity.isVisible())
+        self.assertIn('Leader',w.preview_window.identity.text())
+        self.assertIn('Leader (selected)',w.preview_window.legend.text())
+        self.assertEqual(w.joint_map.role_color,'#1FAD9E')
+    def test_custom_color_updates_identity_and_cannot_change_connected_arm(self):
+        from lertx.config import save_profile,load_profile
+        calls=[]
+        def configure(profile,path):
+            calls.append(profile);save_profile(profile,path);return {}
+        self.owner.worker.configure=configure
+        self.owner._hardware_windows['closed']=SimpleNamespace(session=SimpleNamespace(_thread=SimpleNamespace(is_alive=lambda:False)))
+        w=self.wizard;w.apply_color('#123456')
+        del self.owner._hardware_windows['closed']
+        self.assertIn('#123456',w.identity.styleSheet())
+        self.assertEqual(self.owner.arm_swatches['follower'].pixmap().toImage().pixelColor(8,8).name(),'#123456')
+        self.assertEqual(load_profile(self.owner.config_path)['general']['follower_color'],'#123456')
+        w.advance();w.apply_color('#ffffff')
+        self.assertEqual(len(calls),1)
     def test_full_calibration_exports_and_mirrors_each_joint_without_torque(self):
         w=self.wizard;self.begin()
         for i in range(1,7):

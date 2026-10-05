@@ -10,6 +10,9 @@ def build_robot_panel(window):
         QCheckBox, QPushButton, QSlider, QComboBox, QInputDialog)
     from .robot import JOINT_NAMES, joint_limits
 
+    from .role_ui import widgets
+    QLabel,QPushButton,QCheckBox=widgets(lambda: window.profile)
+
     class RobotPanel(QWidget):
         def __init__(self):
             super().__init__(window)

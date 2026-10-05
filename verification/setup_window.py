@@ -52,6 +52,31 @@ def attach(window,report):
                 w.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen,window.testAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen))
                 state.update(wizard=w,phase='connect');w.move(window.x()+20,window.y()+100);w.show()
             elif phase=='connect' and w.candidates:
+                w.role_box.setCurrentText('leader')
+                assert 'Leader' in w.identity.text() and '#1FAD9E' in w.identity.styleSheet()
+                w.role_box.setCurrentText('follower')
+                w.apply_color('#8050d0');state['phase']='color'
+            elif phase=='color' and not w.color_pending and not window._pending:
+                from lertx.config import load_profile
+                assert load_profile(window.config_path)['general']['follower_color']=='#8050d0'
+                assert '#8050d0' in w.identity.styleSheet()
+                assert 'Follower (selected)' in w.preview_window.legend.text()
+                def colors():
+                    from pxr import Usd,UsdShade
+                    from lertx.arm_colors import apply_material_colors
+                    # Inspect the exact USD snapshot loaded into the native renderer.
+                    runtime=Usd.Stage.Open(str(window.worker.runtime_file))
+                    shaders=[UsdShade.Shader(p) for p in runtime.Traverse()
+                        if str(p.GetPath()).startswith('/World/Follower/') and '3d_printed' in str(p.GetPath()) and p.IsA(UsdShade.Shader)]
+                    assert shaders
+                    actual=[tuple(s.GetInput('diffuseColor').Get()) for s in shaders if s.GetInput('diffuseColor')]
+                    assert actual and all(c[2]>c[0]>c[1] for c in actual),actual
+                    return len(actual)
+                def colored(count):
+                    result.update(custom_color_materials=count,role_identity=True,color_persistence=True)
+                    state['phase']='colored'
+                state['phase']='checking-color';window._command(colors,colored)
+            elif phase=='colored':
                 w.advance();state['phase']='reference'
             elif phase=='reference' and w.session.snapshot()['state']=='read-only' and not w.pending:
                 assert not serial.writes

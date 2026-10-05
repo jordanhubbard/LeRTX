@@ -98,6 +98,8 @@ class SceneWorker(NativeWorker):
         filename = Path(self._temporary.name) / f"scene-{self._snapshot_number}.usdc"
         self.document.stage.Flatten().Export(str(filename))
         runtime = Usd.Stage.Open(str(filename))
+        from .arm_colors import apply_material_colors
+        apply_material_colors(runtime, self.profile)
         while runtime.GetPrimAtPath(self.camera_path):
             self.camera_path += "_"
         camera = UsdGeom.Camera.Define(runtime, self.camera_path)
@@ -241,6 +243,11 @@ class SceneWorker(NativeWorker):
             raise ValueError("Open a ready workspace before applying settings")
         previous = self.profile
         native_change = any(candidate[key] != previous[key] for key in ("rendering", "physics"))
+        from .arm_colors import role_color
+        colors_changed = any(role_color(candidate, r) != role_color(previous, r) for r in ('leader', 'follower'))
+        if colors_changed and self._hardware_roles:
+            raise ValueError('Close hardware sessions before changing arm colors')
+        native_change = native_change or colors_changed
         self.profile = candidate
         try:
             if native_change:
