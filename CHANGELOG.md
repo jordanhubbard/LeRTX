@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Windows contributor startup: `run.ps1` builds and runs the checkout in one
+  command. Desktop `run` automatically prepares missing or changed environments
+  and reuses successful setup; robot URDF files preserve checksum-pinned bytes
+  across Windows checkouts.
+
 ## v0.3.0
 
 - Packaging: added a Windows installer (`desktop/packaging/windows/LeRTX.iss`,

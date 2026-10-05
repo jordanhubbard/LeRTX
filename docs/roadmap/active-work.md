@@ -1167,6 +1167,27 @@ queue item or let `docs/roadmap/` become a plan archive.
 
 ### [ ] APP-001 — Deliver an installed desktop application with a simulated SO-101 pair
 
+- **Windows contributor startup:** The operator requests one command to build and
+  run a checkout. Added `run.ps1` and automatic setup for `manage.py run`,
+  retain successful setup evidence keyed to pinned dependency inputs, and preserve
+  checksum-sensitive robot model bytes across Windows checkouts. This is local
+  contributor startup; installed application delivery remains below.
+  - [x] Implement first-run setup, unchanged-input reuse, invalidation and failure recovery.
+  - [x] Verify startup control flow, PowerShell entry point and pinned model identities.
+    Ten startup regressions pass on Windows with Python 3.11.9.
+  - [x] Verify native warmup and launch in the updated checkout; interactive desktop
+    visibility requires the operator's session, not the coding sandbox.
+    Fresh setup warmup passed in 124.516 seconds; repeated warmup passed in
+    12.875 seconds. The real CLI first-frame/shutdown check and three robot
+    asset tests pass. See `verification/windows-startup-review.json`.
+  - [ ] Run startup regressions in GitHub CI on Windows, Linux and macOS with
+    Python 3.11 and 3.12. In progress: submit the review branch for this matrix.
+  - **Tooling limitation:** The local framework source CLI now runs and its
+    development guidance succeeds. The prescribed peer survey needs unavailable
+    `gh`; project validation stops at the existing backend Python service skill
+    (`project.skill_invalid`). This existing item records the direction;
+    framework admission is not advanced. GitHub connector handles CI review.
+
 - **Contextual joint controls:** The operator reports that joint movement remains
   difficult to discover. Implement cross-platform right-click joint controls with
   a visible bounded slider, angle input and lock explanation; reserve middle-drag

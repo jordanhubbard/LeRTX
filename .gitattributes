@@ -2,3 +2,6 @@
 # Preserve these bytes so recorded artifact hashes remain meaningful.
 verification/native/** -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof
 verification/generated-baseline/** -text
+
+# These upstream bytes are checked against provenance.json at runtime.
+desktop/source/lertx/resources/so101/*.urdf -text

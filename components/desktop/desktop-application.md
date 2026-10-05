@@ -23,6 +23,20 @@ files, document name and modified state in the window title, About and usage
 help. Remember window layout without persisting credentials. Loading and failed
 renderer states remain visible. A normal launch opens the robot workspace.
 
+## Contributor checkout startup
+
+Windows contributors can prepare and launch a checkout with one command,
+`run.ps1`, using a real Python 3.11/3.12 or uv. The desktop management `run`
+command prepares missing or stale environments before launching. Setup uses
+the pinned hash locks and succeeds only after diagnostics and a real rendered
+warmup frame pass. Reuse successful setup for unchanged inputs; changed locks,
+bundled wheels, requirements or management code invalidate it. Interrupted or
+failed setup must retry and must not launch the application. Forward explicit
+scene paths and return setup/launch failures to the invoking shell. Preserve
+checksum-sensitive upstream robot resource bytes in Windows checkouts.
+Contributor setup remains separate from the self-contained end-user delivery
+contract above.
+
 ## Default SO-101 workspace
 
 Preload separately identifiable SO-101 leader and follower arms on the work
