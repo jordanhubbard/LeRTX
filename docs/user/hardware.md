@@ -8,18 +8,27 @@ use an emulated arm; physical qualification on the user's arms is still pending.
 
 For an assembled arm with motor IDs already assigned, choose **Set up real arms**
 in the toolbar. The wizard walks through connection, support/torque release, a
-reference pose, six individual joints, review and saving. Its right-hand 3D view
-shows the same native rendering as the workspace. The numbered diagram locates
+reference pose, six individual joints, review and saving. A separate **Live arm ·
+NVIDIA RTX** window displays the solid rendered arm and mirrors all six measured
+joints. Resize or move it beside the wizard; use its turn, zoom and framing buttons
+to inspect the motion. **Open live RTX 3D window** brings it back if closed.
+The optional reference-only numbered diagram locates
 each joint: base turn, upper-arm hinge, middle hinge, wrist tilt, wrist twist and
-claw (or the leader's trigger). A green ring identifies the joint you actually
-move; the gold number identifies the joint for the current step.
+claw (or the leader's trigger). Gold identifies the selected joint.
 
 The reference pose is initially stationary: copy it with the physical arm, then
-confirm and capture it. Live 3D mirroring begins after that capture. Move each
-joint gently through both ends of its comfortable travel, check the mirrored
-direction, and confirm it. The travel indicator means movement was detected;
-you still need to check the full travel yourself. Use **Reverse** if needed.
-Review all six joints and save. **Finish and open live hardware controls** keeps
+confirm and capture it. Live 3D mirroring begins after that capture. For each
+selected joint, move gently to one comfortable end and pause, move to the opposite
+end and pause, then return to the first end and pause. Holds take about a second.
+The wizard advances automatically after a repeatable sweep and a current 3D frame.
+Support the arm naturally: other joints may move, but only the selected joint
+counts toward the step. Small encoder jitter and incidental movement do not count
+as a sweep. If more travel is needed, continue toward the opposite comfortable
+end without forcing it. Use **Reverse** if the preview direction is wrong.
+The app records the endpoints you demonstrate; it does not detect hard stops.
+
+Review all six joints, confirm travel and 3D directions once, and save.
+**Finish and open live hardware controls** keeps the 3D window,
 the connection and enables measured live viewing. Motors stay off throughout.
 Cancel restores the original calibration when the bus remains available.
 

@@ -185,14 +185,27 @@ wizard keeps the native viewport visible throughout reference alignment and each
 joint's measured range/direction check. Label provisional calibration poses distinctly
 from verified physical telemetry. Never enable motor torque in the wizard.
 
-The wizard itself displays the shared native RTX image beside the instructions,
-with an illustrated, numbered base-to-hand joint map. Introduce joints by physical
+The wizard opens a dedicated, resizable live 3D window showing the solid arm from
+the native RTX renderer. Subscribe this window to native frames, retain the
+single native owner, and offer camera orbit, zoom and arm framing. An optional,
+explicitly static numbered joint map is location help, never the live preview.
+Introduce joints by physical
 location and motion (base turn, upper-arm hinge, middle hinge, wrist tilt, wrist
 twist, claw/trigger), then show the technical name and motor ID. Highlight the
-current joint in the diagram and native scene, identify actual moving joints,
-and show recorded travel, direction confirmation, review and explicit completion.
+current joint in the diagram and native scene. Record only the selected motor for
+step progress while the 3D arm mirrors all six joints. Incidental motion of other
+joints must neither warn, reset capture, nor advance the step. Prompt a comfortable
+endpoint hold, an opposite endpoint hold and a repeat visit to the first endpoint.
+Require a meaningful per-joint span, multiple distinct fresh samples, stable holds
+with encoder-noise tolerance, and a current displayed native frame before automatic
+advancement. Duplicate samples, stale intervals, isolated spikes and small twitches
+must not qualify. Keep direction reversal available. Reference capture and final
+travel/direction review and hardware saving remain explicit. Endpoint pauses are
+operator-chosen positions, not proof that software detected mechanical hard stops.
+Transfer the live 3D window to the hardware panel on completion; dispose it when
+the hardware session closes. Show recorded travel, review and explicit completion.
 Explain that the initial reference is a stationary pose to copy; raw movement
-indicators remain available before calibration establishes the reference.
+readings remain available before calibration establishes the reference.
 Keep instructions scrollable and navigation reachable at laptop window sizes.
 Live calibration and subsequent hardware viewing retain one pending update while
 the renderer is busy, use fresh telemetry when it executes, and invalidate

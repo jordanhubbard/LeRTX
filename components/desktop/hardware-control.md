@@ -15,8 +15,10 @@ The explicit setup wizard may write homing and range calibration with torque off
 following the pinned LeRobot half-turn procedure. Capture and persist original
 registers before modification, verify every write and restore on cancellation or
 failure where communication permits; report any unconfirmed restoration.
-A calibration preview must be visibly provisional until reference, travel and
-direction have been confirmed. Never auto-enable torque on completing setup.
+A calibration preview must be visibly provisional until reference, automatically
+captured joint sweeps, and final operator travel/direction review are complete.
+Automatic per-joint advancement writes no hardware registers; final calibration
+save remains explicit. Never auto-enable torque on completing setup.
 
 One independent worker owns each port, bounded I/O and the latest complete
 timestamped sample. Read positions, voltage, temperature, load and torque state.

@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:8fe9f79d9570647ffa48a493e6bea4347593ab838f6216bae379d8fd8e71d865 -->
+<!-- literate-ai:authority-reviewed sha256:9a70c1e5da3ad69ec474be2b74295b519607e27249f5e719ed1230f077bb7e35 -->
 
 [Project guide](../README.md) → design traceability
 
@@ -19,8 +19,10 @@ panning on every platform. The Qt input regression and native context-window
 verification cover that interaction through the existing simulated command path;
 physical controls retain their separate hardware workflow.
 
-The desktop application's guided-setup contract owns the integrated native view,
-numbered joint explanations, measured movement feedback and bounded preview queue.
-The hardware guide describes the same reference/capture/review workflow. Emulated
+The desktop application's guided-setup contract owns the dedicated live RTX window,
+optional joint-location diagram, selected-motor sweep detector, automatic joint
+advancement and bounded preview queue. The hardware guide describes the same
+reference/sweep/final-review workflow. Stable endpoints and a return visit are
+operator-demonstrated data, not software detection of hard stops. Emulated
 SDK/Qt tests and the native six-joint frame-change regression provide software
 evidence; they do not replace qualification on the operator's physical arm.

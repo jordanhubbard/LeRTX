@@ -56,12 +56,16 @@ class SetupUITests(unittest.TestCase):
     def test_full_calibration_exports_and_mirrors_each_joint_without_torque(self):
         w=self.wizard;self.begin()
         for i in range(1,7):
-            self.serial.registers[i][56:58]=(1800).to_bytes(2,'little')
-            self.wait(lambda:w.capture.ranges[list(w.capture.ranges)[i-1]][0]==1800)
-            self.serial.registers[i][56:58]=(2300).to_bytes(2,'little')
-            self.wait(lambda:w.capture.ranges[list(w.capture.ranges)[i-1]][1]==2300)
-            w.confirm.setChecked(True);w.advance()
-        self.assertEqual(w.step,9);w.advance();self.wait(lambda:w.step==10)
+            self.wait(lambda:w.sweep.start is not None)
+            self.serial.registers[i][56:58]=(1600).to_bytes(2,'little')
+            self.wait(lambda:w.sweep.phase==1)
+            self.serial.registers[i][56:58]=(2500).to_bytes(2,'little')
+            self.wait(lambda:w.sweep.phase==2)
+            self.serial.registers[i][56:58]=(1600).to_bytes(2,'little')
+            self.wait(lambda:w.step==i+3)
+        self.assertEqual(w.step,9)
+        w.advance();self.assertEqual(w.step,9,'Final hardware save still requires review')
+        w.confirm.setChecked(True);w.advance();self.wait(lambda:w.step==10)
         self.assertTrue((w.run_dir/'original-registers.json').is_file())
         saved=json.loads((w.run_dir/'calibration.json').read_text());self.assertEqual(len(saved),6)
         self.assertTrue((w.run_dir/'binding.json').is_file())
@@ -73,11 +77,11 @@ class SetupUITests(unittest.TestCase):
         self.wait(lambda:self.wizard.shutdown_complete)
         self.assertEqual(int.from_bytes(self.serial.registers[1][9:11],'little'),512)
         self.assertTrue(self.serial.closed)
-    def test_reference_and_movement_require_operator_confirmation(self):
+    def test_joint_cannot_be_skipped_before_sweep_completion(self):
         self.begin();w=self.wizard
         w.advance();self.assertEqual(w.step,3)
         w.confirm.setChecked(True);w.advance();self.assertEqual(w.step,3)
-        self.assertIn('100 encoder ticks',w.status.text())
+        self.assertIn('comfortable end',w.status.text())
     def test_named_joint_slider_sets_intent_even_while_worker_busy(self):
         from lertx.robot import home_positions
         p=self.owner.robot_panel;p.update_state({'positions':{'leader':home_positions('leader')},'following':True})
@@ -122,14 +126,56 @@ class SetupUITests(unittest.TestCase):
         self.assertIsNone(w.preview_step)
         w.session.snapshot=original
 
-    def test_joint_guide_detects_the_actual_moving_joint(self):
+    def test_other_joint_motion_is_tolerated_and_does_not_advance(self):
         self.begin();w=self.wizard
         self.serial.registers[3][56:58]=(2250).to_bytes(2,'little')
-        self.wait(lambda:'Middle hinge' in w.movement.text())
+        self.wait(lambda:w.session.snapshot()['sample']['motors'][3]['position']==2250)
+        w.poll()
         self.assertEqual(w.joint_map.active,'shoulder_pan')
-        self.assertIn('elbow_flex',w.joint_map.moving)
+        self.assertNotIn('You are moving',w.movement.text())
+        self.assertEqual(w.sweep.phase,0)
+        self.assertEqual(w.step,3)
         self.assertIn('rotating platform',w.instructions.text())
         self.assertTrue(w.native_view.isVisible())
+        self.assertTrue(w.preview_window.isWindow())
+        self.assertFalse(w.joint_map.isVisible())
+
+    def test_preview_window_receives_each_native_frame_and_reopens(self):
+        from PySide6.QtGui import QImage
+        w=self.wizard
+        first=QImage(20,20,QImage.Format.Format_RGB888);first.fill(0xff0000)
+        second=QImage(20,20,QImage.Format.Format_RGB888);second.fill(0x00ff00)
+        self.owner.native_frame_ready.emit(first)
+        self.assertEqual(w.native_view.image,first)
+        self.owner.native_frame_ready.emit(second)
+        self.assertEqual(w.native_view.image,second)
+        w.preview_window.close();self.assertFalse(w.preview_window.isVisible())
+        w.show_preview_button.click();self.assertTrue(w.preview_window.isVisible())
+
+    def test_completed_sweep_waits_for_visible_current_rtx_preview(self):
+        self.begin();w=self.wizard
+        self.wait(lambda:w.sweep.start is not None)
+        w.preview_window.close()
+        for value,phase in ((1600,1),(2500,2),(1600,3)):
+            self.serial.registers[1][56:58]=value.to_bytes(2,'little')
+            self.wait(lambda:w.sweep.phase==phase)
+        self.assertEqual(w.step,3)
+        self.assertFalse(w.preview_is_current())
+        w.open_preview()
+        self.wait(lambda:w.step==4)
+
+    def test_finish_transfers_live_window_and_shutdown_disposes_it(self):
+        self.begin();w=self.wizard
+        for name in w.capture.ranges:
+            w.capture.ranges[name]=[1600,2500];w.capture.confirm(name)
+        w.session.request('setup_save',w.capture.calibration())
+        self.wait(lambda:w.session.snapshot()['setup']['state']=='saved')
+        w.finish_setup()
+        panel=self.owner._hardware_windows['follower']
+        self.assertIs(panel.preview_window,w.preview_window)
+        self.assertTrue(panel.preview_window.isVisible())
+        panel.shutdown()
+        self.assertTrue(panel.preview_window.disposed)
 
     def test_pending_save_blocks_back_and_duplicate_submission(self):
         self.begin();w=self.wizard;w.step=9;w.pending=True

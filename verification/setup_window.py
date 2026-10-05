@@ -58,19 +58,20 @@ def attach(window,report):
                 w.support.setChecked(True);w.advance();state['phase']='guide'
             elif phase=='guide' and w.guide_ready:
                 assert window.robot_panel.state.get('setup_roles')==['follower']
-                window.grab().save(str(report.with_name('setup-reference.png')))
+                w.preview_window.grab().save(str(report.with_name('setup-reference.png')))
                 w.grab().save(str(report.with_name('setup-wizard.png')))
                 w.reference_check.setChecked(True);w.advance();state['phase']='range'
             elif phase=='range' and 3<=w.step<=8:
-                i=w.step-2;n=list(w.capture.ranges)[i-1];low,high=w.capture.ranges[n]
-                if low>1900:serial.registers[i][56:58]=(1900).to_bytes(2,'little')
-                elif high<2200:
+                i=w.step-2;n=list(w.capture.ranges)[i-1]
+                if w.sweep.start is None:return
+                if w.sweep.phase==0:serial.registers[i][56:58]=(1600).to_bytes(2,'little')
+                elif w.sweep.phase==1:
                     actual=panel.state.get('positions',{}).get('follower',{}).get(n)
                     expected=w.capture.preview(w.session.snapshot()['sample'])[0][n]
                     if actual is None or abs(actual-expected)>.01 or w.preview_step!=w.step:return
-                    state['low_frames'][n]=bytes(w.native_view.image.constBits())
-                    serial.registers[i][56:58]=(2200).to_bytes(2,'little')
-                else:
+                    if n not in state['low_frames']:state['low_frames'][n]=bytes(w.native_view.image.constBits())
+                    serial.registers[i][56:58]=(2500).to_bytes(2,'little')
+                elif w.sweep.phase==2 and n not in result['changed_joint_frames']:
                     # Wait for the native renderer to display the measured pose too.
                     actual=panel.state.get('positions',{}).get('follower',{}).get(n)
                     expected=w.capture.preview(w.session.snapshot()['sample'])[0][n]
@@ -78,20 +79,24 @@ def attach(window,report):
                     if w.preview_step!=w.step:return
                     assert w.native_view.image is not None
                     assert w.joint_map.active==n
+                    assert w.preview_window.isVisible() and w.preview_window.isWindow()
                     assert bytes(w.native_view.image.constBits())!=state['low_frames'][n],n+' image did not change'
                     result['changed_joint_frames'].append(n)
                     if i==2:
                         w.grab().save(str(report.with_name('setup-joint.png')))
-                        old_size=w.size();w.resize(960,640)
+                        w.preview_window.grab().save(str(report.with_name('setup-live-rtx.png')))
+                        old_size=w.size();w.resize(560,640)
                         w.grab().save(str(report.with_name('setup-joint-compact.png')))
                         assert w.controls_scroll.widget().width()<=w.controls_scroll.viewport().width()
                         assert w.next_button.isVisible() and w.native_view.height()>=210
                         w.resize(old_size)
-                    w.confirm.setChecked(True);w.advance()
+                    serial.registers[i][56:58]=(1600).to_bytes(2,'little')
                     result['mirrored_joints']=i
             elif phase=='range' and w.step==9:
+                assert len(w.capture.confirmed)==6 and len(result['changed_joint_frames'])==6
+                result['automatic_joint_advancement']=True
                 w.grab().save(str(report.with_name('setup-review.png')))
-                w.advance();state['phase']='saved'
+                w.confirm.setChecked(True);w.advance();state['phase']='saved'
             elif phase=='saved' and w.step==10:
                 assert (w.run_dir/'calibration.json').is_file() and (w.run_dir/'binding.json').is_file()
                 assert not any(address==40 and value for _,address,value,_ in serial.writes)

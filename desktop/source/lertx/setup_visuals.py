@@ -1,7 +1,7 @@
 """Setup-only explanations and Qt views of the shared native renderer's image."""
 from PySide6.QtCore import Qt, QRectF, QPointF
 from PySide6.QtGui import QColor, QPainter, QPen, QFont
-from PySide6.QtWidgets import QWidget, QSizePolicy
+from PySide6.QtWidgets import QWidget, QSizePolicy, QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from .robot import JOINT_NAMES
 
 # User-facing names describe the part before introducing the robot terminology.
@@ -53,6 +53,65 @@ class NativeSetupView(QWidget):
         target = QRectF((self.width()-size.width())/2, (self.height()-size.height())/2,
                         size.width(), size.height())
         p.drawImage(target, self.image)
+
+
+class SetupPreviewWindow(QDialog):
+    """A dedicated solid RTX view, fed by the application's native frame stream.
+
+    The native owner still serializes every renderer call and pose publication.
+    A second Qt window does not require a second competing GPU scene owner.
+    """
+    def __init__(self, owner):
+        super().__init__(owner)
+        self.owner = owner
+        self.role = 'follower'
+        self.disposed = False
+        self.setWindowTitle('Live arm · NVIDIA RTX')
+        self.resize(900, 700)
+        self.setMinimumSize(480, 400)
+        self.setModal(False)
+        layout = QVBoxLayout(self)
+        self.heading = QLabel('SO-101 · live 3D arm')
+        self.heading.setWordWrap(True)
+        self.heading.setStyleSheet('font-size: 20px; font-weight: bold;')
+        layout.addWidget(self.heading)
+        self.view = NativeSetupView(self)
+        layout.addWidget(self.view, 1)
+        self.status = QLabel('Waiting for the reference pose. Capture it to start measured motion.')
+        self.status.setWordWrap(True)
+        layout.addWidget(self.status)
+        row = QHBoxLayout()
+        layout.addLayout(row)
+        for title, kwargs in [('Turn left', {'orbit':(-.25,0)}),
+                              ('Turn right', {'orbit':(.25,0)}),
+                              ('Closer', {'zoom':-.2}), ('Farther', {'zoom':.2})]:
+            button = QPushButton(title)
+            button.clicked.connect(lambda checked=False, k=kwargs:self.camera(k))
+            row.addWidget(button)
+        fit = QPushButton('Frame arm')
+        fit.clicked.connect(lambda:self.camera(None))
+        row.addWidget(fit)
+        owner.native_frame_ready.connect(self.view.set_image)
+
+    def camera(self, kwargs):
+        if not self.owner._ready or self.owner.worker is None:
+            return
+        def work():
+            if kwargs is None:
+                from .robot import ROOTS
+                self.owner.worker.frame_selection(ROOTS[self.role])
+            else:
+                self.owner.worker.move_camera(**kwargs)
+            return self.owner.worker.tick(0.)
+        self.owner._command(work, self.owner._accept_frame)
+
+    def dispose(self):
+        if self.disposed:
+            return
+        self.disposed = True
+        self.owner.native_frame_ready.disconnect(self.view.set_image)
+        self.close()
+        self.deleteLater()
 
 
 class JointMap(QWidget):
