@@ -96,6 +96,14 @@ class StartupTests(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(),
                                  provenance["files"]["Simulation/SO101/" + path.name])
 
+    def test_authoring_files_keep_canonical_lf_newlines(self):
+        paths = list((ROOT / "components").rglob("*.md"))
+        paths.extend((ROOT / "skills").rglob("SKILL.md"))
+        self.assertTrue(paths)
+        for path in paths:
+            with self.subTest(path=str(path.relative_to(ROOT))):
+                self.assertNotIn(b"\r\n", path.read_bytes())
+
     @unittest.skipUnless(sys.platform == "win32", "Windows entry point")
     def test_powershell_wrapper_forwards_paths_and_exit_code(self):
         root = self.env / "checkout with spaces"

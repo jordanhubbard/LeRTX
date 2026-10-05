@@ -1,3 +1,7 @@
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
 # Native evidence includes original Windows CRLF output and USD writer output.
 # Preserve these bytes so recorded artifact hashes remain meaningful.
 verification/native/** -text whitespace=blank-at-eol,space-before-tab,cr-at-eol,-blank-at-eof

@@ -5,7 +5,8 @@
 - Windows contributor startup: `run.ps1` builds and runs the checkout in one
   command. Desktop `run` automatically prepares missing or changed environments
   and reuses successful setup; robot URDF files preserve checksum-pinned bytes
-  across Windows checkouts.
+  across Windows checkouts. Canonical specifications and skills retain LF
+  newlines so Windows Git checkout conversion cannot invalidate their authoring.
 
 ## v0.3.0
 
