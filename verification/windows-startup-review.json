@@ -8,10 +8,11 @@
     "fresh_pinned_setup": {"command": "python desktop/manage.py setup", "result": "passed", "native_warmup_seconds": 124.516},
     "repeated_pinned_setup": {"result": "passed", "native_warmup_seconds": 12.875},
     "native_cli_and_robot_assets": {"tests": 4, "result": "passed", "seconds": 23.906},
+    "one_command_build_and_run": {"command": "run.ps1", "result": "passed", "setup_receipt_initially_present": false, "native_warmup_seconds": 11.656, "first_frame": true, "clean_shutdown": true, "exit_code": 0},
     "development_guidance": {"result": "passed"},
     "project_validation": {"result": "passed", "note": "Canonical LF checkout and supported documentation-review record repair completed."},
     "peer_survey": {"result": "blocked", "reason": "Tracker CLI gh unavailable"},
-    "cross_platform_ci": {"result": "initial ten-test matrix passed; final twelve-test matrix pending", "run_id": 37271031449, "platforms": ["Windows", "Linux", "macOS"], "python": ["3.11", "3.12"]}
+    "cross_platform_ci": {"result": "passed", "run_id": 37271796770, "source_commit": "a3c425c38fcd7a218d144bbea3ef18dd2200a9f2", "jobs_passed": 6, "platforms": ["Windows", "Linux", "macOS"], "python": ["3.11", "3.12"]}
   },
   "limitations": [
     "Native rendering is qualified locally on Windows only by these focused checks.",

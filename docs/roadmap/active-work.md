@@ -1181,9 +1181,11 @@ queue item or let `docs/roadmap/` become a plan archive.
     Fresh setup warmup passed in 124.516 seconds; repeated warmup passed in
     12.875 seconds. The real CLI first-frame/shutdown check and three robot
     asset tests pass. See `verification/windows-startup-review.json`.
-  - [ ] Run startup regressions in GitHub CI on Windows, Linux and macOS with
+  - [x] Run startup regressions in GitHub CI on Windows, Linux and macOS with
     Python 3.11 and 3.12. The initial ten-test matrix passed all six jobs in
-    run 37271031449; in progress: verify the final LF-authoring update in CI.
+    run 37271031449. The final twelve-test matrix at a3c425c passed all six jobs
+    in run 37271796770. The actual `run.ps1` command with its setup receipt
+    removed completed pinned setup, native warmup, first frame and clean shutdown.
   - **Tooling limitation:** The local framework source CLI now runs and its
     development guidance and project validation succeed after the LF checkout
     repair and supported documentation review. The prescribed peer survey needs
