@@ -67,6 +67,7 @@ class SetupPreviewWindow(QDialog):
         from .role_ui import widgets
         QLabel,_,_=widgets(lambda:owner.profile)
         self.owner = owner
+        self.navigation_parent = owner
         self.role = 'follower'
         self.mode = 'waiting'
         self.disposed = False
@@ -75,6 +76,8 @@ class SetupPreviewWindow(QDialog):
         self.setMinimumSize(480, 400)
         self.setModal(False)
         layout = QVBoxLayout(self)
+        self.back_button=QPushButton('Back to setup')
+        self.back_button.clicked.connect(self.back_to_parent);layout.addWidget(self.back_button)
         self.identity = QLabel()
         self.identity.setWordWrap(True)
         layout.addWidget(self.identity)
@@ -105,6 +108,9 @@ class SetupPreviewWindow(QDialog):
         fit.clicked.connect(lambda:self.camera(None))
         row.addWidget(fit)
         owner.native_frame_ready.connect(self.view.set_image)
+
+    def back_to_parent(self):
+        self.navigation_parent.show();self.navigation_parent.raise_();self.navigation_parent.activateWindow()
 
     def set_role(self, role):
         self.role = role

@@ -77,6 +77,26 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Current architecture repair: the wizard and hardware panels independently create
+serial owners and use a window dictionary as a device registry. Introduce a
+first-class application device registry with one controller per attachment,
+shared telemetry/calibration/binding, scoped control access and serialized cleanup.
+Review all application layers and record prioritized ownership, threading,
+navigation and verification findings in docs/architecture/application-review.md.
+- [x] Replace per-panel serial ownership with shared device controllers.
+- [x] Verify simultaneous hardware/setup views, exclusive calibration, cancellation,
+  completed handoff and application shutdown through the real serial emulator.
+- [x] Complete the [architectural review](../architecture/application-review.md)
+  and document remaining staged work.
+
+Current navigation refinement: keep the numbered joint reference diagram visible
+above scrolling setup instructions, with no hide option. Add explicit parent-panel
+back actions to Device Manager, hardware controls, setup and its RTX companion.
+Leaving hardware/setup must use existing shutdown and calibration recovery;
+returning from RTX must preserve setup progress and live rendering.
+- [x] Verify persistent diagram and parent navigation through Qt controls (37 tests
+  pass; native Windows reference-step screenshot inspected).
+
 Current assignment repair: live inspection found a cached Leader control window
 on the former port after saved roles were exchanged. Desktop must validate both
 role and attachment before reusing a hardware window, prevent assignment edits

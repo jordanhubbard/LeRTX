@@ -65,7 +65,7 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
             self.mock_button = QPushButton("Open telemetry mock (no hardware)")
             self.mock_button.clicked.connect(self.open_mock)
             layout.addWidget(self.mock_button)
-            close = QPushButton("Close")
+            close = QPushButton("Back to scene")
             close.clicked.connect(self.reject)
             layout.addWidget(close)
             self.config_error = ""
@@ -101,8 +101,8 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
                 else:self.status.setText(parent.statusBar().currentMessage())
 
         def active_sessions(self):
-            return [p.session for p in getattr(parent,'_hardware_windows',{}).values()
-                if getattr(p,'session',None) and p.session._thread.is_alive()]
+            registry=getattr(parent,'devices',None)
+            return [c.session for c in registry.active_controllers()] if registry else []
 
         def selected(self):
             item = self.tree.currentItem()

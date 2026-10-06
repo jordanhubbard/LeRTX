@@ -65,13 +65,15 @@ def _launch(scene_path: Any) -> dict:
 
     temporary = tempfile.TemporaryDirectory(prefix="lertx-workspace-") if scene_path is None else None
     window = None
+    from .device_control import DeviceRegistry
+    devices = DeviceRegistry()
     try:
         if temporary:
             scene_path = os.path.join(temporary.name, "untitled.usda")
             scene_module.create_default_scene(scene_path, include_robots=True)
         application = ui_module.build_application()
         window = ui_module.build_main_window(
-            profile, lambda: SceneWorker(profile), scene_path, config_path,
+            profile, lambda: SceneWorker(profile), scene_path, config_path, device_registry=devices,
         )
         window.requires_save_as = temporary is not None
         window.show()
@@ -82,6 +84,10 @@ def _launch(scene_path: Any) -> dict:
             window.worker = None
         return {"application": "LeRTX", "closed": True}
     finally:
+        devices.shutdown()
+        if not devices.wait_closed():
+            import logging
+            logging.error("Device shutdown did not complete before application exit")
         if window is not None and window.worker is not None:
             window.worker.stop()
         if temporary:

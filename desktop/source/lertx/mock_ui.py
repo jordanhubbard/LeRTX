@@ -60,7 +60,7 @@ def build_mock_dialog(parent=None):
                 self.controls[role] = (connected, frozen, joints, gripper)
                 self.statuses[role] = status
                 columns.addWidget(group)
-            close = QPushButton("Close")
+            close = QPushButton("Back to Device Manager")
             close.clicked.connect(self.reject)
             layout.addWidget(close)
             self.timer = QTimer(self)

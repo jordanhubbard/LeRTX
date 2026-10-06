@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:07dbfa43e4de8404dc0e8dcd5fd637fa418b2330adb7f38406e0a6cbad793d16 -->
+<!-- literate-ai:authority-reviewed sha256:687c579af72cbd3d68c9ba85bb98f75a95d0f43299e9de655d8f3a85248a195f -->
 
 [Project guide](../README.md) → design traceability
 
@@ -46,3 +46,15 @@ Device role identity is carried by contrasting controller/gripper badges, readab
 text and explicit port labels. Cached hardware panels must match both role and
 attachment; active sessions block assignment edits. Device and Qt regressions
 and native dark/light screenshots are recorded in `verification/device-role-review.json`.
+
+The setup joint map is pinned outside the scrolling instructions. Explicit parent
+navigation preserves RTX progress and waits for hardware shutdown before returning
+to Device Manager. Setup/hardware/device Qt verification passes 37 tests.
+
+The application now injects a Qt-independent device registry. Controller-owned
+serial sessions, shared calibration/binding, scoped writer access and asynchronous
+recovery replace per-window serial ownership. See `application-review.md` for
+findings across all application layers and the staged follow-up plan. Controller,
+hardware, calibration and Qt verification runs 104 tests (one existing skip),
+plus a completed setup handoff to an existing observer panel; see
+`verification/device-controller-review.json`.
