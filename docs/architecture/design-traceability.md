@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:9cb94454f7b63670fa02fdc307e10d71260535b8bb039f2fa05f5e2092610b14 -->
+<!-- literate-ai:authority-reviewed sha256:915c5c74c747b2d5ae7a9d46f6f57d82bfab6eca23457138c7d89cda0b45497c -->
 
 [Project guide](../README.md) → design traceability
 
@@ -35,3 +35,9 @@ Legacy profile migration adds only the two new color defaults.
 Hardware torque feedback derives from measured registers and serial stop-request
 completion, not button intent. The UI exposes unmet engagement/mirroring gates;
 the stationary reference remains explicit until capture supplies a mapping.
+
+Reference capture accepts bounded extended encoder feedback only inside its
+torque-off homing transaction. It selects a representable offset and carries the
+actual per-joint reference into preview and binding math; normal measurements
+and commands keep their original bounds. Physical capture/restore checks cover
+both arms, including the follower wrist's 4530-tick unoffset feedback.

@@ -18,7 +18,8 @@ use an emulated arm; physical qualification on the user's arms is still pending.
 For an assembled arm with motor IDs already assigned, choose **Set up real arms**
 in the toolbar. The wizard walks through connection, support/torque release, a
 reference pose, six individual joints, review and saving. A separate RTX window
-first displays a stationary **Reference guide**, then switches to **LIVE** after
+displays the selected arm's stationary **Reference guide** even before connection,
+then switches to **LIVE** after
 reference capture and mirrors all six measured joints. Resize or move it beside
 the wizard; use its turn, zoom and framing buttons
 to inspect the motion. **Open live RTX 3D window** brings it back if closed.

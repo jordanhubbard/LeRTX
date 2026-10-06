@@ -77,6 +77,22 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Current device-coupling repair: a traced physical follower reference capture
+fails while clearing wrist-roll homing: its unoffset encoder is 4530, outside
+the normal 0..4095 measurement contract. The original offset/limits restore.
+Desktop owns a bounded calibration-only unoffset read and representable homing
+selection, retaining the actual reference encoder per joint instead of assuming
+2047. Normal read/command guards remain strict. Always show the selected arm's
+reference guide during preparation and keep capture errors outside the scroll area.
+- [x] Reproduce extended unoffset feedback in the serial emulator for both roles.
+- [x] Verify reference capture, mapping and cancellation with non-midpoint references.
+- [x] Verify the physical capture/restore path with torque off and native previews.
+  Both physical arms pass capture and restore with torque off; follower wrist
+  reference is 2483 ticks. Native emulated six-joint frame changes pass for both
+  roles. Controller/setup suite: 53 tests, one platform skip; Qt setup/hardware
+  suite: 29 tests pass. See `verification/reference-capture-review.json`.
+  Full physical sweeps and powered motion remain operator qualification work.
+
 Operator follow-up: Enable motors opens no confirmation and disabled controls
 are visually ambiguous; Release torque appears inert. Desktop owns explicit
 disabled styling, the exact arming prerequisite beside the button, measured

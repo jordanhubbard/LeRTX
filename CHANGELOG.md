@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Device setup: fix reference capture aborting on an extended wrist encoder
+  during homing. Preserve the measured reference for each joint, show the selected
+  arm's RTX reference guide before connection, and keep failures beside navigation.
+
 - Hardware controls: use one measured-state Engage/Release control, expose missing
   prerequisites and distinguish disabled buttons in both themes. Report verified
   torque state and action results. Setup shows already-free motors explicitly;

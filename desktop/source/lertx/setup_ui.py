@@ -64,7 +64,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.live=QCheckBox('Mirror my arm in 3D');self.live.setChecked(True);self.live.toggled.connect(self.live_changed);layout.addWidget(self.live)
             self.readings=QLabel();self.readings.setWordWrap(True);self.readings.setTextFormat(Qt.TextFormat.PlainText);layout.addWidget(self.readings)
             self.connection=QLabel();self.connection.setWordWrap(True);layout.addWidget(self.connection)
-            self.status=QLabel();self.status.setWordWrap(True);self.status.setTextFormat(Qt.TextFormat.PlainText);layout.addWidget(self.status)
+            self.status=QLabel();self.status.setWordWrap(True);self.status.setTextFormat(Qt.TextFormat.PlainText);outer.addWidget(self.status)
             layout.addStretch(1)
             footer=QHBoxLayout();outer.addLayout(footer)
             self.cancel_button=QPushButton('Cancel setup');self.cancel_button.clicked.connect(self.close);footer.addWidget(self.cancel_button)
@@ -84,7 +84,8 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             active=JOINT_NAMES[self.step-3] if joint else None
             self.sweep=JointSweep(self.role,active) if joint else None;self.auto_due=None;self.rendered_sequence=-1
             self.sync_identity()
-            self.preview_window.set_mode('reference' if self.step==2 else 'waiting')
+            self.preview_window.set_mode('reference' if self.step<=2 else 'waiting')
+            if self.step<=2:self.guide_shown=False;self.guide_ready=False
             self.joint_map.set_state(active,confirmed=self.capture.confirmed if self.capture else ())
             self.travel.setVisible(joint);self.movement.setVisible(joint)
             self.movement.setText(self.sweep.prompt if self.sweep else '')
@@ -147,6 +148,9 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
 
         def change_role(self,role):
             if self.step==0 and not self.session:
+                previous=self.role
+                if owner.worker and owner._ready:
+                    owner._command(lambda:owner.worker.release_hardware(previous),owner._apply_status)
                 self.role=role;self.render_step()
 
         def choose_color(self):
@@ -165,7 +169,9 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.color_pending=True;self.role_box.setEnabled(False);self.color_button.setEnabled(False)
             self.status.setText('Applying printed-part color…')
             def work():
-                try:return {'status':owner.worker.configure(profile,owner.config_path)}
+                try:
+                    owner.worker.release_hardware(self.role)
+                    return {'status':owner.worker.configure(profile,owner.config_path)}
                 except Exception as exc:return {'error':str(exc)}
             def done(result):
                 self.color_pending=False
@@ -174,6 +180,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                 if self.closing:return
                 self.role_box.setEnabled(True);self.color_button.setEnabled(True)
                 if 'error' in result:self.status.setText(result['error']);return
+                self.guide_shown=False;self.guide_ready=False
                 self.sync_identity();self.status.setText('Color saved for '+self.role+'. Choose the USB port to continue.')
             owner._command(work,done)
 
@@ -271,7 +278,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             if not owner._ready or self.preview_pending or self.closing:return
             # One queued update, even while RTX is busy. Read the newest complete
             # sample on execution rather than ageing a sample in the render queue.
-            generation=self.preview_generation;issued_step=self.step;self.preview_pending=True
+            generation=self.preview_generation;issued_step=self.step;self.preview_pending=True;role=self.role
             selected=JOINT_NAMES[issued_step-3] if 3<=issued_step<=8 else None
             capture=self.capture
             def work():
@@ -285,10 +292,10 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                         if any(m['torque'] for m in sample['motors'].values()):raise ValueError('Release motor torque before previewing calibration.')
                         current_positions=capture.preview(sample)[0];current_timestamp=sample['timestamp']
                     if selected!=self.selected_joint and hasattr(owner.worker,'select_joint') and selected:
-                        owner.worker.select_joint(self.role,selected);self.selected_joint=selected
+                        owner.worker.select_joint(role,selected);self.selected_joint=selected
                     if timestamp is None and hasattr(owner.worker,'frame_selection'):
-                        owner.worker.frame_selection(ROOTS[self.role])
-                    result=owner.worker.setup_pose(self.role,current_positions,current_timestamp)
+                        owner.worker.frame_selection(ROOTS[role])
+                    result=owner.worker.setup_pose(role,current_positions,current_timestamp)
                     return {**result,'setup_sequence':sample['sequence'] if timestamp is not None else -1}
                 except Exception as exc:return {'setup_error':str(exc)}
             def done(frame):
@@ -336,6 +343,9 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.status.clear();self.connection.clear();self.preview_status.clear();self.readings.clear()
             self.reset_button.hide();self.render_step();self.scan()
         def poll(self):
+            if self.step<=2 and not self.pending and not self.color_pending and not self.guide_shown and not self.closing:
+                self.preview_status.setText('REFERENCE GUIDE · '+self.role+' · copy this pose, then capture to begin live motion')
+                self.guide_shown=bool(self.publish(reference_pose(self.role),None))
             if self.ticket is not None:
                 result=self.probe.poll(self.ticket)
                 if result is not None:
@@ -369,6 +379,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     self.done(0)
                 return
             self.next_button.setEnabled(not self.pending and bool(sample) and not s['stale'])
+            if self.step==2:self.next_button.setEnabled(not self.pending and bool(sample) and not s['stale'] and self.guide_ready)
             if 3<=self.step<=8:self.next_button.setEnabled(False)
             self.back_button.setEnabled(not self.pending)
             if s['state']=='fault':
@@ -377,7 +388,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                 return
             if self.step==1 and s['state']=='read-only':self.pending=False
             if self.step==2 and setup.get('state')=='recording':
-                self.capture=RangeCapture(self.role,setup['homings']);self.pending=False;self.step=3;self.render_step()
+                self.capture=RangeCapture(self.role,setup['homings'],setup.get('reference_positions'));self.pending=False;self.step=3;self.render_step()
             if self.step==9 and setup.get('state')=='saved':
                 try:
                     save_json(self.run_dir/'calibration.json',self.capture.calibration().values)

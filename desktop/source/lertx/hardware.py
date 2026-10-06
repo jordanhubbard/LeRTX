@@ -176,16 +176,19 @@ class HardwareSession:
         self._state_is('calibrating')
         for i in IDS:
             self._check_cancel();self.bus.write_calibration(i,0,0,4095)
-        self._read()
-        homings={i:m['position']-2047 for i,m in self.latest['motors'].items()}
-        if any(not -2047<=v<=2047 for v in homings.values()):
-            raise ValueError('Encoder is at its wrap boundary; slightly reposition the reference and retry')
+        # Unoffset feedback can exceed one turn. Keep it private to calibration;
+        # normal telemetry and all commands still require 0..4095.
+        started=self.clock();unoffset=self.bus.sample(unoffset=True)
+        if set(unoffset)!=set(IDS) or self.clock()-started>self.STALE:
+            raise ConnectionError('Incomplete or stale unoffset calibration sample')
+        homings={i:max(-2047,min(2047,m['position']-2047)) for i,m in unoffset.items()}
+        references={i:m['position']-homings[i] for i,m in unoffset.items()}
         for i in IDS:
             self._check_cancel();self.bus.write_calibration(i,homings[i],0,4095)
         self._read()
-        if any(abs(m['position']-2047)>24 for m in self.latest['motors'].values()):
+        if any(abs(m['position']-references[i])>24 for i,m in self.latest['motors'].items()):
             raise ValueError('Arm moved during homing; hold the reference pose still and retry')
-        self.bus.inspect();self.setup={'state':'recording','homings':homings,'backup':str(backup_path)}
+        self.bus.inspect();self.setup={'state':'recording','homings':homings,'reference_positions':references,'backup':str(backup_path)}
         self._state_is('calibrating')
 
     def _setup_save(self,calibration):

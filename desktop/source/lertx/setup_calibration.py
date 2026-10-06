@@ -124,9 +124,10 @@ class JointSweep:
 
 
 class RangeCapture:
-    def __init__(self,role,homings):
+    def __init__(self,role,homings,reference_positions=None):
         self.role=role;self.homings=homings
-        self.ranges={n:[2047,2047] for n in JOINT_NAMES}
+        self.reference_positions={n:(reference_positions or {}).get(i,2047) for i,n in enumerate(JOINT_NAMES,1)}
+        self.ranges={n:[self.reference_positions[n]]*2 for n in JOINT_NAMES}
         self.directions={n:1 for n in JOINT_NAMES};self.confirmed=set();self.last_sequence=-1
         self.reference=reference_pose(role)
     def observe(self,sample,name):
@@ -144,7 +145,7 @@ class RangeCapture:
         result={};clipped=[]
         for i,n in enumerate(JOINT_NAMES,1):
             raw=sample['motors'][i]['position']
-            value=self.reference[n]+self.directions[n]*(raw-2047)*2*math.pi/4095
+            value=self.reference[n]+self.directions[n]*(raw-self.reference_positions[n])*2*math.pi/4095
             low,high=joint_limits(self.role)[n]
             result[n]=max(low,min(high,value))
             if abs(result[n]-value)>.03:clipped.append(n)
@@ -162,10 +163,11 @@ class RangeCapture:
             low,high=self.ranges[n]  # Only the observed wrist interval is qualified for mapping.
             vlow,vhigh=joint_limits(self.role)[n];direction=self.directions[n]
             # Intersect the measured encoder interval with representable CAD travel.
-            candidates=[2047+(v-self.reference[n])*4095/(2*math.pi*direction) for v in (vlow,vhigh)]
+            center=self.reference_positions[n]
+            candidates=[center+(v-self.reference[n])*4095/(2*math.pi*direction) for v in (vlow,vhigh)]
             low=max(low,math.ceil(min(candidates)));high=min(high,math.floor(max(candidates)))
             if high-low<32:raise ValueError(n+': reference pose does not match the virtual joint; repeat calibration')
-            radians=tuple(self.reference[n]+direction*(raw-2047)*2*math.pi/4095 for raw in (low,high))
+            radians=tuple(self.reference[n]+direction*(raw-center)*2*math.pi/4095 for raw in (low,high))
             observed=tuple(c.decode(n,raw) for raw in (low,high))
             joints.append(JointBinding(n,i,'percent' if n=='gripper' else 'degrees',observed,radians))
         return RobotBinding(self.role,device_id,c.identity,tuple(joints))

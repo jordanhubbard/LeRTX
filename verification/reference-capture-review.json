@@ -1,0 +1,90 @@
+{
+  "native_emulated": [
+    {
+      "complete": true,
+      "physical_hardware_tested": false,
+      "changed_joint_frames": [
+        "shoulder_pan",
+        "shoulder_lift",
+        "elbow_flex",
+        "wrist_flex",
+        "wrist_roll",
+        "gripper"
+      ],
+      "role": "leader",
+      "extended_reference": true,
+      "named_joint_slider": true,
+      "paused_kinematics": true,
+      "measured_radians": 0.3653404414653778,
+      "custom_color_materials": 1,
+      "role_identity": true,
+      "color_persistence": true,
+      "mirrored_joints": 6,
+      "automatic_joint_advancement": true,
+      "calibration_saved": true,
+      "torque_never_enabled": true,
+      "register_backup": true,
+      "provisional_preview_label": true,
+      "seconds": 35.25
+    },
+    {
+      "complete": true,
+      "physical_hardware_tested": false,
+      "changed_joint_frames": [
+        "shoulder_pan",
+        "shoulder_lift",
+        "elbow_flex",
+        "wrist_flex",
+        "wrist_roll",
+        "gripper"
+      ],
+      "role": "follower",
+      "extended_reference": true,
+      "named_joint_slider": true,
+      "paused_kinematics": true,
+      "measured_radians": 0.3653404414653778,
+      "custom_color_materials": 1,
+      "role_identity": true,
+      "color_persistence": true,
+      "mirrored_joints": 6,
+      "automatic_joint_advancement": true,
+      "calibration_saved": true,
+      "torque_never_enabled": true,
+      "register_backup": true,
+      "provisional_preview_label": true,
+      "seconds": 35.75
+    }
+  ],
+  "defect": "Unoffset wrist feedback 4530 rejected before live calibration started",
+  "physical_sweeps_qualified": false,
+  "physical_reference_capture_and_restore": {
+    "leader": {
+      "reference_capture": "passed",
+      "reference_positions": {
+        "1": 2047,
+        "2": 2047,
+        "3": 2047,
+        "4": 2047,
+        "5": 2047,
+        "6": 2047
+      },
+      "torque_off": true,
+      "original_registers_restored": true
+    },
+    "follower": {
+      "reference_capture": "passed",
+      "reference_positions": {
+        "1": 2047,
+        "2": 2047,
+        "3": 2047,
+        "4": 2047,
+        "5": 2483,
+        "6": 2047
+      },
+      "torque_off": true,
+      "original_registers_restored": true
+    }
+  },
+  "complete": true,
+  "powered_motion_tested": false
+}

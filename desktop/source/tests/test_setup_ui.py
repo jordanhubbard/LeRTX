@@ -52,7 +52,7 @@ class SetupUITests(unittest.TestCase):
         w.support.setChecked(True);w.advance();self.assertEqual(w.step,2)
         self.assertIn('reference guide',w.preview_window.windowTitle())
         self.assertIn('stationary',w.preview_window.mode_label.text())
-        self.wait(lambda:bool(self.frames));self.assertIsNone(self.frames[-1][2])
+        self.wait(lambda:w.guide_ready);self.assertIsNone(self.frames[-1][2])
         w.reference_check.setChecked(True);w.advance()
         self.wait(lambda:w.step==3)
     def test_release_explains_support_then_verifies_already_off_motors(self):
@@ -66,6 +66,16 @@ class SetupUITests(unittest.TestCase):
         self.assertIn('Releasing torque',w.release_result.text())
         self.wait(lambda:'Released and verified' in w.release_result.text())
         self.assertTrue(all(r[40]==0 for r in self.serial.registers.values()))
+    def test_reference_guide_tracks_selected_role_before_connection(self):
+        w=self.wizard
+        self.wait(lambda:w.guide_ready)
+        self.assertEqual(self.frames[-1][0],'follower')
+        self.assertIsNone(w.session)
+        w.role_box.setCurrentText('leader')
+        self.wait(lambda:w.guide_ready)
+        self.assertEqual(self.frames[-1][0],'leader')
+        self.assertIn('reference guide',w.preview_window.windowTitle())
+        self.assertIsNone(self.frames[-1][2])
     def test_role_identity_remains_visible_through_joint_steps(self):
         w=self.wizard;w.role_box.setCurrentText('leader')
         self.assertEqual(w.role,'leader')

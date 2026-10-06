@@ -69,6 +69,16 @@ The stationary reference step must name the RTX window Reference guide, not Live
 and prominently state that it does not follow the arm until reference capture.
 Waiting, paused, stale and live states must remain distinguishable. The hardware
 panel explains missing calibration/binding or telemetry beside its mirror control.
+Show the selected role's reference guide throughout preparation, independently
+of USB connection and reference-capture success. Keep capture faults visible
+beside navigation, outside the scrolling instructions.
+During explicit torque-off reference capture, clearing an existing offset may
+expose an unoffset encoder outside one turn. Accept only the bounded unoffset
+range reachable from a valid 0..4095 reading and signed 11-bit homing offset;
+do not publish it as normal telemetry. Choose a representable homing offset
+nearest the half-turn target and retain each actual reference encoder for
+preview and binding. Verify recentered normal readings before proceeding.
+Never modulo-wrap normal measurements or relax motor command bounds.
 
 Virtual controls remain simulated by default. Measured two-point bindings identify
 device, calibration and semantic joints; provide per-joint capture and JSON
