@@ -1,6 +1,6 @@
 # Connecting the SO-101 arms
 
-The setup header and separate RTX window always name the selected arm: **Leader**
+The setup header and embedded RTX view always name the selected arm: **Leader**
 is the hand-operated controller; **Follower** is the robot hand. Their color key
 matches the rendered printed parts. Before connecting, choose a role and use
 **Match printed-part color…** to match your own prints. Colors are saved for future
@@ -20,14 +20,14 @@ use an emulated arm; physical qualification on the user's arms is still pending.
 
 ## First connection
 
-For an assembled arm with motor IDs already assigned, choose **Set up real arms**
-in the toolbar. The wizard walks through connection, support/torque release, a
-reference pose, six individual joints, review and saving. A separate RTX window
-displays the selected arm's stationary **Reference guide** even before connection,
-then switches to **LIVE** after
-reference capture and mirrors all six measured joints. Resize or move it beside
-the wizard; use its turn, zoom and framing buttons
-to inspect the motion. **Open live RTX 3D window** brings it back if closed.
+For an assembled arm with motor IDs already assigned, open **Devices**, assign
+its role, then choose **Calibrate Leader** or **Calibrate Follower** beside its
+USB port. The wizard preselects that device and walks through connection,
+support/torque release, a reference pose, six joints, review and saving.
+The RTX view and reference diagram stay together in one window. RTX displays the
+stationary **Reference guide**, then switches to **LIVE** after reference capture
+and mirrors all six measured joints. Use its turn, zoom and framing buttons to
+inspect the motion while keeping instructions and progress visible.
 The always-visible reference-only numbered diagram locates
 each joint: base turn, upper-arm hinge, middle hinge, wrist tilt, wrist twist and
 claw (or the leader's trigger). The role color identifies the selected diagram joint.
@@ -35,7 +35,8 @@ claw (or the leader's trigger). The role color identifies the selected diagram j
 The reference pose is initially stationary: copy it with the physical arm, then
 confirm and capture it. Live 3D mirroring begins after that capture. For each
 selected joint, move gently to one comfortable end and pause, move to the opposite
-end and pause, then return to the first end and pause. Holds take about a second.
+end and pause, then return to the first end and pause. Returning farther toward that end also
+counts, so an early pause does not trap you at a narrow encoder target. Holds take about a second.
 The wizard advances automatically after a repeatable sweep and a current 3D frame.
 Support the arm naturally: other joints may move, but only the selected joint
 counts toward the step. Small encoder jitter and incidental movement do not count
@@ -44,7 +45,7 @@ end without forcing it. Use **Reverse** if the preview direction is wrong.
 The app records the endpoints you demonstrate; it does not detect hard stops.
 
 Review all six joints, confirm travel and 3D directions once, and save.
-**Finish and open live hardware controls** keeps the 3D window,
+**Finish and open live hardware controls** keeps the embedded 3D view,
 the connection and enables measured live viewing. Motors stay off throughout.
 Cancel restores the original calibration when the bus remains available.
 
@@ -128,7 +129,7 @@ right-drag pans; the wheel zooms. There is no free-space gripper IK gizmo yet.
 The joint diagram stays above the scrolling instructions throughout setup. Back
 buttons name the parent panel. Leaving setup cancels it with the existing register
 recovery; leaving hardware controls closes its session before reopening Device
-Manager. Back from the RTX window returns focus without interrupting calibration.
+Manager. Leaving setup also returns to Device Manager after register recovery.
 
 You can open setup while this arm's read-only hardware panel is open. Both use the
 same device connection. During setup, the hardware panel shows shared telemetry

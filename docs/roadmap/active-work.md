@@ -77,6 +77,20 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Current operator follow-up: base-turn calibration stalls after an early interior
+pause; separate RTX and guide windows obscure each other. Accept a held return
+at or beyond the first endpoint in the return direction, retaining selected-joint,
+span, freshness and torque checks. Embed RTX beside the always-visible reference
+and progress. Device Manager owns role/port-specific Calibrate entry points;
+remove the separate scene setup action. Scope is desktop setup/navigation.
+- [x] Verify interior-pause/overshoot sweeps in both directions and integrated
+  wizard/device navigation, then native six-joint automatic advancement.
+  The 82-test scope passed; final embedded-panel/navigation changes pass 50
+  focused tests. Native leader/follower runs advance and save all six joints
+  with torque off, including the observed 2774 → 804 → 3350 base sweep.
+  See `verification/integrated-calibration-review.json`; physical retest pending.
+
+
 Current live debugging direction: the operator reports frozen physical previews,
 unclear base sweep progress and a reference diagram that does not match the arm.
 Add an application-owned local diagnostic interface for co-session inspection:

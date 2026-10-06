@@ -39,6 +39,7 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
             self.assign_buttons = {}
             self.clear_buttons = {}
             self.hardware_buttons = {}
+            self.calibrate_buttons = {}
             for role in ROLES:
                 row = QHBoxLayout()
                 label = QLabel(role + ": unassigned")
@@ -59,6 +60,9 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
                 hardware.clicked.connect(lambda checked=False,role=role:self.open_hardware(role))
                 self.hardware_buttons[role]=hardware;row.addWidget(hardware)
                 layout.addLayout(row)
+                calibrate=QPushButton("Calibrate "+role.title())
+                calibrate.clicked.connect(lambda checked=False,role=role:self.calibrate(role))
+                self.calibrate_buttons[role]=calibrate;layout.addWidget(calibrate)
             self.scan_button = QPushButton("Scan now")
             self.scan_button.clicked.connect(self.scan)
             layout.addWidget(self.scan_button)
@@ -100,6 +104,13 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
                 if parent.open_hardware(candidate,role) is not False:self.accept()
                 else:self.status.setText(parent.statusBar().currentMessage())
 
+        def calibrate(self,role):
+            if not self.roles or not self.last_scan_ok:return
+            state,candidate=self.roles.resolve(role,self.candidates)
+            if state=='assigned' and parent and hasattr(parent,'open_setup'):
+                if parent.open_setup(role=role,candidate=candidate) is not False:self.accept()
+                else:self.status.setText(parent.statusBar().currentMessage())
+
         def active_sessions(self):
             registry=getattr(parent,'devices',None)
             return [c.session for c in registry.active_controllers()] if registry else []
@@ -137,6 +148,8 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
                 self.clear_buttons[role].setEnabled(self.roles is not None and not sessions)
                 assigned=self.roles.resolve(role,self.candidates)[0]=='assigned' if self.roles else False
                 self.hardware_buttons[role].setEnabled(assigned and self.last_scan_ok)
+                self.calibrate_buttons[role].setEnabled(assigned and self.last_scan_ok)
+                self.calibrate_buttons[role].setText('Calibrate '+role.title()+(' · '+candidate.port if candidate else ''))
                 self.hardware_buttons[role].setText('Open '+role.title()+' controls'+(' · '+candidate.port if candidate else ''))
                 for i in range(self.tree.topLevelItemCount()):
                     item=self.tree.topLevelItem(i)

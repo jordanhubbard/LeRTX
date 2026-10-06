@@ -55,12 +55,29 @@ class SetupUITests(unittest.TestCase):
             w.step=step;w.render_step();self.app.processEvents()
             w.controls_scroll.verticalScrollBar().setValue(w.controls_scroll.verticalScrollBar().maximum())
             self.assertTrue(w.joint_map.isVisible())
-            self.assertIs(w.joint_map.parentWidget(),w)
-            self.assertIs(w.travel.parentWidget(),w)
-            self.assertIs(w.movement.parentWidget(),w)
+            self.assertIs(w.joint_map.window(),w)
+            self.assertIs(w.travel.window(),w)
+            self.assertIs(w.movement.window(),w)
         w.preview_window.back_button.click()
         self.assertTrue(w.isVisible());self.assertFalse(w.closing)
         self.assertEqual(w.step,10)
+
+    def test_device_entry_selects_exact_role_and_attachment_and_rejects_missing(self):
+        leader=Candidate('COM6',1,2,'leader');follower=Candidate('COM5',1,2,'follower')
+        candidates=[follower,leader]
+        w=build_setup_wizard(self.owner,scanner=ConnectionProbe(lambda **k:{'state':'success','candidates':list(candidates)}),
+            initial_role='leader',initial_candidate=leader,return_to_devices=True)
+        try:
+            w.show();self.wait(lambda:bool(w.candidates))
+            self.assertEqual(w.role,'leader')
+            self.assertEqual(w.candidates[w.ports.currentIndex()],leader)
+            self.assertIn('Device Manager',w.cancel_button.text())
+            self.assertIs(w.native_view.window(),w)
+            candidates.remove(leader);w.scan();self.wait(lambda:w.ticket is None)
+            self.assertEqual(w.ports.currentIndex(),-1)
+            self.assertFalse(w.next_button.isEnabled())
+            w.advance();self.assertIsNone(w.session)
+        finally:w.shutdown();w.deleteLater()
 
     def begin(self):
         w=self.wizard;w.next_button.click()
@@ -254,7 +271,8 @@ class SetupUITests(unittest.TestCase):
         self.assertEqual(w.step,3)
         self.assertIn('rotating platform',w.instructions.text())
         self.assertTrue(w.native_view.isVisible())
-        self.assertTrue(w.preview_window.isWindow())
+        self.assertFalse(w.preview_window.isWindow())
+        self.assertIs(w.native_view.window(),w)
         self.assertTrue(w.joint_map.isVisible())
 
     def test_preview_window_receives_each_native_frame_and_reopens(self):
@@ -267,7 +285,7 @@ class SetupUITests(unittest.TestCase):
         self.owner.native_frame_ready.emit(second)
         self.assertEqual(w.native_view.image,second)
         w.preview_window.close();self.assertFalse(w.preview_window.isVisible())
-        w.show_preview_button.click();self.assertTrue(w.preview_window.isVisible())
+        w.open_preview();self.assertTrue(w.preview_window.isVisible())
 
     def test_completed_sweep_waits_for_visible_current_rtx_preview(self):
         self.begin();w=self.wizard

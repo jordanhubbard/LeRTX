@@ -25,6 +25,8 @@ class DevicesUiTests(unittest.TestCase):
         parent.profile['general'].update(leader_color='#000000',follower_color='#ffffff')
         parent._hardware_windows={};opened=[]
         parent.open_hardware=lambda candidate,role:opened.append((candidate,role)) or True
+        calibrated=[]
+        parent.open_setup=lambda **kw:calibrated.append(kw) or True
         dialog=build_devices_dialog(parent.profile,ConnectionProbe(lambda **kw:{'state':'success','candidates':candidates}),self.path,parent)
         self.dialogs.append(dialog);self.wait(lambda:dialog.last_scan_ok)
         for row,role,color,port in ((0,'leader','#000000','COM5'),(1,'follower','#ffffff','COM6')):
@@ -34,6 +36,10 @@ class DevicesUiTests(unittest.TestCase):
             button=dialog.hardware_buttons[role]
             self.assertIn(role.title(),button.text());self.assertIn(port,button.text())
             self.assertEqual(button.icon().pixmap(24,24).toImage(),item.icon(5).pixmap(24,24).toImage())
+        dialog.calibrate_buttons['leader'].click()
+        self.assertEqual(calibrated,[dict(candidate=leader,role='leader')])
+        self.assertIn('COM5',dialog.calibrate_buttons['leader'].text())
+        self.assertFalse(dialog.calibrate_buttons['leader'].icon().isNull())
         dialog.open_hardware('follower');self.assertEqual(opened,[(follower,'follower')])
         # Role mutations are guarded in the handlers too, not only disabled buttons.
         session=SimpleNamespace(candidate=leader,role='leader',_thread=SimpleNamespace(is_alive=lambda:True),snapshot=lambda:{'state':'read-only'})

@@ -73,9 +73,10 @@ class JointSweep:
     def feedback(self, sample):
         value=sample['motors'][self.motor]['position']
         if self.phase == 2:
-            distance=abs(value-self.first)
+            direction=1 if self.first>self.second else -1
+            distance=max(0, direction*(self.first-value))
             return (f'Return toward the FIRST end, then hold still. Now {value} ticks; '
-                    f'target {round(self.first)} ticks; {round(distance)} ticks remaining. '
+                    f'reach {round(self.first)} ticks or farther in that direction; {round(distance)} ticks remaining. '
                     f'Hold: {round(self.hold_fraction*100)}%.')
         return self.prompt+f' Encoder: {value} ticks. Hold: {round(self.hold_fraction*100)}%.'
 
@@ -108,7 +109,11 @@ class JointSweep:
         elif self.phase == 1:
             eligible = abs(value-self.first) >= self.minimum_span
         else:
-            eligible = abs(value-self.first) <= max(24, min(48, abs(self.second-self.first)*.03))
+            # A first pause may be inside the real travel limit. Returning farther
+            # toward that end is valid evidence too, not a missed narrow target.
+            direction = 1 if self.first > self.second else -1
+            tolerance = max(24, min(48, abs(self.second-self.first)*.03))
+            eligible = direction*(value-self.first) >= -tolerance
         if not eligible:
             self.reset_hold()
             return

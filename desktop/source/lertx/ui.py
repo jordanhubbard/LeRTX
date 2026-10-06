@@ -623,9 +623,6 @@ def build_main_window(
             devices_action = QAction("Devices", self)
             devices_action.triggered.connect(self._on_devices)
             toolbar.addAction(devices_action)
-            setup_action = QAction('Set up real arms', self)
-            setup_action.triggered.connect(self.open_setup)
-            toolbar.addAction(setup_action)
 
             toolbar.addSeparator()
 
@@ -1081,13 +1078,17 @@ def build_main_window(
             panel.show()
             return True
 
-        def open_setup(self):
+        def open_setup(self, *, role=None, candidate=None):
             previous=getattr(self,'_setup_window',None)
             if previous and previous.isVisible():
-                previous.raise_();previous.activateWindow();return
+                if role and previous.role!=role:
+                    self.statusBar().showMessage('Finish or cancel the active '+previous.role+' calibration first.');return False
+                previous.raise_();previous.activateWindow();return True
             from .setup_ui import build_setup_wizard
-            self._setup_window=build_setup_wizard(self)
+            self._setup_window=build_setup_wizard(self,initial_role=role,initial_candidate=candidate,return_to_devices=True)
+            self._setup_window.finished.connect(lambda result: QTimer.singleShot(0,self._on_devices) if not result and not self._closing else None)
             self._setup_window.show()
+            return True
 
         def _display_factor(self):
             unit = self.profile["general"]["display_units"]

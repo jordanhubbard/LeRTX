@@ -180,29 +180,29 @@ Keep joint manipulation instructions visible above an arm selector, semantic joi
 selector and angle slider. Selecting a joint by name must pick its actual USD link
 and work while paused. Preserve requests made while the native owner is busy.
 Place advanced target/readback rows in an expandable area and allow scrolling.
-Expose “Set up real arms” in the toolbar and robot controls. The modeless setup
+Expose per-role Calibrate actions in Device Manager. The modeless setup
 wizard keeps the native viewport visible throughout reference alignment and each
 joint's measured range/direction check. Label provisional calibration poses distinctly
 from verified physical telemetry. Never enable motor torque in the wizard.
 
-The wizard opens a dedicated, resizable live 3D window showing the solid arm from
-the native RTX renderer. Subscribe this window to native frames, retain the
-single native owner, and offer camera orbit, zoom and arm framing. An optional,
-explicitly static numbered joint map is location help, never the live preview.
+The wizard embeds a live 3D view beside the persistent reference diagram and
+progress in one resizable window. Subscribe this view to native frames, retain
+the single native owner, and offer camera orbit, zoom and arm framing. The always
+visible static numbered joint map is location help, never the live preview.
 Introduce joints by physical
 location and motion (base turn, upper-arm hinge, middle hinge, wrist tilt, wrist
 twist, claw/trigger), then show the technical name and motor ID. Highlight the
 current joint in the diagram and native scene. Record only the selected motor for
 step progress while the 3D arm mirrors all six joints. Incidental motion of other
 joints must neither warn, reset capture, nor advance the step. Prompt a comfortable
-endpoint hold, an opposite endpoint hold and a repeat visit to the first endpoint.
+endpoint hold, an opposite endpoint hold and a repeat visit at or beyond the first endpoint in the return direction.
 Require a meaningful per-joint span, multiple distinct fresh samples, stable holds
 with encoder-noise tolerance, and a current displayed native frame before automatic
 advancement. Duplicate samples, stale intervals, isolated spikes and small twitches
 must not qualify. Keep direction reversal available. Reference capture and final
 travel/direction review and hardware saving remain explicit. Endpoint pauses are
 operator-chosen positions, not proof that software detected mechanical hard stops.
-Transfer the live 3D window to the hardware panel on completion; dispose it when
+Transfer the embedded live 3D view to the hardware panel on completion; dispose it when
 the hardware session closes. Show recorded travel, review and explicit completion.
 Explain that the initial reference is a stationary pose to copy; raw movement
 readings remain available before calibration establishes the reference.

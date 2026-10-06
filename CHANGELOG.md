@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Desktop: accept calibration returns beyond an early endpoint pause; combine the
+  reference, progress and RTX view in one wizard. Start calibration from each
+  arm’s labelled Calibrate button in Device Manager.
+
 - Desktop: fix frozen highlighted robot arms by refreshing descendant transforms;
   keep sweep progress visible and show the selected arm's CAD reference diagram.
 - Desktop: add opt-in live co-session diagnostics with telemetry/setup state,

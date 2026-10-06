@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:eacf5aa6b3adfcfe092c28d0a5fb03c1c378db91a8fc0c5c1237a643fbeb6f3b -->
+<!-- literate-ai:authority-reviewed sha256:c157cdcddbadb6004c9c6e715a7856ed92ad3c9a2aca831bb368aa734a22e27d -->
 
 [Project guide](../README.md) → design traceability
 
@@ -19,7 +19,7 @@ panning on every platform. The Qt input regression and native context-window
 verification cover that interaction through the existing simulated command path;
 physical controls retain their separate hardware workflow.
 
-The desktop application's guided-setup contract owns the dedicated live RTX window,
+The desktop application's guided-setup contract owns the integrated reference and live RTX views,
 persistent model-derived joint-location diagram, selected-motor sweep detector, automatic joint
 advancement and bounded preview queue. The hardware guide describes the same
 reference/sweep/final-review workflow. Stable endpoints and a return visit are

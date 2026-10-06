@@ -93,13 +93,13 @@ def attach(window,report,role='follower',extended_reference=False):
             elif phase=='range' and 3<=w.step<=8:
                 i=w.step-2;n=list(w.capture.ranges)[i-1]
                 if w.sweep.start is None:return
-                if w.sweep.phase==0:serial.registers[i][56:58]=(1600).to_bytes(2,'little')
+                if w.sweep.phase==0:serial.registers[i][56:58]=(2774 if i==1 else 1600).to_bytes(2,'little')
                 elif w.sweep.phase==1:
                     actual=panel.state.get('positions',{}).get(role,{}).get(n)
                     expected=w.capture.preview(w.session.snapshot()['sample'])[0][n]
                     if actual is None or abs(actual-expected)>.01 or w.preview_step!=w.step:return
                     if n not in state['low_frames']:state['low_frames'][n]=bytes(w.native_view.image.constBits())
-                    serial.registers[i][56:58]=(2500).to_bytes(2,'little')
+                    serial.registers[i][56:58]=(804 if i==1 else 2500).to_bytes(2,'little')
                 elif w.sweep.phase==2 and n not in result['changed_joint_frames']:
                     # Wait for the native renderer to display the measured pose too.
                     actual=panel.state.get('positions',{}).get(role,{}).get(n)
@@ -108,7 +108,8 @@ def attach(window,report,role='follower',extended_reference=False):
                     if w.preview_step!=w.step:return
                     assert w.native_view.image is not None
                     assert w.joint_map.active==n
-                    assert w.preview_window.isVisible() and w.preview_window.isWindow()
+                    assert w.preview_window.isVisible() and not w.preview_window.isWindow()
+                    assert w.native_view.window() is w and w.joint_map.window() is w
                     import numpy as np
                     before=np.frombuffer(state['low_frames'][n],dtype=np.uint8).astype(float)
                     after=np.frombuffer(bytes(w.native_view.image.constBits()),dtype=np.uint8).astype(float)
@@ -126,7 +127,7 @@ def attach(window,report,role='follower',extended_reference=False):
                         assert w.controls_scroll.widget().width()<=w.controls_scroll.viewport().width()
                         assert w.next_button.isVisible() and w.native_view.height()>=210
                         w.resize(old_size)
-                    serial.registers[i][56:58]=(1600).to_bytes(2,'little')
+                    serial.registers[i][56:58]=(3350 if i==1 else 1600).to_bytes(2,'little')
                     result['mirrored_joints']=i
             elif phase=='range' and w.step==9:
                 assert len(w.capture.confirmed)==6 and len(result['changed_joint_frames'])==6
