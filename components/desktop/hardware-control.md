@@ -69,6 +69,17 @@ The stationary reference step must name the RTX window Reference guide, not Live
 and prominently state that it does not follow the arm until reference capture.
 Waiting, paused, stale and live states must remain distinguishable. The hardware
 panel explains missing calibration/binding or telemetry beside its mirror control.
+Device Manager shows the shared outlined role color in device rows and explicit
+role/port hardware buttons, with normal-contrast status text. Role assignment
+edits are unavailable while physical sessions remain open. A cached hardware
+window may be reused only for the same role and USB attachment; otherwise ask
+the operator to close the conflicting session, without changing torque or
+silently opening the old device. Report the actual active session state.
+Role badges contain distinct controller (leader) and gripper (follower) symbols.
+Choose black or white symbol ink for contrast against each user-selected badge
+fill; retain both outer contrast rings and normal-theme adjacent text. Reuse
+these badges in labels, buttons, scene rows and viewport legends. Equal colors
+must still yield distinguishable roles; keep textual accessible names.
 Show the selected role's reference guide throughout preparation, independently
 of USB connection and reference-capture success. Keep capture faults visible
 beside navigation, outside the scrolling instructions.

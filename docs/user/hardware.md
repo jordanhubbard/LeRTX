@@ -5,9 +5,14 @@ is the hand-operated controller; **Follower** is the robot hand. Their color key
 matches the rendered printed parts. Before connecting, choose a role and use
 **Match printed-part color…** to match your own prints. Colors are saved for future
 sessions; labels still distinguish the arms when their colors are the same.
-Small outlined color dots also identify roles in selectors, buttons, simulation
-controls, device assignments and status messages. Light and dark rings keep the
-dots visible even for black, white or background-colored prints.
+Outlined badges identify roles in selectors, buttons, simulation controls, device
+assignments and status messages: a controller for Leader and a gripper for Follower.
+The symbol uses contrasting black or white ink; surrounding text keeps the theme
+color. Light and dark rings keep badges visible against either theme, and the
+different shapes distinguish roles even with identical printed-part colors.
+Device Manager names each role and USB port on its control button. Close existing
+hardware controls before changing assignments; an old window cannot be reused
+for a different role or device.
 
 LeRTX now implements manual USB reads and writes for a configured SO-101 arm with
 six Feetech STS3215 motors, IDs 1–6, position mode and a 1 Mbps bus. Software tests
