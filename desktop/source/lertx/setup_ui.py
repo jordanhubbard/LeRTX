@@ -8,10 +8,10 @@ from .hardware import HardwareSession
 from .robot import JOINT_NAMES,ROOTS
 from .setup_calibration import RangeCapture,JointSweep,reference_pose,save_json
 from .hardware_calibration import save_binding
-from .setup_visuals import JOINT_GUIDES,JointMap,SetupPreviewWindow
+from .setup_visuals import JOINT_GUIDES,JointMap,SetupPreviewPanel
 from .arm_colors import role_color,ROLE_NAMES
 
-def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
+def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, initial_role=None, initial_candidate=None, return_to_devices=False):
     from PySide6.QtCore import Qt,QTimer
     from PySide6.QtWidgets import QDialog,QVBoxLayout,QHBoxLayout,QLabel,QPushButton,QComboBox,QCheckBox,QProgressBar,QMessageBox,QWidget,QScrollArea,QColorDialog
     from .role_ui import widgets
@@ -20,7 +20,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
     class SetupWizard(QDialog):
         def __init__(self):
             super().__init__(owner)
-            self.setWindowTitle('SO-101 · guided arm setup');self.resize(560,760);self.setModal(False)
+            self.setWindowTitle('SO-101 · guided arm setup');self.resize(1200,800);self.setModal(False)
             self.session=None;self.step=0;self.capture=None;self.candidate=None;self.role='follower'
             self.closing=False;self.shutdown_complete=False;self.transferred=False;self.pending=False
             self.guide_ready=False;self.preview_step=None;self.guide_shown=False;self.sequence=-1;self.preview_pending=False;self.preview_generation=0;self.observation=None
@@ -29,13 +29,18 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.color_pending=False
             self.release_sequence=None
             self.back_target=None;self.back_stop=None
-            self.preview_window=SetupPreviewWindow(owner)
+            self.preview_window=SetupPreviewPanel(owner)
+            self.preview_window.setParent(self,Qt.WindowType.Widget)
+            self.preview_window.back_button.hide()
             self.preview_window.navigation_parent=self
             self.native_view=self.preview_window.view;self.preview_title=self.preview_window.heading
             self.preview_status=self.preview_window.status
             self.probe=scanner or ConnectionProbe(scan_result);self.ticket=None;self.candidates=[]
             self.run_dir=Path(owner.config_path).parent/'calibration'/uuid4().hex
-            outer=QVBoxLayout(self)
+            columns=QHBoxLayout(self)
+            guide=QWidget(self);columns.addWidget(guide,2)
+            columns.addWidget(self.preview_window,3)
+            outer=QVBoxLayout(guide)
             title=QLabel('Meet your arm');title.setStyleSheet('font-size: 24px; font-weight: bold;');outer.addWidget(title)
             self.stage_label=QLabel('Connect  →  Prepare  →  Learn six joints  →  Save  →  Done');outer.addWidget(self.stage_label)
             self.identity=QLabel();self.identity.setWordWrap(True);outer.addWidget(self.identity)
@@ -44,7 +49,6 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             scroll=QScrollArea();scroll.setWidgetResizable(True);scroll.setMinimumWidth(345)
             scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff);self.controls_scroll=scroll
             controls=QWidget();layout=QVBoxLayout(controls);scroll.setWidget(controls);body.addWidget(scroll,2)
-            self.show_preview_button=QPushButton('Open live RTX 3D window');self.show_preview_button.clicked.connect(self.open_preview);layout.addWidget(self.show_preview_button)
             self.heading=QLabel();self.heading.setWordWrap(True);self.heading.setStyleSheet('font-size: 20px; font-weight: bold;');layout.addWidget(self.heading)
             self.progress=QProgressBar();self.progress.setRange(0,10);layout.addWidget(self.progress)
             self.instructions=QLabel();self.instructions.setWordWrap(True);layout.addWidget(self.instructions)
@@ -74,10 +78,11 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.next_button=QPushButton();self.next_button.setMinimumHeight(38);self.next_button.clicked.connect(self.advance);footer.addWidget(self.next_button)
             self.reset_button=QPushButton('Restart after connection fault');self.reset_button.clicked.connect(self.restart);layout.addWidget(self.reset_button);self.reset_button.hide()
             self.timer=QTimer(self);self.timer.timeout.connect(self.poll);self.timer.start(50)
+            if initial_role:self.role_box.setCurrentText(initial_role)
             self.render_step();self.scan()
 
         def render_step(self):
-            self.cancel_button.setText("Back to scene" if self.step==10 else "Back to scene · cancel setup")
+            self.cancel_button.setText(("Back to Device Manager" if return_to_devices else "Back to scene")+("" if self.step==10 else " · cancel setup"))
             self.status.clear()
             self.controls_scroll.verticalScrollBar().setValue(0)
             self.preview_step=None;self.preview_generation+=1;self.sequence=-1
@@ -114,7 +119,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             if joint:
                 n=JOINT_NAMES[self.step-3]
                 self.direction.blockSignals(True);self.direction.setChecked(self.capture.directions[n]<0);self.direction.blockSignals(False)
-                text=f'FIND IT · Motor {self.step-2}\n'+JOINT_GUIDES[n][2]+'\n\nMOVE, PAUSE, AND RETURN\nMove this joint to one comfortable end and pause briefly. Then move to the other end and pause. Finally return to the first end and pause. Never force the mechanism.\n\nOther joints can move naturally as you support the arm. Only this joint counts toward this step. Watch the solid arm in the RTX window; Reverse changes its direction if needed. The wizard continues automatically after a repeatable sweep.'
+                text=f'FIND IT · Motor {self.step-2}\n'+JOINT_GUIDES[n][2]+'\n\nMOVE, PAUSE, AND RETURN\nMove this joint to one comfortable end and pause briefly. Then move to the other end and pause. Finally return to the first end and pause. Never force the mechanism.\n\nOther joints can move naturally as you support the arm. Only this joint counts toward this step. Watch the solid arm in the RTX view; Reverse changes its direction if needed. The wizard continues automatically after a repeatable sweep.'
                 self.next_button.setText('Waiting for the selected joint…');self.next_button.setEnabled(False)
             elif self.step==0:
                 text='For an assembled SO-101 with motor IDs 1–6 already assigned at 1 Mbps: connect one arm’s USB cable and motor power. Choose whether this is the follower (robot hand) or leader (hand-operated controller). If the port is unclear, unplug its USB cable, refresh, then reconnect and refresh. Connection reads registers only; it never enables motors.'
@@ -123,7 +128,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                 text='The arm must be assembled with STS3215 motor IDs 1–6 at 1 Mbps. Support it before releasing torque. If a motor is missing, check power/cables and its ID; newly unconfigured motors must be assigned individually before calibration.'
                 self.next_button.setText('Show the reference pose')
             elif self.step==2:
-                text='Match the solid arm in the RTX window:\n1. Center the rotating base (1).\n2. Put the first long link upright using the low hinge (2).\n3. Put the next link approximately horizontal using the middle hinge (3).\n4. Straighten the hand (4), center its twist (5), and half-open the claw / trigger (6).\n\nThis initial reference is a stationary pose to copy. Live 3D mirroring starts after you capture it. Hold still when you continue; this saves a backup and sets the homing offsets.'
+                text='Match the solid arm in the RTX view:\n1. Center the rotating base (1).\n2. Put the first long link upright using the low hinge (2).\n3. Put the next link approximately horizontal using the middle hinge (3).\n4. Straighten the hand (4), center its twist (5), and half-open the claw / trigger (6).\n\nThis initial reference is a stationary pose to copy. Live 3D mirroring starts after you capture it. Hold still when you continue; this saves a backup and sets the homing offsets.'
                 self.next_button.setText('Capture reference and begin calibration')
             elif self.step==9:
                 text='All six joint sweeps were captured automatically. Move the whole arm and review its live 3D motion. Check that you explored each comfortable travel limit and the directions match. Use Back to repeat a joint if needed. Confirm below, then Save writes the recorded limits and exports calibration plus the virtual binding. Motors remain off.'
@@ -159,6 +164,10 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
 
         def select_assigned_port(self):
             if self.session or self.step!=0:return
+            if initial_candidate and self.role==initial_role:
+                index=next((i for i,c in enumerate(self.candidates) if c.attachment==initial_candidate.attachment),-1)
+                self.ports.setCurrentIndex(index)
+                return
             try:
                 roles=RoleAssignments(Path(owner.config_path).parent/'devices.json')
                 state,candidate=roles.resolve(self.role,self.candidates)
@@ -204,14 +213,8 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             if not self.closing and not self.transferred:self.open_preview(activate=False)
         def open_preview(self,checked=False,*,activate=True):
             if self.preview_window.disposed:return
-            self.preview_window.setAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen,self.testAttribute(Qt.WidgetAttribute.WA_DontShowOnScreen))
-            if not self.preview_window.isVisible():
-                available=self.screen().availableGeometry()
-                x=self.frameGeometry().right()+12
-                if x+self.preview_window.width()>available.right():x=max(available.left(),available.right()-self.preview_window.width())
-                self.preview_window.move(x,max(available.top(),self.y()))
             self.preview_window.show()
-            if activate:self.preview_window.raise_();self.preview_window.activateWindow()
+            if activate:self.raise_();self.activateWindow()
         def release_torque(self):
             if not self.support.isChecked():
                 self.release_result.setText('Support the arm and check “Arm supported” before releasing torque.');return
@@ -224,7 +227,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             if self.pending or self.color_pending or self.closing:return
             try:
                 if self.step==0:
-                    if not self.candidates:raise ValueError('No USB arm found. Connect USB and power, then refresh.')
+                    if not self.candidates or self.ports.currentIndex()<0:raise ValueError('No USB arm found. Connect USB and power, then refresh.')
                     self.candidate=self.candidates[self.ports.currentIndex()];self.role=self.role_box.currentText()
                     self.session=owner.devices.acquire(self.candidate,self.role,'setup',session_factory)
                     try:
@@ -355,7 +358,10 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.preview_window.back_button.setText("Back to hardware controls")
             self.preview_window.heading.setText(self.role.title()+' · live physical arm · NVIDIA RTX')
             self.preview_window.status.setText('Measured live view · motors remain off until explicitly enabled')
-            show=QPushButton('Open live RTX 3D window');show.clicked.connect(self.preview_window.show);panel.layout().addWidget(show)
+            self.preview_window.setParent(panel,Qt.WindowType.Widget)
+            panel.layout().addWidget(self.preview_window,3)
+            panel.resize(1250,800)
+            self.preview_window.show()
             owner._hardware_windows.pop('setup',None);owner._hardware_windows[self.role]=panel
             self.session.complete_setup()
             self.transferred=True;self.timer.stop();self.preview_generation+=1
@@ -385,7 +391,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     self.select_assigned_port()
                     self.status.setText('Choose the port for this arm.' if self.candidates else 'No USB ports found. Check the cable, motor power and USB driver, then refresh.')
             if not self.session:
-                self.next_button.setEnabled(bool(self.candidates) and not self.color_pending);return
+                self.next_button.setEnabled(bool(self.candidates) and self.ports.currentIndex()>=0 and not self.color_pending);return
             self.session.heartbeat(False);s=self.session.snapshot();sample=s['sample'];setup=s.get('setup') or {}
             if self.back_target is not None:
                 ready=not s['alive'] if self.back_target==0 else s['stop_completed']>=self.back_stop

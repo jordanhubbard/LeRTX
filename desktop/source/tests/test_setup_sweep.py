@@ -28,6 +28,18 @@ class JointSweepTests(unittest.TestCase):
         self.assertEqual(self.sweep.progress,100)
         self.assertIsNotNone(self.sweep.ready_sequence)
 
+    def test_return_beyond_early_pause_completes_in_both_directions(self):
+        for first,second,returned in ((2774,804,3350),(1600,2500,900)):
+            with self.subTest(first=first):
+                self.setUp();self.feed(2047);self.hold(first);self.hold(second)
+                self.hold((first+second)//2)
+                self.assertEqual(self.sweep.phase,2)
+                self.feed(returned)  # One sample cannot finish the sweep.
+                self.assertFalse(self.sweep.complete)
+                self.hold(returned)
+                self.assertTrue(self.sweep.complete)
+                self.assertEqual(self.sweep.bounds,[min(second,returned),max(second,returned)])
+
     def test_jitter_and_other_joint_motion_never_capture_an_endpoint(self):
         for i in range(100):self.feed(2047+(-1 if i%2 else 1)*5)
         self.assertEqual(self.sweep.phase,0)

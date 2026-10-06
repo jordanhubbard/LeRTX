@@ -1,0 +1,90 @@
+{
+  "scope": "Integrated calibration and permissive outward endpoint return",
+  "physical_hardware_tested": false,
+  "portable_tests": {
+    "initial_scope": 82,
+    "final_focused": 50
+  },
+  "native": {
+    "leader": {
+      "complete": true,
+      "physical_hardware_tested": false,
+      "changed_joint_frames": [
+        "shoulder_pan",
+        "shoulder_lift",
+        "elbow_flex",
+        "wrist_flex",
+        "wrist_roll",
+        "gripper"
+      ],
+      "role": "leader",
+      "extended_reference": true,
+      "named_joint_slider": true,
+      "paused_kinematics": true,
+      "measured_radians": 0.3653404414653778,
+      "custom_color_materials": 1,
+      "role_identity": true,
+      "color_persistence": true,
+      "pixel_motion_fraction": {
+        "shoulder_pan": 0.03604583333333333,
+        "shoulder_lift": 0.03192239583333333,
+        "elbow_flex": 0.025889583333333334,
+        "wrist_flex": 0.015572916666666667,
+        "wrist_roll": 0.006959375,
+        "gripper": 0.0011557291666666667
+      },
+      "mirrored_joints": 6,
+      "automatic_joint_advancement": true,
+      "calibration_saved": true,
+      "torque_never_enabled": true,
+      "register_backup": true,
+      "provisional_preview_label": true,
+      "seconds": 35.14
+    },
+    "follower": {
+      "complete": true,
+      "physical_hardware_tested": false,
+      "changed_joint_frames": [
+        "shoulder_pan",
+        "shoulder_lift",
+        "elbow_flex",
+        "wrist_flex",
+        "wrist_roll",
+        "gripper"
+      ],
+      "role": "follower",
+      "extended_reference": true,
+      "named_joint_slider": true,
+      "paused_kinematics": true,
+      "measured_radians": 0.3653404414653778,
+      "custom_color_materials": 1,
+      "role_identity": true,
+      "color_persistence": true,
+      "pixel_motion_fraction": {
+        "shoulder_pan": 0.03187604166666667,
+        "shoulder_lift": 0.0288609375,
+        "elbow_flex": 0.0214265625,
+        "wrist_flex": 0.012954166666666666,
+        "wrist_roll": 0.004329166666666667,
+        "gripper": 0.0017552083333333332
+      },
+      "mirrored_joints": 6,
+      "automatic_joint_advancement": true,
+      "calibration_saved": true,
+      "torque_never_enabled": true,
+      "register_backup": true,
+      "provisional_preview_label": true,
+      "seconds": 34.81
+    }
+  },
+  "observed_base_replay": [
+    2047,
+    2774,
+    804,
+    3350
+  ],
+  "visual_review": "Guide, progress, navigation and native RTX image remain visible in one window; controls scroll independently.",
+  "authority": "pass",
+  "locks": "3 current",
+  "formal_admission": "Existing configured test receipt is stale; no admission claim."
+}

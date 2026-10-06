@@ -1,7 +1,7 @@
 """Setup-only explanations and Qt views of the shared native renderer's image."""
 from PySide6.QtCore import Qt, QRectF, QPointF
 from PySide6.QtGui import QColor, QPainter, QPen, QFont
-from PySide6.QtWidgets import QWidget, QSizePolicy, QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
+from PySide6.QtWidgets import QWidget, QSizePolicy, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 import functools
 from .robot import JOINT_NAMES
 from .arm_colors import role_color, ROLE_NAMES, DEFAULT_COLORS
@@ -57,12 +57,8 @@ class NativeSetupView(QWidget):
         p.drawImage(target, self.image)
 
 
-class SetupPreviewWindow(QDialog):
-    """A dedicated solid RTX view, fed by the application's native frame stream.
-
-    The native owner still serializes every renderer call and pose publication.
-    A second Qt window does not require a second competing GPU scene owner.
-    """
+class SetupPreviewPanel(QWidget):
+    """Embedded solid RTX view sharing the application's one native frame stream."""
     def __init__(self, owner):
         super().__init__(owner)
         from .role_ui import widgets
@@ -75,7 +71,6 @@ class SetupPreviewWindow(QDialog):
         self.setWindowTitle('Live arm · NVIDIA RTX')
         self.resize(900, 700)
         self.setMinimumSize(480, 400)
-        self.setModal(False)
         layout = QVBoxLayout(self)
         self.back_button=QPushButton('Back to setup')
         self.back_button.clicked.connect(self.back_to_parent);layout.addWidget(self.back_button)

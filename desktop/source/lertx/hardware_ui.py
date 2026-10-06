@@ -9,7 +9,7 @@ from .hardware_feedback import torque_summary,arming_blocker
 
 def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
     from PySide6.QtCore import Qt,QTimer,QEvent
-    from PySide6.QtWidgets import QDialog,QVBoxLayout,QHBoxLayout,QLabel,QPushButton,QGridLayout,QDoubleSpinBox,QFileDialog,QCheckBox,QMessageBox
+    from PySide6.QtWidgets import QDialog,QVBoxLayout,QHBoxLayout,QLabel,QPushButton,QGridLayout,QDoubleSpinBox,QFileDialog,QCheckBox,QMessageBox,QWidget,QScrollArea
 
     from .role_ui import widgets
     QLabel,QPushButton,QCheckBox=widgets(lambda: owner.profile)
@@ -29,7 +29,11 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             from .role_ui import role_icon
             self.setWindowIcon(role_icon(role,owner.profile))
             self.resize(920,570);self.setModal(False)
-            layout=QVBoxLayout(self)
+            columns=QHBoxLayout(self)
+            scroll=QScrollArea();scroll.setWidgetResizable(True);scroll.setMinimumWidth(620)
+            scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            controls=QWidget();scroll.setWidget(controls);columns.addWidget(scroll,2)
+            layout=QVBoxLayout(controls)
             self.parent_button=QPushButton('Back to Device Manager')
             self.parent_button.clicked.connect(self.back_to_devices);layout.addWidget(self.parent_button)
             layout.addWidget(QLabel(role.capitalize()+' · physical USB controls'))

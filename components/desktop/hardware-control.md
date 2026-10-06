@@ -6,8 +6,8 @@ kind: feature
 # SO-101 USB hardware controls
 
 Setup must persistently name the selected Leader (hand-operated controller) or
-Follower (robot hand), including during joint capture and in the RTX companion
-window. Use the same role palette in the diagram, selection banner, viewport
+Follower (robot hand), including during joint capture and in the embedded RTX
+view. Use the same role palette in the diagram, selection banner, viewport
 legend and rendered printed parts. Offer custom colors before connecting an arm,
 saved as general.leader_color and general.follower_color (#RRGGBB); defaults are
 #1FAD9E and #F2A31F. Migrate older saved profiles by adding only these defaults.
@@ -65,7 +65,7 @@ pending engage through release. Never display a requested state as a measured
 state. In calibration, engaging stays unavailable; all-off explicitly displays
 Motors free, and release is actionable only when torque is on. Report unknown or
 mixed torque without suggesting engagement is safe.
-The stationary reference step must name the RTX window Reference guide, not Live,
+The stationary reference step must name the RTX view Reference guide, not Live,
 and prominently state that it does not follow the arm until reference capture.
 Waiting, paused, stale and live states must remain distinguishable. The hardware
 panel explains missing calibration/binding or telemetry beside its mirror control.
@@ -107,10 +107,8 @@ replace pending physical-arm qualification.
 Always show the numbered joint reference diagram throughout setup, pinned outside
 the scrolling instructions with no visibility toggle. Hardware setup sub-panels
 provide explicit Back actions naming their parent: Device Manager returns to the
-scene, hardware controls to Device Manager, setup to the scene, and RTX preview to
-its current setup or hardware controls. Navigation out of physical controls uses
-the existing verified shutdown/recovery path before reopening the parent. Returning
-from the RTX view preserves calibration progress and keeps live rendering active.
+scene, hardware controls to Device Manager, setup to Device Manager. RTX and reference views share the setup window. Navigation out of physical controls uses
+the existing verified shutdown/recovery path before reopening the parent. The embedded RTX view remains visible throughout calibration.
 
 Application-level device controllers own serial sessions independently of windows.
 One attachment has one session shared by all its views. The registry rejects
@@ -161,3 +159,13 @@ pose; ancestor-only writes otherwise leave highlighted meshes visually frozen.
 Keep local offsets and runtime edits intact and clear refresh identities on scene
 replacement. Verify substantial arm silhouette changes after highlight, motion,
 and deselection; noise-only frame differences do not satisfy motion acceptance.
+
+Device Manager provides role- and port-labelled Calibrate buttons that preselect
+that exact attachment in the wizard. Remove the separate scene setup action.
+Keep RTX, the reference diagram, selected-joint progress and navigation in one
+window, with scrolling limited to instructions and controls. Transfer the embedded
+RTX view to hardware controls after saving. A stable return at or beyond the first
+held endpoint counts as a return sweep: an early interior pause must not require
+hitting an invisible narrow target. Show directional remaining travel and retain
+the held return endpoint in the captured range. Require the existing minimum span,
+stable dwell, fresh selected-joint samples, torque off and a current RTX frame.
