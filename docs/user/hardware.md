@@ -17,13 +17,14 @@ use an emulated arm; physical qualification on the user's arms is still pending.
 
 For an assembled arm with motor IDs already assigned, choose **Set up real arms**
 in the toolbar. The wizard walks through connection, support/torque release, a
-reference pose, six individual joints, review and saving. A separate **Live arm ·
-NVIDIA RTX** window displays the solid rendered arm and mirrors all six measured
-joints. Resize or move it beside the wizard; use its turn, zoom and framing buttons
+reference pose, six individual joints, review and saving. A separate RTX window
+first displays a stationary **Reference guide**, then switches to **LIVE** after
+reference capture and mirrors all six measured joints. Resize or move it beside
+the wizard; use its turn, zoom and framing buttons
 to inspect the motion. **Open live RTX 3D window** brings it back if closed.
 The optional reference-only numbered diagram locates
 each joint: base turn, upper-arm hinge, middle hinge, wrist tilt, wrist twist and
-claw (or the leader's trigger). Gold identifies the selected joint.
+claw (or the leader's trigger). The role color identifies the selected diagram joint.
 
 The reference pose is initially stationary: copy it with the physical arm, then
 confirm and capture it. Live 3D mirroring begins after that capture. For each
@@ -63,15 +64,19 @@ To use an existing LeRobot calibration instead:
 ## Manual motor movement
 
 Support the arm, clear its workspace and keep its motor power switch accessible.
-**Enable motors** seeds goals from current readings before enabling torque.
-If torque was already on, use **Stop** first; LeRTX will not adopt another
+The measured torque state appears above one control: **Engage motors** when all
+six are off, or **Release motors** when any are on. Engage seeds goals from current
+readings before enabling torque and asks for confirmation. If unavailable, the
+reason appears beside it; disabled controls have a muted fill and dashed border.
+During calibration, already-released motors show **Motors free — torque is off**.
+If torque was already on, use **Release motors** first; LeRTX will not adopt another
 controller's existing goals. Arming uses at most 100 encoder ticks/second
 (about 8.8 degrees/second), acceleration value 10, and torque-limit value 300/1000.
 These conservative initial limits are not mechanical or collision qualification.
 
 Enter a target beside a joint and click **Set target**. Hold **Move to targets**
 to execute it. Releasing the button cancels remaining travel and holds the current
-measured position. **Stop** releases torque on all six motors and requires a new
+measured position. **Release motors** releases torque on all six motors and requires a new
 explicit enable. Disconnecting or closing an armed panel also attempts torque-off;
 a read-only disconnect performs no register writes.
 
@@ -96,6 +101,8 @@ Adapters without a unique serial number require a new session binding after reco
 the articulated forward kinematics and pauses simulation. Simulation Play, Reset
 and joint manipulation are blocked while live viewing owns the robot poses.
 Stale measurements stop live viewing. The authored USD remains unchanged.
+The control explains missing calibration, binding or fresh telemetry. A raw
+read-only connection alone cannot establish physical-to-virtual joint coordinates.
 
 To command a virtual pose, turn live viewing off, position the simulated arm,
 then choose **Use virtual pose as targets** in its armed hardware panel. This

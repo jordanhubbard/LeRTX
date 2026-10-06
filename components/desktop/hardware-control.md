@@ -52,6 +52,23 @@ shutdown, lost UI heartbeat, stale telemetry and motor faults cancel queued
 targets and attempt torque-off independently of RTX. Failed stop must remain
 visibly unconfirmed: software cannot guarantee a stop through an unplugged bus
 or support an arm after torque release. Reconnection always requires explicit arm.
+Disabled controls must be visually distinct in both themes. Beside Enable motors,
+show the exact unmet prerequisite (connection, calibration, fresh telemetry,
+calibration mismatch or existing torque), plus the measured six-motor torque
+state. Clicking an available action shows pending and then verified success or
+failure. Release reports already-off states and never claims successful release
+without fresh all-off telemetry and acknowledged writes. Keep feedback visible
+in the wizard as well as the hardware panel; retain explicit enable confirmation.
+Use one measured-state torque control instead of separate enable/release buttons:
+all-off offers Engage motors; any-on offers Release motors. Allow cancelling a
+pending engage through release. Never display a requested state as a measured
+state. In calibration, engaging stays unavailable; all-off explicitly displays
+Motors free, and release is actionable only when torque is on. Report unknown or
+mixed torque without suggesting engagement is safe.
+The stationary reference step must name the RTX window Reference guide, not Live,
+and prominently state that it does not follow the arm until reference capture.
+Waiting, paused, stale and live states must remain distinguishable. The hardware
+panel explains missing calibration/binding or telemetry beside its mirror control.
 
 Virtual controls remain simulated by default. Measured two-point bindings identify
 device, calibration and semantic joints; provide per-joint capture and JSON

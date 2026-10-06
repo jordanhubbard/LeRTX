@@ -4,6 +4,7 @@ import time
 from .robot import JOINT_NAMES
 from .hardware import HardwareSession
 from .hardware_calibration import Calibration, load_binding, binding_targets
+from .hardware_feedback import torque_summary,arming_blocker
 
 
 def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
@@ -19,6 +20,8 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             self.role=role;self.calibration=None;self.binding=None;self.closing=False;self.sequence=-1
             self.shutdown_complete=False
             self.preview_pending=False;self.preview_generation=0
+            self.preview_at=0.
+            self.motor_action=None;self.motor_sequence=-1
             self.session=session_factory(candidate,role)
             self.setWindowTitle('SO-101 hardware · '+role+' · '+candidate.port)
             from .role_ui import role_icon
@@ -26,7 +29,7 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             self.resize(920,570);self.setModal(False)
             layout=QVBoxLayout(self)
             layout.addWidget(QLabel(role.capitalize()+' · physical USB controls'))
-            note=QLabel('Physical USB controls · Connect reads only. Import this arm’s LeRobot calibration before enabling motors. Hold Move to execute targets; release to hold position. Stop releases torque — support the arm. Keep the motor power switch accessible.')
+            note=QLabel('Physical USB controls · Connect reads only. Import this arm’s LeRobot calibration before engaging motors. Hold Move to execute targets; release the button to hold position. Release motors makes the arm free — support it. Keep the motor power switch accessible.')
             note.setWordWrap(True);layout.addWidget(note)
             row=QHBoxLayout();layout.addLayout(row)
             self.connect_button=QPushButton('Connect read-only');self.connect_button.clicked.connect(lambda:self.request('connect'));row.addWidget(self.connect_button)
@@ -46,25 +49,27 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
                 self.targets[name]=target;grid.addWidget(target,row,5)
                 button=QPushButton('Set target');button.clicked.connect(lambda checked=False,n=name:self.request('target',{n:self.targets[n].value()}))
                 self.send_buttons[name]=button;grid.addWidget(button,row,6)
+            self.torque_status=QLabel();self.torque_status.setWordWrap(True);layout.addWidget(self.torque_status)
             row=QHBoxLayout();layout.addLayout(row)
-            self.arm_button=QPushButton('Enable motors (hold current pose)');self.arm_button.clicked.connect(self.arm);row.addWidget(self.arm_button)
+            self.torque_button=QPushButton();self.torque_button.clicked.connect(self.toggle_torque);row.addWidget(self.torque_button)
             self.move_button=QPushButton('Hold to move to targets');self.move_button.setAutoRepeat(False)
             self.move_button.pressed.connect(lambda:self.session.heartbeat(True));self.move_button.released.connect(lambda:self.session.heartbeat(False));row.addWidget(self.move_button)
-            self.stop_button=QPushButton('STOP — release torque');self.stop_button.setStyleSheet('background: #9d2929; color: white; font-weight: bold;')
-            self.stop_button.clicked.connect(lambda:self.session.stop());row.addWidget(self.stop_button)
+            self.motor_reason=QLabel();self.motor_reason.setWordWrap(True);layout.addWidget(self.motor_reason)
+            self.motor_result=QLabel();self.motor_result.setWordWrap(True);layout.addWidget(self.motor_result)
             self.binding_label=QLabel('No measured virtual binding');layout.addWidget(self.binding_label)
             row=QHBoxLayout();layout.addLayout(row)
             self.capture_button=QPushButton('Measure virtual binding…');self.capture_button.clicked.connect(self.capture_binding);row.addWidget(self.capture_button)
             self.binding_button=QPushButton('Load virtual binding…');self.binding_button.clicked.connect(self.import_binding);row.addWidget(self.binding_button)
             self.virtual_button=QPushButton('Use virtual pose as targets');self.virtual_button.clicked.connect(self.virtual_targets);row.addWidget(self.virtual_button)
             self.live=QCheckBox('Show measured physical joints in the scene (pauses simulation)');self.live.toggled.connect(self.live_changed);layout.addWidget(self.live)
+            self.live_reason=QLabel();self.live_reason.setWordWrap(True);layout.addWidget(self.live_reason)
             self.message=QLabel();self.message.setWordWrap(True);layout.addWidget(self.message)
             self._last_state='';self.timer=QTimer(self);self.timer.timeout.connect(self.poll);self.timer.start(50)
             self.poll()
 
         def request(self,command,payload=None):
-            try:self.session.request(command,payload);self.message.clear()
-            except Exception as exc:self.message.setText(str(exc))
+            try:self.session.request(command,payload);self.message.clear();return True
+            except Exception as exc:self.message.setText(str(exc));return False
 
         def import_calibration(self):
             path,_=QFileDialog.getOpenFileName(self,'Open this arm’s LeRobot calibration','','JSON (*.json)')
@@ -78,11 +83,61 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
                 for name,spin in self.targets.items():spin.setRange(*calibration.limits(name))
             except Exception as exc:self.message.setText(str(exc))
 
+        def toggle_torque(self):
+            snapshot=self.session.snapshot();sample=snapshot['sample']
+            if self.motor_action=='arm' or snapshot['state'] in ('armed','arming') or (sample and any(m['torque'] for m in sample['motors'].values())):
+                self.release_torque()
+            elif not self.motor_action:self.arm()
+
         def arm(self):
+            reason=arming_blocker(self.session.snapshot())
+            if reason or self.motor_action:
+                self.motor_result.setText(reason or 'Wait for the pending motor operation.');return
             if QMessageBox.question(self,'Enable physical motors',
                 'Enable torque on this physical '+role+' arm and hold its measured pose? Clear the workspace and keep motor power within reach.',
                 QMessageBox.StandardButton.Yes|QMessageBox.StandardButton.No,QMessageBox.StandardButton.No)==QMessageBox.StandardButton.Yes:
-                self.request('arm')
+                if self.request('arm'):
+                    self.motor_action='arm';self.motor_result.setText('Enabling motors… checking the current pose and all six torque registers.')
+                    self.torque_button.setText('Cancel engaging · release motors')
+            else:self.motor_result.setText('Enabling cancelled — no torque command sent.')
+
+        def release_torque(self):
+            snapshot=self.session.snapshot();sample=snapshot['sample']
+            if not sample:
+                self.motor_result.setText('Release not confirmed — no motor connection. Connect read-only first; use the motor power switch if torque may still be on.')
+                return
+            self.motor_action='stop';self.motor_sequence=sample['sequence']
+            self.move_button.setDown(False);self.stop_request=self.session.stop()
+            self.motor_result.setText('Releasing torque… waiting for all six motors to confirm OFF. Support the arm.')
+            self.torque_button.setEnabled(False);self.torque_button.setText('Releasing motors…')
+
+        def update_motor_feedback(self,snapshot):
+            sample=snapshot['sample'];state=snapshot['state'];stale=snapshot['stale']
+            self.torque_status.setText(torque_summary(snapshot))
+            if self.motor_action:
+                if state=='fault' or (self.motor_action=='stop' and snapshot['stop_confirmed'] is False):
+                    self.motor_result.setText(('Release unconfirmed: ' if self.motor_action=='stop' else 'Enable failed: ')+snapshot['error'])
+                    self.motor_action=None
+                elif self.motor_action=='arm' and state=='armed' and sample and not stale and all(m['torque'] for m in sample['motors'].values()):
+                    self.motor_result.setText('Last action: Enabled and verified · all 6 motors holding the measured pose. No target movement starts until you hold Move.')
+                    self.motor_action=None
+                elif self.motor_action=='stop' and snapshot['stop_completed']>=self.stop_request and sample and not stale and sample['sequence']>self.motor_sequence and snapshot['stop_confirmed'] is True and not any(m['torque'] for m in sample['motors'].values()):
+                    self.motor_result.setText('Last action: Released and verified · all 6 motors OFF. Already-off motors will not visibly change.')
+                    self.motor_action=None
+
+            reason=arming_blocker(snapshot)
+            available=not reason and not self.motor_action and not self.closing
+            release=bool(sample and any(m['torque'] for m in sample['motors'].values())) or state in ('armed','arming') or self.motor_action=='arm'
+            self.torque_button.setEnabled((available or release) and self.motor_action!='stop' and not self.closing)
+            self.torque_button.setText('Releasing motors…' if self.motor_action=='stop' else
+                'Cancel engaging · release motors' if self.motor_action=='arm' or state=='arming' else
+                'Release motors · move by hand' if release else
+                'Engage motors · hold current pose' if available else 'Engage motors — unavailable')
+            self.torque_button.setStyleSheet('QPushButton:enabled { background: #9d2929; color: white; font-weight: bold; }' if release else '')
+            self.motor_reason.setText('Support the arm before releasing; it will no longer hold itself.' if release else
+                ('Engage unavailable: '+reason) if reason and state!='armed' else
+                reason or ('Wait for the pending motor operation.' if self.motor_action else 'Ready to enable: the arm will hold its current pose after confirmation.'))
+            self.torque_button.setToolTip(self.motor_reason.text())
 
         def import_binding(self):
             if not self.calibration:return
@@ -130,13 +185,19 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             self.import_button.setEnabled(state not in ('armed','arming','connecting') and not self.closing)
             healthy=bool(sample and not stale and sample['observations'] and not sample['calibration_error'])
             if hasattr(self,'preview_window') and not self.preview_window.disposed:
+                self.preview_window.set_mode('paused' if not self.live.isChecked() else 'stale' if not healthy else 'live' if time.monotonic()-self.preview_at<1. else 'waiting')
                 self.preview_window.status.setText('Measured physical motion · NVIDIA RTX' if self.live.isChecked() and healthy else
                     'Physical mirroring paused · '+(snapshot['error'] or ('telemetry stale' if stale else state)))
-            self.arm_button.setEnabled(state=='read-only' and healthy and not any(m['torque'] for m in sample['motors'].values()))
+            self.update_motor_feedback(snapshot)
             self.move_button.setEnabled(armed);self.virtual_button.setEnabled(armed and bool(self.binding))
             self.binding_button.setEnabled(bool(self.calibration) and not armed)
             self.capture_button.setEnabled(state=='read-only' and healthy)
             self.live.setEnabled(healthy and bool(self.binding) and owner._ready)
+            self.live_reason.setText('3D mirroring unavailable: complete setup for this '+role+' or import its calibration.' if not self.calibration else
+                '3D mirroring unavailable: measure or load this arm’s virtual binding, or complete guided setup.' if not self.binding else
+                '3D mirroring waiting for fresh calibrated readings. '+(sample['calibration_error'] if sample else '') if not healthy else
+                '3D mirroring waiting for the RTX workspace.' if not owner._ready else
+                'Live measured motion is enabled.' if self.live.isChecked() else 'Mirroring paused — check the box above to follow this physical arm.')
             if sample:
                 for i,name in enumerate(JOINT_NAMES,1):
                     motor=sample['motors'][i];value=sample['observations'].get(name)
@@ -176,7 +237,10 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
                             if generation!=self.preview_generation or frame.get('hardware_cancelled'):return
                             if 'hardware_error' in frame:
                                 self.live.setChecked(False);self.message.setText(frame['hardware_error'])
-                            elif self.live.isChecked():owner._accept_frame(frame)
+                            elif self.live.isChecked():
+                                owner._accept_frame(frame)
+                                self.preview_at=time.monotonic()
+                                if hasattr(self,'preview_window') and not self.preview_window.disposed:self.preview_window.set_mode('live')
                         owner._command(publish,displayed)
                     except Exception as exc:
                         self.preview_pending=False

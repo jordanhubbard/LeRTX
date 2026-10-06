@@ -30,5 +30,7 @@ class RoleUITests(unittest.TestCase):
         self.assertIn('&lt;script&gt;',rendered)
         profile['general']['leader_color']='#000000';label.refresh_role_colors()
         self.assertIn(dot_uri('#000000'),QLabel.text(label))
+        label.setText('New reference instructions')
+        self.assertEqual(label.accessibleName(),'New reference instructions')
         button=Button('Assign leader');self.assertFalse(button.icon().isNull())
         button.setText('Connect');self.assertTrue(button.icon().isNull())

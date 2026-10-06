@@ -77,6 +77,29 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Operator follow-up: Enable motors opens no confirmation and disabled controls
+are visually ambiguous; Release torque appears inert. Desktop owns explicit
+disabled styling, the exact arming prerequisite beside the button, measured
+six-motor torque state and pending/confirmed/failed command feedback in setup and
+hardware controls. Diagnose using the serial emulator without actuating the
+operator's arm. Preserve calibration, freshness and explicit torque authorization.
+Refinement: replace mirror enable/release buttons with one measured-state control.
+All-off offers Engage; any-on offers Release; unknown/mixed states are explicit.
+Calibration remains torque-off and shows “Motors free” when already released.
+Live screen inspection found the follower at the stationary reference step and
+the leader in raw read-only mode with no calibration/binding. Make reference,
+waiting and live preview modes conspicuous; explain missing mirror prerequisites
+beside the disabled control. Do not invent physical joint coordinates before
+calibration or claim the reference guide is following the arm.
+
+- [x] Implement visible disabled states and motor-action feedback.
+- [x] Verify blocked/confirmed/cancelled enable, repeated release, disconnected
+  release and failed stop, including the real Qt buttons and both themes.
+  The 92 focused tests pass (one platform-specific skip). Serial-emulator Qt
+  screenshots verify both themes; see `verification/motor-feedback-review.json`.
+  Active physical sessions were inspected without commanding or restarting them.
+
+
 Operator follow-up: keep the selected leader/follower unmistakable throughout
 setup. Desktop owns persistent role labels and a shared palette for the wizard,
 reference diagram, viewport legend and rendered printed parts. Allow saved custom

@@ -70,6 +70,7 @@ def widgets(profile):
                 self.setAccessibleName(re.sub('<[^>]+>','',text))
             else:
                 super().setTextFormat(self._role_format);super().setText(text)
+                self.setAccessibleName(re.sub('<[^>]+>','',text))
     class RoleButton(QPushButton):
         def __init__(self,text='',parent=None):
             super().__init__(text,parent);self.refresh_role_colors()
