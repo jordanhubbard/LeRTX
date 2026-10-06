@@ -24,7 +24,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.session=None;self.step=0;self.capture=None;self.candidate=None;self.role='follower'
             self.closing=False;self.shutdown_complete=False;self.transferred=False;self.pending=False
             self.guide_ready=False;self.preview_step=None;self.guide_shown=False;self.sequence=-1;self.preview_pending=False;self.preview_generation=0;self.observation=None
-            self.preview_at=0.;self.preview_error='';self.selected_joint=None
+            self.preview_requested_at=0.;self.preview_at=0.;self.preview_error='';self.selected_joint=None
             self.sweep=None;self.auto_due=None;self.rendered_sequence=-1
             self.color_pending=False
             self.release_sequence=None
@@ -48,8 +48,8 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.heading=QLabel();self.heading.setWordWrap(True);self.heading.setStyleSheet('font-size: 20px; font-weight: bold;');layout.addWidget(self.heading)
             self.progress=QProgressBar();self.progress.setRange(0,10);layout.addWidget(self.progress)
             self.instructions=QLabel();self.instructions.setWordWrap(True);layout.addWidget(self.instructions)
-            self.movement=QLabel();self.movement.setWordWrap(True);layout.addWidget(self.movement)
-            self.travel=QProgressBar();self.travel.setRange(0,100);self.travel.setFormat('Waiting for travel');layout.addWidget(self.travel)
+            self.movement=QLabel();self.movement.setWordWrap(True);outer.insertWidget(4,self.movement)
+            self.travel=QProgressBar();self.travel.setRange(0,100);self.travel.setFormat('Waiting for travel');outer.insertWidget(5,self.travel)
             self.role_box=QComboBox();self.role_box.addItems(['follower','leader']);layout.addWidget(self.role_box)
             self.role_box.currentTextChanged.connect(self.change_role)
             self.color_button=QPushButton('Match printed-part color…');self.color_button.clicked.connect(self.choose_color);layout.addWidget(self.color_button)
@@ -148,7 +148,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.identity.setStyleSheet(f'border-left: 12px solid {color}; padding: 8px; font-size: 16px; font-weight: bold;')
             self.setWindowTitle(self.role.capitalize()+' · guided SO-101 setup')
             self.preview_window.set_role(self.role)
-            self.joint_map.role_color=color;self.joint_map.update()
+            self.joint_map.role=self.role;self.joint_map.role_color=color;self.joint_map.update()
 
         def change_role(self,role):
             if self.step==0 and not self.session:
@@ -296,6 +296,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                 owner._command(lambda:owner.worker.release_hardware(self.role),owner._apply_status)
         def publish(self,positions,timestamp):
             if not owner._ready or self.preview_pending or self.closing:return
+            self.preview_requested_at=time.monotonic()
             # One queued update, even while RTX is busy. Read the newest complete
             # sample on execution rather than ageing a sample in the render queue.
             generation=self.preview_generation;issued_step=self.step;self.preview_pending=True;role=self.role
@@ -313,7 +314,9 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                         current_positions=capture.preview(sample)[0];current_timestamp=sample['timestamp']
                     if selected!=self.selected_joint and hasattr(owner.worker,'select_joint') and selected:
                         owner.worker.select_joint(role,selected);self.selected_joint=selected
-                    if timestamp is None and hasattr(owner.worker,'frame_selection'):
+                    if timestamp is None and hasattr(owner.worker,'frame_setup_arm'):
+                        owner.worker.frame_setup_arm(role)
+                    elif timestamp is None and hasattr(owner.worker,'frame_selection'):
                         owner.worker.frame_selection(ROOTS[role])
                     result=owner.worker.setup_pose(role,current_positions,current_timestamp)
                     return {**result,'setup_sequence':sample['sequence'] if timestamp is not None else -1}
@@ -446,7 +449,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     low,high=self.capture.ranges[n]
                     self.travel.setValue(self.sweep.progress)
                     self.travel.setFormat('Sweep captured' if self.sweep.complete else f'Hold {self.sweep.phase+1} of 3 · %p%')
-                    self.movement.setText(self.sweep.prompt)
+                    self.movement.setText(self.sweep.feedback(sample))
                     if self.sweep.complete:
                         if self.preview_is_current() and not self.pending:
                             if self.auto_due is None:self.auto_due=now+.6
@@ -456,7 +459,9 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     self.readings.setText(f'Motor {self.step-2} · {n.replace("_"," ")}\nEncoder now: {sample["motors"][self.step-2]["position"]}\nRecorded travel: {low} → {high} ({high-low} ticks)')
                 elif self.capture:self.readings.setText('\n'.join(str(i)+' · '+JOINT_GUIDES[n][0]+': confirmed · '+str(self.capture.ranges[n][1]-self.capture.ranges[n][0])+' ticks' for i,n in enumerate(JOINT_NAMES,1)))
                 else:self.readings.setText('\n'.join(f'Motor {i} · {JOINT_NAMES[i-1]} · encoder {m["position"]} · torque '+('ON' if m['torque'] else 'off') for i,m in sample['motors'].items()))
-                if self.capture and self.live.isChecked() and sample['sequence']!=self.sequence:
+                if (self.capture and self.live.isChecked() and sample['sequence']!=self.sequence
+                        and (self.sequence==-1 or now-self.preview_requested_at >=
+                        1/getattr(owner,'_debug_target_fps',owner.profile['rendering']['target_fps']))):
                     positions,clipped=self.capture.preview(sample)
                     label='LIVE CALIBRATION PREVIEW · check reference and direction' if self.preview_step==self.step and now-self.preview_at<=1. else 'Waiting for a current 3D preview…'
                     self.preview_status.setText(self.preview_error or (label+('\nVirtual limits reached: '+', '.join(JOINT_GUIDES[n][0] for n in clipped) if clipped else '')))

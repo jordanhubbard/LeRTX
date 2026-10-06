@@ -2,6 +2,7 @@
 from PySide6.QtCore import Qt, QRectF, QPointF
 from PySide6.QtGui import QColor, QPainter, QPen, QFont
 from PySide6.QtWidgets import QWidget, QSizePolicy, QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
+import functools
 from .robot import JOINT_NAMES
 from .arm_colors import role_color, ROLE_NAMES, DEFAULT_COLORS
 
@@ -143,7 +144,7 @@ class SetupPreviewWindow(QDialog):
         def work():
             if kwargs is None:
                 from .robot import ROOTS
-                self.owner.worker.frame_selection(ROOTS[self.role])
+                self.owner.worker.frame_setup_arm(self.role)
             else:
                 self.owner.worker.move_camera(**kwargs)
             return self.owner.worker.tick(0.)
@@ -158,11 +159,53 @@ class SetupPreviewWindow(QDialog):
         self.deleteLater()
 
 
+@functools.lru_cache(maxsize=2)
+def reference_geometry(role):
+    """Orthographic projection of the same pinned CAD pose as the RTX guide."""
+    import numpy as np
+    import warp as wp
+    from .robot import description, forward_kinematics, origin, stl_mesh
+    from .setup_calibration import reference_pose
+    _, links, joints = description(role)
+    poses = forward_kinematics(role, reference_pose(role))
+    def project(point):
+        return float(point[0]), -float(point[2])
+    points = [project(poses[joints[n].find('child').get('link')].p) for n in JOINT_NAMES]
+    outlines = []
+    def hull(points):
+        points = sorted(set(points))
+        def cross(a,b,c):return (b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0])
+        halves=[]
+        for ordered in (points, list(reversed(points))):
+            half=[]
+            for point in ordered:
+                while len(half)>1 and cross(half[-2],half[-1],point)<=0:half.pop()
+                half.append(point)
+            halves.append(half[:-1])
+        return halves[0]+halves[1]
+    for name, link in links.items():
+        for visual in link.findall('visual'):
+            mesh=visual.find('geometry/mesh')
+            if mesh is None:continue
+            vertices,_=stl_mesh(mesh.get('filename'))
+            transform=poses[name]*origin(visual)
+            rotation=np.asarray(wp.quat_to_matrix(transform.q),dtype=float).reshape(3,3)
+            transformed=vertices@rotation.T+np.asarray(transform.p)
+            outlines.append(hull([project(p) for p in transformed]))
+    all_points=[p for shape in outlines for p in shape]
+    left,top=min(x for x,y in all_points),min(y for x,y in all_points)
+    right,bottom=max(x for x,y in all_points),max(y for x,y in all_points)
+    scale=min(370/(right-left),155/(bottom-top))
+    def fit(point):return (90+(point[0]-left)*scale, 35+(point[1]-top)*scale)
+    return [fit(p) for p in points], [[fit(p) for p in shape] for shape in outlines]
+
+
 class JointMap(QWidget):
     """A deliberately schematic, numbered side view for finding unfamiliar joints."""
     def __init__(self, parent=None):
         super().__init__(parent)
         self.active = None
+        self.role = 'follower'
         self.role_color = DEFAULT_COLORS['follower']
         self.moving = set()
         self.confirmed = set()
@@ -181,19 +224,23 @@ class JointMap(QWidget):
         scale=min(self.width()/560,self.height()/225)
         p.translate((self.width()-560*scale)/2,(self.height()-225*scale)/2)
         p.scale(scale,scale)
-        points = [(85, 177), (85, 143), (192, 58), (310, 95), (365, 95), (430, 95)]
+        points, outlines = reference_geometry(self.role)
+        anchors = points
+        points = [(x-8,y) if i==0 else (x,y+28) if i==4 else (x+22,y-20) if i==5 else (x,y)
+                  for i,(x,y) in enumerate(points)]
         labels = [(12, 212), (10, 107), (138, 24), (245, 174), (347, 37), (437, 154)]
-        short = ['Base turn', 'Upper-arm hinge', 'Middle hinge', 'Wrist tilt', 'Wrist twist', 'Claw / trigger']
-        p.setPen(QPen(QColor('#73859a'), 13, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
-        for a, b in zip(points, points[1:]):
-            p.drawLine(QPointF(*a), QPointF(*b))
-        p.drawLine(53, 191, 117, 191)
-        p.setPen(QPen(QColor('#9aaec2'), 6, Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
-        p.drawLine(430, 95, 463, 76)
-        p.drawLine(463, 76, 478, 88)
-        p.drawLine(430, 95, 463, 114)
-        p.drawLine(463, 114, 478, 102)
+        short = ['Base turn', 'Upper-arm hinge', 'Middle hinge', 'Wrist tilt', 'Wrist twist', 'Trigger' if self.role=='leader' else 'Claw']
+        from PySide6.QtGui import QPolygonF
+        p.setPen(QPen(QColor('#a2b4c6'), .8))
+        p.setBrush(QColor('#304257'))
+        for shape in outlines:
+            p.drawPolygon(QPolygonF([QPointF(*point) for point in shape]))
+        p.setPen(QColor('#c4d0df'))
+        p.setFont(QFont('Segoe UI', 9))
+        p.drawText(QPointF(200,217),self.role.title()+' reference pose · side view')
         for i, (name, point, label, text) in enumerate(zip(JOINT_NAMES, points, labels, short), 1):
+            p.setPen(QPen(QColor('#a2b4c6'), 1))
+            p.drawLine(QPointF(*anchors[i-1]),QPointF(*point))
             selected = name == self.active
             color = QColor(self.role_color if selected else '#58d6b1' if name in self.confirmed else '#b1c2d6')
             p.setPen(QPen(color, 1.5))

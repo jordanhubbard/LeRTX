@@ -132,3 +132,32 @@ Loading or replacing a scene must not permanently shut down device services.
 Scene loading may pause physical mirroring; registry shutdown belongs only to
 accepted application exit or finalization. Hardware controls remain available
 after the initial scene load and subsequent document changes.
+
+## Live co-session diagnostics
+
+An explicitly enabled local diagnostic service (`LERTX_DEBUG=1`) exposes versioned
+JSON snapshots, bounded event/timing history, current RTX frames and application
+window captures without desktop occlusion. Bind only IPv4 loopback on an ephemeral
+port with a per-run bearer token in a user-local discovery file. Reject browser
+origins and unauthenticated requests. Remove discovery on shutdown. Diagnostics
+must never open a serial port, send motor commands or evaluate arbitrary code.
+Snapshots include role/port, measured encoder values, sample age and sequence,
+control owner, wizard step/sweep/next requirement, mapped joint angles, native
+publication ordinal, rendered pose and frame identity, pending work and timings.
+Offer a CLI for discovery, observation, capture and bounded camera/frame-rate
+commands. Marshal GUI access to Qt and native access to its existing worker;
+use bounded queues/history and preserve application errors in diagnostic events.
+Enable tuning for the current session only, validating limits and reporting results.
+
+The persistent setup diagram must use the selected arm's actual model reference
+pose, including the leader trigger or follower claw. Keep selected-joint progress,
+measured travel and the next required action visible outside scrolling content.
+Return-to-endpoint capture must explain the target and remaining distance.
+
+Physical and simulated motion must continue after selecting or clearing joint
+highlights. For the pinned attached OVRTX backend, refresh the local transforms
+of previously highlighted renderable descendants when publishing an ancestor
+pose; ancestor-only writes otherwise leave highlighted meshes visually frozen.
+Keep local offsets and runtime edits intact and clear refresh identities on scene
+replacement. Verify substantial arm silhouette changes after highlight, motion,
+and deselection; noise-only frame differences do not satisfy motion acceptance.

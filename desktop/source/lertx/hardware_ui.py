@@ -237,8 +237,11 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             if self.live.isChecked():
                 if not healthy or state not in ('read-only','armed'):
                     self.live.setChecked(False);self.message.setText('Live view stopped: physical telemetry is unavailable or stale.')
-                elif sample['sequence']!=self.sequence and not self.preview_pending and owner._ready:
+                elif (sample['sequence']!=self.sequence and not self.preview_pending and owner._ready
+                      and time.monotonic()-getattr(self,'preview_requested_at',0.) >=
+                      1/getattr(owner,'_debug_target_fps',owner.profile['rendering']['target_fps'])):
                     try:
+                        self.preview_requested_at=time.monotonic()
                         self.sequence=sample['sequence']
                         generation=self.preview_generation;binding=self.binding;calibration=self.calibration
                         self.preview_pending=True

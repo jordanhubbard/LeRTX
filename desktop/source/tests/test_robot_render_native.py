@@ -26,6 +26,8 @@ class RobotRenderNativeTests(unittest.TestCase):
                 # At rest publication must preserve complete geometry. Previously
                 # updating only ancestor Xforms using world matrices separated the nested arms.
                 self.assertLess(np.abs(pixels(authored)-pixels(published)).mean(),3.)
+                # Selection must not pin a stale mesh transform while ancestors move.
+                call(lambda:worker.select_joint('leader','shoulder_pan'))
                 before=call(lambda:worker.physics.render_matrices())
                 call(lambda:worker.command_robot('leader',{'shoulder_pan':.5}))
                 call(lambda:worker.set_playing(True))
@@ -34,7 +36,14 @@ class RobotRenderNativeTests(unittest.TestCase):
                 after=call(lambda:worker.physics.render_matrices())
                 self.assertGreater(sum(not np.allclose(a,b,atol=.001) for a,b in zip(before,after)),1)
                 self.assertGreater(np.abs(pixels(published)-pixels(moving['frame'])).mean(),1.)
-                call(lambda:worker.set_playing(False));time=moving['time']
+                # Clearing the outline also touches renderer mesh state; motion must
+                # continue afterward, without reconstructing the renderer.
+                call(lambda:worker.select(None))
+                call(lambda:worker.command_robot('leader',{'shoulder_pan':-.5}))
+                for _ in range(70):cleared=call(lambda:worker.tick(1/30))
+                self.assertAlmostEqual(cleared['robots']['positions']['leader']['shoulder_pan'],-.5,delta=.05)
+                self.assertGreater(np.mean(np.abs(pixels(cleared['frame'])-pixels(moving['frame']))>30),.005)
+                call(lambda:worker.set_playing(False));time=cleared['time']
                 self.assertEqual(call(lambda:worker.tick(1/30))['time'],time)
                 call(worker.reset)
                 self.assertAlmostEqual(call(worker.robot_status)['positions']['leader']['shoulder_pan'],0.,delta=1e-5)

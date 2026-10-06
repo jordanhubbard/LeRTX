@@ -347,6 +347,10 @@ def build_main_window(
             page = QWidget()
             layout = QFormLayout(page)
             layout.addRow("Config directory", QLabel(config_module.user_config_dir()))
+            live = getattr(self.parent(), 'diagnostics', None)
+            layout.addRow('Live co-session debugging', QLabel(
+                'Active · local authenticated diagnostics · process '+str(__import__('os').getpid())
+                if live else 'Off · launch with LERTX_DEBUG=1 to enable'))
             diagnostics = getattr(self.parent(), "_diagnostics", {})
             if diagnostics:
                 for name, value in diagnostics.items():
@@ -807,7 +811,20 @@ def build_main_window(
                 self._frame_timer.setInterval(4)
             if self.worker is None or self._closing:
                 return
-            self._pending.append((self.worker.submit(fn), callback))
+            submitted = time.perf_counter()
+            def measured():
+                started = time.perf_counter()
+                result = fn()
+                return result, started, time.perf_counter()
+            def completed(value):
+                result, started, ended = value
+                if hasattr(self, 'diagnostics'):
+                    self.diagnostics.record('command.completed', name=getattr(fn, '__name__', 'command'),
+                        queue_ms=(started-submitted)*1000, work_ms=(ended-started)*1000,
+                        delivery_ms=(time.perf_counter()-ended)*1000)
+                if callback:
+                    callback(result)
+            self._pending.append((self.worker.submit(measured), completed))
 
         def _selected_path(self):
             items = self.tree.selectedItems()
@@ -1112,6 +1129,7 @@ def build_main_window(
                 self._command(self.worker.reset, self._apply_status)
 
         def _show_error(self, exc):
+            if hasattr(self, "diagnostics"):self.diagnostics.record("application.error", message=str(exc))
             self.viewport_label.cancel()
             self._set_loading(False)
             self.native_status_label.setText(f"Native: {exc}")
@@ -1133,6 +1151,10 @@ def build_main_window(
                 self._frame_timer.setInterval(50)
                 self.frame_rate_label.setText("Paused")
                 return
+            self._render_diagnostics = result.get('diagnostics')
+            if hasattr(self, 'diagnostics'):
+                self.diagnostics.record('frame.presented', render=self._render_diagnostics,
+                    setup_sequence=result.get('setup_sequence'))
             frame = result["frame"]
             if frame.dtype_name != "uint8" or frame.channels not in (3, 4):
                 raise ValueError("Unsupported native display frame format")
@@ -1199,7 +1221,7 @@ def build_main_window(
                 # and passed only that idle interval to the simulation clock.
                 elapsed = now-self._last_tick_started
                 self._last_tick_started = now
-                self._next_frame_at = max(now, self._next_frame_at + 1/self.profile["rendering"]["target_fps"])
+                self._next_frame_at = max(now, self._next_frame_at + 1/getattr(self, "_debug_target_fps", self.profile["rendering"]["target_fps"]))
                 self._command(lambda: self.worker.tick(elapsed), self._accept_frame, rendering=True)
 
         def closeEvent(self, event):

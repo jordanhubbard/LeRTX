@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Desktop: fix frozen highlighted robot arms by refreshing descendant transforms;
+  keep sweep progress visible and show the selected arm's CAD reference diagram.
+- Desktop: add opt-in live co-session diagnostics with telemetry/setup state,
+  native frames, window captures, timing history, GPU metrics and bounded tuning.
+
 - Fix scene loading permanently shutting down the device registry, which made
   Open Leader/Follower controls fail immediately after application startup.
 

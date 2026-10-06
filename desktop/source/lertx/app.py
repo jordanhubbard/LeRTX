@@ -65,6 +65,7 @@ def _launch(scene_path: Any) -> dict:
 
     temporary = tempfile.TemporaryDirectory(prefix="lertx-workspace-") if scene_path is None else None
     window = None
+    diagnostics = None
     from .device_control import DeviceRegistry
     devices = DeviceRegistry()
     try:
@@ -75,6 +76,10 @@ def _launch(scene_path: Any) -> dict:
         window = ui_module.build_main_window(
             profile, lambda: SceneWorker(profile), scene_path, config_path, device_registry=devices,
         )
+        if os.environ.get('LERTX_DEBUG') == '1':
+            from .live_debug import Diagnostics
+            diagnostics = Diagnostics(window)
+            window.diagnostics = diagnostics
         window.requires_save_as = temporary is not None
         window.show()
         window.open_scene(scene_path)
@@ -84,6 +89,8 @@ def _launch(scene_path: Any) -> dict:
             window.worker = None
         return {"application": "LeRTX", "closed": True}
     finally:
+        if diagnostics:
+            diagnostics.close()
         devices.shutdown()
         if not devices.wait_closed():
             import logging

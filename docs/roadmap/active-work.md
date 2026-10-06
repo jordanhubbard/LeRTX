@@ -77,6 +77,27 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Current live debugging direction: the operator reports frozen physical previews,
+unclear base sweep progress and a reference diagram that does not match the arm.
+Add an application-owned local diagnostic interface for co-session inspection:
+current device samples, setup decisions, pose publication, rendered frames,
+UI state, bounded timing history and validated live camera/performance controls.
+Keep Qt/native/serial ownership intact and expose no arbitrary code or motor writes.
+Use the instrumentation to trace and repair actual measurement-to-frame behavior.
+Reproduction isolates a pinned OVRTX interaction: native outline selection stops
+renderable descendants observing ancestor-only transform changes. Explicitly
+refreshing their local transforms restores visible movement without dropping
+native highlighting. Retain identities even after deselection until scene reload.
+- [x] Implement and test local diagnostics, capture and bounded tuning commands.
+  Live state/UI/RTX/window capture, camera and temporary frame-rate commands pass;
+  GPU metrics are visible. The 84-test controller/UI/runtime scope passes after
+  a focused 24-test rerun of the final preview scheduling and diagnostic changes.
+- [x] Correct reference geometry and make sweep progress/action requirements visible.
+- [x] Trace emulated telemetry through mapped angles, published poses and RTX pixels;
+  both roles pass all six joints, automatic advancement and torque-off save on
+  Windows RTX. Selection/deselection dynamics also pass. Physical operator
+  confirmation remains pending; see verification/live-debug-review.json.
+
 Current startup regression: scene opening inadvertently shuts down the application
 registry permanently. Remove shutdown from document loading; prove hardware
 controls can open after initial scene load and after replacement. Preserve shutdown

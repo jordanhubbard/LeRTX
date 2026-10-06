@@ -70,6 +70,15 @@ class JointSweep:
                 'Both ends recorded. Return to the first end and pause to check repeatability.',
                 'Sweep captured. Waiting for the live 3D frame before continuing.')[self.phase]
 
+    def feedback(self, sample):
+        value=sample['motors'][self.motor]['position']
+        if self.phase == 2:
+            distance=abs(value-self.first)
+            return (f'Return toward the FIRST end, then hold still. Now {value} ticks; '
+                    f'target {round(self.first)} ticks; {round(distance)} ticks remaining. '
+                    f'Hold: {round(self.hold_fraction*100)}%.')
+        return self.prompt+f' Encoder: {value} ticks. Hold: {round(self.hold_fraction*100)}%.'
+
     @property
     def bounds(self):
         if not self.complete:
