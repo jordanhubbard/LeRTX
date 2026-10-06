@@ -3,19 +3,23 @@ import json,math,time
 from pathlib import Path
 
 
-def attach(window,report):
+def attach(window,report,role='follower',extended_reference=False):
     from PySide6.QtCore import Qt,QTimer
     from lertx.devices import Candidate
     from lertx.hardware import HardwareSession
     from lertx.setup_ui import build_setup_wizard
     from lertx.transport import ConnectionProbe
     from lertx.usb_bus import FeetechBus
-    from tests.test_setup import CalibrationSerial
+    from tests.test_setup import CalibrationSerial,UnwrappedCalibrationSerial
     report=Path(report);timer=QTimer(window);started=time.monotonic()
     # Emulated identities and calibration files must never enter the operator profile.
     window.config_path=str(report.parent/'setup-test-profile'/'settings.json')
     state={'phase':'startup','low_frames':{}};result={'complete':False,'physical_hardware_tested':False,'changed_joint_frames':[]}
-    serial=CalibrationSerial()
+    serial=UnwrappedCalibrationSerial() if extended_reference else CalibrationSerial()
+    if extended_reference:
+        serial.registers[5][31:33]=(562).to_bytes(2,'little')
+        serial.registers[5][56:58]=(3968).to_bytes(2,'little')
+    result.update(role=role,extended_reference=extended_reference)
     def finish(error=None):
         timer.stop();result.update(complete=error is None,seconds=round(time.monotonic()-started,2))
         if error:
@@ -54,20 +58,20 @@ def attach(window,report):
             elif phase=='connect' and w.candidates:
                 w.role_box.setCurrentText('leader')
                 assert 'Leader' in w.identity.text() and '#1FAD9E' in w.identity.styleSheet()
-                w.role_box.setCurrentText('follower')
+                w.role_box.setCurrentText(role)
                 w.apply_color('#8050d0');state['phase']='color'
             elif phase=='color' and not w.color_pending and not window._pending:
                 from lertx.config import load_profile
-                assert load_profile(window.config_path)['general']['follower_color']=='#8050d0'
+                assert load_profile(window.config_path)['general'][role+'_color']=='#8050d0'
                 assert '#8050d0' in w.identity.styleSheet()
-                assert 'Follower (selected)' in w.preview_window.legend.text()
+                assert role.title()+' (selected)' in w.preview_window.legend.text()
                 def colors():
                     from pxr import Usd,UsdShade
                     from lertx.arm_colors import apply_material_colors
                     # Inspect the exact USD snapshot loaded into the native renderer.
                     runtime=Usd.Stage.Open(str(window.worker.runtime_file))
                     shaders=[UsdShade.Shader(p) for p in runtime.Traverse()
-                        if str(p.GetPath()).startswith('/World/Follower/') and '3d_printed' in str(p.GetPath()) and p.IsA(UsdShade.Shader)]
+                        if str(p.GetPath()).startswith('/World/'+role.title()+'/') and '3d_printed' in str(p.GetPath()) and p.IsA(UsdShade.Shader)]
                     assert shaders
                     actual=[tuple(s.GetInput('diffuseColor').Get()) for s in shaders if s.GetInput('diffuseColor')]
                     assert actual and all(c[2]>c[0]>c[1] for c in actual),actual
@@ -82,7 +86,7 @@ def attach(window,report):
                 assert not serial.writes
                 w.support.setChecked(True);w.advance();state['phase']='guide'
             elif phase=='guide' and w.guide_ready:
-                assert window.robot_panel.state.get('setup_roles')==['follower']
+                assert window.robot_panel.state.get('setup_roles')==[role]
                 w.preview_window.grab().save(str(report.with_name('setup-reference.png')))
                 w.grab().save(str(report.with_name('setup-wizard.png')))
                 w.reference_check.setChecked(True);w.advance();state['phase']='range'
@@ -91,14 +95,14 @@ def attach(window,report):
                 if w.sweep.start is None:return
                 if w.sweep.phase==0:serial.registers[i][56:58]=(1600).to_bytes(2,'little')
                 elif w.sweep.phase==1:
-                    actual=panel.state.get('positions',{}).get('follower',{}).get(n)
+                    actual=panel.state.get('positions',{}).get(role,{}).get(n)
                     expected=w.capture.preview(w.session.snapshot()['sample'])[0][n]
                     if actual is None or abs(actual-expected)>.01 or w.preview_step!=w.step:return
                     if n not in state['low_frames']:state['low_frames'][n]=bytes(w.native_view.image.constBits())
                     serial.registers[i][56:58]=(2500).to_bytes(2,'little')
                 elif w.sweep.phase==2 and n not in result['changed_joint_frames']:
                     # Wait for the native renderer to display the measured pose too.
-                    actual=panel.state.get('positions',{}).get('follower',{}).get(n)
+                    actual=panel.state.get('positions',{}).get(role,{}).get(n)
                     expected=w.capture.preview(w.session.snapshot()['sample'])[0][n]
                     if actual is None or abs(actual-expected)>.01:return
                     if w.preview_step!=w.step:return

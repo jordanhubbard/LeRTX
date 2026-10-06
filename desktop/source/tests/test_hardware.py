@@ -69,6 +69,16 @@ class CalibrationTests(unittest.TestCase):
 
 
 class SDKTests(unittest.TestCase):
+    def test_extended_feedback_is_only_accepted_in_torque_off_unoffset_read(self):
+        bus=self.make_bus();bus.open()
+        self.serial.registers[5][56:58]=(4530).to_bytes(2,'little')
+        with self.assertRaises(ValueError):bus.sample()
+        self.assertEqual(bus.sample(unoffset=True)[5]['position'],4530)
+        self.serial.registers[5][40]=1
+        with self.assertRaises(ValueError):bus.sample(unoffset=True)
+        self.serial.registers[5][40]=0
+        self.serial.registers[5][56:58]=(6143).to_bytes(2,'little')
+        with self.assertRaises(ValueError):bus.sample(unoffset=True)
     def make_bus(self):
         self.serial=SerialRobot()
         self.bus=FeetechBus('test',serial_factory=lambda **kw:self.serial)
