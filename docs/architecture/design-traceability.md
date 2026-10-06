@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:687c579af72cbd3d68c9ba85bb98f75a95d0f43299e9de655d8f3a85248a195f -->
+<!-- literate-ai:authority-reviewed sha256:aa5d00d5a6f08dffe73a1a6a85617b6e25387093e066766881c06f0160f42bb8 -->
 
 [Project guide](../README.md) → design traceability
 
@@ -58,3 +58,8 @@ findings across all application layers and the staged follow-up plan. Controller
 hardware, calibration and Qt verification runs 104 tests (one existing skip),
 plus a completed setup handoff to an existing observer panel; see
 `verification/device-controller-review.json`.
+
+Scene opening preserves the application device registry; only accepted application
+exit and finalization permanently close it. The regression test opens initial and
+replacement scenes, then opens controls and connects the emulator read-only.
+The hardware/controller/device Qt suite passes 29 tests.

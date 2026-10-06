@@ -77,6 +77,14 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Current startup regression: scene opening inadvertently shuts down the application
+registry permanently. Remove shutdown from document loading; prove hardware
+controls can open after initial scene load and after replacement. Preserve shutdown
+only for accepted application exit and finalization.
+- [x] Verify scene-load/device-control regression (29 tests pass).
+- [x] Verify both live Open controls buttons and Back navigation after restart;
+  Leader COM6 and Follower COM5 open without connecting or actuating motors.
+
 Current architecture repair: the wizard and hardware panels independently create
 serial owners and use a window dictionary as a device registry. Introduce a
 first-class application device registry with one controller per attachment,
