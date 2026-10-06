@@ -285,6 +285,18 @@ class NativeWorker:
         import numpy as np
         import ovstage
 
+        target_paths = mapping.paths_in_index_order()
+        matrices = list(matrices)
+        if len(target_paths) != len(matrices):
+            raise ValueError('One transform is required for each target prim')
+        refresh = getattr(self, '_selection_transform_refresh', {})
+        submitted = dict(zip(target_paths, matrices))
+        for path, local in list(refresh.items()):
+            if path in submitted:
+                refresh[path] = submitted[path]
+            elif any(path.startswith(parent+'/') for parent in submitted):
+                target_paths.append(path)
+                matrices.append(local)
         matrix_array = np.asarray(matrices, dtype=np.float64)
         if matrix_array.size == 0:
             return
@@ -296,7 +308,7 @@ class NativeWorker:
             shape=[len(matrix_array)],
         )
         paths = ovstage.PathDictionary(self._stage)
-        with paths.create_path_list_from_strings(mapping.paths_in_index_order()) as path_list:
+        with paths.create_path_list_from_strings(target_paths) as path_list:
             with self._stage.query_from_path_list(path_list) as query:
                 self._ordinal += 1
                 self._stage.write_attribute(

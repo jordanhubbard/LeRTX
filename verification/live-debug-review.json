@@ -1,0 +1,97 @@
+{
+  "platform": "Windows / RTX 5080 Laptop GPU",
+  "physical_hardware_tested": false,
+  "regression": "Native outline selection freezes descendants after ancestor-only transform writes",
+  "baseline_base_motion_fraction": 5.208333333333333e-06,
+  "fix": "Republish local transforms of previously highlighted descendants when their ancestors move",
+  "setup": {
+    "leader": {
+      "complete": true,
+      "physical_hardware_tested": false,
+      "changed_joint_frames": [
+        "shoulder_pan",
+        "shoulder_lift",
+        "elbow_flex",
+        "wrist_flex",
+        "wrist_roll",
+        "gripper"
+      ],
+      "role": "leader",
+      "extended_reference": true,
+      "named_joint_slider": true,
+      "paused_kinematics": true,
+      "measured_radians": 0.3653404414653778,
+      "custom_color_materials": 1,
+      "role_identity": true,
+      "color_persistence": true,
+      "pixel_motion_fraction": {
+        "shoulder_pan": 0.03725260416666667,
+        "shoulder_lift": 0.03425625,
+        "elbow_flex": 0.027383333333333332,
+        "wrist_flex": 0.017625,
+        "wrist_roll": 0.007153125,
+        "gripper": 0.00175
+      },
+      "mirrored_joints": 6,
+      "automatic_joint_advancement": true,
+      "calibration_saved": true,
+      "torque_never_enabled": true,
+      "register_backup": true,
+      "provisional_preview_label": true,
+      "seconds": 37.81
+    },
+    "follower": {
+      "complete": true,
+      "physical_hardware_tested": false,
+      "changed_joint_frames": [
+        "shoulder_pan",
+        "shoulder_lift",
+        "elbow_flex",
+        "wrist_flex",
+        "wrist_roll",
+        "gripper"
+      ],
+      "role": "follower",
+      "extended_reference": true,
+      "named_joint_slider": true,
+      "paused_kinematics": true,
+      "measured_radians": 0.3653404414653778,
+      "custom_color_materials": 1,
+      "role_identity": true,
+      "color_persistence": true,
+      "pixel_motion_fraction": {
+        "shoulder_pan": 0.031433333333333334,
+        "shoulder_lift": 0.031097395833333333,
+        "elbow_flex": 0.023088541666666667,
+        "wrist_flex": 0.0135859375,
+        "wrist_roll": 0.005799479166666666,
+        "gripper": 0.003275
+      },
+      "mirrored_joints": 6,
+      "automatic_joint_advancement": true,
+      "calibration_saved": true,
+      "torque_never_enabled": true,
+      "register_backup": true,
+      "provisional_preview_label": true,
+      "seconds": 37.77
+    }
+  },
+  "selected_and_deselected_dynamics": "tests.test_robot_render_native passed",
+  "diagnostics": "Loopback authenticated state, events, UI, PNG capture and bounded tuning; portable tests and live endpoint inspected",
+  "physical_followup": "Operator moves real arms to confirm the repaired visible coupling",
+  "portable_tests": {
+    "scope_count": 84,
+    "focused_final_rerun": 24,
+    "result": "pass"
+  },
+  "live_service": {
+    "state": true,
+    "ui": true,
+    "window_png": true,
+    "rtx_png": true,
+    "camera": true,
+    "temporary_target_fps": true,
+    "gpu_metrics": true,
+    "recent_events": true
+  }
+}

@@ -109,7 +109,14 @@ def attach(window,report,role='follower',extended_reference=False):
                     assert w.native_view.image is not None
                     assert w.joint_map.active==n
                     assert w.preview_window.isVisible() and w.preview_window.isWindow()
-                    assert bytes(w.native_view.image.constBits())!=state['low_frames'][n],n+' image did not change'
+                    import numpy as np
+                    before=np.frombuffer(state['low_frames'][n],dtype=np.uint8).astype(float)
+                    after=np.frombuffer(bytes(w.native_view.image.constBits()),dtype=np.uint8).astype(float)
+                    difference=np.abs(after-before)
+                    changed=float(np.mean(difference>30))
+                    minimum=.0001 if n in ('wrist_roll','gripper') else .001
+                    assert changed>minimum,(n,'no substantial rendered motion',changed)
+                    result.setdefault('pixel_motion_fraction',{})[n]=changed
                     result['changed_joint_frames'].append(n)
                     if i==2:
                         w.grab().save(str(report.with_name('setup-joint.png')))

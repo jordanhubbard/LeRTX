@@ -56,6 +56,8 @@ class SetupUITests(unittest.TestCase):
             w.controls_scroll.verticalScrollBar().setValue(w.controls_scroll.verticalScrollBar().maximum())
             self.assertTrue(w.joint_map.isVisible())
             self.assertIs(w.joint_map.parentWidget(),w)
+            self.assertIs(w.travel.parentWidget(),w)
+            self.assertIs(w.movement.parentWidget(),w)
         w.preview_window.back_button.click()
         self.assertTrue(w.isVisible());self.assertFalse(w.closing)
         self.assertEqual(w.step,10)

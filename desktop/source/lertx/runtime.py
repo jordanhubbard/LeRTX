@@ -15,6 +15,8 @@ from .simulation import SimulationClock
 class SceneWorker(NativeWorker):
     def __init__(self, profile):
         super().__init__(profile["rendering"]["device"])
+        import os
+        self.debug_enabled = os.environ.get("LERTX_DEBUG") == "1"
         self.profile = profile
         self.document = None
         self.physics = None
@@ -76,6 +78,7 @@ class SceneWorker(NativeWorker):
     def rebuild(self):
         from pxr import Gf, Usd, UsdGeom, UsdLux
         self._selected_meshes = []
+        self._selection_transform_refresh = {}
         self._hardware_roles.clear()
         self._setup_roles=set()
         self._cached_tick = None
@@ -199,6 +202,7 @@ class SceneWorker(NativeWorker):
             raise ValueError('Open the robot workspace before enabling physical live view')
         self.clock.pause()
         self.physics.apply_measured_pose(role,positions)
+        self._remember_pose(role, positions, captured_at)
         self._hardware_roles.add(role)
         if hasattr(self,'_setup_roles'):self._setup_roles.discard(role)
         self.publish_transforms(self.physics.render_mapping,self.physics.render_matrices())
@@ -212,12 +216,21 @@ class SceneWorker(NativeWorker):
             raise ValueError('Calibration observation expired; waiting for fresh telemetry')
         if self.physics is None:raise ValueError('Open the robot workspace for calibration preview')
         self.clock.pause();self.physics.apply_measured_pose(role,positions)
+        self._remember_pose(role, positions, captured_at)
         self._hardware_roles.add(role)
         if not hasattr(self,'_setup_roles'):self._setup_roles=set()
         self._setup_roles.add(role)
         self.publish_transforms(self.physics.render_mapping,self.physics.render_matrices())
         self._cached_tick=None;self._settled_frames=0
         return self.tick(0.)
+
+    def _remember_pose(self, role, positions, captured_at):
+        import time
+        if not getattr(self, "debug_enabled", False):return
+        if not hasattr(self, '_last_pose'):self._last_pose = {}
+        self._last_pose[role] = dict(requested=dict(positions),
+            measured=self.physics.robot_positions().get(role), captured_at=captured_at,
+            applied_at=time.monotonic())
 
     def release_hardware(self, role):
         self._hardware_roles.discard(role)
@@ -279,8 +292,18 @@ class SceneWorker(NativeWorker):
             self._settled_frames = 0
         if not self.clock.playing and self._cached_tick is not None and self._settled_frames >= 4:
             return {**self._cached_tick, "unchanged": True, "playing": False}
+        import time, hashlib
+        started = time.perf_counter()
         frame = self.render("/Render/Product", max(0., elapsed))
-        result = {"frame": frame, "time": self.clock.sim_time, "playing": self.clock.playing, "robots":self.robot_status()}
+        render_ms = (time.perf_counter()-started)*1000
+        result = {"frame": frame, "time": self.clock.sim_time, "playing": self.clock.playing,
+                  "robots":self.robot_status()}
+        if getattr(self, 'debug_enabled', False):
+            result['diagnostics'] = {
+                'ordinal':self._ordinal, 'render_ms':render_ms,
+                'frame_sha256':hashlib.sha256(frame.data).hexdigest(),
+                'poses':copy.deepcopy(getattr(self, '_last_pose', {})),
+                'rendered_at':time.monotonic(), 'width':frame.width, 'height':frame.height}
         self._cached_tick = result
         self._cached_ordinal = self._ordinal
         self._settled_frames += 1
@@ -369,6 +392,12 @@ class SceneWorker(NativeWorker):
         self.distance = max(0.001, min(1e8, self.distance * math.exp(max(-2, min(2, zoom)))))
         mapping = BodyMapping({0: self.camera_path})
         self.publish_transforms(mapping, [self.camera_matrix()])
+
+    def frame_setup_arm(self, role):
+        from .robot import ROOTS
+        self.frame_selection(ROOTS[role])
+        # Keep room for the full articulated sweep, including an upright hand.
+        self.move_camera(zoom=.5)
 
     def frame_selection(self, path=None, publish=True):
         from pxr import Usd, UsdGeom

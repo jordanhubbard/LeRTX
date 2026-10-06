@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:aa5d00d5a6f08dffe73a1a6a85617b6e25387093e066766881c06f0160f42bb8 -->
+<!-- literate-ai:authority-reviewed sha256:eacf5aa6b3adfcfe092c28d0a5fb03c1c378db91a8fc0c5c1237a643fbeb6f3b -->
 
 [Project guide](../README.md) → design traceability
 
@@ -20,7 +20,7 @@ verification cover that interaction through the existing simulated command path;
 physical controls retain their separate hardware workflow.
 
 The desktop application's guided-setup contract owns the dedicated live RTX window,
-optional joint-location diagram, selected-motor sweep detector, automatic joint
+persistent model-derived joint-location diagram, selected-motor sweep detector, automatic joint
 advancement and bounded preview queue. The hardware guide describes the same
 reference/sweep/final-review workflow. Stable endpoints and a return visit are
 operator-demonstrated data, not software detection of hard stops. Emulated
@@ -63,3 +63,11 @@ Scene opening preserves the application device registry; only accepted applicati
 exit and finalization permanently close it. The regression test opens initial and
 replacement scenes, then opens controls and connects the emulator read-only.
 The hardware/controller/device Qt suite passes 29 tests.
+
+Live co-session diagnostics are application-owned, opt-in and authenticated on
+loopback. They marshal Qt capture and validated tuning through existing owners,
+record bounded telemetry/command/frame histories and expose a local CLI. The
+highlighted-articulation regression requires substantial visual changes through
+selection and deselection; refreshing touched mesh-local transforms repairs the
+pinned renderer's ancestor-update issue. Guided setup keeps sweep requirements
+visible and uses role-specific projected CAD geometry for its reference diagram.

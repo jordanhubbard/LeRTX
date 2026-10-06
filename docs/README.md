@@ -19,6 +19,9 @@ See [hardware controls](user/hardware.md) for USB connection, calibration, manua
 movement and measured physical-to-virtual bindings.
 See [active work](roadmap/active-work.md) for current development status.
 
+See [live co-session debugging](user/live-debugging.md) for local state, frame,
+timing and GPU inspection while using the application.
+
 ## Development
 
 This project is built with [Literate AI](https://github.com/NVIDIA-dev/literate-ai).
