@@ -97,7 +97,8 @@ class SetupUITests(unittest.TestCase):
         w=self.wizard;w.apply_color('#123456')
         del self.owner._hardware_windows['closed']
         self.assertIn('#123456',w.identity.styleSheet())
-        self.assertEqual(self.owner.arm_swatches['follower'].pixmap().toImage().pixelColor(8,8).name(),'#123456')
+        from lertx.role_ui import badge
+        self.assertEqual(self.owner.arm_swatches['follower'].pixmap().toImage(),badge('follower','#123456').toImage())
         self.assertEqual(load_profile(self.owner.config_path)['general']['follower_color'],'#123456')
         w.advance();w.apply_color('#ffffff')
         self.assertEqual(len(calls),1)

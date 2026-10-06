@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Device identity: add controller/gripper badges with contrasting symbol ink and
+  readable text, including Device Manager rows and role/port control buttons.
+  Prevent stale control windows from opening the wrong reassigned device.
+
 - Device setup: fix reference capture aborting on an extended wrist encoder
   during homing. Preserve the measured reference for each joint, show the selected
   arm's RTX reference guide before connection, and keep failures beside navigation.

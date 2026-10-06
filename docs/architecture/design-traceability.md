@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:915c5c74c747b2d5ae7a9d46f6f57d82bfab6eca23457138c7d89cda0b45497c -->
+<!-- literate-ai:authority-reviewed sha256:07dbfa43e4de8404dc0e8dcd5fd637fa418b2330adb7f38406e0a6cbad793d16 -->
 
 [Project guide](../README.md) → design traceability
 
@@ -41,3 +41,8 @@ torque-off homing transaction. It selects a representable offset and carries the
 actual per-joint reference into preview and binding math; normal measurements
 and commands keep their original bounds. Physical capture/restore checks cover
 both arms, including the follower wrist's 4530-tick unoffset feedback.
+
+Device role identity is carried by contrasting controller/gripper badges, readable
+text and explicit port labels. Cached hardware panels must match both role and
+attachment; active sessions block assignment edits. Device and Qt regressions
+and native dark/light screenshots are recorded in `verification/device-role-review.json`.

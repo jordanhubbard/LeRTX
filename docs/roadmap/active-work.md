@@ -77,6 +77,19 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Current assignment repair: live inspection found a cached Leader control window
+on the former port after saved roles were exchanged. Desktop must validate both
+role and attachment before reusing a hardware window, prevent assignment edits
+while physical sessions are open, and make Device Manager roles/ports explicit
+with the shared contrast-outlined color dots in rows and buttons. Preserve the
+operator's current saved assignments and black/white palette.
+Use distinct controller/gripper symbols inside role badges throughout the UI,
+with automatic contrasting symbol ink and normal-contrast text. Color alone
+must not encode role, including identical or nearly identical custom colors.
+- [x] Reject stale cached windows and conflicting active port owners.
+- [x] Show role-colored device rows and role/port-specific hardware buttons.
+- [x] Verify reassignment routing, active-session guards, and black/white contrast.
+
 Current device-coupling repair: a traced physical follower reference capture
 fails while clearing wrist-roll homing: its unoffset encoder is 4530, outside
 the normal 0..4095 measurement contract. The original offset/limits restore.

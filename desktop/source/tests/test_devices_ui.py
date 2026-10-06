@@ -13,6 +13,38 @@ from lertx.ui import build_application
 
 
 class DevicesUiTests(unittest.TestCase):
+    def test_role_rows_and_hardware_buttons_share_black_white_palette(self):
+        from lertx.devices import RoleAssignments
+        from lertx.role_ui import role_icon
+        from PySide6.QtWidgets import QWidget
+        from types import SimpleNamespace
+        leader=Candidate('COM5',1,2,'leader');follower=Candidate('COM6',1,2,'follower')
+        candidates=[leader,follower];roles=RoleAssignments(self.path)
+        roles.assign('leader',leader,candidates);roles.assign('follower',follower,candidates)
+        parent=QWidget();parent.profile=copy.deepcopy(DEFAULT_PROFILE)
+        parent.profile['general'].update(leader_color='#000000',follower_color='#ffffff')
+        parent._hardware_windows={};opened=[]
+        parent.open_hardware=lambda candidate,role:opened.append((candidate,role)) or True
+        dialog=build_devices_dialog(parent.profile,ConnectionProbe(lambda **kw:{'state':'success','candidates':candidates}),self.path,parent)
+        self.dialogs.append(dialog);self.wait(lambda:dialog.last_scan_ok)
+        for row,role,color,port in ((0,'leader','#000000','COM5'),(1,'follower','#ffffff','COM6')):
+            item=dialog.tree.topLevelItem(row)
+            self.assertEqual(item.text(5),role.title())
+            self.assertEqual(item.icon(5).pixmap(24,24).toImage(),role_icon(role,parent.profile).pixmap(24,24).toImage())
+            button=dialog.hardware_buttons[role]
+            self.assertIn(role.title(),button.text());self.assertIn(port,button.text())
+            self.assertEqual(button.icon().pixmap(24,24).toImage(),item.icon(5).pixmap(24,24).toImage())
+        dialog.open_hardware('follower');self.assertEqual(opened,[(follower,'follower')])
+        # Role mutations are guarded in the handlers too, not only disabled buttons.
+        session=SimpleNamespace(candidate=leader,role='leader',_thread=SimpleNamespace(is_alive=lambda:True),snapshot=lambda:{'state':'read-only'})
+        parent._hardware_windows={'leader':SimpleNamespace(session=session)}
+        dialog.tree.setCurrentItem(dialog.tree.topLevelItem(0));dialog.refresh_roles()
+        self.assertFalse(dialog.assign_buttons['leader'].isEnabled())
+        self.assertIn('read-only',dialog.role_labels['leader'].text())
+        before=self.path.read_text();dialog.unassign('leader');dialog.assign('follower')
+        self.assertEqual(self.path.read_text(),before)
+        dialog.reject();self.addCleanup(parent.deleteLater)
+
     def setUp(self):
         self.app = build_application([])
         self.directory = tempfile.TemporaryDirectory()

@@ -1,0 +1,18 @@
+{
+  "complete": true,
+  "tests": 44,
+  "result": "pass",
+  "verified": [
+    "cached role and attachment routing",
+    "active-session assignment guard",
+    "black and white device badges",
+    "identical-color distinct role symbols",
+    "disabled icon identity",
+    "dark and light native Qt screenshot inspection"
+  ],
+  "physical_hardware_actuated": false,
+  "limitations": [
+    "No new physical coupling qualification",
+    "Existing retained-source admission receipt remains stale"
+  ]
+}

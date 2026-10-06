@@ -81,7 +81,7 @@ def build_main_window(
         QWidget,
     )
 
-    from .role_ui import widgets, dot
+    from .role_ui import widgets, badge
     role_profile=[initial_profile]
     QLabel,QPushButton,QCheckBox=widgets(lambda:role_profile[0])
 
@@ -677,8 +677,8 @@ def build_main_window(
                 swatch_color = role_color(self.profile, role)
                 swatch = QLabel()
                 self.arm_swatches[role] = swatch
-                swatch.setFixedSize(16, 16)
-                swatch.setPixmap(dot(swatch_color))
+                swatch.setFixedSize(24, 24)
+                swatch.setPixmap(badge(role,swatch_color))
                 legend_row.addWidget(swatch)
                 from PySide6.QtWidgets import QLabel as PlainLabel
                 legend_row.addWidget(PlainLabel(name))
@@ -1029,7 +1029,7 @@ def build_main_window(
             from .arm_colors import role_color
             role_profile[0]=self.profile
             for role, swatch in self.arm_swatches.items():
-                swatch.setPixmap(dot(role_color(self.profile, role)))
+                swatch.setPixmap(badge(role,role_color(self.profile, role)))
             from PySide6.QtWidgets import QWidget
             for child in self.findChildren(QWidget):
                 refresh=getattr(child,'refresh_role_colors',None)
@@ -1049,13 +1049,21 @@ def build_main_window(
             dialog.deleteLater()
 
         def open_hardware(self,candidate,role):
+            for existing_role,existing in self._hardware_windows.items():
+                session=getattr(existing,'session',None)
+                if not session or not session._thread.is_alive():continue
+                same_device=session.candidate.attachment==candidate.attachment
+                if (existing_role==role or same_device) and (existing_role!=role or not same_device or existing.closing):
+                    self.statusBar().showMessage('Close the existing '+session.role+' controls on '+session.candidate.port+' before opening '+role+' on '+candidate.port+'. The device assignment changed or that port is already in use.')
+                    return False
             panel=self._hardware_windows.get(role)
             if panel and panel.session._thread.is_alive():
-                panel.show();panel.raise_();panel.activateWindow();return
+                panel.show();panel.raise_();panel.activateWindow();return True
             from .hardware_ui import build_hardware_panel
             panel=build_hardware_panel(self,candidate,role)
             self._hardware_windows[role]=panel
             panel.show()
+            return True
 
         def open_setup(self):
             previous=getattr(self,'_setup_window',None)

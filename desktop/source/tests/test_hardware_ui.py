@@ -16,6 +16,17 @@ from tests.test_hardware import SerialRobot,calibration
 
 
 class HardwareUITests(unittest.TestCase):
+    def test_cached_controls_must_match_role_and_attachment(self):
+        self.connect();p=self.panel;owner=self.owner
+        owner._hardware_windows['follower']=p
+        other=Candidate('different-port',1,2,'different-device')
+        self.assertFalse(owner.open_hardware(other,'follower'))
+        self.assertIn('assignment changed',owner.statusBar().currentMessage())
+        self.assertIs(owner._hardware_windows['follower'],p)
+        self.assertFalse(owner.open_hardware(p.session.candidate,'leader'))
+        self.assertNotIn('leader',owner._hardware_windows)
+        self.assertTrue(owner.open_hardware(p.session.candidate,'follower'))
+        self.assertEqual(self.serial.writes,[])
     @classmethod
     def setUpClass(cls):cls.app=build_application([])
     def setUp(self):
