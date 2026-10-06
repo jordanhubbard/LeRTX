@@ -27,6 +27,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.preview_at=0.;self.preview_error='';self.selected_joint=None
             self.sweep=None;self.auto_due=None;self.rendered_sequence=-1
             self.color_pending=False
+            self.release_sequence=None
             self.preview_window=SetupPreviewWindow(owner)
             self.native_view=self.preview_window.view;self.preview_title=self.preview_window.heading
             self.preview_status=self.preview_window.status
@@ -56,6 +57,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.scan_button=QPushButton('Refresh USB ports');self.scan_button.clicked.connect(self.scan);layout.addWidget(self.scan_button)
             self.support=QCheckBox('Arm supported; power switch within reach');layout.addWidget(self.support)
             self.release=QPushButton('Release torque for hand movement');self.release.clicked.connect(self.release_torque);layout.addWidget(self.release)
+            self.release_result=QLabel();self.release_result.setWordWrap(True);layout.addWidget(self.release_result)
             self.reference_check=QCheckBox('My arm matches the reference pose');layout.addWidget(self.reference_check)
             self.direction=QCheckBox('Reverse this joint in the preview');self.direction.toggled.connect(self.reverse);layout.addWidget(self.direction)
             self.confirm=QCheckBox('Recorded travel and 3D directions match my arm');layout.addWidget(self.confirm)
@@ -82,6 +84,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             active=JOINT_NAMES[self.step-3] if joint else None
             self.sweep=JointSweep(self.role,active) if joint else None;self.auto_due=None;self.rendered_sequence=-1
             self.sync_identity()
+            self.preview_window.set_mode('reference' if self.step==2 else 'waiting')
             self.joint_map.set_state(active,confirmed=self.capture.confirmed if self.capture else ())
             self.travel.setVisible(joint);self.movement.setVisible(joint)
             self.movement.setText(self.sweep.prompt if self.sweep else '')
@@ -98,6 +101,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.back_button.setVisible(4<=self.step<=9)
             for widget in (self.role_box,self.ports,self.scan_button,self.color_button):widget.setVisible(self.step==0)
             self.support.setVisible(self.step==1);self.release.setVisible(self.step==1)
+            self.release_result.setVisible(self.step==1)
             self.reference_check.setVisible(self.step==2)
             self.direction.setVisible(joint);self.confirm.setVisible(self.step==9)
             self.live.setVisible(self.step>=3)
@@ -190,8 +194,13 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.preview_window.show()
             if activate:self.preview_window.raise_();self.preview_window.activateWindow()
         def release_torque(self):
-            if self.session and self.support.isChecked():self.session.stop(force=True)
-            else:self.status.setText('Confirm that the arm is supported first.')
+            if not self.support.isChecked():
+                self.release_result.setText('Support the arm and check “Arm supported” before releasing torque.');return
+            snapshot=self.session.snapshot() if self.session else {};sample=snapshot.get('sample')
+            if not sample:
+                self.release_result.setText('Release not confirmed — wait for the motor connection.');return
+            self.release_sequence=sample['sequence'];self.release_request=self.session.stop(force=True)
+            self.release_result.setText('Releasing torque… waiting for all six motors to confirm OFF.')
         def advance(self):
             if self.pending or self.color_pending or self.closing:return
             try:
@@ -253,7 +262,9 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                 self.confirm.setChecked(False);self.sequence=-1;self.preview_step=None;self.preview_generation+=1;self.auto_due=None
         def live_changed(self,enabled):
             self.sequence=-1;self.preview_generation+=1;self.preview_step=None
-            if not enabled:self.preview_status.setText('3D mirroring paused. Enable it to check this joint.')
+            if not enabled:
+                self.preview_status.setText('3D mirroring paused. Enable it to check this joint.')
+                self.preview_window.set_mode('paused')
             if not enabled and owner.worker and owner._ready:
                 owner._command(lambda:owner.worker.release_hardware(self.role),owner._apply_status)
         def publish(self,positions,timestamp):
@@ -285,9 +296,11 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                 if generation!=self.preview_generation:return
                 if frame.get('setup_cancelled'):return
                 if 'setup_error' in frame:
+                    self.preview_window.set_mode('stale')
                     self.preview_error=frame['setup_error'];self.preview_status.setText(self.preview_error);self.preview_step=None
                     if timestamp is None:self.guide_shown=False
                 else:
+                    self.preview_window.set_mode('reference' if timestamp is None else 'live')
                     self.preview_error='';self.preview_at=time.monotonic()
                     owner._accept_frame(frame)
                     self.native_view.set_image(getattr(owner,'_image',None))
@@ -333,6 +346,21 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             if not self.session:
                 self.next_button.setEnabled(bool(self.candidates) and not self.color_pending);return
             self.session.heartbeat(False);s=self.session.snapshot();sample=s['sample'];setup=s.get('setup') or {}
+            if self.step==1:
+                from .hardware_feedback import torque_summary
+                known=bool(sample and not s['stale']);on=known and any(m['torque'] for m in sample['motors'].values())
+                self.release.setEnabled(bool(on) and self.release_sequence is None)
+                self.release.setText('Releasing motors…' if self.release_sequence is not None else
+                    'Release motors · move by hand' if on else
+                    'Motors free — torque is off' if known else 'Torque unknown — waiting for motors')
+                self.release.setToolTip('Calibration keeps motors off. Engagement becomes available after setup is complete.')
+                if self.release_sequence is not None:
+                    if s['stop_confirmed'] is False or s['state']=='fault':
+                        self.release_result.setText('Release unconfirmed: '+s['error']);self.release_sequence=None
+                    elif s['stop_completed']>=self.release_request and sample and not s['stale'] and sample['sequence']>self.release_sequence and s['stop_confirmed'] is True and not any(m['torque'] for m in sample['motors'].values()):
+                        self.release_result.setText('Released and verified · all 6 motors are OFF. Already-off motors will not visibly change.');self.release_sequence=None
+                elif not self.release_result.text() or self.release_result.text().startswith('Torque '):
+                    self.release_result.setText(torque_summary(s)+' Calibration keeps torque off.')
             if self.closing:
                 if not s['alive']:
                     self.timer.stop();self.shutdown_complete=True
@@ -390,6 +418,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     self.guide_shown=bool(self.publish(reference_pose(self.role),None))
                 if not self.pending:self.connection.setText('Connected · motors remain off' if not any(m['torque'] for m in sample['motors'].values()) else 'Torque is ON. Support the arm and release torque.')
             elif s['stale']:
+                self.preview_window.set_mode('stale')
                 self.preview_status.setText('Telemetry is stale. Mirroring stopped.');self.next_button.setEnabled(False);self.preview_step=None
                 self.auto_due=None
                 if self.sweep:self.sweep.reset_hold()

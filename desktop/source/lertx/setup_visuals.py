@@ -68,6 +68,7 @@ class SetupPreviewWindow(QDialog):
         QLabel,_,_=widgets(lambda:owner.profile)
         self.owner = owner
         self.role = 'follower'
+        self.mode = 'waiting'
         self.disposed = False
         self.setWindowTitle('Live arm · NVIDIA RTX')
         self.resize(900, 700)
@@ -77,6 +78,10 @@ class SetupPreviewWindow(QDialog):
         self.identity = QLabel()
         self.identity.setWordWrap(True)
         layout.addWidget(self.identity)
+        self.mode_label=QLabel('Waiting for setup · not mirroring physical motion')
+        self.mode_label.setWordWrap(True)
+        self.mode_label.setStyleSheet('font-size: 16px; font-weight: bold; padding: 8px; border: 1px solid #8e949b;')
+        layout.addWidget(self.mode_label)
         self.legend = QLabel()
         layout.addWidget(self.legend)
         self.heading = QLabel('SO-101 · live 3D arm')
@@ -104,7 +109,7 @@ class SetupPreviewWindow(QDialog):
     def set_role(self, role):
         self.role = role
         color = role_color(self.owner.profile, role)
-        self.setWindowTitle(role.capitalize()+' · live NVIDIA RTX view')
+        self.set_mode(self.mode)
         from .role_ui import role_icon
         self.setWindowIcon(role_icon(role,self.owner.profile))
         self.identity.setText('Selected: '+ROLE_NAMES[role])
@@ -112,6 +117,19 @@ class SetupPreviewWindow(QDialog):
         self.legend.setText(' · '.join(
             r.capitalize()+(' (selected)' if r==role else ' (other arm)')
             for r in ('leader','follower')))
+
+    def set_mode(self,mode):
+        self.mode=mode
+        title,message={
+            'waiting':('RTX preview waiting','Waiting for setup · not mirroring physical motion'),
+            'reference':('RTX reference guide','REFERENCE GUIDE · stationary pose to copy. Live mirroring starts after reference capture.'),
+            'live':('live NVIDIA RTX view','LIVE · following measured joint motion'),
+            'paused':('RTX view paused','PAUSED · not following physical motion'),
+            'stale':('RTX view stopped','STOPPED · waiting for fresh physical readings'),
+        }[mode]
+        self.setWindowTitle(self.role.capitalize()+' · '+title)
+        self.mode_label.setText(message)
+        self.view.setAccessibleName(message)
 
     def camera(self, kwargs):
         if not self.owner._ready or self.owner.worker is None:

@@ -32,6 +32,7 @@ class HardwareSession:
         self._wake=threading.Event();self._force_stop=False;self._epoch=0;self._held=False;self._was_held=False
         self._heartbeat=clock();self._state='disconnected';self._error='';self._stop_confirmed=None
         self._last_step=clock();self._claimed=False
+        self._stop_completed=0
         self._thread=threading.Thread(target=self._run,name='SO101-'+role,daemon=True)
         self._thread.start()
 
@@ -51,15 +52,17 @@ class HardwareSession:
     def stop(self,*,disconnect=False,shutdown=False,force=True):
         with self._lock:
             self._epoch+=1;self._held=False;self._force_stop|=force
+            request=self._epoch
         if disconnect or shutdown:self._disconnect.set()
         if shutdown:self._shutdown.set()
         self._stop.set();self._wake.set()
+        return request
 
     def snapshot(self):
         with self._lock:
             result=copy.deepcopy(dict(state=self._state,error=self._error,sample=self.latest,
                 calibration=self.calibration.values if self.calibration else None,
-                targets=self.targets,stop_confirmed=self._stop_confirmed,device_id=self.device_id))
+                targets=self.targets,stop_confirmed=self._stop_confirmed,stop_completed=self._stop_completed,device_id=self.device_id))
             result['setup']=copy.deepcopy(self.setup)
         result['alive']=self._thread.is_alive()
         if result['sample'] and self.clock()-result['sample']['timestamp']>self.STALE:
@@ -133,7 +136,7 @@ class HardwareSession:
         self.calibration.verify(self.bus.inspect())
         self._read();self._fresh()
         if any(m['torque'] for m in self.latest['motors'].values()):
-            raise ValueError('Motors already have torque enabled. Support the arm and use Stop before arming here.')
+            raise ValueError('Motors already have torque enabled. Support the arm and use Release motors before engaging here.')
         self._state_is('arming');self._stop_confirmed=None
         self.owns_torque=True  # Any partially successful arm must run torque-off cleanup.
         try:
@@ -277,13 +280,14 @@ class HardwareSession:
         try:
             while True:
                 if self._stop.is_set():
-                    with self._lock:force=self._force_stop;self._force_stop=False
+                    with self._lock:force=self._force_stop;self._force_stop=False;stop_request=self._epoch
                     confirmed=self._release_torque(force)
                     restored=self._setup_restore()
                     if self._disconnect.is_set():
                         self._close_bus();self._disconnect.clear()
                         if confirmed and restored:self._state_is('disconnected')
                     elif confirmed and restored:self._state_is('read-only' if self.bus else 'disconnected')
+                    with self._lock:self._stop_completed=stop_request
                     self._stop.clear()
                     if self._shutdown.is_set():break
                 try:

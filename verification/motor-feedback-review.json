@@ -1,0 +1,13 @@
+{
+  "complete": true,
+  "hardware": "serial emulator only",
+  "physical_hardware_actuated": false,
+  "verified": [
+    "raw calibration blocker",
+    "confirmed engage",
+    "measured ON release action",
+    "confirmed release",
+    "measured OFF engage action",
+    "dark and light disabled appearance"
+  ]
+}

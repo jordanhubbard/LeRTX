@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:be9d0007bd42ca74707a90774908dbfdc828d8311dd82ba11308ee66ef988405 -->
+<!-- literate-ai:authority-reviewed sha256:9cb94454f7b63670fa02fdc307e10d71260535b8bb039f2fa05f5e2092610b14 -->
 
 [Project guide](../README.md) → design traceability
 
@@ -31,3 +31,7 @@ The hardware contract also owns persistent role identity and configurable printe
 part colors. One palette drives Qt labels/diagrams and linear-light USD material
 inputs in the runtime snapshot; authored scenes and hardware roles are unchanged.
 Legacy profile migration adds only the two new color defaults.
+
+Hardware torque feedback derives from measured registers and serial stop-request
+completion, not button intent. The UI exposes unmet engagement/mirroring gates;
+the stationary reference remains explicit until capture supplies a mapping.

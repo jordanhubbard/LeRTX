@@ -21,7 +21,10 @@ QTreeWidget, QLineEdit, QDoubleSpinBox, QComboBox, QSpinBox {
 }
 QTreeWidget::item:selected, QListWidget::item:selected { background-color: #1f6f6b; }
 QPushButton { background-color: #2b2f33; border: 1px solid #3a3f44; border-radius: 4px; padding: 6px 12px; }
-QPushButton:hover { border-color: #2fa39c; }
+QPushButton:hover:enabled { border-color: #2fa39c; }
+QPushButton:disabled { background-color: #202225; color: #8e949b; border: 1px dashed #60666d; }
+QComboBox:disabled, QDoubleSpinBox:disabled, QSpinBox:disabled, QLineEdit:disabled { background-color: #202225; color: #8e949b; border: 1px dashed #60666d; }
+QCheckBox:disabled { color: #8e949b; }
 QPushButton:focus, QLineEdit:focus, QDoubleSpinBox:focus, QComboBox:focus {
     border: 1px solid #2fa39c;
 }
@@ -1074,6 +1077,9 @@ def build_main_window(
                     QWidget { background: #f1f4f5; color: #182428; font-size: 13px; }
                     QLineEdit, QTreeWidget, QSpinBox, QDoubleSpinBox { background: white; color: #182428; padding: 4px; }
                     QPushButton { background: #dce8e8; color: #182428; padding: 6px 12px; }
+                    QPushButton:disabled { background: #f1f4f5; color: #69747b; border: 1px dashed #849097; }
+                    QComboBox:disabled, QDoubleSpinBox:disabled, QSpinBox:disabled, QLineEdit:disabled { background: #f1f4f5; color: #69747b; border: 1px dashed #849097; }
+                    QCheckBox:disabled { color: #69747b; }
                     QTreeWidget::item:selected { background: #267c78; color: white; }
                     QLabel#viewport { background: #101214; }
                 """)

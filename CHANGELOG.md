@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Hardware controls: use one measured-state Engage/Release control, expose missing
+  prerequisites and distinguish disabled buttons in both themes. Report verified
+  torque state and action results. Setup shows already-free motors explicitly;
+  the RTX window distinguishes the stationary reference guide from live motion.
+
 - Device setup keeps Leader/Follower identity visible throughout calibration,
   with matching diagram, viewport and RTX material colors. Choose saved custom
   printed-part colors before connecting; existing preferences migrate intact.
