@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Make physical devices application-owned shared controllers. Hardware and setup
+  views share telemetry and one serial connection, with exclusive calibration
+  access and verified cleanup before control handoff. Record the architectural
+  review and staged refactoring plan. Extend wizard Back navigation through arm
+  selection, support and reference restoration.
+
+- Keep the joint reference diagram visible throughout setup. Add explicit parent
+  navigation to hardware/setup panels and RTX preview, preserving shutdown and
+  calibration recovery when leaving physical controls.
+
 - Device identity: add controller/gripper badges with contrasting symbol ink and
   readable text, including Device Manager rows and role/port control buttons.
   Prevent stale control windows from opening the wrong reassigned device.

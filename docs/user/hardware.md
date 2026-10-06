@@ -28,7 +28,7 @@ then switches to **LIVE** after
 reference capture and mirrors all six measured joints. Resize or move it beside
 the wizard; use its turn, zoom and framing buttons
 to inspect the motion. **Open live RTX 3D window** brings it back if closed.
-The optional reference-only numbered diagram locates
+The always-visible reference-only numbered diagram locates
 each joint: base turn, upper-arm hinge, middle hinge, wrist tilt, wrist twist and
 claw (or the leader's trigger). The role color identifies the selected diagram joint.
 
@@ -124,3 +124,17 @@ or hold the left mouse button on the link and drag right/up or left/down.
 The connected links move through the actual articulation and joint limits.
 Disable following to manipulate the follower independently. Alt-drag orbits;
 right-drag pans; the wheel zooms. There is no free-space gripper IK gizmo yet.
+
+The joint diagram stays above the scrolling instructions throughout setup. Back
+buttons name the parent panel. Leaving setup cancels it with the existing register
+recovery; leaving hardware controls closes its session before reopening Device
+Manager. Back from the RTX window returns focus without interrupting calibration.
+
+You can open setup while this arm's read-only hardware panel is open. Both use the
+same device connection. During setup, the hardware panel shows shared telemetry
+and names setup as the controller; its motor commands are unavailable. Release
+engaged motors explicitly before entering setup. Closing an observing panel does
+not interrupt calibration. Cancel restores the prior registers before returning
+control; finishing setup reuses the hardware panel with the new calibration.
+Use Back to revisit support or the reference pose; returning from the first joint
+restores original calibration before another reference capture.

@@ -50,6 +50,7 @@ def build_main_window(
     worker_factory: Callable[[], object],
     default_scene_path: str,
     config_path: str,
+    *, device_registry=None,
 ):
     """Construct and return the LeRTX main window (real Qt widgets)."""
     from PySide6.QtCore import Qt, QTimer, Signal
@@ -487,6 +488,8 @@ def build_main_window(
             self.reconstruction_probe = transport_module.ConnectionProbe(request_scene)
             from .devices import scan_result
             self.device_probe = transport_module.ConnectionProbe(scan_result)
+            from .device_control import DeviceRegistry
+            self.devices = device_registry if device_registry is not None else DeviceRegistry()
             self._hardware_windows = {}
             self.clock = SimulationClock(self.profile["physics"]["timestep_hz"])
             self._pending = []
@@ -934,6 +937,7 @@ def build_main_window(
         def open_scene(self, path):
             from pathlib import Path
             self.viewport_label.cancel()
+            self.devices.shutdown()
             for panel in self._hardware_windows.values():panel.live.setChecked(False)
             if self.worker is None:
                 try:
@@ -991,8 +995,7 @@ def build_main_window(
             if profile is None:
                 return
             from .arm_colors import role_color
-            if any(role_color(profile,r)!=role_color(self.profile,r) for r in ('leader','follower')) and any(
-                    p.session and p.session._thread.is_alive() for p in self._hardware_windows.values()):
+            if any(role_color(profile,r)!=role_color(self.profile,r) for r in ('leader','follower')) and self.devices.alive:
                 self._show_error(ValueError('Close hardware sessions before changing arm colors.'))
                 return
             restart = profile["rendering"] != self.profile["rendering"]
@@ -1049,18 +1052,15 @@ def build_main_window(
             dialog.deleteLater()
 
         def open_hardware(self,candidate,role):
-            for existing_role,existing in self._hardware_windows.items():
-                session=getattr(existing,'session',None)
-                if not session or not session._thread.is_alive():continue
-                same_device=session.candidate.attachment==candidate.attachment
-                if (existing_role==role or same_device) and (existing_role!=role or not same_device or existing.closing):
-                    self.statusBar().showMessage('Close the existing '+session.role+' controls on '+session.candidate.port+' before opening '+role+' on '+candidate.port+'. The device assignment changed or that port is already in use.')
-                    return False
             panel=self._hardware_windows.get(role)
-            if panel and panel.session._thread.is_alive():
+            if panel and panel.session.alive:
+                if panel.session.candidate.attachment!=candidate.attachment or panel.closing:
+                    self.statusBar().showMessage("Device assignment changed; close the existing controls first");return False
                 panel.show();panel.raise_();panel.activateWindow();return True
             from .hardware_ui import build_hardware_panel
-            panel=build_hardware_panel(self,candidate,role)
+            try:panel=build_hardware_panel(self,candidate,role)
+            except ValueError as exc:
+                self.statusBar().showMessage(str(exc));return False
             self._hardware_windows[role]=panel
             panel.show()
             return True
@@ -1167,7 +1167,7 @@ def build_main_window(
                 except Exception as exc:
                     self._show_error(exc)
             if self._closing:
-                if any(p.session._thread.is_alive() or (p.closing and not p.shutdown_complete) for p in self._hardware_windows.values()):
+                if self.devices.alive or any(p.closing and not p.shutdown_complete for p in self._hardware_windows.values()):
                     return
                 if self.worker is None or self.worker._thread is None or not self.worker._thread.is_alive():
                     if self.worker:
@@ -1205,8 +1205,6 @@ def build_main_window(
 
         def closeEvent(self, event):
             self.viewport_label.cancel()
-            for panel in self._hardware_windows.values():
-                if panel.session and panel.session._thread.is_alive():panel.shutdown()
             if self._closing and self.worker is None:
                 self._frame_timer.stop()
                 from .desktop_state import save_state
@@ -1220,6 +1218,9 @@ def build_main_window(
                 self.statusBar().showMessage("Finishing current operation before closing")
                 return
             def begin_close():
+                self.devices.shutdown()
+                for panel in self._hardware_windows.values():
+                    if panel.session and not panel.closing:panel.shutdown()
                 self._closing = True
                 self._ready = False
                 if self.worker:

@@ -103,3 +103,27 @@ Verify real SDK packet bytes through emulated serial endpoints, controller/Qt
 behavior, partial replies, checksums, timeouts, stale heartbeat, stop ordering,
 failed arming and rate/range limits. Windows/Linux software evidence does not
 replace pending physical-arm qualification.
+
+Always show the numbered joint reference diagram throughout setup, pinned outside
+the scrolling instructions with no visibility toggle. Hardware setup sub-panels
+provide explicit Back actions naming their parent: Device Manager returns to the
+scene, hardware controls to Device Manager, setup to the scene, and RTX preview to
+its current setup or hardware controls. Navigation out of physical controls uses
+the existing verified shutdown/recovery path before reopening the parent. Returning
+from the RTX view preserves calibration progress and keeps live rendering active.
+
+Application-level device controllers own serial sessions independently of windows.
+One attachment has one session shared by all its views. The registry rejects
+conflicting role/attachment identities before opening a port. Access objects expose
+telemetry to all consumers and grant writes/heartbeats to one controlling consumer;
+setup takes exclusive control only with motors off and no pending engage. Other
+views remain visible as observers with explicit ownership feedback. Closing an
+observer cannot stop another consumer's calibration. Releasing the controlling
+consumer waits for verified stop/register recovery before granting another writer;
+last-consumer and application shutdown close the physical session. Calibration
+and virtual binding belong to the shared device model, not a widget. Completed
+setup returns control to an existing hardware view when available. Window caches
+are navigation state, never the source of physical-device ownership.
+
+The wizard preselects the saved attachment for the chosen role after discovery
+and role changes, rather than silently defaulting both roles to the first port.

@@ -37,7 +37,7 @@ class DevicesUiTests(unittest.TestCase):
         dialog.open_hardware('follower');self.assertEqual(opened,[(follower,'follower')])
         # Role mutations are guarded in the handlers too, not only disabled buttons.
         session=SimpleNamespace(candidate=leader,role='leader',_thread=SimpleNamespace(is_alive=lambda:True),snapshot=lambda:{'state':'read-only'})
-        parent._hardware_windows={'leader':SimpleNamespace(session=session)}
+        parent.devices=SimpleNamespace(active_controllers=lambda:[SimpleNamespace(session=session)])
         dialog.tree.setCurrentItem(dialog.tree.topLevelItem(0));dialog.refresh_roles()
         self.assertFalse(dialog.assign_buttons['leader'].isEnabled())
         self.assertIn('read-only',dialog.role_labels['leader'].text())

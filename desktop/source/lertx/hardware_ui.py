@@ -13,21 +13,25 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
 
     from .role_ui import widgets
     QLabel,QPushButton,QCheckBox=widgets(lambda: owner.profile)
+    access=owner.devices.acquire(candidate,role,"hardware",session_factory)
 
     class HardwarePanel(QDialog):
         def __init__(self):
             super().__init__(owner)
-            self.role=role;self.calibration=None;self.binding=None;self.closing=False;self.sequence=-1
-            self.shutdown_complete=False
+            self.role=role;self.closing=False;self.sequence=-1
+            self.shutdown_complete=False;self.return_to_devices=False
+            self.finished.connect(self.return_to_parent)
             self.preview_pending=False;self.preview_generation=0
             self.preview_at=0.
             self.motor_action=None;self.motor_sequence=-1
-            self.session=session_factory(candidate,role)
+            self.session=access
             self.setWindowTitle('SO-101 hardware · '+role+' · '+candidate.port)
             from .role_ui import role_icon
             self.setWindowIcon(role_icon(role,owner.profile))
             self.resize(920,570);self.setModal(False)
             layout=QVBoxLayout(self)
+            self.parent_button=QPushButton('Back to Device Manager')
+            self.parent_button.clicked.connect(self.back_to_devices);layout.addWidget(self.parent_button)
             layout.addWidget(QLabel(role.capitalize()+' · physical USB controls'))
             note=QLabel('Physical USB controls · Connect reads only. Import this arm’s LeRobot calibration before engaging motors. Hold Move to execute targets; release the button to hold position. Release motors makes the arm free — support it. Keep the motor power switch accessible.')
             note.setWordWrap(True);layout.addWidget(note)
@@ -66,6 +70,15 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             self.message=QLabel();self.message.setWordWrap(True);layout.addWidget(self.message)
             self._last_state='';self.timer=QTimer(self);self.timer.timeout.connect(self.poll);self.timer.start(50)
             self.poll()
+
+        @property
+        def calibration(self):return self.session.controller.calibration
+        @calibration.setter
+        def calibration(self,value):self.session.controller.calibration=value
+        @property
+        def binding(self):return self.session.controller.binding
+        @binding.setter
+        def binding(self,value):self.session.controller.binding=value
 
         def request(self,command,payload=None):
             try:self.session.request(command,payload);self.message.clear();return True
@@ -212,6 +225,15 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             for name,button in self.send_buttons.items():button.setEnabled(armed)
             for spin in self.targets.values():spin.setEnabled(armed)
             self._last_state=state
+            if not snapshot['control_available'] and not self.closing:
+                self.status.setText(state.upper()+' · controlled by '+snapshot['control_owner']+' · shared telemetry')
+                for widget in (self.connect_button,self.disconnect_button,self.import_button,self.torque_button,
+                        self.move_button,self.virtual_button,self.binding_button,self.capture_button,self.live,
+                        *self.send_buttons.values(),*self.targets.values()):widget.setEnabled(False)
+                self.live.setChecked(False)
+            elif not self.closing:self.disconnect_button.setEnabled(True)
+            if self.calibration:
+                for name,spin in self.targets.items():spin.setRange(*self.calibration.limits(name))
             if self.live.isChecked():
                 if not healthy or state not in ('read-only','armed'):
                     self.live.setChecked(False);self.message.setText('Live view stopped: physical telemetry is unavailable or stale.')
@@ -252,6 +274,14 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
                         'The bus did not confirm torque-off. Use the physical motor power switch and support the arm.\n\n'+snapshot['error'])
                 self.shutdown_complete=True;self.done(0)
 
+        def back_to_devices(self):
+            self.return_to_devices=True;self.parent_button.setEnabled(False);self.close()
+
+        def return_to_parent(self,_):
+            if self.return_to_devices and not owner.devices.closing:
+                self.return_to_devices=False
+                QTimer.singleShot(0,owner._on_devices)
+
         def event(self,event):
             if event.type()==QEvent.Type.WindowDeactivate and hasattr(self,'move_button'):
                 self.move_button.setDown(False);self.session.heartbeat(False)
@@ -263,10 +293,13 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             self.session.stop(shutdown=True,force=False)
 
         def closeEvent(self,event):
-            if not self.session._thread.is_alive():event.accept();return
+            if not self.session.alive:event.accept();return
             event.ignore();self.shutdown()
 
         def reject(self):
             self.close()
 
-    return HardwarePanel()
+    try:return HardwarePanel()
+    except Exception:
+        access.stop(shutdown=True,force=False)
+        raise

@@ -39,12 +39,27 @@ class SetupUITests(unittest.TestCase):
     def cleanup(self):
         w=self.wizard
         if w.transferred:
-            for p in self.owner._hardware_windows.values():p.shutdown();p.session._thread.join(3)
+            for p in self.owner._hardware_windows.values():p.shutdown();p.session.controller.session.wait_closed(3)
         else:
             w.shutdown()
-            if w.session:self.wait(lambda:not w.session._thread.is_alive())
+            if w.session:self.wait(lambda:not w.session.alive)
+        self.owner.devices.shutdown();self.owner.devices.wait_closed()
         w.timer.stop();self.owner._ready=False;self.owner.worker=None
         w.deleteLater();self.owner.deleteLater();self.app.processEvents()
+    def test_reference_map_stays_visible_and_preview_returns_to_setup(self):
+        w=self.wizard
+        from lertx.setup_calibration import RangeCapture
+        from lertx.robot import JOINT_NAMES
+        w.capture=RangeCapture(w.role,{n:0 for n in JOINT_NAMES})
+        for step in range(11):
+            w.step=step;w.render_step();self.app.processEvents()
+            w.controls_scroll.verticalScrollBar().setValue(w.controls_scroll.verticalScrollBar().maximum())
+            self.assertTrue(w.joint_map.isVisible())
+            self.assertIs(w.joint_map.parentWidget(),w)
+        w.preview_window.back_button.click()
+        self.assertTrue(w.isVisible());self.assertFalse(w.closing)
+        self.assertEqual(w.step,10)
+
     def begin(self):
         w=self.wizard;w.next_button.click()
         self.wait(lambda:w.session.snapshot()['state']=='read-only' and not w.pending)
@@ -55,6 +70,47 @@ class SetupUITests(unittest.TestCase):
         self.wait(lambda:w.guide_ready);self.assertIsNone(self.frames[-1][2])
         w.reference_check.setChecked(True);w.advance()
         self.wait(lambda:w.step==3)
+    def test_open_hardware_and_setup_share_one_owner_and_cancel_returns_control(self):
+        from lertx.hardware_ui import build_hardware_panel
+        w=self.wizard;c=w.candidates[0]
+        def factory(candidate,role):
+            return HardwareSession(candidate,role,verify=lambda c:None,
+                bus_factory=lambda p:FeetechBus(p,serial_factory=lambda **k:self.serial))
+        panel=build_hardware_panel(self.owner,c,'follower',factory)
+        self.owner._hardware_windows['follower']=panel
+        def cleanup_panel():
+            panel.shutdown();self.wait(lambda:not panel.session.alive);panel.deleteLater()
+        self.addCleanup(cleanup_panel)
+        panel.connect_button.click();self.wait(lambda:panel.session.snapshot()['state']=='read-only')
+        w.advance();self.wait(lambda:w.step==1 and not w.pending)
+        self.assertIs(w.session.controller,panel.session.controller)
+        panel.poll();self.assertFalse(panel.import_button.isEnabled())
+        self.assertIn('controlled by setup',panel.status.text())
+        w.close();self.wait(lambda:w.shutdown_complete)
+        self.assertTrue(panel.session.alive);self.assertTrue(panel.session.writable)
+        panel.poll();self.assertTrue(panel.import_button.isEnabled())
+        self.assertFalse(self.serial.closed)
+
+    def test_saved_role_selects_its_own_usb_port(self):
+        from lertx.devices import RoleAssignments
+        w=self.wizard;leader=Candidate('leader-port',1,2,'leader');follower=Candidate('follower-port',1,2,'follower')
+        w.candidates=[leader,follower];w.ports.clear()
+        for c in w.candidates:w.ports.addItem(c.port)
+        roles=RoleAssignments(Path(self.owner.config_path).parent/'devices.json')
+        roles.assign('leader',leader,w.candidates);roles.assign('follower',follower,w.candidates)
+        w.select_assigned_port();self.assertEqual(w.ports.currentIndex(),1)
+        w.role_box.setCurrentText('leader');self.assertEqual(w.ports.currentIndex(),0)
+        self.assertIsNone(w.session)
+
+    def test_back_navigation_restores_reference_and_returns_to_selection(self):
+        self.begin();w=self.wizard
+        w.back_button.click();self.wait(lambda:w.step==2 and not w.pending)
+        self.assertEqual(w.session.snapshot()['setup']['state'],'cancelled')
+        self.assertEqual(int.from_bytes(self.serial.registers[1][9:11],'little'),512)
+        w.back_button.click();self.assertEqual(w.step,1)
+        w.back_button.click();self.wait(lambda:w.step==0)
+        self.assertIsNone(w.session);self.assertFalse(self.owner.devices.alive)
+
     def test_release_explains_support_then_verifies_already_off_motors(self):
         w=self.wizard;w.advance()
         self.wait(lambda:w.session.snapshot()['state']=='read-only' and not w.pending)
@@ -104,6 +160,9 @@ class SetupUITests(unittest.TestCase):
         self.assertEqual(len(calls),1)
     def test_full_calibration_exports_and_mirrors_each_joint_without_torque(self):
         w=self.wizard;self.begin()
+        from lertx.hardware_ui import build_hardware_panel
+        existing=build_hardware_panel(self.owner,w.candidate,w.role)
+        self.owner._hardware_windows[w.role]=existing
         for i in range(1,7):
             self.wait(lambda:w.sweep.start is not None)
             self.serial.registers[i][56:58]=(1600).to_bytes(2,'little')
@@ -121,6 +180,13 @@ class SetupUITests(unittest.TestCase):
         self.assertTrue(any(f[2] is not None for f in self.frames))
         self.assertFalse(any(a==40 and value for _,a,value,_ in self.serial.writes))
         self.assertEqual(w.session.snapshot()['state'],'read-only')
+        w.advance();self.assertTrue(w.transferred)
+        panel=self.owner._hardware_windows['follower']
+        self.assertIs(panel,existing)
+        self.assertIs(panel.session.controller,w.session.controller)
+        self.assertTrue(panel.session.writable)
+        self.assertIs(panel.preview_window.navigation_parent,panel)
+        self.assertIsNotNone(panel.calibration);self.assertIsNotNone(panel.binding)
     def test_cancel_restores_and_closes_without_enabling_motors(self):
         self.begin();self.wizard.close()
         self.wait(lambda:self.wizard.shutdown_complete)
@@ -187,7 +253,7 @@ class SetupUITests(unittest.TestCase):
         self.assertIn('rotating platform',w.instructions.text())
         self.assertTrue(w.native_view.isVisible())
         self.assertTrue(w.preview_window.isWindow())
-        self.assertFalse(w.joint_map.isVisible())
+        self.assertTrue(w.joint_map.isVisible())
 
     def test_preview_window_receives_each_native_frame_and_reopens(self):
         from PySide6.QtGui import QImage

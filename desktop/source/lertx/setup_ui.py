@@ -28,7 +28,9 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.sweep=None;self.auto_due=None;self.rendered_sequence=-1
             self.color_pending=False
             self.release_sequence=None
+            self.back_target=None;self.back_stop=None
             self.preview_window=SetupPreviewWindow(owner)
+            self.preview_window.navigation_parent=self
             self.native_view=self.preview_window.view;self.preview_title=self.preview_window.heading
             self.preview_status=self.preview_window.status
             self.probe=scanner or ConnectionProbe(scan_result);self.ticket=None;self.candidates=[]
@@ -37,6 +39,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             title=QLabel('Meet your arm');title.setStyleSheet('font-size: 24px; font-weight: bold;');outer.addWidget(title)
             self.stage_label=QLabel('Connect  →  Prepare  →  Learn six joints  →  Save  →  Done');outer.addWidget(self.stage_label)
             self.identity=QLabel();self.identity.setWordWrap(True);outer.addWidget(self.identity)
+            self.joint_map=JointMap();outer.addWidget(self.joint_map)
             body=QHBoxLayout();outer.addLayout(body,1)
             scroll=QScrollArea();scroll.setWidgetResizable(True);scroll.setMinimumWidth(345)
             scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff);self.controls_scroll=scroll
@@ -45,8 +48,6 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.heading=QLabel();self.heading.setWordWrap(True);self.heading.setStyleSheet('font-size: 20px; font-weight: bold;');layout.addWidget(self.heading)
             self.progress=QProgressBar();self.progress.setRange(0,10);layout.addWidget(self.progress)
             self.instructions=QLabel();self.instructions.setWordWrap(True);layout.addWidget(self.instructions)
-            self.map_toggle=QCheckBox('Show joint-location diagram (reference only)');layout.addWidget(self.map_toggle)
-            self.joint_map=JointMap();layout.addWidget(self.joint_map);self.joint_map.hide();self.map_toggle.toggled.connect(self.joint_map.setVisible)
             self.movement=QLabel();self.movement.setWordWrap(True);layout.addWidget(self.movement)
             self.travel=QProgressBar();self.travel.setRange(0,100);self.travel.setFormat('Waiting for travel');layout.addWidget(self.travel)
             self.role_box=QComboBox();self.role_box.addItems(['follower','leader']);layout.addWidget(self.role_box)
@@ -67,7 +68,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.status=QLabel();self.status.setWordWrap(True);self.status.setTextFormat(Qt.TextFormat.PlainText);outer.addWidget(self.status)
             layout.addStretch(1)
             footer=QHBoxLayout();outer.addLayout(footer)
-            self.cancel_button=QPushButton('Cancel setup');self.cancel_button.clicked.connect(self.close);footer.addWidget(self.cancel_button)
+            self.cancel_button=QPushButton('Back to scene · cancel setup');self.cancel_button.clicked.connect(self.close);footer.addWidget(self.cancel_button)
             self.back_button=QPushButton('Back to previous joint');self.back_button.clicked.connect(self.go_back);footer.addWidget(self.back_button)
             footer.addStretch(1)
             self.next_button=QPushButton();self.next_button.setMinimumHeight(38);self.next_button.clicked.connect(self.advance);footer.addWidget(self.next_button)
@@ -76,6 +77,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             self.render_step();self.scan()
 
         def render_step(self):
+            self.cancel_button.setText("Back to scene" if self.step==10 else "Back to scene · cancel setup")
             self.status.clear()
             self.controls_scroll.verticalScrollBar().setValue(0)
             self.preview_step=None;self.preview_generation+=1;self.sequence=-1
@@ -99,7 +101,9 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                 self.heading.setText(f'{min(self.step+1,11)} / 11 · '+names[self.step])
             self.progress.setValue(self.step)
             self.progress.setVisible(self.step<10)
-            self.back_button.setVisible(4<=self.step<=9)
+            self.back_button.setEnabled(not self.pending)
+            self.back_button.setVisible(1<=self.step<=9)
+            self.back_button.setText({1:'Back to arm selection',2:'Back to support check',3:'Back to reference pose'}.get(self.step,'Back to previous joint'))
             for widget in (self.role_box,self.ports,self.scan_button,self.color_button):widget.setVisible(self.step==0)
             self.support.setVisible(self.step==1);self.release.setVisible(self.step==1)
             self.release_result.setVisible(self.step==1)
@@ -151,7 +155,15 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                 previous=self.role
                 if owner.worker and owner._ready:
                     owner._command(lambda:owner.worker.release_hardware(previous),owner._apply_status)
-                self.role=role;self.render_step()
+                self.role=role;self.render_step();self.select_assigned_port()
+
+        def select_assigned_port(self):
+            if self.session or self.step!=0:return
+            try:
+                roles=RoleAssignments(Path(owner.config_path).parent/'devices.json')
+                state,candidate=roles.resolve(self.role,self.candidates)
+                if state=='assigned':self.ports.setCurrentIndex(self.candidates.index(candidate))
+            except (OSError,ValueError):pass
 
         def choose_color(self):
             from PySide6.QtGui import QColor
@@ -163,7 +175,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             if self.session or self.color_pending or self.step!=0:return
             if not owner._ready or owner.worker is None:
                 self.status.setText('Wait for the workspace to finish loading.');return
-            if any(getattr(p,'session',None) and p.session._thread.is_alive() for p in owner._hardware_windows.values()):
+            if owner.devices.alive:
                 self.status.setText('Close hardware sessions before changing arm colors.');return
             profile=copy.deepcopy(owner.profile);profile['general'][self.role+'_color']=color
             self.color_pending=True;self.role_box.setEnabled(False);self.color_button.setEnabled(False)
@@ -214,12 +226,13 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                 if self.step==0:
                     if not self.candidates:raise ValueError('No USB arm found. Connect USB and power, then refresh.')
                     self.candidate=self.candidates[self.ports.currentIndex()];self.role=self.role_box.currentText()
-                    for panel in owner._hardware_windows.values():
-                        if panel is not self and panel.session._thread.is_alive() and panel.session.candidate.attachment==self.candidate.attachment:
-                            raise ValueError('Close the existing hardware panel for this USB port first.')
-                    roles=RoleAssignments(Path(owner.config_path).parent/'devices.json')
-                    roles.assign(self.role,self.candidate,self.candidates)
-                    self.session=session_factory(self.candidate,self.role);owner._hardware_windows['setup']=self
+                    self.session=owner.devices.acquire(self.candidate,self.role,'setup',session_factory)
+                    try:
+                        roles=RoleAssignments(Path(owner.config_path).parent/'devices.json')
+                        roles.assign(self.role,self.candidate,self.candidates)
+                    except Exception:
+                        self.session.stop(shutdown=True,force=False);self.session=None;raise
+                    owner._hardware_windows['setup']=self
                     self.session.request('connect');self.pending=True;self.step=1;self.render_step()
                 elif self.step==1:
                     self.require_sample()
@@ -253,7 +266,14 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                 and self.rendered_sequence>=self.sweep.ready_sequence)
 
         def go_back(self):
-            if not self.pending and 4<=self.step<=9:
+            if self.pending:return
+            if self.step==1:
+                self.back_target=0;self.pending=True;self.session.stop(shutdown=True,force=False)
+                self.status.setText('Returning to arm selection after device cleanup…')
+            elif self.step==3:
+                self.back_target=2;self.pending=True;self.back_stop=self.session.stop(force=False)
+                self.status.setText('Restoring calibration registers before returning to the reference pose…')
+            elif self.step==2 or 4<=self.step<=9:
                 self.step-=1;self.confirm.setChecked(False);self.sequence=-1;self.preview_step=None;self.render_step()
 
         def require_sample(self):
@@ -318,20 +338,27 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
             return True
         def finish_setup(self):
             from .hardware_ui import build_hardware_panel
-            panel=build_hardware_panel(owner,self.candidate,self.role,session_factory=lambda *a:self.session)
+            panel=owner._hardware_windows.get(self.role)
+            if panel is None or panel.closing or not panel.session.alive:
+                panel=build_hardware_panel(owner,self.candidate,self.role)
+            if hasattr(panel,'preview_window') and panel.preview_window is not self.preview_window:
+                panel.preview_window.dispose()
             panel.calibration=self.capture.calibration();panel.binding=self.capture.binding(self.session.device_id)
             for n,spin in panel.targets.items():spin.setRange(*panel.calibration.limits(n))
             panel.calibration_label.setText('Wizard calibration verified · '+str(self.run_dir/'calibration.json'))
             panel.binding_label.setText('Verified reference and joint directions loaded')
             panel.preview_window=self.preview_window
+            self.preview_window.navigation_parent=panel
+            self.preview_window.back_button.setText("Back to hardware controls")
             self.preview_window.heading.setText(self.role.title()+' · live physical arm · NVIDIA RTX')
             self.preview_window.status.setText('Measured live view · motors remain off until explicitly enabled')
             show=QPushButton('Open live RTX 3D window');show.clicked.connect(self.preview_window.show);panel.layout().addWidget(show)
             owner._hardware_windows.pop('setup',None);owner._hardware_windows[self.role]=panel
+            self.session.complete_setup()
             self.transferred=True;self.timer.stop();self.preview_generation+=1
             panel.live.setChecked(True);panel.show();self.done(1)
         def restart(self):
-            if self.session and self.session._thread.is_alive():
+            if self.session and self.session.alive:
                 self.session.stop(shutdown=True,force=False);self.status.setText('Closing the previous connection; click again when it has stopped.');return
             owner._hardware_windows.pop('setup',None)
             self.session=None;self.capture=None;self.step=0;self.pending=False
@@ -352,10 +379,20 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None):
                     self.ticket=None;self.scan_button.setEnabled(True);self.ports.clear()
                     self.candidates=result.get('candidates',[])
                     for c in self.candidates:self.ports.addItem(c.port+' · '+c.description+(' · '+c.serial if c.serial else ' · no unique serial'))
+                    self.select_assigned_port()
                     self.status.setText('Choose the port for this arm.' if self.candidates else 'No USB ports found. Check the cable, motor power and USB driver, then refresh.')
             if not self.session:
                 self.next_button.setEnabled(bool(self.candidates) and not self.color_pending);return
             self.session.heartbeat(False);s=self.session.snapshot();sample=s['sample'];setup=s.get('setup') or {}
+            if self.back_target is not None:
+                ready=not s['alive'] if self.back_target==0 else s['stop_completed']>=self.back_stop
+                if ready:
+                    target=self.back_target;self.back_target=None;self.pending=False
+                    if setup.get('state')=='restore-unconfirmed' or s['stop_confirmed'] is False:
+                        self.status.setText(s['error']);self.reset_button.show();return
+                    if target==0:self.restart()
+                    else:self.capture=None;self.step=target;self.reference_check.setChecked(False);self.render_step()
+                return
             if self.step==1:
                 from .hardware_feedback import torque_summary
                 known=bool(sample and not s['stale']);on=known and any(m['torque'] for m in sample['motors'].values())

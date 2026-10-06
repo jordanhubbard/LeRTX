@@ -27,6 +27,14 @@ class HardwareUITests(unittest.TestCase):
         self.assertNotIn('leader',owner._hardware_windows)
         self.assertTrue(owner.open_hardware(p.session.candidate,'follower'))
         self.assertEqual(self.serial.writes,[])
+    def test_back_to_devices_waits_for_session_shutdown(self):
+        self.connect();returned=[]
+        self.owner._on_devices=lambda:returned.append(self.panel.session.alive)
+        self.panel.parent_button.click()
+        self.wait(lambda:bool(returned))
+        self.assertEqual(returned,[False])
+        self.assertTrue(self.panel.shutdown_complete)
+
     @classmethod
     def setUpClass(cls):cls.app=build_application([])
     def setUp(self):
@@ -48,7 +56,7 @@ class HardwareUITests(unittest.TestCase):
             QTest.qWait(5)
         self.fail('Condition failed: '+repr(self.panel.session.snapshot()))
     def cleanup(self):
-        self.panel.shutdown();self.wait(lambda:not self.panel.session._thread.is_alive())
+        self.panel.shutdown();self.wait(lambda:not self.panel.session.alive)
         self.panel.deleteLater();self.owner.deleteLater();self.app.processEvents()
     def load_calibration(self):
         path=Path(self.directory.name)/'calibration.json';path.write_text(json.dumps(calibration().values))
@@ -80,7 +88,7 @@ class HardwareUITests(unittest.TestCase):
         self.assertIn('calibration',self.panel.motor_reason.text())
         self.assertIn('unavailable',self.panel.torque_button.text())
         self.assertEqual(self.panel.readings['shoulder_pan',1].text(),'2048')
-        self.panel.close();self.wait(lambda:not self.panel.session._thread.is_alive())
+        self.panel.close();self.wait(lambda:not self.panel.session.alive)
         self.assertEqual(self.serial.writes,[])
     def test_cancel_arm_dialog_does_not_write(self):
         from PySide6.QtWidgets import QMessageBox

@@ -36,6 +36,14 @@ class HardwareSession:
         self._thread=threading.Thread(target=self._run,name='SO101-'+role,daemon=True)
         self._thread.start()
 
+    @property
+    def alive(self):
+        return self._thread.is_alive()
+
+    def wait_closed(self, timeout=None):
+        self._thread.join(timeout)
+        return not self.alive
+
     def request(self,command,payload=None):
         if command not in ('connect','calibration','arm','target','setup_begin','setup_save','setup_cancel'):raise ValueError('Unknown hardware command')
         with self._lock:
