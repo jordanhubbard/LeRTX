@@ -937,7 +937,6 @@ def build_main_window(
         def open_scene(self, path):
             from pathlib import Path
             self.viewport_label.cancel()
-            self.devices.shutdown()
             for panel in self._hardware_windows.values():panel.live.setChecked(False)
             if self.worker is None:
                 try:

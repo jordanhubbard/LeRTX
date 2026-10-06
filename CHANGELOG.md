@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Fix scene loading permanently shutting down the device registry, which made
+  Open Leader/Follower controls fail immediately after application startup.
+
 - Make physical devices application-owned shared controllers. Hardware and setup
   views share telemetry and one serial connection, with exclusive calibration
   access and verified cleanup before control handoff. Record the architectural

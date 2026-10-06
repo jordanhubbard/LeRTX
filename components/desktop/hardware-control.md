@@ -127,3 +127,8 @@ are navigation state, never the source of physical-device ownership.
 
 The wizard preselects the saved attachment for the chosen role after discovery
 and role changes, rather than silently defaulting both roles to the first port.
+
+Loading or replacing a scene must not permanently shut down device services.
+Scene loading may pause physical mirroring; registry shutdown belongs only to
+accepted application exit or finalization. Hardware controls remain available
+after the initial scene load and subsequent document changes.

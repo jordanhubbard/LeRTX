@@ -35,6 +35,22 @@ class HardwareUITests(unittest.TestCase):
         self.assertEqual(returned,[False])
         self.assertTrue(self.panel.shutdown_complete)
 
+    def test_scene_load_keeps_registry_and_hardware_controls_available(self):
+        from types import SimpleNamespace
+        owner=self.owner;owner.worker=SimpleNamespace()
+        owner._command=lambda *args,**kwargs:None
+        owner._hardware_windows['follower']=self.panel
+        for path in ('initial.usda','replacement.usda'):
+            owner.open_scene(path)
+            self.assertFalse(owner.devices.closing)
+            self.assertTrue(self.panel.session.alive)
+            self.assertTrue(owner.open_hardware(self.panel.session.candidate,'follower'))
+            self.assertTrue(self.panel.isVisible())
+        self.connect()
+        self.assertEqual(self.panel.session.snapshot()['state'],'read-only')
+        self.assertEqual(self.serial.writes,[])
+        owner.worker=None
+
     @classmethod
     def setUpClass(cls):cls.app=build_application([])
     def setUp(self):
