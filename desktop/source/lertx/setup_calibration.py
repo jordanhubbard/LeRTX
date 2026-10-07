@@ -179,7 +179,7 @@ class RangeCapture:
             # Intersect the measured encoder interval with representable CAD travel.
             center=self.reference_positions[n]
             candidates=[center+(v-self.reference[n])*4095/(2*math.pi*direction) for v in (vlow,vhigh)]
-            low=max(low,math.ceil(min(candidates)));high=min(high,math.floor(max(candidates)))
+            low=max(0,low,math.ceil(min(candidates)));high=min(4095,high,math.floor(max(candidates)))
             if high-low<32:raise ValueError(n+': reference pose does not match the virtual joint; repeat calibration')
             radians=tuple(self.reference[n]+direction*(raw-center)*2*math.pi/4095 for raw in (low,high))
             observed=tuple(c.decode(n,raw) for raw in (low,high))

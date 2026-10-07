@@ -60,10 +60,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
             self.color_button.setToolTip('Choose a saved display color for this role before connecting. Both arms keep their text labels.')
             self.ports=QComboBox();self.ports.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon);self.ports.setMinimumContentsLength(12);layout.addWidget(self.ports)
             self.scan_button=QPushButton('Refresh USB ports');self.scan_button.clicked.connect(self.scan);layout.addWidget(self.scan_button)
-            self.support=QCheckBox('Arm supported; power switch within reach');layout.addWidget(self.support)
-            self.release=QPushButton('Release torque for hand movement');self.release.clicked.connect(self.release_torque);layout.addWidget(self.release)
             self.release_result=QLabel();self.release_result.setWordWrap(True);layout.addWidget(self.release_result)
-            self.reference_check=QCheckBox('My arm matches the reference pose');layout.addWidget(self.reference_check)
             self.direction=QCheckBox('Reverse this joint in the preview');self.direction.toggled.connect(self.reverse);layout.addWidget(self.direction)
             self.confirm=QCheckBox('Recorded travel and 3D directions match my arm');layout.addWidget(self.confirm)
             self.live=QCheckBox('Mirror my arm in 3D');self.live.setChecked(True);self.live.toggled.connect(self.live_changed);layout.addWidget(self.live)
@@ -75,7 +72,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
             self.cancel_button=QPushButton('Back to scene · cancel setup');self.cancel_button.clicked.connect(self.close);footer.addWidget(self.cancel_button)
             self.back_button=QPushButton('Back to previous joint');self.back_button.clicked.connect(self.go_back);footer.addWidget(self.back_button)
             footer.addStretch(1)
-            self.next_button=QPushButton();self.next_button.setMinimumHeight(38);self.next_button.clicked.connect(self.advance);footer.addWidget(self.next_button)
+            self.next_button=QPushButton();self.next_button.setMinimumHeight(38);self.next_button.clicked.connect(self.advance);outer.addWidget(self.next_button)
             self.reset_button=QPushButton('Restart after connection fault');self.reset_button.clicked.connect(self.restart);layout.addWidget(self.reset_button);self.reset_button.hide()
             self.timer=QTimer(self);self.timer.timeout.connect(self.poll);self.timer.start(50)
             if initial_role:self.role_box.setCurrentText(initial_role)
@@ -110,9 +107,8 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
             self.back_button.setVisible(1<=self.step<=9)
             self.back_button.setText({1:'Back to arm selection',2:'Back to support check',3:'Back to reference pose'}.get(self.step,'Back to previous joint'))
             for widget in (self.role_box,self.ports,self.scan_button,self.color_button):widget.setVisible(self.step==0)
-            self.support.setVisible(self.step==1);self.release.setVisible(self.step==1)
+
             self.release_result.setVisible(self.step==1)
-            self.reference_check.setVisible(self.step==2)
             self.direction.setVisible(joint);self.confirm.setVisible(self.step==9)
             self.live.setVisible(self.step>=3)
             self.confirm.setChecked(False)
@@ -125,11 +121,11 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
                 text='For an assembled SO-101 with motor IDs 1–6 already assigned at 1 Mbps: connect one arm’s USB cable and motor power. Choose whether this is the follower (robot hand) or leader (hand-operated controller). If the port is unclear, unplug its USB cable, refresh, then reconnect and refresh. Connection reads registers only; it never enables motors.'
                 self.next_button.setText('Connect and check six motors')
             elif self.step==1:
-                text='The arm must be assembled with STS3215 motor IDs 1–6 at 1 Mbps. Support it before releasing torque. If a motor is missing, check power/cables and its ID; newly unconfigured motors must be assigned individually before calibration.'
-                self.next_button.setText('Show the reference pose')
+                text='The arm must be assembled with STS3215 motor IDs 1–6 at 1 Mbps. Support the arm and keep its power switch within reach. When ready, choose “Arm supported — continue” below. This confirms support and releases the motors if needed; the wizard waits for verified torque OFF. If a motor is missing, check power/cables and its ID; newly unconfigured motors must be assigned individually before calibration.'
+                self.next_button.setText('Arm supported — continue')
             elif self.step==2:
-                text='Match the solid arm in the RTX view:\n1. Center the rotating base (1).\n2. Put the first long link upright using the low hinge (2).\n3. Put the next link approximately horizontal using the middle hinge (3).\n4. Straighten the hand (4), center its twist (5), and half-open the claw / trigger (6).\n\nThis initial reference is a stationary pose to copy. Live 3D mirroring starts after you capture it. Hold still when you continue; this saves a backup and sets the homing offsets.'
-                self.next_button.setText('Capture reference and begin calibration')
+                text='Match the solid arm in the RTX view:\n1. Center the rotating base (1).\n2. Put the first long link upright using the low hinge (2).\n3. Put the next link approximately horizontal using the middle hinge (3).\n4. Straighten the hand (4), center its twist (5), and half-open the claw / trigger (6).\n\nThis initial reference is a stationary pose to copy. Live 3D mirroring starts after you capture it. Choose “Arm matches reference — capture pose” below to confirm alignment. Hold still; this saves a backup and sets the homing offsets.'
+                self.next_button.setText('Arm matches reference — capture pose')
             elif self.step==9:
                 text='All six joint sweeps were captured automatically. Move the whole arm and review its live 3D motion. Check that you explored each comfortable travel limit and the directions match. Use Back to repeat a joint if needed. Confirm below, then Save writes the recorded limits and exports calibration plus the virtual binding. Motors remain off.'
                 self.next_button.setText('Save calibration to arm and files')
@@ -216,15 +212,13 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
             self.preview_window.show()
             if activate:self.raise_();self.activateWindow()
         def release_torque(self):
-            if not self.support.isChecked():
-                self.release_result.setText('Support the arm and check “Arm supported” before releasing torque.');return
             snapshot=self.session.snapshot() if self.session else {};sample=snapshot.get('sample')
             if not sample:
                 self.release_result.setText('Release not confirmed — wait for the motor connection.');return
             self.release_sequence=sample['sequence'];self.release_request=self.session.stop(force=True)
             self.release_result.setText('Releasing torque… waiting for all six motors to confirm OFF.')
         def advance(self):
-            if self.pending or self.color_pending or self.closing:return
+            if self.pending or self.color_pending or self.closing or self.release_sequence is not None:return
             try:
                 if self.step==0:
                     if not self.candidates or self.ports.currentIndex()<0:raise ValueError('No USB arm found. Connect USB and power, then refresh.')
@@ -238,24 +232,29 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
                     owner._hardware_windows['setup']=self
                     self.session.request('connect');self.pending=True;self.step=1;self.render_step()
                 elif self.step==1:
-                    self.require_sample()
-                    if not self.support.isChecked():raise ValueError('Confirm that the arm is supported.')
+                    state=self.session.snapshot();sample=state.get('sample')
+                    if not sample or state['stale'] or state['state']!='read-only':
+                        raise ValueError('Wait for a fresh connection before confirming support.')
+                    if any(m['torque'] for m in sample['motors'].values()):
+                        self.release_torque();return
                     self.step=2;self.render_step()
                 elif self.step==2:
                     self.require_sample()
                     if not self.guide_ready:raise ValueError('Wait for the reference pose to appear in the robot viewport first.')
-                    if not self.reference_check.isChecked():raise ValueError('Match the reference pose and confirm it first.')
                     self.session.request('setup_begin',self.run_dir/'original-registers.json');self.pending=True
                     self.status.setText('Backing up registers and setting homing offsets… hold the arm still.')
                 elif 3<=self.step<=8:
                     self.require_sample()
                     if not self.sweep.complete:raise ValueError(self.sweep.prompt)
-                    if not self.preview_is_current():raise ValueError('Open the RTX window and wait for the current measured pose.')
+                    if not self.preview_is_current():raise ValueError('Wait for the current measured pose in the RTX view.')
                     n=JOINT_NAMES[self.step-3];self.capture.ranges[n]=self.sweep.bounds
                     self.capture.confirm(n);self.step+=1;self.render_step()
                 elif self.step==9:
                     if not self.confirm.isChecked():raise ValueError('Review all recorded travel and 3D directions, then confirm before saving.')
-                    self.require_sample();cal=self.capture.calibration();binding=self.capture.binding(self.session.device_id)
+                    sample=self.require_sample()
+                    if any(not 0<=m['position']<=4095 for m in sample['motors'].values()):
+                        raise ValueError('Return wrist twist toward the reference pose before saving. Your captured joints are retained.')
+                    cal=self.capture.calibration();binding=self.capture.binding(self.session.device_id)
                     # Save pending artifacts before the hardware commit; never mark them accepted yet.
                     save_json(self.run_dir/'pending-calibration.json',cal.values)
                     save_binding(self.run_dir/'pending-binding.json',binding)
@@ -374,7 +373,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
             self.selected_joint=None;self.preview_error='';self.sweep=None;self.auto_due=None
             self.native_view.set_image(None)
             self.guide_ready=False;self.preview_step=None;self.guide_shown=False;self.sequence=-1;self.preview_generation+=1
-            self.reference_check.setChecked(False);self.support.setChecked(False);self.live.setChecked(True)
+            self.release_sequence=None;self.live.setChecked(True)
             self.run_dir=Path(owner.config_path).parent/'calibration'/uuid4().hex
             self.status.clear();self.connection.clear();self.preview_status.clear();self.readings.clear()
             self.reset_button.hide();self.render_step();self.scan()
@@ -400,21 +399,15 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
                     if setup.get('state')=='restore-unconfirmed' or s['stop_confirmed'] is False:
                         self.status.setText(s['error']);self.reset_button.show();return
                     if target==0:self.restart()
-                    else:self.capture=None;self.step=target;self.reference_check.setChecked(False);self.render_step()
+                    else:self.capture=None;self.step=target;self.render_step()
                 return
             if self.step==1:
                 from .hardware_feedback import torque_summary
-                known=bool(sample and not s['stale']);on=known and any(m['torque'] for m in sample['motors'].values())
-                self.release.setEnabled(bool(on) and self.release_sequence is None)
-                self.release.setText('Releasing motors…' if self.release_sequence is not None else
-                    'Release motors · move by hand' if on else
-                    'Motors free — torque is off' if known else 'Torque unknown — waiting for motors')
-                self.release.setToolTip('Calibration keeps motors off. Engagement becomes available after setup is complete.')
                 if self.release_sequence is not None:
                     if s['stop_confirmed'] is False or s['state']=='fault':
                         self.release_result.setText('Release unconfirmed: '+s['error']);self.release_sequence=None
                     elif s['stop_completed']>=self.release_request and sample and not s['stale'] and sample['sequence']>self.release_sequence and s['stop_confirmed'] is True and not any(m['torque'] for m in sample['motors'].values()):
-                        self.release_result.setText('Released and verified · all 6 motors are OFF. Already-off motors will not visibly change.');self.release_sequence=None
+                        self.release_sequence=None;self.step=2;self.render_step()
                 elif not self.release_result.text() or self.release_result.text().startswith('Torque '):
                     self.release_result.setText(torque_summary(s)+' Calibration keeps torque off.')
             if self.closing:
@@ -424,7 +417,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
                         QMessageBox.critical(self,'Setup recovery required',s['error']+'\nBackup: '+str(self.run_dir/'original-registers.json'))
                     self.done(0)
                 return
-            self.next_button.setEnabled(not self.pending and bool(sample) and not s['stale'])
+            self.next_button.setEnabled(not self.pending and self.release_sequence is None and bool(sample) and not s['stale'])
             if self.step==2:self.next_button.setEnabled(not self.pending and bool(sample) and not s['stale'] and self.guide_ready)
             if 3<=self.step<=8:self.next_button.setEnabled(False)
             self.back_button.setEnabled(not self.pending)
@@ -435,6 +428,12 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
             if self.step==1 and s['state']=='read-only':self.pending=False
             if self.step==2 and setup.get('state')=='recording':
                 self.capture=RangeCapture(self.role,setup['homings'],setup.get('reference_positions'));self.pending=False;self.step=3;self.render_step()
+            if self.step==9 and sample and not s['stale'] and not self.pending:
+                outside=any(not 0<=m['position']<=4095 for m in sample['motors'].values())
+                if outside:
+                    self.status.setText('Return wrist twist toward the reference pose before saving. Your captured joints are retained.')
+                    self.next_button.setEnabled(False)
+                elif self.status.text().startswith('Return wrist twist'):self.status.clear()
             if self.step==9 and setup.get('state')=='saved':
                 try:
                     save_json(self.run_dir/'calibration.json',self.capture.calibration().values)

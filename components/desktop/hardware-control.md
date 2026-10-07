@@ -169,3 +169,17 @@ held endpoint counts as a return sweep: an early interior pause must not require
 hitting an invisible narrow target. Show directional remaining travel and retain
 the held return endpoint in the captured range. Require the existing minimum span,
 stable dwell, fresh selected-joint samples, torque off and a current RTX frame.
+
+During active torque-off calibration capture only, wrist-roll feedback may span
+-2047..6142 encoder ticks because firmware reports signed positions beyond one
+turn. Preserve those coordinates for sweep continuity and provisional preview;
+do not modulo-wrap them. Other joints and all normal telemetry/commands retain
+0..4095 validation. Intersect the wrist binding with commandable 0..4095 travel.
+Before committing calibration, require all joints back inside normal coordinates
+and explain how to return the wrist; do not discard progress for a rejected UI
+save attempt. Out-of-envelope readings and torque-on samples still fault.
+Support and reference alignment are dedicated wizard steps with prominent primary
+actions, not checkboxes hidden in scrolling instructions. The support action
+explicitly confirms support and, if needed, releases torque; wait for fresh
+acknowledged OFF feedback before advancing. The reference action explicitly
+confirms alignment and captures it only once a current guide is visible.

@@ -77,6 +77,21 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Wrist follow-up: live follower wrist-roll feedback crossed zero (-1) after four
+completed sweeps; normal telemetry validation faulted and restored calibration.
+Permit bounded signed wrist feedback only in torque-off calibration capture,
+retain normal command/read limits, intersect saved binding with valid command
+coordinates, and require a normal-range review pose before committing. Replace
+support/reference checkboxes with explicit primary step actions. Do not weaken
+freshness, motor identity, torque or recovery guards.
+- [x] Verify signed wrist capture, normal-read rejection, safe save/recovery,
+  explicit confirmation transitions and all-joint native advancement.
+  76 tests passed (one POSIX-only test skipped on Windows); final 44-test
+  setup/UI rerun passed. Both native roles complete all six joints, preserve
+  signed wrist progress and save after returning into range, torque off.
+  Evidence: `verification/wrist-calibration-review.json`. Physical retest pending.
+
+
 Current operator follow-up: base-turn calibration stalls after an early interior
 pause; separate RTX and guide windows obscure each other. Accept a held return
 at or beyond the first endpoint in the return direction, retaining selected-joint,

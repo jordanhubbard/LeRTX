@@ -32,8 +32,12 @@ The always-visible reference-only numbered diagram locates
 each joint: base turn, upper-arm hinge, middle hinge, wrist tilt, wrist twist and
 claw (or the leader's trigger). The role color identifies the selected diagram joint.
 
+First support the arm with its power switch within reach, then choose the
+prominent **Arm supported — continue** action. If motors are engaged, this
+releases them and waits for verified OFF feedback before advancing.
+
 The reference pose is initially stationary: copy it with the physical arm, then
-confirm and capture it. Live 3D mirroring begins after that capture. For each
+choose **Arm matches reference — capture pose**. Neither step uses a checkbox. Live 3D mirroring begins after that capture. For each
 selected joint, move gently to one comfortable end and pause, move to the opposite
 end and pause, then return to the first end and pause. Returning farther toward that end also
 counts, so an early pause does not trap you at a narrow encoder target. Holds take about a second.
@@ -43,6 +47,9 @@ counts toward the step. Small encoder jitter and incidental movement do not coun
 as a sweep. If more travel is needed, continue toward the opposite comfortable
 end without forcing it. Use **Reverse** if the preview direction is wrong.
 The app records the endpoints you demonstrate; it does not detect hard stops.
+Wrist feedback may cross zero during torque-off calibration without losing your
+completed joints. If it is outside normal command coordinates at final review,
+the wizard asks you to turn the wrist back toward the reference pose before saving.
 
 Review all six joints, confirm travel and 3D directions once, and save.
 **Finish and open live hardware controls** keeps the embedded 3D view,

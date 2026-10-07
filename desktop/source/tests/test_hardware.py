@@ -69,6 +69,23 @@ class CalibrationTests(unittest.TestCase):
 
 
 class SDKTests(unittest.TestCase):
+    def test_signed_wrist_feedback_is_scoped_to_torque_off_capture(self):
+        serial=SerialRobot();bus=FeetechBus('test',serial_factory=lambda **kw:serial);bus.open()
+        try:
+            for value in (-1,4200):
+                serial.registers[5][56:58]=(abs(value)|((1<<15) if value<0 else 0)).to_bytes(2,'little')
+                with self.assertRaises(ValueError):bus.sample()
+                self.assertEqual(bus.sample(calibration_capture=True)[5]['position'],value)
+            serial.registers[1][40]=1
+            with self.assertRaises(ValueError):bus.sample(calibration_capture=True)
+            serial.registers[1][40]=0
+            serial.registers[4][56:58]=(1<<15|1).to_bytes(2,'little')
+            with self.assertRaises(ValueError):bus.sample(calibration_capture=True)
+            serial.registers[4][56:58]=(2047).to_bytes(2,'little')
+            serial.registers[5][56:58]=(6143).to_bytes(2,'little')
+            with self.assertRaises(ValueError):bus.sample(calibration_capture=True)
+        finally:bus.close()
+
     def test_extended_feedback_is_only_accepted_in_torque_off_unoffset_read(self):
         bus=self.make_bus();bus.open()
         self.serial.registers[5][56:58]=(4530).to_bytes(2,'little')

@@ -84,16 +84,16 @@ def attach(window,report,role='follower',extended_reference=False):
                 w.advance();state['phase']='reference'
             elif phase=='reference' and w.session.snapshot()['state']=='read-only' and not w.pending:
                 assert not serial.writes
-                w.support.setChecked(True);w.advance();state['phase']='guide'
+                w.advance();state['phase']='guide'
             elif phase=='guide' and w.guide_ready:
                 assert window.robot_panel.state.get('setup_roles')==[role]
                 w.preview_window.grab().save(str(report.with_name('setup-reference.png')))
                 w.grab().save(str(report.with_name('setup-wizard.png')))
-                w.reference_check.setChecked(True);w.advance();state['phase']='range'
+                w.advance();state['phase']='range'
             elif phase=='range' and 3<=w.step<=8:
                 i=w.step-2;n=list(w.capture.ranges)[i-1]
                 if w.sweep.start is None:return
-                if w.sweep.phase==0:serial.registers[i][56:58]=(2774 if i==1 else 1600).to_bytes(2,'little')
+                if w.sweep.phase==0:serial.registers[i][56:58]=(2774 if i==1 else (1<<15)|20 if i==5 else 1600).to_bytes(2,'little')
                 elif w.sweep.phase==1:
                     actual=panel.state.get('positions',{}).get(role,{}).get(n)
                     expected=w.capture.preview(w.session.snapshot()['sample'])[0][n]
@@ -127,13 +127,18 @@ def attach(window,report,role='follower',extended_reference=False):
                         assert w.controls_scroll.widget().width()<=w.controls_scroll.viewport().width()
                         assert w.next_button.isVisible() and w.native_view.height()>=210
                         w.resize(old_size)
-                    serial.registers[i][56:58]=(3350 if i==1 else 1600).to_bytes(2,'little')
+                    serial.registers[i][56:58]=(3350 if i==1 else (1<<15)|20 if i==5 else 1600).to_bytes(2,'little')
                     result['mirrored_joints']=i
             elif phase=='range' and w.step==9:
                 assert len(w.capture.confirmed)==6 and len(result['changed_joint_frames'])==6
                 result['automatic_joint_advancement']=True
                 w.grab().save(str(report.with_name('setup-review.png')))
-                w.confirm.setChecked(True);w.advance();state['phase']='saved'
+                w.confirm.setChecked(True)
+                if w.session.snapshot()['sample']['motors'][5]['position']<0:
+                    w.advance();assert w.step==9 and 'Return wrist twist' in w.status.text()
+                    serial.registers[5][56:58]=(2000).to_bytes(2,'little');return
+                result['signed_wrist_capture_and_review']=True
+                w.advance();state['phase']='saved'
             elif phase=='saved' and w.step==10:
                 assert (w.run_dir/'calibration.json').is_file() and (w.run_dir/'binding.json').is_file()
                 assert not any(address==40 and value for _,address,value,_ in serial.writes)

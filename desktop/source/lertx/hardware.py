@@ -115,8 +115,11 @@ class HardwareSession:
             self._claimed=False
         with self._lock:self.latest=None;self.targets={}
 
-    def _read(self):
-        started=self.clock();motors=self.bus.sample()
+    def _read(self, *, calibration_capture=None):
+        if calibration_capture is None:
+            calibration_capture=bool(self._setup_backup is not None and self.setup and self.setup['state']=='recording')
+        started=self.clock()
+        motors=self.bus.sample(calibration_capture=True) if calibration_capture else self.bus.sample()
         if set(motors)!=set(IDS) or self.clock()-started>self.STALE:
             raise ConnectionError('Incomplete or stale motor sample')
         observations={};calibration_error=''
@@ -204,6 +207,8 @@ class HardwareSession:
             raise ValueError('Start reference calibration before saving')
         self.verify(self.candidate);self._read()
         if any(m['torque'] for m in self.latest['motors'].values()):raise ValueError('Torque must remain off')
+        if any(not 0<=m['position']<=4095 for m in self.latest['motors'].values()):
+            raise ValueError('Return the wrist toward its reference pose before saving calibration')
         for i,name in enumerate(JOINT_NAMES,1):
             self._check_cancel();c=calibration.values[name]
             if c['homing_offset']!=self.setup['homings'][i]:raise ValueError('Homing identity changed')
@@ -223,7 +228,7 @@ class HardwareSession:
                 except Exception as exc:errors.append(str(exc))
         elif not self.bus:errors.append('Serial connection unavailable')
         if not errors and self.bus:
-            try:self.bus.inspect();self._read()
+            try:self.bus.inspect();self._read(calibration_capture=False)
             except Exception as exc:errors.append(str(exc))
         self._setup_backup=None
         if errors:

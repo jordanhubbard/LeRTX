@@ -1,0 +1,87 @@
+{
+  "physical_hardware_retested": false,
+  "observed_failure": "Wrist motor 5 reported -1; strict normal sample validation cancelled active setup.",
+  "tests": {
+    "initial_passed": 76,
+    "posix_only_skipped": 1,
+    "final_setup_ui_passed": 44
+  },
+  "native": {
+    "leader": {
+      "complete": true,
+      "physical_hardware_tested": false,
+      "changed_joint_frames": [
+        "shoulder_pan",
+        "shoulder_lift",
+        "elbow_flex",
+        "wrist_flex",
+        "wrist_roll",
+        "gripper"
+      ],
+      "role": "leader",
+      "extended_reference": true,
+      "named_joint_slider": true,
+      "paused_kinematics": true,
+      "measured_radians": 0.3653404414653778,
+      "custom_color_materials": 1,
+      "role_identity": true,
+      "color_persistence": true,
+      "pixel_motion_fraction": {
+        "shoulder_pan": 0.03603854166666667,
+        "shoulder_lift": 0.03200833333333333,
+        "elbow_flex": 0.0259484375,
+        "wrist_flex": 0.015635416666666666,
+        "wrist_roll": 0.0067234375,
+        "gripper": 0.001853125
+      },
+      "mirrored_joints": 6,
+      "automatic_joint_advancement": true,
+      "signed_wrist_capture_and_review": true,
+      "calibration_saved": true,
+      "torque_never_enabled": true,
+      "register_backup": true,
+      "provisional_preview_label": true,
+      "seconds": 34.95
+    },
+    "follower": {
+      "complete": true,
+      "physical_hardware_tested": false,
+      "changed_joint_frames": [
+        "shoulder_pan",
+        "shoulder_lift",
+        "elbow_flex",
+        "wrist_flex",
+        "wrist_roll",
+        "gripper"
+      ],
+      "role": "follower",
+      "extended_reference": true,
+      "named_joint_slider": true,
+      "paused_kinematics": true,
+      "measured_radians": 0.3653404414653778,
+      "custom_color_materials": 1,
+      "role_identity": true,
+      "color_persistence": true,
+      "pixel_motion_fraction": {
+        "shoulder_pan": 0.0319859375,
+        "shoulder_lift": 0.0288421875,
+        "elbow_flex": 0.02145625,
+        "wrist_flex": 0.0129234375,
+        "wrist_roll": 0.0048296875,
+        "gripper": 0.0026286458333333335
+      },
+      "mirrored_joints": 6,
+      "automatic_joint_advancement": true,
+      "signed_wrist_capture_and_review": true,
+      "calibration_saved": true,
+      "torque_never_enabled": true,
+      "register_backup": true,
+      "provisional_preview_label": true,
+      "seconds": 34.19
+    }
+  },
+  "visual_review": "Reference capture is a persistent full-width primary action below navigation; support and reference checkboxes removed.",
+  "authority": "pass",
+  "locks": "3 current",
+  "formal_admission": "Pre-existing test receipt remains stale."
+}
