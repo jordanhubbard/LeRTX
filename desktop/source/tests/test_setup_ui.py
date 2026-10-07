@@ -83,11 +83,11 @@ class SetupUITests(unittest.TestCase):
         w=self.wizard;w.next_button.click()
         self.wait(lambda:w.session.snapshot()['state']=='read-only' and not w.pending)
         self.assertEqual(self.serial.writes,[])
-        w.support.setChecked(True);w.advance();self.assertEqual(w.step,2)
+        w.advance();self.assertEqual(w.step,2)
         self.assertIn('reference guide',w.preview_window.windowTitle())
         self.assertIn('stationary',w.preview_window.mode_label.text())
         self.wait(lambda:w.guide_ready);self.assertIsNone(self.frames[-1][2])
-        w.reference_check.setChecked(True);w.advance()
+        w.advance()
         self.wait(lambda:w.step==3)
     def test_open_hardware_and_setup_share_one_owner_and_cancel_returns_control(self):
         from lertx.hardware_ui import build_hardware_panel
@@ -130,17 +130,23 @@ class SetupUITests(unittest.TestCase):
         w.back_button.click();self.wait(lambda:w.step==0)
         self.assertIsNone(w.session);self.assertFalse(self.owner.devices.alive)
 
-    def test_release_explains_support_then_verifies_already_off_motors(self):
+    def test_support_action_waits_for_verified_release_then_reference_action_captures(self):
         w=self.wizard;w.advance()
         self.wait(lambda:w.session.snapshot()['state']=='read-only' and not w.pending)
-        w.poll();self.assertFalse(w.release.isEnabled());self.assertIn('Motors free',w.release.text())
+        self.assertIn('Arm supported',w.next_button.text())
+        self.assertFalse(hasattr(w,'support'));self.assertFalse(hasattr(w,'reference_check'))
         self.serial.registers[1][40]=1
-        self.wait(lambda:w.release.isEnabled())
-        w.release.click();self.assertIn('Support the arm',w.release_result.text())
-        w.support.setChecked(True);w.release.click()
-        self.assertIn('Releasing torque',w.release_result.text())
-        self.wait(lambda:'Released and verified' in w.release_result.text())
+        self.wait(lambda:w.session.snapshot()['sample']['motors'][1]['torque'])
+        w.advance();self.assertEqual(w.step,1)
+        self.assertIsNotNone(w.release_sequence)
+        w.advance();self.assertEqual(w.step,1)
+        self.wait(lambda:w.step==2)
         self.assertTrue(all(r[40]==0 for r in self.serial.registers.values()))
+        self.assertIn('Arm matches reference',w.next_button.text())
+        self.assertIsNone(w.capture)
+        self.wait(lambda:w.guide_ready and w.next_button.isEnabled());w.next_button.click()
+        self.wait(lambda:w.step==3)
+
     def test_reference_guide_tracks_selected_role_before_connection(self):
         w=self.wizard
         self.wait(lambda:w.guide_ready)
@@ -184,15 +190,20 @@ class SetupUITests(unittest.TestCase):
         self.owner._hardware_windows[w.role]=existing
         for i in range(1,7):
             self.wait(lambda:w.sweep.start is not None)
-            self.serial.registers[i][56:58]=(1600).to_bytes(2,'little')
+            self.serial.registers[i][56:58]=((1<<15)|20 if i==5 else 1600).to_bytes(2,'little')
             self.wait(lambda:w.sweep.phase==1)
             self.serial.registers[i][56:58]=(2500).to_bytes(2,'little')
             self.wait(lambda:w.sweep.phase==2)
-            self.serial.registers[i][56:58]=(1600).to_bytes(2,'little')
+            self.serial.registers[i][56:58]=((1<<15)|20 if i==5 else 1600).to_bytes(2,'little')
             self.wait(lambda:w.step==i+3)
         self.assertEqual(w.step,9)
         w.advance();self.assertEqual(w.step,9,'Final hardware save still requires review')
-        w.confirm.setChecked(True);w.advance();self.wait(lambda:w.step==10)
+        w.confirm.setChecked(True);w.advance()
+        self.assertEqual(w.step,9);self.assertIn('Return wrist twist',w.status.text())
+        self.assertEqual(len(w.capture.confirmed),6)
+        self.serial.registers[5][56:58]=(2000).to_bytes(2,'little')
+        self.wait(lambda:w.session.snapshot()['sample']['motors'][5]['position']==2000)
+        w.advance();self.wait(lambda:w.step==10)
         self.assertTrue((w.run_dir/'original-registers.json').is_file())
         saved=json.loads((w.run_dir/'calibration.json').read_text());self.assertEqual(len(saved),6)
         self.assertTrue((w.run_dir/'binding.json').is_file())

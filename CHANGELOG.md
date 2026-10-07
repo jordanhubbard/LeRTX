@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Desktop: preserve calibration when torque-off wrist feedback crosses zero;
+  require a normal-range review pose before saving. Make support and reference
+  alignment explicit primary wizard actions instead of hidden checkboxes.
+
 - Desktop: accept calibration returns beyond an early endpoint pause; combine the
   reference, progress and RTX view in one wizard. Start calibration from each
   arm’s labelled Calibrate button in Device Manager.

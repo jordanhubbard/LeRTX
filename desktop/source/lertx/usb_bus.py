@@ -132,17 +132,18 @@ class FeetechBus:
         finally:
             self._write_checked(motor,55,1,lock)
 
-    def sample(self, *, unoffset=False):
+    def sample(self, *, unoffset=False, calibration_capture=False):
         result = {}
         for motor in IDS:
             data = self.read(motor,40,31)
             word = lambda offset: int.from_bytes(data[offset:offset+2],'little')
             position = signed(word(16),15)
-            low,high=(-2047,6142) if unoffset else (0,4095)
+            extended=unoffset or (calibration_capture and motor==5)
+            low,high=(-2047,6142) if extended else (0,4095)
             if not low <= position <= high or data[0] not in (0,1):
                 raise ValueError(f'Motor {motor}: encoder {position} outside {low}..{high} or invalid torque status {data[0]}')
-            if unoffset and data[0]:
-                raise ValueError(f'Motor {motor}: release torque before reading unoffset calibration positions')
+            if (unoffset or calibration_capture) and data[0]:
+                raise ValueError(f'Motor {motor}: release torque before reading extended calibration positions')
             if data[25] or data[23] >= 60:
                 raise ValueError(f'Motor {motor}: fault status {data[25]}, temperature {data[23]} C')
             result[motor] = dict(position=position, torque=bool(data[0]), velocity=signed(word(18),15),

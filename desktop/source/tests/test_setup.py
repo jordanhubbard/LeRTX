@@ -61,6 +61,16 @@ class SetupSessionTests(test_hardware.SessionTests):
         self.assertEqual(self.session.bus.metadata,original)
         self.assertFalse(any(address==40 and value for _,address,value,_ in self.serial.writes))
 
+    def test_signed_wrist_capture_remains_live_but_normal_reads_stay_strict(self):
+        self.serial=UnwrappedCalibrationSerial();self.begin()
+        for position in (-1,-100,4200,-1):
+            self.serial.registers[5][56:58]=(abs(position)|((1<<15) if position<0 else 0)).to_bytes(2,'little')
+            sample=self.wait(lambda s:s['sample'] and s['sample']['motors'][5]['position']==position)
+            self.assertEqual(sample['state'],'calibrating')
+            self.assertEqual(sample['setup']['state'],'recording')
+        self.session.request('setup_cancel');self.wait(lambda s:s['setup']['state']=='cancelled')
+        self.assertFalse(any(address==40 and value for _,address,value,_ in self.serial.writes))
+
     def setUp(self):
         super().setUp()
         self.serial=CalibrationSerial()
@@ -154,6 +164,17 @@ class SetupSessionTests(test_hardware.SessionTests):
 
 
 class RangeTests(unittest.TestCase):
+    def test_extended_wrist_binding_stays_in_command_coordinates(self):
+        for role in ('leader','follower'):
+            capture=RangeCapture(role,dict.fromkeys(range(1,7),0),{5:2483})
+            capture.ranges={name:[1600,2500] for name in JOINT_NAMES}
+            capture.ranges['wrist_roll']=[-100,4300];capture.confirmed=set(JOINT_NAMES)
+            binding=capture.binding('test');calibration=capture.calibration()
+            wrist=next(j for j in binding.joints if j.name=='wrist_roll')
+            for value in wrist.observed:
+                self.assertGreaterEqual(value,calibration.decode('wrist_roll',0))
+                self.assertLessEqual(value,calibration.decode('wrist_roll',4095))
+
     def test_requires_every_joint_and_real_travel(self):
         c=RangeCapture('leader',dict.fromkeys(range(1,7),0))
         with self.assertRaises(ValueError):c.confirm('shoulder_pan')
