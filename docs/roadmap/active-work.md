@@ -14,11 +14,15 @@ cold-cache startup under a two-core diagnostic limit are documented follow-up
 coverage, not prerequisites for this scoped desktop release. Existing historical
 results remain historical; no new platform success is implied.
 
-- [ ] Refresh documentation authority, locks and retained-source admission.
-- [ ] Replace the scaffold greeting release gate with desktop evidence and
+- [x] Refresh documentation authority, locks and retained-source admission.
+  All applicable `litai verify` gates pass after fresh Linux admission: 30
+  lifecycle cases and unchanged independent acceptance expectations.
+- [x] Replace the scaffold greeting release gate with desktop evidence and
   deterministic package checks; add hosted portable regression CI.
 - [ ] Land the reviewed changes, publish a versioned source/setup bundle and
-  verify remote tag, notes and asset digests.
+  verify remote tag, notes and asset digests. GitHub rejected the first push
+  because the private origin repository is archived. Await the operator choice
+  to unarchive it or provide its replacement; no remote publication occurred.
 
 ## Checkout reconciliation — APP-001, CONFIG-001, TWIN-001 and ROBOT-001
 

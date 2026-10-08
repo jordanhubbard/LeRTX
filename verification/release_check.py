@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -67,6 +68,20 @@ def package():
             relative = Path(name).relative_to("LeRTX")
             if ".." in relative.parts or archive.read(name) != (ROOT / relative).read_bytes():
                 raise RuntimeError("Package member differs from source")
+        with tempfile.TemporaryDirectory(prefix="lertx-package-check-") as temporary:
+            archive.extractall(temporary)
+            installed_source = Path(temporary) / "LeRTX/desktop/source"
+            result = subprocess.run(
+                [sys.executable, "main.py", '[{"command":"defaults"}]'],
+                cwd=installed_source, check=True, capture_output=True,
+                text=True, timeout=30,
+                env={k: v for k, v in os.environ.items() if k != "PYTHONPATH"},
+            )
+            expected = json.loads((installed_source / "tests/manifest.json").read_text())
+            defaults = next(c["expected_result"] for c in expected["cases"]
+                            if c["case_id"] == "defaults-basic")
+            if json.loads(result.stdout) != defaults:
+                raise RuntimeError("Extracted package defaults differ from contract")
     version = json.loads((ROOT / "literate.project.json").read_text())["version"]
     destination = ROOT / f"dist/LeRTX-{version}.zip"
     destination.write_bytes(bundle.read_bytes())

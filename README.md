@@ -32,15 +32,19 @@ LLM; its API key starts blank. Reconstruct Photo imports an explicitly unverifie
 draft. Devices includes USB candidate discovery and a hardware-free telemetry mock.
 
 Use `python3` if needed on Linux. `doctor` checks the installation, `test` runs
-the full suite, and `package` creates a reproducible source/setup ZIP. Current
-160-test suites pass on Windows 11, Linux x86-64, Linux ARM64 and Omarchy;
-see the [platform evidence](verification/prototype-platform-review.json).
+the full suite, and `package` creates a reproducible source/setup ZIP. The latest
+SDK combination passes 239 portable tests plus 59 subtests, 17 Linux native tests
+and four offscreen Qt/native interaction checks. See the
+[current evidence](verification/sdk-refresh-review.json). Earlier cross-platform
+results are retained in the [platform report](verification/prototype-platform-review.json).
 
-See [desktop notes](desktop/README.md) for prerequisites and limitations. This is
-a development prototype. Fresh Windows 11 and Omarchy installations pass the full
-160-test suite and native desktop launch checks.
-Mock telemetry does not yet drive rendered robot joints; physical
-servo synchronization, calibration and actuation are not implemented.
+See [desktop notes](desktop/README.md) for prerequisites and limitations.
+Windows and ARM64 have install locks, but fresh native validation on those targets
+remains follow-up for this SDK refresh. SO-101 telemetry, explicitly armed manual
+motion and guided calibration are implemented and tested with emulated devices;
+physical-arm qualification remains pending. Photo reconstructions are unverified
+drafts. The source/setup bundle is the release artifact; native installers remain
+candidates and macOS does not support the NVIDIA renderer.
 
 ## Harness workflow
 

@@ -1,7 +1,7 @@
 {
   "schema": "literate-ai/component-acceptance-oracle@1",
   "component": "desktop",
-  "specification_set_identity": "sha256:6007f5a892146f97f616f514d6d118edf5e4e62081d92329cd60d392638deacf",
+  "specification_set_identity": "sha256:45b2ff6f3ba498b595a74661fa08ee147d512e3fa5de3d48a77f954587abac17",
   "cases": [
     {
       "case_id": "nondefault-valid-profile",

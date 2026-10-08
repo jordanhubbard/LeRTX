@@ -11,8 +11,10 @@ changes to dragging, the twelve-joint panel, poses and setup UI have separate
 October Linux native evidence in
 [`sdk-refresh-review.json`](../verification/sdk-refresh-review.json). The current
 candidate uses OVRTX 0.5.1.385782, OVStage 0.2.1.385922, Newton 1.6.1 and Warp
-1.18.0. Windows runtime/installer checks and framework admission remain open;
-Linux offscreen Qt checks do not establish desktop compositor integration.
+1.18.0. Fresh Linux source admission and all applicable framework gates pass;
+Windows runtime/installer checks remain follow-up coverage. Linux offscreen Qt
+checks do not establish desktop compositor integration. The source/setup ZIP is
+the scoped release artifact; physical-arm qualification remains separate.
 The checkout reconciliation and remaining gates are tracked in
 [APP-001](../docs/roadmap/active-work.md#checkout-reconciliation--app-001-config-001-twin-001-and-robot-001).
 
