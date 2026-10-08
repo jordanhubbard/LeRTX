@@ -57,7 +57,9 @@ def validate_recording(data):
 
 def load_recording(path):
     path=Path(path)
-    if path.stat().st_size>64*1024*1024:raise ValueError('Sequence file exceeds 64 MiB')
+    # A full 72,000-frame, two-arm recording includes timestamp metadata and
+    # readable JSON indentation. Allow its own saved representation to reopen.
+    if path.stat().st_size>256*1024*1024:raise ValueError('Sequence file exceeds 256 MiB')
     try:return validate_recording(json.loads(path.read_text(encoding='utf-8')))
     except RecursionError as exc:raise ValueError('Sequence file nesting is too deep') from exc
 
