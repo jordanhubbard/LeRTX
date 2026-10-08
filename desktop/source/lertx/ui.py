@@ -576,13 +576,12 @@ def build_main_window(
             self._after_discard_confirmation(lambda:self.open_scene(path))
 
         def _show_help(self):
-            from .role_ui import role_html
-            QMessageBox.information(self,'Getting started',role_html(
-                'Your workspace contains an SO-101 leader and follower (see the color key under the viewport). Change their printed-part colors in device setup before connecting.\n\n'
-                'Use Robot simulation to choose joint targets, then Play. The follower tracks the simulated leader. Pause holds the pose; Reset restores the workspace.\n\n'
-                'Left- or right-drag an arm link in the viewport to move its joint directly, following the mouse. Alt-left-drag orbits the camera, middle-drag pans, and wheel or trackpad scroll zooms. Every leader and follower joint also has its own labeled slider in the Robot simulation panel — drag a slider or type a value there for the same live control without touching the viewport. Joint controls work while paused; uncheck Follower tracks the simulated leader to move the follower independently.\n\n'
-                'To move anything else in the workspace — the ball, the obstacle, the work surface — left- or right-drag it in the viewport, same as an arm link. Selecting it also switches to the Inspector tab next to Robot simulation, where you can type exact Translate/Rotate/Scale values and click Apply transform. Use File → Save As to keep a workspace.\n\n'
-                'These are simulated arms. No hardware port is opened. The leader trigger geometry and inertia are upstream estimates; contact hulls approximate individual mechanical parts.',self.profile))
+            from .help_ui import build_help_dialog
+            previous=getattr(self,'_help_dialog',None)
+            if previous:previous.close();previous.deleteLater()
+            self._help_dialog=build_help_dialog(self)
+            self._help_dialog.show()
+            self._help_dialog.raise_()
 
         def _show_about(self):
             from .branding import VERSION

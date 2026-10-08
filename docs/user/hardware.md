@@ -51,7 +51,11 @@ Wrist feedback may cross zero during torque-off calibration without losing your
 completed joints. If it is outside normal command coordinates at final review,
 the wizard asks you to turn the wrist back toward the reference pose before saving.
 
-Review all six joints, confirm travel and 3D directions once, and save.
+Review all six joints, then choose **Save calibration to arm and files**. This
+action confirms your review; there is no extra checkbox. Use Back to correct a
+joint. **All 6 joints captured** means capture is complete; **Calibration saved**
+confirms the hardware commit. If Save is blocked, the pinned guidance explains
+which joint to return, shows its reading and highlights it in the diagram.
 **Finish and open live hardware controls** keeps the embedded 3D view,
 the connection and enables measured live viewing. Motors stay off throughout.
 Cancel restores the original calibration when the bus remains available.
@@ -82,7 +86,8 @@ The measured torque state appears above one control: **Engage motors** when all
 six are off, or **Release motors** when any are on. Engage seeds goals from current
 readings before enabling torque and asks for confirmation. If unavailable, the
 reason appears beside it; disabled controls have a muted fill and dashed border.
-During calibration, already-released motors show **Motors free — torque is off**.
+During calibration, the support step reports measured torque state and its
+**Arm supported — continue** action waits for verified release.
 If torque was already on, use **Release motors** first; LeRTX will not adopt another
 controller's existing goals. Arming uses at most 100 encoder ticks/second
 (about 8.8 degrees/second), acceleration value 10, and torque-limit value 300/1000.
@@ -131,7 +136,7 @@ Click an arm link, then use the **Selected joint** slider in Robot simulation,
 or hold the left mouse button on the link and drag right/up or left/down.
 The connected links move through the actual articulation and joint limits.
 Disable following to manipulate the follower independently. Alt-drag orbits;
-right-drag pans; the wheel zooms. There is no free-space gripper IK gizmo yet.
+middle-drag pans; the wheel zooms. There is no free-space gripper IK gizmo yet.
 
 The joint diagram stays above the scrolling instructions throughout setup. Back
 buttons name the parent panel. Leaving setup cancels it with the existing register

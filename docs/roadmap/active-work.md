@@ -77,6 +77,25 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Online help follow-up: replace simulation-only Getting started text with a
+scrollable guide covering Device Manager, explicit wizard actions, automatic
+sweeps, final save blockers, saved artifacts and manual controls. Align web
+getting-started/hardware documentation with that same workflow.
+
+Final-review follow-up: leader saved successfully on real hardware; follower has
+all six captures but wrist feedback is 5017, so the normal-range save guard is
+correctly blocking. Replace the misleading 90% display with captured-versus-saved
+state, show the wrist return requirement prominently, and remove the final review
+checkbox. The explicit Save action confirms review; Back permits corrections.
+Preserve the active physical session while implementing this UI change.
+- [x] Verify save without a checkbox, out-of-range blocking/recovery, clear final
+  progress, and preservation of all captures while the wrist is returned.
+  57 tests pass; the final all-six-joint regression additionally reproduces
+  5017 ticks, verifies the blocker and retained captures, then saves through
+  the primary action without a checkbox. Native rerun/restart deferred to
+  preserve the operator’s active unsaved follower calibration.
+
+
 Wrist follow-up: live follower wrist-roll feedback crossed zero (-1) after four
 completed sweeps; normal telemetry validation faulted and restored calibration.
 Permit bounded signed wrist feedback only in torque-off calibration capture,
