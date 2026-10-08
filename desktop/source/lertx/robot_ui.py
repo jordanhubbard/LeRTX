@@ -10,6 +10,9 @@ def build_robot_panel(window):
         QCheckBox, QPushButton, QSlider, QComboBox, QInputDialog)
     from .robot import JOINT_NAMES, joint_limits
 
+    from .role_ui import widgets
+    QLabel,QPushButton,QCheckBox=widgets(lambda: window.profile)
+
     class RobotPanel(QWidget):
         def __init__(self):
             super().__init__(window)
@@ -33,7 +36,7 @@ def build_robot_panel(window):
             layout.addLayout(preset_row)
             self.refresh_presets()
 
-            setup=QPushButton('Set up and calibrate real USB arms…');setup.clicked.connect(window.open_setup);layout.addWidget(setup)
+            setup=QPushButton('Devices · connect and calibrate…');setup.clicked.connect(window._on_devices);layout.addWidget(setup)
             self.follow=QCheckBox('Follower tracks the simulated leader')
             self.follow.setChecked(True);layout.addWidget(self.follow)
 

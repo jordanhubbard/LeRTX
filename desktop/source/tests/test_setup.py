@@ -18,7 +18,59 @@ class CalibrationSerial(test_hardware.SerialRobot):
         return result
 
 
+class UnwrappedCalibrationSerial(test_hardware.SerialRobot):
+    """Physical firmware keeps an extended position when homing is cleared."""
+    def write(self,packet):
+        p=bytes(packet);r=self.registers[p[2]]
+        before=signed(int.from_bytes(r[56:58],'little'),15)+signed(int.from_bytes(r[31:33],'little'),11)
+        result=super().write(packet)
+        if p[4]==3 and p[5]==31:
+            position=before-signed(int.from_bytes(r[31:33],'little'),11)
+            r[56:58]=(abs(position)|((1<<15) if position<0 else 0)).to_bytes(2,'little')
+        return result
+
+
 class SetupSessionTests(test_hardware.SessionTests):
+    def test_extended_unoffset_reference_restores_and_maps_both_roles(self):
+        self.serial=UnwrappedCalibrationSerial()
+        # Positive overflow seen on the real follower, plus negative underflow.
+        for i,position,homing in ((5,3968,562),(4,100,-594)):
+            r=self.serial.registers[i]
+            r[56:58]=position.to_bytes(2,'little')
+            r[31:33]=(abs(homing)|((1<<11) if homing<0 else 0)).to_bytes(2,'little')
+        self.session.calibration=None
+        self.session.request('connect');self.wait(lambda s:s['state']=='read-only')
+        original=self.session.bus.metadata.copy()
+        self.session.request('setup_begin',self.backup)
+        s=self.wait(lambda s:(s['setup'] or {}).get('state')=='recording')
+        self.assertEqual(s['setup']['reference_positions'][5],2483)
+        self.assertEqual(s['setup']['reference_positions'][4],1553)
+        for role in ('leader','follower'):
+            capture=RangeCapture(role,s['setup']['homings'],s['setup']['reference_positions'])
+            pose,_=capture.preview(s['sample'])
+            self.assertEqual(pose,capture.reference)
+            for name,center in capture.reference_positions.items():capture.ranges[name]=[center-100,center+100]
+            capture.confirmed=set(JOINT_NAMES)
+            binding=capture.binding(self.session.device_id)
+            calibration=capture.calibration()
+            obs={n+'.pos':calibration.decode(n,s['sample']['motors'][i]['position']) for i,n in enumerate(JOINT_NAMES,1)}
+            mapped=binding.map_observation(obs,device_id=self.session.device_id,calibration_id=calibration.identity,captured_at=time.monotonic(),now=time.monotonic())
+            for path,value in mapped.items():self.assertAlmostEqual(value,capture.reference[path.rsplit('/',1)[-1]])
+        self.session.request('setup_cancel')
+        self.wait(lambda s:(s['setup'] or {}).get('state')=='cancelled')
+        self.assertEqual(self.session.bus.metadata,original)
+        self.assertFalse(any(address==40 and value for _,address,value,_ in self.serial.writes))
+
+    def test_signed_wrist_capture_remains_live_but_normal_reads_stay_strict(self):
+        self.serial=UnwrappedCalibrationSerial();self.begin()
+        for position in (-1,-100,4200,-1):
+            self.serial.registers[5][56:58]=(abs(position)|((1<<15) if position<0 else 0)).to_bytes(2,'little')
+            sample=self.wait(lambda s:s['sample'] and s['sample']['motors'][5]['position']==position)
+            self.assertEqual(sample['state'],'calibrating')
+            self.assertEqual(sample['setup']['state'],'recording')
+        self.session.request('setup_cancel');self.wait(lambda s:s['setup']['state']=='cancelled')
+        self.assertFalse(any(address==40 and value for _,address,value,_ in self.serial.writes))
+
     def setUp(self):
         super().setUp()
         self.serial=CalibrationSerial()
@@ -112,6 +164,17 @@ class SetupSessionTests(test_hardware.SessionTests):
 
 
 class RangeTests(unittest.TestCase):
+    def test_extended_wrist_binding_stays_in_command_coordinates(self):
+        for role in ('leader','follower'):
+            capture=RangeCapture(role,dict.fromkeys(range(1,7),0),{5:2483})
+            capture.ranges={name:[1600,2500] for name in JOINT_NAMES}
+            capture.ranges['wrist_roll']=[-100,4300];capture.confirmed=set(JOINT_NAMES)
+            binding=capture.binding('test');calibration=capture.calibration()
+            wrist=next(j for j in binding.joints if j.name=='wrist_roll')
+            for value in wrist.observed:
+                self.assertGreaterEqual(value,calibration.decode('wrist_roll',0))
+                self.assertLessEqual(value,calibration.decode('wrist_roll',4095))
+
     def test_requires_every_joint_and_real_travel(self):
         c=RangeCapture('leader',dict.fromkeys(range(1,7),0))
         with self.assertRaises(ValueError):c.confirm('shoulder_pan')

@@ -1,30 +1,33 @@
 # Retained LeRTX application
 
+The current SDK refresh uses OVRTX 0.5.1.385782, OVStage 0.2.1.385922, Newton
+1.6.1 and Warp 1.18.0. The source/setup ZIP is the release artifact. Current
+Linux qualification is recorded in `verification/upstream-release-review.json`
+in the repository; older cross-platform reports apply to earlier SDK snapshots.
+Fresh Windows/ARM64 validation and physical-arm qualification remain follow-up
+coverage. Native installer candidates are not included in this release.
+
+
 SO-101 USB reads, explicitly armed manual writes and measured virtual bindings
 are described in the [hardware guide](../docs/user/hardware.md). Emulated-bus and
-earlier native viewport checks are recorded; physical-arm qualification is still pending.
-
-## Qualification of the local follow-on work
-
-The September 27 native reports describe earlier source snapshots. Subsequent
-changes to dragging, the twelve-joint panel, poses and setup UI have separate
-October Linux native evidence in
-[`sdk-refresh-review.json`](../verification/sdk-refresh-review.json). The current
-candidate uses OVRTX 0.5.1.385782, OVStage 0.2.1.385922, Newton 1.6.1 and Warp
-1.18.0. Fresh Linux source admission and all applicable framework gates pass;
-Windows runtime/installer checks remain follow-up coverage. Linux offscreen Qt
-checks do not establish desktop compositor integration. The source/setup ZIP is
-the scoped release artifact; physical-arm qualification remains separate.
-The checkout reconciliation and remaining gates are tracked in
-[APP-001](../docs/roadmap/active-work.md#checkout-reconciliation--app-001-config-001-twin-001-and-robot-001).
-
-`packaging/windows/` is an installer candidate requiring a current install,
-launch, upgrade and uninstall qualification. `packaging/macos/` is deferred
-launcher scaffolding: macOS is not a supported rendering target and setup fails
-its platform preflight. Building a `.app` or `.dmg` does not produce a working
-macOS LeRTX application. Neither packaging directory is a release artifact.
+native viewport checks pass; physical-arm qualification is still pending.
 
 ## Development setup and launch
+
+Use `make run` from the repository root with GNU Make installed. On Windows it
+uses `run.ps1`; on Linux it uses `python3 desktop/manage.py run` (select another
+interpreter with `make run PYTHON=python3.11`). It builds missing or stale
+environments before launch. On macOS it exits before setup with an explanation
+that the pinned NVIDIA renderer is unavailable; see the macOS section below.
+
+Windows contributors can build and launch from the repository root with
+`.\run.ps1` in PowerShell. `python desktop/manage.py run` also performs setup
+automatically when no current successful setup receipt exists. A receipt is
+written only after dependency installation, diagnostics and native warmup pass;
+changed locks, bundled wheels, requirements or setup code trigger setup again.
+An interrupted or failed setup is retried on the next launch. Explicit `setup`
+still forces a refresh. This command launches in the invoking user's desktop
+session; a coding sandbox's desktop may not be visible to the operator.
 
 Use Windows 11 x86-64 or Linux x86-64/ARM64 with an NVIDIA RTX GPU and
 working NVIDIA driver. Linux ARM64 needs glibc 2.39 or newer for Qt (Ubuntu
@@ -53,10 +56,6 @@ On a headless Linux worker use `xvfb-run -a python desktop/manage.py test`, or
 `QT_QPA_PLATFORM=offscreen python desktop/manage.py test` for offscreen Qt
 checks. Offscreen Qt still exercises the real NVIDIA renderer, but does not
 prove desktop compositor integration. Test the visible window separately.
-From a repository checkout, run contained Linux qualification with the application interpreter and
-`verification/qualify_native.py --output _build/native-qualification-<new-name>`.
-It initializes Qt before the SDK and runs native modules in separate guarded
-processes, preserving test logs and resource reports. It may reuse shader caches.
 
 `install` adds LeRTX to the desktop application menu (Windows: Start Menu).
 `uninstall` removes the unchanged launcher created by this checkout and keeps
@@ -88,6 +87,31 @@ SDK wheels — it is not a fully offline single-file installer, because those
 wheels are multi-gigabyte, GPU-specific native binaries unsuited to freezing
 into one executable.
 
+### macOS app bundle
+
+**macOS is not yet a supported LeRTX rendering target.** There is no
+`desktop/locks/darwin-*.txt` — the pinned NVIDIA OVRTX/OVStage/Newton wheels
+are not published for macOS, and no current Mac has a compatible NVIDIA GPU.
+`desktop/packaging/macos/build.sh [version]` still builds a real
+`dist/LeRTX.app` (and `dist/LeRTX-<version>.dmg`) so the wrapper experience is
+ready for the day a macOS SDK path exists:
+
+```sh
+desktop/packaging/macos/build.sh 0.2.0
+```
+
+Double-clicking the bundle finds a real Python 3.11/3.12 (Homebrew or
+python.org; the Xcode Command Line Tools' `/usr/bin/python3` doesn't count),
+stages the bundled source into `~/Library/Application Support/LeRTX/checkout`
+(required because Gatekeeper may run the bundle from a read-only translocated
+path), and runs the same `manage.py setup`/`run` flow as the other platforms.
+Today that setup step fails fast with a clear dialog explaining why, instead
+of silently doing nothing or downloading incompatible wheels — verified on a
+real Apple Silicon Mac. No Python auto-install is attempted here (unlike
+Windows): installing Python system-wide on macOS needs admin rights, so the
+dialog points you to python.org or `brew install python@3.11` instead of
+silently requesting elevated privileges.
+
 `python desktop/manage.py package` creates `dist/LeRTX-prototype.zip` and a
 SHA-256 checksum. Extract the ZIP, enter `LeRTX`, and use the same setup commands.
 This source/setup bundle downloads pinned SDKs during setup and contains no
@@ -110,12 +134,22 @@ the byte-preserving reference. Repaired code is not represented as an untouched
 generation or an accepted Standard lifecycle artifact.
 
 The retained application now has a Qt window, RTX viewport, Newton simulation,
-USD editing/saving, and settings. Current 160-test suites pass on Windows 11,
+USD editing/saving, and settings. Baseline 160-test suites passed on Windows 11,
 Linux x86-64, Linux ARM64 and Omarchy, including real Qt launches, photo failure
 preservation and simulated telemetry.
 This is a development application, not a completed milestone or accepted
-distribution. Physical robot integration is not implemented.
-Do not use this application to actuate a physical robot.
+distribution. Physical integration now includes guided SO-101 calibration, measured
+RTX motion, joint recording and explicit bounded follower tracking/playback. The
+operator has saved both real-arm calibrations and confirmed the interactive flow;
+this does not qualify collision-aware autonomous motion. Read the
+[hardware guide](../docs/user/hardware.md) before connecting arms.
+
+Device Manager's **USB camera** tab lets you identify a camera by live preview and
+confirm **Use this camera**. Its shared feed appears above the 3D view in the same
+window. The camera backend supports Windows and Linux; stable identities are saved,
+and Linux enumeration-only devices remain session-only. Camera preview does not
+record video. **Robot session** exposes recording, replay, following, Danger and
+The Signal alongside the RTX/camera views.
 
 Devices → Open telemetry mock exercises independent simulated leader/follower
 streams without hardware. Adjust five joint-degree inputs and gripper percentage,

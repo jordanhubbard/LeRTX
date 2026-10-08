@@ -1,0 +1,14 @@
+{
+  "scope": "Final calibration review UI",
+  "observed_physical_state": {
+    "role": "follower",
+    "step": 9,
+    "wrist_encoder": 5017,
+    "all_six_captured": true,
+    "torque_off": true
+  },
+  "tests_passed": 57,
+  "final_regression": "All six sweeps, negative and 5017 wrist blockers, retained captures, return to range and primary-button save without checkbox passed.",
+  "native_rerun": "Deferred; live operator calibration remains active and unsaved. No renderer changes.",
+  "formal_admission": "Existing test receipt remains stale."
+}

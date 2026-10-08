@@ -20,6 +20,73 @@ def _build_window():
 
 
 class MainWindowTests(unittest.TestCase):
+    def test_selection_panels_do_not_cancel_a_released_joint_drag(self):
+        self._check_selection_during_drag(False)
+
+    def test_unsupported_inspector_does_not_cancel_a_released_joint_drag(self):
+        self._check_selection_during_drag(True)
+
+    def _check_selection_during_drag(self, unsupported):
+        from types import SimpleNamespace
+        from PySide6.QtCore import QPoint, Qt
+        from PySide6.QtGui import QPixmap
+        from PySide6.QtTest import QTest
+        application = ui.build_application([])
+        window = _build_window()
+        window._frame_timer.stop()
+        path = '/World/Leader/Geometry/shoulder'
+        joint = dict(role='leader', name='shoulder_lift', value=0.,
+                     low=-1., high=1., locked=False)
+        delivered = []
+        def inspect(path):
+            if unsupported:
+                raise ValueError('Robot geometry is driven by physics; use the joint controls.')
+            return dict(translation=[0,0,0], rotation=[0,0,0], scale=[1,1,1])
+        window.worker = SimpleNamespace(
+            pick=lambda *uv: dict(path=path, joint=joint),
+            select=lambda path: dict(joint=joint),
+            inspect=inspect,
+            drag_joint=lambda *args, **kw: delivered.append(args) or {'unchanged': True})
+        window._ready = True
+        window._prim_types = {path: 'Xform'}
+        window._rebuild_hierarchy([{'path': path, 'type': 'Xform'}])
+        window._command = lambda fn, callback=None, **kw: window._pending.append((fn, callback))
+        window.show()
+        application.processEvents()
+        view = window.viewport_label
+        view.setPixmap(QPixmap(300, 180))
+        left, top, width, height = view.image_rect()
+        start = QPoint(round(left+width/2), round(top+height/2))
+        def drain():
+            while window._pending:
+                fn, callback = window._pending.pop(0)
+                value = fn()
+                if callback: callback(value)
+        try:
+            QTest.mousePress(view, Qt.MouseButton.RightButton, pos=start)
+            QTest.mouseMove(view, start+QPoint(50,0))
+            QTest.mouseRelease(view, Qt.MouseButton.RightButton, pos=start+QPoint(50,0))
+            drain()
+            application.processEvents()
+            view.flush()
+            drain()
+            self.assertEqual(len(delivered), 1)
+            self.assertEqual(delivered[0][:2], ('leader', 'shoulder_lift'))
+            self.assertAlmostEqual(delivered[0][2], __import__('math').radians(25))
+            import time
+            deadline = time.monotonic()+1
+            while window.inspector.path_label.text() != path and time.monotonic() < deadline:
+                QTest.qWait(10)
+                drain()
+            self.assertEqual(window.inspector.path_label.text(), path)
+        finally:
+            window._pending.clear()
+            window.worker = None
+            window._ready = False
+            window.close()
+            window.deleteLater()
+            application.processEvents()
+
     def test_main_window_has_required_title_and_controls(self):
         window = _build_window()
         self.assertEqual(window.windowTitle(), "Untitled — LeRTX")

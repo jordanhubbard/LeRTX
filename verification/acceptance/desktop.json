@@ -1,7 +1,7 @@
 {
   "schema": "literate-ai/component-acceptance-oracle@1",
   "component": "desktop",
-  "specification_set_identity": "sha256:45b2ff6f3ba498b595a74661fa08ee147d512e3fa5de3d48a77f954587abac17",
+  "specification_set_identity": "sha256:c3b554427e73f6b7d8ffbb344780d6369b3166d8a6df1d2e45f0c1947659190e",
   "cases": [
     {
       "case_id": "nondefault-valid-profile",
@@ -19,7 +19,9 @@
             },
             "general": {
               "theme": "light",
-              "display_units": "cm"
+              "display_units": "cm",
+              "leader_color": "#1FAD9E",
+              "follower_color": "#F2A31F"
             },
             "rendering": {
               "device": 0,
@@ -67,7 +69,9 @@
             },
             "general": {
               "theme": "dark",
-              "display_units": "m"
+              "display_units": "m",
+              "leader_color": "#1FAD9E",
+              "follower_color": "#F2A31F"
             },
             "rendering": {
               "device": 0,
@@ -119,7 +123,9 @@
             },
             "general": {
               "theme": "dark",
-              "display_units": "m"
+              "display_units": "m",
+              "leader_color": "#1FAD9E",
+              "follower_color": "#F2A31F"
             },
             "rendering": {
               "device": -1,

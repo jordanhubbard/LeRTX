@@ -1,0 +1,16 @@
+{
+  "scope": "ROBOT-001 shared robot sessions and cross-platform camera selection",
+  "windows_qt_device_tests": {"passed": 60},
+  "serial_emulator": ["record both arms without writes", "validated recording roundtrip", "follower-only following", "focus-loss release", "stale leader release", "identity-checked playback", "session/setup exclusion"],
+  "windows_camera_inputs": ["FHD Camera", "icspring camera", "AvStream Media Device"],
+  "all_windows_camera_inputs_delivered_live_frames": true,
+  "camera_selection_saved_during_verification": false,
+  "native_rtx_preset_frames_changed": true,
+  "fraction_pixels_changed_above_20_levels": 0.059145833333333335,
+  "native_regression": "verification/robot_session_window.py",
+  "integrated_preview_matches_native_image": true,
+  "presets": ["Danger", "The Signal"],
+  "physical_motor_commands_sent": false,
+  "linux_physical_camera_tested": false,
+  "remaining": ["Operator selects mounted camera", "Operator tests physical following and playback", "Framework retained-source acceptance receipt refresh"]
+}

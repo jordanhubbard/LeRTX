@@ -160,7 +160,7 @@ and execute cleanup in finally; a failed worker must not leave the UI hanging.
 The defaults command returns exactly this object:
 
 ```json
-{"llm":{"endpoint":"https://inference-api.nvidia.com/v1/responses","model":"azure/openai/gpt-6-astra","api_key":"","max_output_tokens":512,"timeout_seconds":60,"remember_key":false},"general":{"theme":"dark","display_units":"m"},"rendering":{"device":0,"width":1280,"height":720,"target_fps":30,"quality":"balanced"},"physics":{"timestep_hz":240,"substeps":4,"gravity_m_s2":"-9.81","reset_on_edit":true},"devices":{"discovery_enabled":false,"telemetry_hz":30,"actuation_enabled":false},"workspace":{"asset_search_paths":[],"reconstruction_status":"unverified"}}
+{"llm":{"endpoint":"https://inference-api.nvidia.com/v1/responses","model":"azure/openai/gpt-6-astra","api_key":"","max_output_tokens":512,"timeout_seconds":60,"remember_key":false},"general":{"theme":"dark","display_units":"m","leader_color":"#1FAD9E","follower_color":"#F2A31F"},"rendering":{"device":0,"width":1280,"height":720,"target_fps":30,"quality":"balanced"},"physics":{"timestep_hz":240,"substeps":4,"gravity_m_s2":"-9.81","reset_on_edit":true},"devices":{"discovery_enabled":false,"telemetry_hz":30,"actuation_enabled":false},"workspace":{"asset_search_paths":[],"reconstruction_status":"unverified"}}
 ```
 
 Settings has General, Rendering, Physics, Devices, Workspace, Intelligence and

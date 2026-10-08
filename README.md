@@ -8,6 +8,15 @@ approved retaining and directly repairing the generated desktop source. See
 [project goals](PROJECT.md), [active work](docs/roadmap/active-work.md),
 and the [runtime contract](docs/architecture/runtime.md).
 
+## SDK refresh release
+
+The next source/setup release retains the camera, recording and integrated device
+workflows from the current upstream. Its SDK combination is OVRTX 0.5.1.385782,
+OVStage 0.2.1.385922, Newton 1.6.1 and Warp 1.18.0. Portable and Linux native
+qualification is refreshed for this combined source. Earlier platform reports
+remain historical; fresh Windows/ARM64 and physical-device qualification are
+follow-up coverage for this cut. macOS remains a development host only.
+
 ## Milestones
 
 1. Application harness created, generated, and verified through `litai`.
@@ -15,6 +24,30 @@ and the [runtime contract](docs/architecture/runtime.md).
 3. Astra photo-to-USD reconstruction, with editable drafts and explicit uncertainty.
 
 ## Run the development desktop
+
+With GNU Make installed, from the checkout on Windows or Linux:
+
+```sh
+make run
+```
+
+This prepares dependencies when needed and launches LeRTX. Windows uses the
+PowerShell launcher below; Linux uses `python3` (override with `make run
+PYTHON=python3.11` if needed). On macOS the same target exits with an explanation:
+the pinned NVIDIA renderer has no Mac build. It does not create an environment
+or download incompatible SDKs there.
+
+On Windows, from PowerShell in the checkout, build and run with one command:
+
+```powershell
+.\run.ps1
+```
+
+This prepares the isolated environment and checks a real GPU frame on first run,
+then opens LeRTX. Later runs reuse successful setup until the pinned dependency
+inputs change. Requires a real Python 3.11/3.12 or `uv` and an NVIDIA driver.
+If PowerShell blocks scripts, use `python desktop/manage.py run` instead.
+To open a scene: `.\run.ps1 -Scene C:\scenes\workspace.usda`.
 
 Use Windows 11 x86-64 or Linux x86-64/ARM64 with a working NVIDIA driver and
 Python 3.11 or `uv`. From the repository root:
@@ -29,22 +62,23 @@ This opens the actual Qt/RTX workspace, not the harness below. Wait for
 `Native: ready`. Use Play/Reset for Newton physics, the hierarchy and inspector
 to edit objects, and Save As to retain an untitled scene. Settings configures the
 LLM; its API key starts blank. Reconstruct Photo imports an explicitly unverified
-draft. Devices includes USB candidate discovery and a hardware-free telemetry mock.
+draft. **Devices** assigns leader/follower USB roles, opens calibration and hardware
+controls, and selects a USB camera using its live preview. The enabled camera appears
+above the RTX view. **Robot session** records and saves measured joint sequences,
+previews poses/sequences, and explicitly starts follower tracking or playback.
 
 Use `python3` if needed on Linux. `doctor` checks the installation, `test` runs
-the full suite, and `package` creates a reproducible source/setup ZIP. The latest
-SDK combination passes 239 portable tests plus 59 subtests, 17 Linux native tests
-and four offscreen Qt/native interaction checks. See the
-[current evidence](verification/sdk-refresh-review.json). Earlier cross-platform
-results are retained in the [platform report](verification/prototype-platform-review.json).
+the full suite, and `package` creates a reproducible source/setup ZIP. Baseline
+160-test suites passed on Windows 11, Linux x86-64, Linux ARM64 and Omarchy;
+see the [platform evidence](verification/prototype-platform-review.json).
 
-See [desktop notes](desktop/README.md) for prerequisites and limitations.
-Windows and ARM64 have install locks, but fresh native validation on those targets
-remains follow-up for this SDK refresh. SO-101 telemetry, explicitly armed manual
-motion and guided calibration are implemented and tested with emulated devices;
-physical-arm qualification remains pending. Photo reconstructions are unverified
-drafts. The source/setup bundle is the release artifact; native installers remain
-candidates and macOS does not support the NVIDIA renderer.
+See [desktop notes](desktop/README.md) for prerequisites and limitations. This is
+a development prototype. Baseline fresh Windows 11 and Omarchy installations passed the
+160-test suite and native desktop launch checks.
+Physical calibration, measured RTX synchronization and bounded follower motion are
+implemented. Both real-arm calibrations were saved and the operator confirmed the
+interactive workflow. Broad hardware qualification and collision-aware autonomous
+execution remain separate work. See the [hardware guide](docs/user/hardware.md).
 
 ## Harness workflow
 
@@ -59,3 +93,7 @@ litai run components/harness --target host -- '[{"command":"info"}]'
 
 The harness reports planned integrations and `runtime_ready: false`; it is not
 the graphical application. The macOS bootstrap host cannot run the NVIDIA desktop.
+
+## Release engineers
+
+- `jordanhubbard`

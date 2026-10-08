@@ -27,6 +27,8 @@ class JointPointerTests(unittest.TestCase):
         from types import SimpleNamespace
         self.owner = QMainWindow()
         owner = self.owner
+        from lertx.config import DEFAULT_PROFILE
+        owner.profile = DEFAULT_PROFILE
         owner._ready = True; owner._pending = []; owner._tree_items = {}
         owner.tree = QTreeWidget(); owner.search_edit = QLineEdit()
         owner._display_image = lambda: None

@@ -46,8 +46,22 @@ def main():
             result.update(complete=error is None, seconds=round(time.monotonic()-started, 3))
             if error:
                 result['error'] = str(error)
+                result['phase'] = state['phase']
+                result['native_status'] = window.native_status_label.text()
+                result['ui_status'] = window.statusBar().currentMessage()
             window.viewport_label.cancel()
+            window.has_unsaved_changes = False
             window.close()
+
+        # Assertions in asynchronous worker callbacks otherwise become UI errors
+        # and leave this verifier waiting until its outer deadline.
+        show_error = window._show_error
+        def failed(error):
+            result['previous_ui_status'] = window.statusBar().currentMessage()
+            result['selected_path'] = window._selected_path()
+            show_error(error)
+            finish(error)
+        window._show_error = failed
 
         def picked(hit):
             assert hit, 'Native picker did not find a leader joint'
@@ -99,11 +113,16 @@ def main():
                 if state['phase'] == 'startup' and window._image is not None and window._idle_frame:
                     image = window._image
                     candidates = []
+                    left, top, width, height = window.viewport_label.image_rect()
                     for y in range(8, image.height(), 12):
                         for x in range(8, image.width(), 12):
                             color = image.pixelColor(x,y)
                             if color.green() > color.red()*1.25 and color.green() > 60:
-                                candidates.append((x/image.width(), y/image.height()))
+                                # Probe exactly the integer Qt point that the
+                                # synthetic press will use after image scaling.
+                                px = round(left+x/image.width()*width)
+                                py = round(top+y/image.height()*height)
+                                candidates.append(((px-left)/width, (py-top)/height))
                     def probe():
                         for u, v in candidates:
                             joint = window.worker.pick(u,v)['joint']

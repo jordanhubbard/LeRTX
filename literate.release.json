@@ -8,7 +8,15 @@
       "/version"
     ]
   },
-  "version_mirrors": [],
+  "version_mirrors": [
+    {
+      "path": "desktop/source/lertx/branding.py",
+      "format": "python-constant",
+      "selectors": [
+        "VERSION"
+      ]
+    }
+  ],
   "contributions": {
     "current_milestone": "{version}"
   },
@@ -22,7 +30,8 @@
   "gate": {
     "argv": [
       "python3",
-      "verification/release_check.py"
+      "verification/release_check.py",
+      "--verify-authority"
     ],
     "timeout_seconds": 1800
   },
@@ -37,7 +46,7 @@
   "remote": "origin",
   "provider": {
     "kind": "github",
-    "repository": "NVIDIA-dev/LeRTX"
+    "repository": "jordanhubbard/LeRTX"
   },
   "artifact_gate": {
     "argv": [

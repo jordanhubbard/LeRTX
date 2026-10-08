@@ -9,6 +9,16 @@ from lertx.runtime import SceneWorker
 
 
 class RuntimeSettingsTests(unittest.TestCase):
+    def test_color_change_rebuilds_runtime_and_rejects_live_hardware(self):
+        candidate=copy.deepcopy(self.previous);candidate['general']['leader_color']='#123456'
+        self.worker._hardware_roles.add('leader')
+        with self.assertRaisesRegex(ValueError,'Close hardware'):
+            self.worker.configure(candidate,self.path)
+        self.worker._hardware_roles.clear()
+        with patch.object(self.worker,'rebuild',return_value={}) as rebuild:
+            self.worker.configure(candidate,self.path)
+        rebuild.assert_called_once()
+        self.assertEqual(load_profile(self.path)['general']['leader_color'],'#123456')
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)

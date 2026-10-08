@@ -1,0 +1,46 @@
+name: Desktop startup
+
+on:
+  pull_request:
+  push:
+    branches: [main, 'fix/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  startup:
+    name: Startup (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Ensure GNU Make on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          if (-not (Get-Command make -ErrorAction SilentlyContinue)) {
+            choco install make --yes --no-progress
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+      - name: Verify startup, failure recovery and pinned model bytes
+        run: python -B verification/test_desktop_manage.py
+      - name: Install portable device test dependencies
+        run: python -m pip install PySide6==6.12.0 pyserial==3.5
+      - name: Install headless Qt runtime on Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libegl1 libopengl0 libpulse0
+      - name: Verify camera identities and robot sessions without physical devices
+        env:
+          QT_QPA_PLATFORM: offscreen
+          PYTHONPATH: desktop/source
+        run: python -m unittest tests.test_camera tests.test_robot_session tests.test_device_control tests.test_robot_session_ui -q

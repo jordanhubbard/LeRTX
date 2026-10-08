@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "date": "2026-10-05",
+  "base_commit": "1921291ca6a6a51dbebfb61d462b2e06761ac9c1",
+  "scope": "Automatic selected-joint calibration and dedicated live RTX window",
+  "physical_hardware_tested": false,
+  "tests": {
+    "command": "python -m unittest tests.test_setup_sweep tests.test_setup_ui tests.test_setup tests.test_hardware_ui tests.test_hardware tests.test_joint_binding tests.test_ui -q",
+    "run": 75,
+    "passed": 74,
+    "skipped": 1,
+    "skip_reason": "POSIX serial endpoint on Windows",
+    "seconds": 45.873,
+    "coverage": [
+      "Selected-joint end-to-end-and-back capture while all other motors move",
+      "Encoder jitter, spikes, duplicate samples, insufficient span and stale intervals rejected",
+      "Fresh visible native preview required before automatic advancement",
+      "Final review and hardware save remain explicit",
+      "Dedicated window receives each native frame and can reopen",
+      "Live window transfers to hardware controls and is disposed on shutdown",
+      "Existing backup, cancellation, restoration, arming and manual control regressions"
+    ]
+  },
+  "native": {
+    "harness": "verification/setup_window.py",
+    "platform": "Windows / NVIDIA GeForce RTX 5080 Laptop GPU / Qt windows",
+    "isolated_test_profile": true,
+    "transport": "Pinned Feetech SDK with CalibrationSerial emulator",
+    "complete": true,
+    "seconds": 30.81,
+    "automatic_joint_advancement": true,
+    "joint_readback_and_changed_frame_bytes": [
+      "shoulder_pan", "shoulder_lift", "elbow_flex",
+      "wrist_flex", "wrist_roll", "gripper"
+    ],
+    "calibration_saved": true,
+    "torque_never_enabled": true,
+    "register_backup": true,
+    "provisional_preview_label": true,
+    "compact_wizard_without_horizontal_overflow": true,
+    "live_window_screenshot": "guided-setup-rtx.png"
+  },
+  "limits": [
+    "Physical-arm qualification remains an operator check",
+    "Endpoint holds record operator-chosen travel, not detected mechanical hard stops",
+    "Reference alignment and final direction/travel review remain explicit",
+    "The pre-existing formal lifecycle receipt remains stale"
+  ]
+}

@@ -7,6 +7,14 @@ def build_mock_dialog(parent=None):
     from PySide6.QtWidgets import (QCheckBox, QDialog, QDoubleSpinBox, QFormLayout,
                                   QGroupBox, QHBoxLayout, QLabel, QPushButton, QVBoxLayout)
 
+    from .role_ui import widgets
+    def profile():
+        owner=parent
+        while owner is not None:
+            if hasattr(owner,'profile'):return owner.profile
+            owner=owner.parent()
+        return {}
+    QLabel,QPushButton,QCheckBox=widgets(profile)
     class MockDialog(QDialog):
         def __init__(self):
             super().__init__(parent)
@@ -24,8 +32,10 @@ def build_mock_dialog(parent=None):
                 reader = MockReader(role)
                 self.readers[role] = reader
                 self.streams[role] = LatestSample(reader.source, role)
-                group = QGroupBox(role.capitalize() + " (simulated)")
+                group = QGroupBox()
+                group.setAccessibleName(role.capitalize() + " (simulated)")
                 form = QFormLayout(group)
+                form.addRow(QLabel(role.capitalize() + " (simulated)"))
                 connected = QCheckBox("Connect mock")
                 connected.toggled.connect(lambda value, role=role: self.connect_role(role, value))
                 form.addRow(connected)
@@ -50,7 +60,7 @@ def build_mock_dialog(parent=None):
                 self.controls[role] = (connected, frozen, joints, gripper)
                 self.statuses[role] = status
                 columns.addWidget(group)
-            close = QPushButton("Close")
+            close = QPushButton("Back to Device Manager")
             close.clicked.connect(self.reject)
             layout.addWidget(close)
             self.timer = QTimer(self)

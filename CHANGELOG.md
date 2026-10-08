@@ -2,29 +2,104 @@
 
 ## Unreleased
 
-### Scoped desktop release
+- Preserve the final joint-drag target when asynchronous selection updates the
+  inspector; dock activation and inspector content wait until the final gesture
+  command has been submitted.
 
-- Publish a reproducible source/setup ZIP and SHA-256 checksum to the private
-  LeRTX repository, with hosted portable regression and package checks.
-- Qualify the updated SDK combination on Linux x86-64; Windows and ARM64 locks
-  are provided, while fresh native validation on those targets remains follow-up.
-- Retain physical-arm qualification and cold-cache startup under a two-core
-  diagnostic limit as documented limitations, not claims of completed testing.
+- Refresh OVRTX to 0.5.1.385782, OVStage to 0.2.1.385922, Newton to 1.6.1,
+  Warp to 1.18.0 and Qt to 6.12.0 with regenerated platform hash locks.
+- Allow bounded 30-second renderer shutdown after measured teardown exceeded
+  ten seconds; preserve asynchronous GUI close and retry after a timeout.
+- Reconcile current upstream camera, recording and calibration improvements;
+  add complete portable CI, native source binding and reproducible release assets.
 
 
-- SDK qualification: refreshed candidate requirements and platform hash locks to
-  OVRTX 0.5.1.385782, OVStage 0.2.1.385922, Newton 1.6.1 and Warp 1.18.0,
-  with current USD, Qt and interpreter-compatible NumPy versions. Linux native
-  and portable checks are recorded separately from pending Windows and framework
-  admission gates in `verification/sdk-refresh-review.json`. Extended the exact-
-  archive USD metadata repair to 26.8 and added isolated native test execution.
-  Synchronous renderer shutdown now allows 30 seconds for measured SDK teardown;
-  stalled cleanup still times out and the GUI continues to close asynchronously.
+- Device Manager: preview and select USB cameras on Windows and Linux, remember
+  stable device identities, and share one live camera feed above the RTX view.
+  Unplugging or stale frames clears the preview; camera capture starts explicitly.
+- Robot session: record and save measured leader/follower sequences, preview them
+  in RTX, explicitly start follower tracking or playback, and access Danger and
+  The Signal poses. Shared controllers preserve calibration ownership and stop
+  follower motion on stale telemetry, lost focus or close.
+- RTX: refresh all animated mesh transforms so unselected preset and physical
+  pose updates visibly move the arm. Add a native regression checking joint
+  coordinates and substantial image changes.
+- Refresh camera, recording, calibration and motion help, and expose camera/session
+  state through live co-session diagnostics. Portable camera and device tests run
+  on Linux and Windows in CI; real camera capture was verified on Windows.
 
-- Verification: reconciled legacy native UI scripts with direct dragging and the
-  twelve-joint panel, including the behavior specification and calibration test
-  scheduling. Earlier native reports remain historical. Local version labels
-  below identify development checkpoints, not published releases.
+- Desktop: replace simulation-only help with a scrollable guide to current device
+  setup, calibration, save requirements and manual controls; align online docs.
+
+- Desktop: final calibration Save confirms review without a checkbox. Show all
+  six joints as captured and make wrist-return blockers explicit instead of 90%.
+
+- Desktop: preserve calibration when torque-off wrist feedback crosses zero;
+  require a normal-range review pose before saving. Make support and reference
+  alignment explicit primary wizard actions instead of hidden checkboxes.
+
+- Desktop: accept calibration returns beyond an early endpoint pause; combine the
+  reference, progress and RTX view in one wizard. Start calibration from each
+  arm’s labelled Calibrate button in Device Manager.
+
+- Desktop: fix frozen highlighted robot arms by refreshing descendant transforms;
+  keep sweep progress visible and show the selected arm's CAD reference diagram.
+- Desktop: add opt-in live co-session diagnostics with telemetry/setup state,
+  native frames, window captures, timing history, GPU metrics and bounded tuning.
+
+- Fix scene loading permanently shutting down the device registry, which made
+  Open Leader/Follower controls fail immediately after application startup.
+
+- Make physical devices application-owned shared controllers. Hardware and setup
+  views share telemetry and one serial connection, with exclusive calibration
+  access and verified cleanup before control handoff. Record the architectural
+  review and staged refactoring plan. Extend wizard Back navigation through arm
+  selection, support and reference restoration.
+
+- Keep the joint reference diagram visible throughout setup. Add explicit parent
+  navigation to hardware/setup panels and RTX preview, preserving shutdown and
+  calibration recovery when leaving physical controls.
+
+- Device identity: add controller/gripper badges with contrasting symbol ink and
+  readable text, including Device Manager rows and role/port control buttons.
+  Prevent stale control windows from opening the wrong reassigned device.
+
+- Device setup: fix reference capture aborting on an extended wrist encoder
+  during homing. Preserve the measured reference for each joint, show the selected
+  arm's RTX reference guide before connection, and keep failures beside navigation.
+
+- Hardware controls: use one measured-state Engage/Release control, expose missing
+  prerequisites and distinguish disabled buttons in both themes. Report verified
+  torque state and action results. Setup shows already-free motors explicitly;
+  the RTX window distinguishes the stationary reference guide from live motion.
+
+- Device setup keeps Leader/Follower identity visible throughout calibration,
+  with matching diagram, viewport and RTX material colors. Choose saved custom
+  printed-part colors before connecting; existing preferences migrate intact.
+  Outlined role dots accompany labels, selectors, buttons and status messages
+  across setup, simulation and hardware controls, preserving readable text.
+
+- SO-101 setup: open a dedicated solid RTX arm window with camera controls and
+  live motion of all six joints. Guide each selected joint through two held
+  endpoints and a repeat visit, then advance automatically. Ignore incidental
+  movement of other joints and encoder jitter; require fresh samples and a
+  current rendered frame. Keep the schematic optional and retain explicit final
+  travel/direction review before saving. Calibration and subsequent live viewing
+  queue a bounded fresh update when rendering is busy, so physical motion is not
+  silently skipped. Verified with emulated hardware and native RTX frames for all
+  six automatic joint transitions; physical-arm qualification remains separate.
+
+- Desktop contributor startup: `make run` now uses the Windows PowerShell
+  launcher or Linux management flow without a Unix-only build prerequisite.
+  On macOS it reports the unavailable NVIDIA renderer before any setup.
+
+- Windows contributor startup: `run.ps1` builds and runs the checkout in one
+  command. Desktop `run` automatically prepares missing or changed environments
+  and reuses successful setup; robot URDF files preserve checksum-pinned bytes
+  across Windows checkouts. Canonical specifications and skills retain LF
+  newlines so Windows Git checkout conversion cannot invalidate their authoring.
+
+## v0.3.0
 
 - Packaging: added a Windows installer (`desktop/packaging/windows/LeRTX.iss`,
   built with Inno Setup) that gives end users a normal double-click install
@@ -32,9 +107,17 @@
   (detecting and bypassing the Microsoft Store's broken `python.exe`/`py`
   stubs), runs the existing `manage.py setup` flow, and creates a Start Menu
   shortcut via the installer's own icon management so uninstall cleanly
-  removes everything. The local development note reports an install→launch→uninstall cycle on
-  Windows 10 with an RTX 5080 Laptop GPU; a current, source-bound installer
-  qualification report is still required.
+  removes everything. Verified with a full install→launch→uninstall cycle on
+  a real Windows 10 RTX 5080 Laptop machine.
+
+- Packaging: added a macOS app bundle builder
+  (`desktop/packaging/macos/build.sh`), producing a double-clickable
+  `LeRTX.app`/`LeRTX.dmg`. macOS is not yet a supported LeRTX rendering
+  target (no pinned SDK wheels exist for it, and no current Mac has a
+  compatible NVIDIA GPU), so this is a wrapper for the future: it correctly
+  finds a real Python, stages the app past Gatekeeper translocation, and
+  fails fast with a clear explanatory dialog instead of silently doing
+  nothing. Verified on a real Apple Silicon Mac.
 
 - Desktop: an animated progress bar and status message now show while a USD
   scene is loading (initial open, File → Open, photo-draft import, or
@@ -62,7 +145,7 @@
   top of the panel, right under the instructions, with a "Saved poses"
   heading.
 
-### Local development checkpoint (formerly labeled v0.2.0)
+## v0.2.0
 
 - Desktop: selecting any non-robot object (the ball, the obstacle, the work
   surface) now automatically raises the Inspector tab so its Translate/
@@ -83,7 +166,7 @@
   the settings directory. Loading a pose commands both arms to it directly,
   independent of follower tracking.
 
-### Local development checkpoint (formerly labeled v0.1.0)
+## v0.1.0
 
 - Desktop: left- or right-drag an arm link to move its joint directly, following
   the mouse; both buttons grab and drive the joint the same way, and the earlier

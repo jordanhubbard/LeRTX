@@ -41,6 +41,15 @@ def select(worker, path):
         worker._renderer.set_selection_outline_group_strings(previous, 0)
     if paths:
         worker._renderer.set_selection_outline_group_strings(paths, 1)
+    # In the pinned attached-stage renderer, setting an outline group causes
+    # descendant meshes to stop observing ancestor-only transform dirtiness.
+    # Retain every touched mesh (including cleared selection) for explicit local
+    # transform refresh when an ancestor moves. Never change authored USD.
+    refresh = getattr(worker, '_selection_transform_refresh', {})
+    for mesh in previous+paths:
+        if mesh not in refresh:
+            refresh[mesh] = UsdGeom.Xformable(worker.document.stage.GetPrimAtPath(mesh)).GetLocalTransformation()
+    worker._selection_transform_refresh = refresh
     worker._selected_meshes = paths
     worker._cached_tick = None
     worker._settled_frames = 0

@@ -25,6 +25,10 @@ class SettingsUiTests(unittest.TestCase):
         self.dialog.reject()
         self.window._frame_timer.stop()
         self.window.deleteLater()
+        # processEvents alone does not drain DeferredDelete without an exec loop.
+        # Dispose previous dialogs/timers before the next responsiveness check.
+        from PySide6.QtCore import QCoreApplication,QEvent
+        QCoreApplication.sendPostedEvents(None,QEvent.Type.DeferredDelete)
         self.app.processEvents()
         self.directory.cleanup()
 
@@ -73,8 +77,9 @@ class SettingsUiTests(unittest.TestCase):
             self.window._on_open_settings()
             self.assertEqual(self.window.profile, self.profile)
             save.assert_not_called()
-            future.set_result({"path":"scene.usda", "dirty":True, "playing":False,
-                               "time":0, "physics_error":"", "hierarchy":[]})
+            future.set_result(({"path":"scene.usda", "dirty":True, "playing":False,
+                               "time":0, "physics_error":"", "hierarchy":[]},
+                               time.perf_counter(), time.perf_counter()))
             self.window._on_tick()
             self.assertEqual(self.window.profile, candidate)
             self.assertTrue(self.window.has_unsaved_changes)

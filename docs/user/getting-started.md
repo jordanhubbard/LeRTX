@@ -6,8 +6,8 @@
 
 LeRTX is being built as a digital-twin workspace for the LeRobot SO-101 leader
 and follower. Its production targets are Linux and Windows with NVIDIA GPUs.
-The first stage creates the application harness; the second adds a real rendered
-USD scene and Newton physics. See the [runtime contract](../architecture/runtime.md).
+The desktop application combines a rendered USD scene, Newton physics, guided
+physical-arm calibration and measured live RTX viewing. See the [runtime contract](../architecture/runtime.md).
 
 ## Installation
 
@@ -43,7 +43,7 @@ Grab an arm link in the viewport and drag right/up to increase its joint angle,
 or left/down to decrease it. The selected link is outlined; targets stop at the
 model's joint limits. Paused drags run a short physics preview and remain paused.
 Disable following in Robot Controls to manipulate the follower independently.
-Alt-left drag orbits the camera, right drag pans, and the wheel zooms. Escape
+Alt-left drag orbits the camera, middle drag pans, and the wheel zooms. Escape
 cancels the remaining gesture. These controls operate only the simulated robots.
 
 For milestone-three reconstruction:
@@ -51,9 +51,8 @@ For milestone-three reconstruction:
 1. Open Settings → Intelligence. Confirm the endpoint and model, then enter your
    API key. The key is session-only and starts blank; the app never reads the
    developer's credential file.
-2. Set an appropriate output-token limit. The initial 512-token default may be
-   too small for a scene; the app reports incomplete responses rather than
-   silently increasing your budget.
+2. Review the reconstruction preset and output-token budget. The app reports
+   incomplete responses rather than silently increasing your budget.
 3. Choose Reconstruct Photo, select a PNG or JPEG and review its preview and
    destination. Upload and Reconstruct explicitly sends the resized,
    metadata-stripped image to that service.
@@ -61,13 +60,35 @@ For milestone-three reconstruction:
    preserves its unverified-dimensions warning. A reconstructed draft is not a
    measured collision model and must not be used to authorize robot motion.
 
-The Devices panel enumerates USB serial metadata and records explicit roles.
-Open its separate hardware controls to connect read-only, import calibration,
-enable bounded manual writes, or bind physical readings to the virtual arm.
+Open **Help → Getting started** for the scrollable in-app guide.
+The **Devices** panel enumerates USB adapters and records explicit leader/follower
+roles. Use its role- and port-labelled **Calibrate** button to enter the wizard:
+confirm support, capture the reference pose, sweep six joints, then Save. The
+reference diagram and live RTX view stay together. **Save calibration to arm and
+files** confirms final review without a checkbox; Back allows corrections.
+If all six joints are captured but Save is disabled, follow the pinned requirement
+(for example, return wrist twist into its normal coordinate range). Completed
+captures are retained. Hardware controls also support importing existing calibration,
+bounded manual motor commands and measured physical-to-virtual binding.
 See [hardware controls](hardware.md) before the first physical connection.
 Choose Open telemetry mock in Devices to exercise simulated leader/follower
 connections, degree inputs, gripper percentage and frozen/stale streams without
 hardware. This panel does not drive a rendered robot model yet.
+
+In **Devices → USB camera**, select a candidate, click **Preview selected camera**,
+and identify the mounted camera from its live image. Confirm **Use this camera**.
+The shared camera feed appears above RTX in the workspace and integrated arm views.
+Windows device IDs and Linux USB by-id identities are remembered; cameras without
+a stable Linux identity are labelled session-only. Enable capture explicitly after
+restart; **Disable camera** stops it.
+
+Open **Robot session** from the toolbar or Devices. Choose the arms and **Connect
+assigned arms** to load saved calibration. **Start joint recording**, then stop and
+**Save sequence**. **Preview sequence in RTX** never moves hardware. **Start follower
+following leader**, **Play sequence on follower**, and **Run pose on follower** ask
+before physical motion. **Danger** and **The Signal** are available in the pose list.
+Stop, lost focus and stale telemetry release follower motors. Support the arm before
+release. The [hardware guide](hardware.md) explains identity checks and motion limits.
 
 ### Original harness
 

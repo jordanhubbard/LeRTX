@@ -13,7 +13,7 @@ unsupported host or Python ABI with an actionable error before SDK initializatio
 
 Use these exact runtime distributions and declare them honestly in requirements
 and the source SBOM: `ovrtx==0.5.1.385782`, `ovstage==0.2.1.385922`,
-`newton==1.6.1`, `warp-lang==1.18.0`, `usd-core==26.8`,
+`newton==1.6.1`, `warp-lang==1.18.0`, `numpy==2.4.6`, `usd-core==26.8`,
 `PySide6==6.12.0`, `pyserial==3.5`, and the locally supplied
 `lertx-robot-assets==1.0.0` resource wheel. The unchanged, vendored
 `feetech-servo-sdk==1.0.0` source and license are part of the application payload,

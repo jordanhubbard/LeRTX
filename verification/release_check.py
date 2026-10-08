@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
@@ -24,19 +25,38 @@ def run(*args):
                             PYTHONDONTWRITEBYTECODE="1"))
 
 
-def check():
-    evidence = json.loads((ROOT / "verification/sdk-refresh-review.json").read_text())
+def check(verify_authority=False):
+    if verify_authority:
+        completed = subprocess.run(["litai", "verify"], cwd=ROOT, check=True,
+                                   capture_output=True, text=True, timeout=120)
+        if not json.loads(completed.stdout)["result"]["ok"]:
+            raise RuntimeError("Current framework verification failed: " + completed.stdout)
+    evidence = json.loads((ROOT / "verification/upstream-release-review.json").read_text())
     source = ROOT / "desktop/source"
     expected = evidence["source_binding"]["files_relative_to_desktop_source"]
     actual = {p.relative_to(source).as_posix(): digest(p)
               for p in source.rglob("*") if p.is_file()
               and not {"__pycache__", ".pytest_cache"}.intersection(p.parts)
               and p.suffix not in (".pyc", ".pyo")}
+    # Release prepare changes only this declared version mirror. Bind all other
+    # branding bytes to native qualification, and require the current version.
+    project_version = json.loads((ROOT / "literate.project.json").read_text())["version"]
+    branding = source / "lertx/branding.py"
+    text = branding.read_text()
+    if re.findall(r'^VERSION = "([^"]+)"$', text, flags=re.M) != [project_version]:
+        raise RuntimeError("Application version differs from release authority")
+    qualified = evidence["source_binding"]["qualification_version"]
+    normalized = re.sub(r'^VERSION = "[^"]+"$', 'VERSION = "' + qualified + '"', text, flags=re.M)
+    actual["lertx/branding.py"] = hashlib.sha256(normalized.encode()).hexdigest()
     if actual != expected:
         raise RuntimeError("Application source differs from native qualification")
     native = evidence["linux_native"]
-    if native["status"] != "passed" or native["tests"] != 17:
+    if native["status"] != "passed" or native["tests"] <= 0:
         raise RuntimeError("Missing native qualification")
+    discovered = {p.stem for p in (source / "tests").glob("test_*_native.py")}
+    discovered.update(("test_native_integration", "test_robot_dynamics"))
+    if {m["module"] for m in native["native_modules"]} != discovered:
+        raise RuntimeError("Native qualification does not cover every native module")
     for result in native["native_modules"]:
         if result["returncode"] != 0 or result["guard"]["status"] != "passed":
             raise RuntimeError("Failed native module")
@@ -103,5 +123,7 @@ def package():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--package-only", action="store_true")
+    parser.add_argument("--verify-authority", action="store_true",
+                        help="Require current framework receipt for publication")
     args = parser.parse_args()
-    package() if args.package_only else check()
+    package() if args.package_only else check(args.verify_authority)

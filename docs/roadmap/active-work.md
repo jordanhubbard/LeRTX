@@ -1,123 +1,19 @@
 # Active work
 
+## Reconciled SDK release
+
+The operator selected `https://github.com/jordanhubbard/LeRTX` as the replacement
+release repository. Integrate its current main (including camera and recording
+work) with the SDK updates and bounded shutdown repair, then rerun portable and
+Linux NVIDIA qualification against the combined source. Earlier October reports
+remain historical and cannot admit the merged source. Publish a source/setup
+bundle after review and exact-commit CI; Windows/ARM refresh and physical-arm
+qualification remain follow-up coverage, not prerequisites for this scoped cut.
+
+
 This file is the durable resumption queue for user-directed and discovered work. Before
 implementation, follow `skills/agent/record-user-directed-work/SKILL.md`.
 Keep detailed designs in focused roadmap documents and link them here.
-
-## Release the reconciled desktop
-
-The operator directed resolving the remaining issues and releasing on 2026-10-08.
-Publish the source/setup distribution to the existing private repository. The
-current release validation target is the freshly observed Linux x86-64 CPython
-3.12 environment. Windows/ARM64 native refresh, physical-arm qualification and
-cold-cache startup under a two-core diagnostic limit are documented follow-up
-coverage, not prerequisites for this scoped desktop release. Existing historical
-results remain historical; no new platform success is implied.
-
-- [x] Refresh documentation authority, locks and retained-source admission.
-  All applicable `litai verify` gates pass after fresh Linux admission: 30
-  lifecycle cases and unchanged independent acceptance expectations.
-- [x] Replace the scaffold greeting release gate with desktop evidence and
-  deterministic package checks; add hosted portable regression CI.
-- [ ] Land the reviewed changes, publish a versioned source/setup bundle and
-  verify remote tag, notes and asset digests. GitHub rejected the first push
-  because the private origin repository is archived. Await the operator choice
-  to unarchive it or provide its replacement; no remote publication occurred.
-
-## Checkout reconciliation — APP-001, CONFIG-001, TWIN-001 and ROBOT-001
-
-### Current SDK qualification
-
-The operator approved qualifying the latest compatible native SDK releases in a
-clean environment instead of depending on a previously installed runtime.
-APP-001/RENDER-001 own this work. Start from published OVRTX 0.5.1.385782,
-OVStage 0.2.1.385922, Newton 1.6.1 and Warp 1.18.0. Resolve their full dependency
-closure against the supported targets, then refresh authoritative Flavor pins,
-hash locks and evidence only for the tested combination. The old pins and
-historical evidence remain a comparison baseline, not current acceptance.
-
-- [x] Inspect upstream metadata and release compatibility; prepare isolated
-  Linux and portable environments with resource headroom checks. Windows native
-  provisioning is held for insufficient system-drive capacity.
-- [x] Run portable and contained Linux native rendering/physics tests; fix or record
-  incompatibilities without substituting mock native success. Final source passes
-  239 portable tests plus 59 subtests and all 17 native tests.
-- [x] Update common requirements, platform pip hash locks and the observed Linux
-  x86-64 Flavor inventory to the candidate SDK set.
-- [ ] Refresh the selected ARM64 target inventory, Windows native evidence and
-  current framework admission. Their old inventories/receipts cannot certify the
-  new requirements. Windows has only 10.3 GiB free on its sole fixed volume.
-- [x] Re-qualify the reviewed metadata-only USD wheel repair for 26.8: its
-  published Linux CPython 3.12 wheel repeats the conflicting `Root-Is-Purelib`
-  headers. Preserve original hashes and prove native payload bytes unchanged.
-- [x] Qualify bounded shutdown with the new renderer. Native destruction finished
-  in 12.3 seconds after reset, exceeding the former ten-second synchronous join.
-  Allow a bounded 30-second join without blocking the GUI's asynchronous close,
-  and retain a stalled-cleanup timeout regression.
-- [x] Re-run the four offscreen Qt interaction checks against the final source:
-  live pose, independent follower, six-joint guided calibration with an emulated
-  bus, and native right-drag picking/motion all pass with clean shutdown.
-- [x] Run project gates and report remaining admission/platform blockers before
-  claiming the reconciled checkout ready to land.
-
-`verification/sdk-refresh-review.json` binds the final results to 126 identical
-local/worker source files and records prior failures, repairs and resource guards.
-This is Linux development qualification, not cross-platform release admission.
-
-The operator requested reconciliation of the local follow-on work against merged
-PR #1 (`03041b6`). The local backup branch
-`backup/pre-reconcile-20261008T063000Z` preserves the starting files. The 72-file
-delta includes calibration, photo inference, viewport/pose controls, packaging
-and historical verification records; it is not a validated release candidate.
-
-- [x] Compare against upstream and survey open issues/reviews: none are open.
-- [x] Review and classify retained features, obsolete verification and deferred
-  packaging; preserve historical native results without treating them as current.
-- [x] Reconcile obsolete popup tests and contradictory documentation with the
-  current direct-drag UI; Linux native reruns pass and Windows remains pending.
-- [x] Run portable/Qt regressions, resource-package checks and project gates;
-  record exact results and source identities separately from old native evidence.
-- [ ] Refresh the documentation authority review, locks as needed and
-  retained-source admission after reconciling the direct-drag specification.
-  This is the next action before a landing decision.
-- [ ] Qualify the resulting source on supported NVIDIA targets before landing
-  runtime changes. Physical-arm testing remains a separate ROBOT-001 gate.
-
-The retained direct-drag UI and shared following checkbox now have Linux native
-evidence. The desktop behavior specification has been reconciled to that UI,
-including the twelve persistent keyboard-accessible joint controls. Refresh
-locks/admission before landing; the former popup behavior is historical.
-Windows installer qualification is pending; the macOS wrapper is deferred because
-there is no supported renderer target. Keep both candidates preserved for review.
-Portable-test repairs cover canonical filesystem paths, the macOS PTY baud ioctl,
-renderer mock drift, pytest helper collection and timer scheduling tolerance.
-The Makefile now tracks locks/wheels in its setup stamp, packages without native
-setup and orders clean/build during a parallel rebuild.
-
-Local reconciliation results: 234 portable/Qt tests pass in isolated module
-processes, plus two USD/URDF checks and two resource-wheel tests (238 total).
-These results describe the initial reconciliation environment. The SDK refresh
-now has an isolated Linux NVIDIA environment installed from the new hash locks,
-and a separate macOS portable environment with Warp. The latter passes 239 tests
-and 59 subtests, plus two resource-wheel tests. Linux installation preflight and
-warm-cache native warmup pass; the first two-core cold warmup timed out. A
-diagnostic rerun completed after increasing its CPU budget, without relaxing
-memory containment. All 17 native tests pass after extending the bounded
-synchronous shutdown deadline for measured 12.3-second SDK destruction. A new
-stalled-cleanup regression verifies timeout and subsequent successful joining.
-The isolated runner avoids the combined suite's native-thread budget collision.
-The resource wheel matches all 26 source
-resources and all three platform-lock hashes. Repeated source packaging produces
-identical ZIP bytes including the poses and wheel. The new documentation edits
-invalidate the former authority-review marker; the current project gates are
-not green. `verification/reconciliation-review.json` records file dispositions,
-source identities and exact verification boundaries. No runtime feature is
-landed or release-qualified by this reconciliation.
-
-The initial reconciliation `litai verify` passes authority, locks and receipt;
-source-intelligence and HTML observability are configured skips. This result
-does not establish equality of later working-source edits with the admitted
-artifact. Review reports with mismatching source hashes remain historical.
 
 ## Current open-items checkpoint — 2026-09-25
 
@@ -145,12 +41,12 @@ CONFIG-001, TWIN-001 and ROBOT-001 remain open at the boundaries listed here.
 
 ### RENDER-001: qualification, admission and delivery
 
-Historical September 27 repair: photo preset authority and specification metadata were reconciled;
+Current repair: photo preset authority and specification metadata are reconciled;
 all three component locks are refreshed through the supported CLI. The exact
 SO-101 resource wheel preserves original model bytes and provenance while keeping
 retained source text-only. `verification/authority-refresh-review.json` records
-admission and gate results for that snapshot. Later source edits do not match
-all recorded hashes; a current `litai verify` pass alone does not qualify them. Physical-arm acceptance remains separate.
+current application admission and gate results; `litai verify` is the authority
+for freshness. Physical-arm acceptance remains separate.
 
 
 - [x] Diagnose the failed Windows shard and adopt an exact framework revision
@@ -191,6 +87,257 @@ all recorded hashes; a current `litai verify` pass alone does not qualify them. 
   review and close milestones two and three only after their dependencies pass.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
+
+Operator confirmed the camera/session changes work and requested a release on
+2026-10-07. Stack the camera preview above RTX in the workspace and integrated
+arm views, refresh the final user documentation, then commit, push and publish
+through the repository release workflow. Keep release qualification limits explicit.
+
+Robot-session direction: operator has saved both real-arm calibrations and requests
+record/save/replay, physical follower tracking and discoverable bundled actions
+(The Signal, Danger), plus USB camera selection and live preview beside RTX.
+Before this change, presets and following were simulation-only, without a physical sequence UI.
+Add a shared-controller Robot session panel with explicit connect/start/stop,
+read-only joint recording, validated portable sequence files, simulated previews,
+and explicit bounded follower actuation. Never actuate the leader or start hardware
+motion by loading a file/preset. Stale data, stop, close and ownership loss stop
+physical following/playback. Reuse verified saved calibration/binding identities.
+Camera discovery/configuration belongs to Device Manager; one application-owned
+Qt capture service supplies live previews alongside RTX without opening audio.
+Remember the selected camera but require explicit enable; handle missing devices
+and stale/error states. Device Manager owns camera identification: preview a selected camera, then
+confirm Use this camera. Do not ask the operator to identify cameras in chat.
+- [x] Implement and verify robot-session ownership, recording persistence, bounded
+  following/action/replay and visible stop behavior using serial emulators.
+- [x] Implement and verify camera discovery, remembered selection, explicit enable,
+  shared previews and disconnect cleanup; all three Windows camera inputs delivered live frames.
+- [ ] Operator identifies the mounted camera in Device Manager and tests physical motion.
+- [x] Update help, land checked work and relaunch for operator testing (PR #14).
+
+Verification: 60 camera/session/controller/device/hardware/setup tests pass on Windows.
+Native RTX preset changes appear in the integrated session preview without opening
+robot ports. CI now runs camera identity and serial-emulator session tests on Windows,
+Linux and macOS; native RTX remains Windows/Linux only. No physical motors were
+commanded during development checks. See `verification/camera-session-review.json`.
+
+
+Online help follow-up: replace simulation-only Getting started text with a
+scrollable guide covering Device Manager, explicit wizard actions, automatic
+sweeps, final save blockers, saved artifacts and manual controls. Align web
+getting-started/hardware documentation with that same workflow.
+
+Final-review follow-up: leader saved successfully on real hardware; follower has
+all six captures but wrist feedback is 5017, so the normal-range save guard is
+correctly blocking. Replace the misleading 90% display with captured-versus-saved
+state, show the wrist return requirement prominently, and remove the final review
+checkbox. The explicit Save action confirms review; Back permits corrections.
+Preserve the active physical session while implementing this UI change.
+- [x] Verify save without a checkbox, out-of-range blocking/recovery, clear final
+  progress, and preservation of all captures while the wrist is returned.
+  57 tests pass; the final all-six-joint regression additionally reproduces
+  5017 ticks, verifies the blocker and retained captures, then saves through
+  the primary action without a checkbox. Native rerun/restart deferred to
+  preserve the operator’s active unsaved follower calibration.
+
+
+Wrist follow-up: live follower wrist-roll feedback crossed zero (-1) after four
+completed sweeps; normal telemetry validation faulted and restored calibration.
+Permit bounded signed wrist feedback only in torque-off calibration capture,
+retain normal command/read limits, intersect saved binding with valid command
+coordinates, and require a normal-range review pose before committing. Replace
+support/reference checkboxes with explicit primary step actions. Do not weaken
+freshness, motor identity, torque or recovery guards.
+- [x] Verify signed wrist capture, normal-read rejection, safe save/recovery,
+  explicit confirmation transitions and all-joint native advancement.
+  76 tests passed (one POSIX-only test skipped on Windows); final 44-test
+  setup/UI rerun passed. Both native roles complete all six joints, preserve
+  signed wrist progress and save after returning into range, torque off.
+  Evidence: `verification/wrist-calibration-review.json`. Physical retest pending.
+
+
+Current operator follow-up: base-turn calibration stalls after an early interior
+pause; separate RTX and guide windows obscure each other. Accept a held return
+at or beyond the first endpoint in the return direction, retaining selected-joint,
+span, freshness and torque checks. Embed RTX beside the always-visible reference
+and progress. Device Manager owns role/port-specific Calibrate entry points;
+remove the separate scene setup action. Scope is desktop setup/navigation.
+- [x] Verify interior-pause/overshoot sweeps in both directions and integrated
+  wizard/device navigation, then native six-joint automatic advancement.
+  The 82-test scope passed; final embedded-panel/navigation changes pass 50
+  focused tests. Native leader/follower runs advance and save all six joints
+  with torque off, including the observed 2774 → 804 → 3350 base sweep.
+  See `verification/integrated-calibration-review.json`; physical retest pending.
+
+
+Current live debugging direction: the operator reports frozen physical previews,
+unclear base sweep progress and a reference diagram that does not match the arm.
+Add an application-owned local diagnostic interface for co-session inspection:
+current device samples, setup decisions, pose publication, rendered frames,
+UI state, bounded timing history and validated live camera/performance controls.
+Keep Qt/native/serial ownership intact and expose no arbitrary code or motor writes.
+Use the instrumentation to trace and repair actual measurement-to-frame behavior.
+Reproduction isolates a pinned OVRTX interaction: native outline selection stops
+renderable descendants observing ancestor-only transform changes. Explicitly
+refreshing their local transforms restores visible movement without dropping
+native highlighting. Retain identities even after deselection until scene reload.
+- [x] Implement and test local diagnostics, capture and bounded tuning commands.
+  Live state/UI/RTX/window capture, camera and temporary frame-rate commands pass;
+  GPU metrics are visible. The 84-test controller/UI/runtime scope passes after
+  a focused 24-test rerun of the final preview scheduling and diagnostic changes.
+- [x] Correct reference geometry and make sweep progress/action requirements visible.
+- [x] Trace emulated telemetry through mapped angles, published poses and RTX pixels;
+  both roles pass all six joints, automatic advancement and torque-off save on
+  Windows RTX. Selection/deselection dynamics also pass. Physical operator
+  confirmation remains pending; see verification/live-debug-review.json.
+
+Current startup regression: scene opening inadvertently shuts down the application
+registry permanently. Remove shutdown from document loading; prove hardware
+controls can open after initial scene load and after replacement. Preserve shutdown
+only for accepted application exit and finalization.
+- [x] Verify scene-load/device-control regression (29 tests pass).
+- [x] Verify both live Open controls buttons and Back navigation after restart;
+  Leader COM6 and Follower COM5 open without connecting or actuating motors.
+
+Current architecture repair: the wizard and hardware panels independently create
+serial owners and use a window dictionary as a device registry. Introduce a
+first-class application device registry with one controller per attachment,
+shared telemetry/calibration/binding, scoped control access and serialized cleanup.
+Review all application layers and record prioritized ownership, threading,
+navigation and verification findings in docs/architecture/application-review.md.
+- [x] Replace per-panel serial ownership with shared device controllers.
+- [x] Verify simultaneous hardware/setup views, exclusive calibration, cancellation,
+  completed handoff and application shutdown through the real serial emulator.
+- [x] Complete the [architectural review](../architecture/application-review.md)
+  and document remaining staged work.
+
+Current navigation refinement: keep the numbered joint reference diagram visible
+above scrolling setup instructions, with no hide option. Add explicit parent-panel
+back actions to Device Manager, hardware controls, setup and its RTX companion.
+Leaving hardware/setup must use existing shutdown and calibration recovery;
+returning from RTX must preserve setup progress and live rendering.
+- [x] Verify persistent diagram and parent navigation through Qt controls (37 tests
+  pass; native Windows reference-step screenshot inspected).
+
+Current assignment repair: live inspection found a cached Leader control window
+on the former port after saved roles were exchanged. Desktop must validate both
+role and attachment before reusing a hardware window, prevent assignment edits
+while physical sessions are open, and make Device Manager roles/ports explicit
+with the shared contrast-outlined color dots in rows and buttons. Preserve the
+operator's current saved assignments and black/white palette.
+Use distinct controller/gripper symbols inside role badges throughout the UI,
+with automatic contrasting symbol ink and normal-contrast text. Color alone
+must not encode role, including identical or nearly identical custom colors.
+- [x] Reject stale cached windows and conflicting active port owners.
+- [x] Show role-colored device rows and role/port-specific hardware buttons.
+- [x] Verify reassignment routing, active-session guards, and black/white contrast.
+
+Current device-coupling repair: a traced physical follower reference capture
+fails while clearing wrist-roll homing: its unoffset encoder is 4530, outside
+the normal 0..4095 measurement contract. The original offset/limits restore.
+Desktop owns a bounded calibration-only unoffset read and representable homing
+selection, retaining the actual reference encoder per joint instead of assuming
+2047. Normal read/command guards remain strict. Always show the selected arm's
+reference guide during preparation and keep capture errors outside the scroll area.
+- [x] Reproduce extended unoffset feedback in the serial emulator for both roles.
+- [x] Verify reference capture, mapping and cancellation with non-midpoint references.
+- [x] Verify the physical capture/restore path with torque off and native previews.
+  Both physical arms pass capture and restore with torque off; follower wrist
+  reference is 2483 ticks. Native emulated six-joint frame changes pass for both
+  roles. Controller/setup suite: 53 tests, one platform skip; Qt setup/hardware
+  suite: 29 tests pass. See `verification/reference-capture-review.json`.
+  Full physical sweeps and powered motion remain operator qualification work.
+
+Operator follow-up: Enable motors opens no confirmation and disabled controls
+are visually ambiguous; Release torque appears inert. Desktop owns explicit
+disabled styling, the exact arming prerequisite beside the button, measured
+six-motor torque state and pending/confirmed/failed command feedback in setup and
+hardware controls. Diagnose using the serial emulator without actuating the
+operator's arm. Preserve calibration, freshness and explicit torque authorization.
+Refinement: replace mirror enable/release buttons with one measured-state control.
+All-off offers Engage; any-on offers Release; unknown/mixed states are explicit.
+Calibration remains torque-off and shows “Motors free” when already released.
+Live screen inspection found the follower at the stationary reference step and
+the leader in raw read-only mode with no calibration/binding. Make reference,
+waiting and live preview modes conspicuous; explain missing mirror prerequisites
+beside the disabled control. Do not invent physical joint coordinates before
+calibration or claim the reference guide is following the arm.
+
+- [x] Implement visible disabled states and motor-action feedback.
+- [x] Verify blocked/confirmed/cancelled enable, repeated release, disconnected
+  release and failed stop, including the real Qt buttons and both themes.
+  The 92 focused tests pass (one platform-specific skip). Serial-emulator Qt
+  screenshots verify both themes; see `verification/motor-feedback-review.json`.
+  Active physical sessions were inspected without commanding or restarting them.
+
+
+Operator follow-up: keep the selected leader/follower unmistakable throughout
+setup. Desktop owns persistent role labels and a shared palette for the wizard,
+reference diagram, viewport legend and rendered printed parts. Allow saved custom
+colors before connection to match printed arms; retain textual role identification
+even when colors are identical. Color changes must not alter motor assignments,
+calibration, authored geometry or hardware state.
+Extend the same color dots to role references throughout controls, device assignment,
+simulation, mock telemetry and selection UI. Use dual light/dark outlines so user
+colors remain visible on either theme while keeping text at normal contrast.
+
+- [x] Implement shared role colors, persistent selection labels and saved choices.
+- [x] Verify role switching, persistence/migration, material colors and setup UI.
+  Windows passes 89 focused configuration, settings, setup, simulation, device,
+  mock and hardware UI tests, plus two role-dot contrast/text tests. The settings
+  test teardown now drains deferred Qt deletion to avoid retaining prior dialogs.
+  Native RTX verification captures the custom purple follower, consistent labels
+  and all six automatic joint transitions in 34.94 seconds. See
+  `verification/arm-colors-review.json`; hardware was emulated. Formal lifecycle
+  admission remains stale and is not advanced by these feature checks.
+
+
+Operator follow-up (2026-10-05), implemented: tolerate incidental motion of
+unselected joints, make each joint capture advance automatically, and give the
+solid native RTX arm a dedicated live window. The current three-tick movement
+message is too sensitive, and the schematic is being mistaken for live geometry.
+Desktop owns this correction. Gather two deliberately held endpoints and a
+repeat visit to the first endpoint using only the selected motor, with minimum
+travel, sample-count, dwell and freshness gates. A valid rendered observation must
+precede automatic advancement. Keep reference capture and final hardware save
+explicit; the operator reviews travel and direction once before saving.
+
+- [x] Add automatic sweep capture with jitter, incidental-motion, stale-data and
+  duplicate-sample regressions; do not infer full mechanical travel from a twitch.
+- [x] Open a dedicated solid RTX preview window, stream every native frame to it,
+  keep all six measured joints moving, and demote the schematic to optional help.
+- [x] Verify automatic six-joint progression and actual changing native frames,
+  cancellation/recovery, review/save and preview-window lifecycle, then commit and
+  push the correction. Physical-arm acceptance remains the operator's check.
+
+Evidence: `verification/guided-setup-auto-review.json` records 74 passing tests
+and one POSIX-only skip, all six automatic joint transitions, native joint
+readback and changing RTX frame bytes, explicit final save with torque off, and
+the separate live-window lifecycle. Next: check this revision on the physical
+arm after saving the current workspace and finishing/cancelling its calibration.
+
+Current operator correction (2026-10-05): first physical follower setup exposes
+missing visible motion and unfamiliar anatomical joint names. Implemented:
+make calibration a self-contained visual wizard owned by the desktop Component.
+Keep the native RTX preview next to plain-language, numbered joint identification,
+show measured movement and completion per joint, and retain pending preview intent
+while rendering is busy. Preserve torque-off calibration and rollback semantics.
+
+- [x] Add illustrated joint locations, individual instructions, travel feedback,
+  integrated native preview, review and explicit completion.
+- [x] Prevent renderer scheduling from starving calibration and subsequent live view;
+  reject stale observations and invalidate cancelled/in-flight preview work.
+- [x] Verify busy-renderer, stale/disconnect, all-six-joint and cancellation paths
+  with emulated hardware, Qt and native RTX evidence; record physical qualification
+  separately from software verification.
+
+Evidence: `verification/guided-setup-visual-review.json` records 54 passing focused
+tests (one POSIX-only skip), native RTX readback and changing frame bytes for all
+six joints, torque-off save and compact-layout inspection. The Component lock is
+refreshed. The pre-existing formal lifecycle test receipt still needs renewal;
+this retained-source development change is not a release attestation. Next:
+operator checks the new wizard against the physical follower after cancelling or
+finishing the old setup and restarting the application.
+
 
 Current direction supersedes the earlier read-only boundary: the user explicitly
 requested USB reads and writes before taking the app to the physical SO-101 pair.
@@ -1282,7 +1429,44 @@ queue item or let `docs/roadmap/` become a plan archive.
 
 ### [ ] APP-001 — Deliver an installed desktop application with a simulated SO-101 pair
 
-- **Historical contextual joint controls (superseded UI):** The operator reports that joint movement remains
+- **Portable Make entry point:** The operator requests `make run` on Windows,
+  Linux and macOS. Route Windows to the existing PowerShell launcher and Linux
+  to the automatic management setup/launch path, removing the Unix-only build
+  prerequisite from `run`. macOS must report the existing unsupported NVIDIA
+  renderer contract before setup; this request cannot create missing Mac SDKs.
+  - [x] Update the Make target, startup contract and contributor instructions.
+  - [ ] Verify actual GNU Make routing, checkout paths with spaces and failure
+    propagation locally and in the six-job Windows/Linux/macOS CI matrix.
+    Local Windows passes all thirteen startup tests. Actual `make run` reaches
+    a native RTX frame and clean shutdown with exit zero using the bounded
+    integration hook; project validation passes. Hosted matrix pending.
+
+- **Windows contributor startup:** The operator requests one command to build and
+  run a checkout. Added `run.ps1` and automatic setup for `manage.py run`,
+  retain successful setup evidence keyed to pinned dependency inputs, and preserve
+  checksum-sensitive robot model bytes across Windows checkouts. This is local
+  contributor startup; installed application delivery remains below.
+  - [x] Implement first-run setup, unchanged-input reuse, invalidation and failure recovery.
+  - [x] Verify startup control flow, PowerShell entry point and pinned model identities.
+    Twelve startup regressions pass on Windows with Python 3.11.9, including
+    canonical LF authoring and byte-preserved vendored SDK checks.
+  - [x] Verify native warmup and launch in the updated checkout; interactive desktop
+    visibility requires the operator's session, not the coding sandbox.
+    Fresh setup warmup passed in 124.516 seconds; repeated warmup passed in
+    12.875 seconds. The real CLI first-frame/shutdown check and three robot
+    asset tests pass. See `verification/windows-startup-review.json`.
+  - [x] Run startup regressions in GitHub CI on Windows, Linux and macOS with
+    Python 3.11 and 3.12. The initial ten-test matrix passed all six jobs in
+    run 37271031449. The final twelve-test matrix at a3c425c passed all six jobs
+    in run 37271796770. The actual `run.ps1` command with its setup receipt
+    removed completed pinned setup, native warmup, first frame and clean shutdown.
+  - **Tooling limitation:** The local framework source CLI now runs and its
+    development guidance and project validation succeed after the LF checkout
+    repair and supported documentation review. The prescribed peer survey needs
+    unavailable `gh`. Framework admission is not advanced. GitHub API reads CI;
+    PR creation is unavailable through the connector and browser access was denied.
+
+- **Contextual joint controls:** The operator reports that joint movement remains
   difficult to discover. Implement cross-platform right-click joint controls with
   a visible bounded slider, angle input and lock explanation; reserve middle-drag
   for panning and keep camera input separate. Reuse the native picker and simulated
@@ -1291,21 +1475,18 @@ queue item or let `docs/roadmap/` become a plan archive.
   - [x] Implement contextual controls, cancellation and updated input guidance.
   - [x] Verify delayed picking, slider coalescing, limits, locks and camera routing.
   - [x] Verify actual picked-joint motion and rendered frames on Linux ARM64 and Windows.
-  For the recorded September 27 popup snapshot, native checks passed on both
-  platforms: a 25 degree target moved
+  Native context-window checks pass on both platforms: a 25 degree target moves
   the picked leader shoulder joint to approximately 26.1 degrees in the bounded
   paused preview, changes RTX pixels, preserves authored USD, pans with the
   middle button and shuts down cleanly. See `verification/joint-context-review.json`.
   All 24 focused input/UI regressions pass on each platform. Retained-source
   admission passes 30 contract tests and three unchanged independent acceptance
   cases; all 90 application/test Python files match the admitted artifact.
-  That snapshot passed the pinned framework's three applicable gates. The later
-  direct-drag and twelve-slider implementation no longer matches these hashes;
-  fresh native evidence and reconciliation of the popup specification are pending.
+  The pinned framework's `litai verify` passes all three applicable gates.
 
 - **Discoverability direction:** Provide persistent on-screen joint instructions, named joint selection, direct angle controls, contextual lock recovery and an obvious real-arm setup entry point. Test the visible Windows flow without relying on the scene tree or undocumented gestures.
 
-- **Historical interaction repair (superseded controls):** The selected follower joint is locked by leader-following. Provide an explicit action beside the selected joint to disable following, retain toggle requests while the native worker is busy, and verify subsequent slider and pointer motion. Windows verification passes the busy-worker regression and visible native follower unlock plus slider motion (20 degree target, 21.8 degree measured paused pose, changed RTX frame). Physical motor control is unchanged.
+- **Current interaction repair:** The selected follower joint is locked by leader-following. Provide an explicit action beside the selected joint to disable following, retain toggle requests while the native worker is busy, and verify subsequent slider and pointer motion. Windows verification passes the busy-worker regression and visible native follower unlock plus slider motion (20 degree target, 21.8 degree measured paused pose, changed RTX frame). Physical motor control is unchanged.
 
 - **Priority:** high
 - **Owner:** Desktop Component and native delivery

@@ -10,6 +10,7 @@ def build_binding_dialog(panel):
     from PySide6.QtWidgets import QDialog,QVBoxLayout,QLabel,QGridLayout,QDoubleSpinBox,QPushButton,QFileDialog
     dialog=QDialog(panel);dialog.setWindowTitle('Measure virtual joint binding');dialog.resize(850,420)
     layout=QVBoxLayout(dialog)
+    back=QPushButton('Back to hardware controls');back.clicked.connect(dialog.reject);layout.addWidget(back)
     note=QLabel('With motors stopped, move each physical joint to two known poses. Enter the corresponding virtual angle and capture A, then B. Capture each joint separately. Calibration midpoint is not assumed to be the CAD zero.')
     note.setWordWrap(True);layout.addWidget(note)
     grid=QGridLayout();layout.addLayout(grid);captures={};angles={};labels={}

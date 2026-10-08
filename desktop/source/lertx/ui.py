@@ -21,7 +21,10 @@ QTreeWidget, QLineEdit, QDoubleSpinBox, QComboBox, QSpinBox {
 }
 QTreeWidget::item:selected, QListWidget::item:selected { background-color: #1f6f6b; }
 QPushButton { background-color: #2b2f33; border: 1px solid #3a3f44; border-radius: 4px; padding: 6px 12px; }
-QPushButton:hover { border-color: #2fa39c; }
+QPushButton:hover:enabled { border-color: #2fa39c; }
+QPushButton:disabled { background-color: #202225; color: #8e949b; border: 1px dashed #60666d; }
+QComboBox:disabled, QDoubleSpinBox:disabled, QSpinBox:disabled, QLineEdit:disabled { background-color: #202225; color: #8e949b; border: 1px dashed #60666d; }
+QCheckBox:disabled { color: #8e949b; }
 QPushButton:focus, QLineEdit:focus, QDoubleSpinBox:focus, QComboBox:focus {
     border: 1px solid #2fa39c;
 }
@@ -47,9 +50,10 @@ def build_main_window(
     worker_factory: Callable[[], object],
     default_scene_path: str,
     config_path: str,
+    *, device_registry=None,
 ):
     """Construct and return the LeRTX main window (real Qt widgets)."""
-    from PySide6.QtCore import Qt, QTimer
+    from PySide6.QtCore import Qt, QTimer, Signal
     from PySide6.QtGui import QAction, QImage, QPixmap
     from PySide6.QtWidgets import (
         QComboBox,
@@ -77,6 +81,10 @@ def build_main_window(
         QVBoxLayout,
         QWidget,
     )
+
+    from .role_ui import widgets, badge
+    role_profile=[initial_profile]
+    QLabel,QPushButton,QCheckBox=widgets(lambda:role_profile[0])
 
     class SettingsDialog(QDialog):
         def __init__(self, profile: dict, parent=None) -> None:
@@ -339,6 +347,10 @@ def build_main_window(
             page = QWidget()
             layout = QFormLayout(page)
             layout.addRow("Config directory", QLabel(config_module.user_config_dir()))
+            live = getattr(self.parent(), 'diagnostics', None)
+            layout.addRow('Live co-session debugging', QLabel(
+                'Active · local authenticated diagnostics · process '+str(__import__('os').getpid())
+                if live else 'Off · launch with LERTX_DEBUG=1 to enable'))
             diagnostics = getattr(self.parent(), "_diagnostics", {})
             if diagnostics:
                 for name, value in diagnostics.items():
@@ -462,8 +474,7 @@ def build_main_window(
             self.set_enabled_for_selection(editable, reason)
 
     class MainWindow(QMainWindow):
-        LEADER_COLOR = "#1FAD9E"
-        FOLLOWER_COLOR = "#F2A31F"
+        native_frame_ready = Signal(object)
 
         def __init__(self) -> None:
             super().__init__()
@@ -481,7 +492,11 @@ def build_main_window(
             self.reconstruction_probe = transport_module.ConnectionProbe(request_scene)
             from .devices import scan_result
             self.device_probe = transport_module.ConnectionProbe(scan_result)
+            from .device_control import DeviceRegistry
+            self.devices = device_registry if device_registry is not None else DeviceRegistry()
             self._hardware_windows = {}
+            from .camera import CameraService
+            self.camera_service=CameraService(self.config_path,self)
             self.clock = SimulationClock(self.profile["physics"]["timestep_hz"])
             self._pending = []
             self._ready = False
@@ -563,12 +578,12 @@ def build_main_window(
             self._after_discard_confirmation(lambda:self.open_scene(path))
 
         def _show_help(self):
-            QMessageBox.information(self,'Getting started',
-                'Your workspace contains a teal SO-101 leader and an amber follower (see the color key under the viewport).\n\n'
-                'Use Robot simulation to choose joint targets, then Play. The follower tracks the simulated leader. Pause holds the pose; Reset restores the workspace.\n\n'
-                'Left- or right-drag an arm link in the viewport to move its joint directly, following the mouse. Alt-left-drag orbits the camera, middle-drag pans, and wheel or trackpad scroll zooms. Every leader and follower joint also has its own labeled slider in the Robot simulation panel — drag a slider or type a value there for the same live control without touching the viewport. Joint controls work while paused; uncheck Follower tracks the simulated leader to move the follower independently.\n\n'
-                'To move anything else in the workspace — the ball, the obstacle, the work surface — left- or right-drag it in the viewport, same as an arm link. Selecting it also switches to the Inspector tab next to Robot simulation, where you can type exact Translate/Rotate/Scale values and click Apply transform. Use File → Save As to keep a workspace.\n\n'
-                'These are simulated arms. No hardware port is opened. The leader trigger geometry and inertia are upstream estimates; contact hulls approximate individual mechanical parts.')
+            from .help_ui import build_help_dialog
+            previous=getattr(self,'_help_dialog',None)
+            if previous:previous.close();previous.deleteLater()
+            self._help_dialog=build_help_dialog(self)
+            self._help_dialog.show()
+            self._help_dialog.raise_()
 
         def _show_about(self):
             from .branding import VERSION
@@ -609,9 +624,8 @@ def build_main_window(
             devices_action = QAction("Devices", self)
             devices_action.triggered.connect(self._on_devices)
             toolbar.addAction(devices_action)
-            setup_action = QAction('Set up real arms', self)
-            setup_action.triggered.connect(self.open_setup)
-            toolbar.addAction(setup_action)
+            session_action=QAction("Robot session",self)
+            session_action.triggered.connect(self.open_robot_session);toolbar.addAction(session_action)
 
             toolbar.addSeparator()
 
@@ -660,16 +674,25 @@ def build_main_window(
             self.viewport_label.setMinimumSize(320, 180)
             self.viewport_label.setText("Loading workspace…")
             self.viewport_label.setToolTip('Left- or right-drag an arm link to move its joint, or any other object (ball, obstacle, surface) to move it directly — both follow the mouse. Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom. Every joint also has a labeled slider in Robot simulation; any object\'s exact position is in the Inspector tab.')
-            layout.addWidget(self.viewport_label, stretch=1)
+            from .camera import CameraPreview
+            views=QVBoxLayout();layout.addLayout(views,1)
+            self.camera_preview=CameraPreview(self.camera_service,self)
+            views.addWidget(self.camera_preview,1)
+            views.addWidget(self.viewport_label,2)
 
             legend_row = QHBoxLayout()
             legend_row.setContentsMargins(0, 0, 0, 0)
-            for swatch_color, name in ((self.LEADER_COLOR, "Leader"), (self.FOLLOWER_COLOR, "Follower")):
+            self.arm_swatches = {}
+            from .arm_colors import role_color
+            for role, name in (("leader", "Leader"), ("follower", "Follower")):
+                swatch_color = role_color(self.profile, role)
                 swatch = QLabel()
-                swatch.setFixedSize(12, 12)
-                swatch.setStyleSheet(f"background-color: {swatch_color}; border-radius: 2px;")
+                self.arm_swatches[role] = swatch
+                swatch.setFixedSize(24, 24)
+                swatch.setPixmap(badge(role,swatch_color))
                 legend_row.addWidget(swatch)
-                legend_row.addWidget(QLabel(name))
+                from PySide6.QtWidgets import QLabel as PlainLabel
+                legend_row.addWidget(PlainLabel(name))
             legend_row.addStretch(1)
             layout.addLayout(legend_row)
 
@@ -722,7 +745,8 @@ def build_main_window(
             self.resizeDocks([hierarchy_dock, inspector_dock], [240, 360], Qt.Orientation.Horizontal)
 
         def _build_status_bar(self) -> None:
-            self.setStatusBar(QStatusBar())
+            from .role_ui import status_bar
+            self.setStatusBar(status_bar(lambda:self.profile))
 
         def _on_search_changed(self, text: str) -> None:
             lowered = text.lower()
@@ -765,6 +789,8 @@ def build_main_window(
                 for prim in sorted(hierarchy, key=lambda prim: (prim["path"].count("/"), prim["path"])):
                     path = prim["path"]
                     item = QTreeWidgetItem([path.rsplit("/", 1)[-1] or path])
+                    from .role_ui import role_icon
+                    item.setIcon(0,role_icon(item.text(0),self.profile))
                     item.setData(0, Qt.ItemDataRole.UserRole, path)
                     item.setToolTip(0, path)
                     parent = self._tree_items.get(path.rsplit("/", 1)[0])
@@ -789,17 +815,38 @@ def build_main_window(
                 self._frame_timer.setInterval(4)
             if self.worker is None or self._closing:
                 return
-            self._pending.append((self.worker.submit(fn), callback))
+            submitted = time.perf_counter()
+            def measured():
+                started = time.perf_counter()
+                result = fn()
+                return result, started, time.perf_counter()
+            def completed(value):
+                result, started, ended = value
+                if hasattr(self, 'diagnostics'):
+                    self.diagnostics.record('command.completed', name=getattr(fn, '__name__', 'command'),
+                        queue_ms=(started-submitted)*1000, work_ms=(ended-started)*1000,
+                        delivery_ms=(time.perf_counter()-ended)*1000)
+                if callback:
+                    callback(result)
+            self._pending.append((self.worker.submit(measured), completed))
 
         def _selected_path(self):
             items = self.tree.selectedItems()
             return items[0].data(0, Qt.ItemDataRole.UserRole) if items else None
 
         def _on_selection_changed(self):
+            if self._closing:
+                return
+            # Both dock activation and inspector content can resize the viewport.
+            # Let a pending gesture deliver its final command before changing layout.
+            if self.viewport_label.press is not None:
+                QTimer.singleShot(50, self._on_selection_changed)
+                return
             path = self._selected_path()
             if self._ready and self.worker and hasattr(self.worker, 'select'):
                 def selected_joint(value):
-                    if path==self._selected_path() and value.get('joint'):
+                    if (path==self._selected_path() and value.get('joint')
+                            and self.viewport_label.press is None):
                         self.robot_dock.show();self.robot_dock.raise_()
                 self._command(lambda: self.worker.select(path),selected_joint)
             self.inspector.set_enabled_for_selection(False)
@@ -809,11 +856,17 @@ def build_main_window(
             def selected(value):
                 if path != self._selected_path():
                     return
+                if self.viewport_label.press is not None:
+                    QTimer.singleShot(50, self._on_selection_changed)
+                    return
                 if "error" in value:
                     self.inspector.show_prim(path, self._prim_types.get(path, ""), False, value["error"])
                     return
                 self.inspector.show_prim(path, self._prim_types.get(path, ""), True)
-                self.inspector_dock.show();self.inspector_dock.raise_()
+                # Raising a dock can resize the viewport and cancel its pending
+                # released drag before the native owner accepts the final value.
+                if self.viewport_label.press is None:
+                    self.inspector_dock.show();self.inspector_dock.raise_()
                 for spins, name in ((self.inspector.translate, "translation"),
                                     (self.inspector.rotate, "rotation"), (self.inspector.scale, "scale")):
                     for spin, component in zip(spins, value[name]):
@@ -975,6 +1028,10 @@ def build_main_window(
                 dialog.deleteLater()
             if profile is None:
                 return
+            from .arm_colors import role_color
+            if any(role_color(profile,r)!=role_color(self.profile,r) for r in ('leader','follower')) and self.devices.alive:
+                self._show_error(ValueError('Close hardware sessions before changing arm colors.'))
+                return
             restart = profile["rendering"] != self.profile["rendering"]
             if restart and QMessageBox.question(self, "Restart renderer",
                     "Apply rendering settings and restart the renderer?",
@@ -982,6 +1039,7 @@ def build_main_window(
                 return
             def configured(status):
                 self.profile = copy.deepcopy(profile)
+                self.refresh_arm_colors()
                 self._apply_theme()
                 self._apply_status(status)
             if self.worker:
@@ -997,11 +1055,27 @@ def build_main_window(
                     self._show_error(exc)
                     return
                 self.profile = copy.deepcopy(profile)
+                self.refresh_arm_colors()
                 self._apply_theme()
                 self.statusBar().clearMessage()
 
         def create_settings_dialog(self):
             return SettingsDialog(self.profile, self)
+
+        def refresh_arm_colors(self):
+            from .arm_colors import role_color
+            role_profile[0]=self.profile
+            for role, swatch in self.arm_swatches.items():
+                swatch.setPixmap(badge(role,role_color(self.profile, role)))
+            from PySide6.QtWidgets import QWidget
+            for child in self.findChildren(QWidget):
+                refresh=getattr(child,'refresh_role_colors',None)
+                if refresh:refresh()
+            from .role_ui import role_icon
+            for item in getattr(self,'_tree_items',{}).values():
+                item.setIcon(0,role_icon(item.text(0),self.profile))
+            wizard=getattr(self,'_setup_window',None)
+            if wizard and not wizard.closing:wizard.sync_identity()
 
         def _on_devices(self):
             from pathlib import Path
@@ -1013,20 +1087,38 @@ def build_main_window(
 
         def open_hardware(self,candidate,role):
             panel=self._hardware_windows.get(role)
-            if panel and panel.session._thread.is_alive():
-                panel.show();panel.raise_();panel.activateWindow();return
+            if panel and panel.session.alive:
+                if panel.session.candidate.attachment!=candidate.attachment or panel.closing:
+                    self.statusBar().showMessage("Device assignment changed; close the existing controls first");return False
+                panel.show();panel.raise_();panel.activateWindow();return True
             from .hardware_ui import build_hardware_panel
-            panel=build_hardware_panel(self,candidate,role)
+            try:panel=build_hardware_panel(self,candidate,role)
+            except ValueError as exc:
+                self.statusBar().showMessage(str(exc));return False
             self._hardware_windows[role]=panel
             panel.show()
+            return True
 
-        def open_setup(self):
+        def open_robot_session(self,checked=False,*,session_assignments=None):
+            panel=getattr(self,'_robot_session_window',None)
+            if panel is None or panel.closed:
+                from .robot_session_ui import build_robot_session_panel
+                panel=build_robot_session_panel(self);self._robot_session_window=panel
+            if session_assignments and not panel.session.accesses:panel.session_assignments=dict(session_assignments)
+            panel.show();panel.raise_();panel.activateWindow()
+            return True
+
+        def open_setup(self, *, role=None, candidate=None):
             previous=getattr(self,'_setup_window',None)
             if previous and previous.isVisible():
-                previous.raise_();previous.activateWindow();return
+                if role and previous.role!=role:
+                    self.statusBar().showMessage('Finish or cancel the active '+previous.role+' calibration first.');return False
+                previous.raise_();previous.activateWindow();return True
             from .setup_ui import build_setup_wizard
-            self._setup_window=build_setup_wizard(self)
+            self._setup_window=build_setup_wizard(self,initial_role=role,initial_candidate=candidate,return_to_devices=True)
+            self._setup_window.finished.connect(lambda result: QTimer.singleShot(0,self._on_devices) if not result and not self._closing else None)
             self._setup_window.show()
+            return True
 
         def _display_factor(self):
             unit = self.profile["general"]["display_units"]
@@ -1040,6 +1132,9 @@ def build_main_window(
                     QWidget { background: #f1f4f5; color: #182428; font-size: 13px; }
                     QLineEdit, QTreeWidget, QSpinBox, QDoubleSpinBox { background: white; color: #182428; padding: 4px; }
                     QPushButton { background: #dce8e8; color: #182428; padding: 6px 12px; }
+                    QPushButton:disabled { background: #f1f4f5; color: #69747b; border: 1px dashed #849097; }
+                    QComboBox:disabled, QDoubleSpinBox:disabled, QSpinBox:disabled, QLineEdit:disabled { background: #f1f4f5; color: #69747b; border: 1px dashed #849097; }
+                    QCheckBox:disabled { color: #69747b; }
                     QTreeWidget::item:selected { background: #267c78; color: white; }
                     QLabel#viewport { background: #101214; }
                 """)
@@ -1065,6 +1160,7 @@ def build_main_window(
                 self._command(self.worker.reset, self._apply_status)
 
         def _show_error(self, exc):
+            if hasattr(self, "diagnostics"):self.diagnostics.record("application.error", message=str(exc))
             self.viewport_label.cancel()
             self._set_loading(False)
             self.native_status_label.setText(f"Native: {exc}")
@@ -1086,6 +1182,10 @@ def build_main_window(
                 self._frame_timer.setInterval(50)
                 self.frame_rate_label.setText("Paused")
                 return
+            self._render_diagnostics = result.get('diagnostics')
+            if hasattr(self, 'diagnostics'):
+                self.diagnostics.record('frame.presented', render=self._render_diagnostics,
+                    setup_sequence=result.get('setup_sequence'))
             frame = result["frame"]
             if frame.dtype_name != "uint8" or frame.channels not in (3, 4):
                 raise ValueError("Unsupported native display frame format")
@@ -1093,6 +1193,7 @@ def build_main_window(
             self._image = QImage(frame.data, frame.width, frame.height,
                                  frame.width*frame.channels, fmt).copy()
             self._display_image()
+            self.native_frame_ready.emit(self._image)
             self.robot_panel.update_state(result.get("robots"))
             self.play_button.setEnabled(getattr(self,'_simulation_available',True) and not result.get('robots',{}).get('live_roles'))
             if result.get('joint_target'):
@@ -1118,7 +1219,7 @@ def build_main_window(
                 except Exception as exc:
                     self._show_error(exc)
             if self._closing:
-                if any(p.session._thread.is_alive() or (p.closing and not p.shutdown_complete) for p in self._hardware_windows.values()):
+                if self.devices.alive or any(p.closing and not p.shutdown_complete for p in self._hardware_windows.values()):
                     return
                 if self.worker is None or self.worker._thread is None or not self.worker._thread.is_alive():
                     if self.worker:
@@ -1151,13 +1252,11 @@ def build_main_window(
                 # and passed only that idle interval to the simulation clock.
                 elapsed = now-self._last_tick_started
                 self._last_tick_started = now
-                self._next_frame_at = max(now, self._next_frame_at + 1/self.profile["rendering"]["target_fps"])
+                self._next_frame_at = max(now, self._next_frame_at + 1/getattr(self, "_debug_target_fps", self.profile["rendering"]["target_fps"]))
                 self._command(lambda: self.worker.tick(elapsed), self._accept_frame, rendering=True)
 
         def closeEvent(self, event):
             self.viewport_label.cancel()
-            for panel in self._hardware_windows.values():
-                if panel.session and panel.session._thread.is_alive():panel.shutdown()
             if self._closing and self.worker is None:
                 self._frame_timer.stop()
                 from .desktop_state import save_state
@@ -1171,6 +1270,12 @@ def build_main_window(
                 self.statusBar().showMessage("Finishing current operation before closing")
                 return
             def begin_close():
+                session=getattr(self,"_robot_session_window",None)
+                if session and not session.closed and not session.close():return
+                self.camera_service.close()
+                self.devices.shutdown()
+                for panel in self._hardware_windows.values():
+                    if panel.session and not panel.closing:panel.shutdown()
                 self._closing = True
                 self._ready = False
                 if self.worker:

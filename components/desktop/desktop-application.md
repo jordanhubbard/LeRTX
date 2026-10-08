@@ -23,6 +23,26 @@ files, document name and modified state in the window title, About and usage
 help. Remember window layout without persisting credentials. Loading and failed
 renderer states remain visible. A normal launch opens the robot workspace.
 
+## Contributor checkout startup
+
+Contributors use `make run` as the common checkout entry point. On Windows it
+invokes the PowerShell launcher without Unix shell tools; on Linux it invokes
+the management setup/launch path. GNU Make and the documented Python bootstrap
+prerequisites are required. On macOS the target must fail before environment
+creation or downloads with an explanation that the pinned NVIDIA renderer is
+unavailable; portable launcher routing does not establish Mac rendering support.
+Windows contributors can also prepare and launch a checkout with one command,
+`run.ps1`, using a real Python 3.11/3.12 or uv. The desktop management `run`
+command prepares missing or stale environments before launching. Setup uses
+the pinned hash locks and succeeds only after diagnostics and a real rendered
+warmup frame pass. Reuse successful setup for unchanged inputs; changed locks,
+bundled wheels, requirements or management code invalidate it. Interrupted or
+failed setup must retry and must not launch the application. Forward explicit
+scene paths and return setup/launch failures to the invoking shell. Preserve
+checksum-sensitive upstream robot resource bytes in Windows checkouts.
+Contributor setup remains separate from the self-contained end-user delivery
+contract above.
+
 ## Default SO-101 workspace
 
 Preload separately identifiable SO-101 leader and follower arms on the work
@@ -65,7 +85,7 @@ be disabled before manipulating the follower. Coalesce drag updates, preserve
 the final released target, and cancel gestures on reset, scene change or focus
 loss. Never teleport links or route these gestures to a physical USB device.
 Slider updates use the same coalesced simulated command path and preserve the final
-value when released normally. Escape, focus loss, reset and scene changes cancel
+value when dismissed normally. Escape, focus loss, reset and scene changes cancel
 unsent input and stale pick callbacks. Controls must remain inside the active screen.
 
 ## Qualification
@@ -98,11 +118,7 @@ not establish hardware qualification without observations from a calibrated arm.
 
 Native renderer initialization and simulation must not make the user's desktop
 unresponsive under memory pressure. Keep the UI responsive to cancellation and
-shutdown when native calls stall. Synchronous worker shutdown has a 30-second
-default deadline and retains
-the live worker on timeout so a caller can retry the join. Reject nonfinite or
-nonpositive deadlines. The GUI polls for completion asynchronously before joining;
-it must not block its event loop for that deadline. Admit only one native qualification process per
+shutdown when native calls stall. Admit only one native qualification process per
 host, enforce a bounded process memory budget and no swap for qualification, and
 monitor system memory headroom on unified-memory GPUs. Abort the owned workload
 before its reserve is exhausted; never terminate another project's processes to
@@ -164,10 +180,36 @@ Keep joint manipulation instructions visible above an arm selector, semantic joi
 selector and angle slider. Selecting a joint by name must pick its actual USD link
 and work while paused. Preserve requests made while the native owner is busy.
 Place advanced target/readback rows in an expandable area and allow scrolling.
-Expose “Set up real arms” in the toolbar and robot controls. The modeless setup
+Expose per-role Calibrate actions in Device Manager. The modeless setup
 wizard keeps the native viewport visible throughout reference alignment and each
 joint's measured range/direction check. Label provisional calibration poses distinctly
 from verified physical telemetry. Never enable motor torque in the wizard.
+
+The wizard embeds a live 3D view beside the persistent reference diagram and
+progress in one resizable window. Subscribe this view to native frames, retain
+the single native owner, and offer camera orbit, zoom and arm framing. The always
+visible static numbered joint map is location help, never the live preview.
+Introduce joints by physical
+location and motion (base turn, upper-arm hinge, middle hinge, wrist tilt, wrist
+twist, claw/trigger), then show the technical name and motor ID. Highlight the
+current joint in the diagram and native scene. Record only the selected motor for
+step progress while the 3D arm mirrors all six joints. Incidental motion of other
+joints must neither warn, reset capture, nor advance the step. Prompt a comfortable
+endpoint hold, an opposite endpoint hold and a repeat visit at or beyond the first endpoint in the return direction.
+Require a meaningful per-joint span, multiple distinct fresh samples, stable holds
+with encoder-noise tolerance, and a current displayed native frame before automatic
+advancement. Duplicate samples, stale intervals, isolated spikes and small twitches
+must not qualify. Keep direction reversal available. Reference capture and final
+travel/direction review and hardware saving remain explicit. Endpoint pauses are
+operator-chosen positions, not proof that software detected mechanical hard stops.
+Transfer the embedded live 3D view to the hardware panel on completion; dispose it when
+the hardware session closes. Show recorded travel, review and explicit completion.
+Explain that the initial reference is a stationary pose to copy; raw movement
+readings remain available before calibration establishes the reference.
+Keep instructions scrollable and navigation reachable at laptop window sizes.
+Live calibration and subsequent hardware viewing retain one pending update while
+the renderer is busy, use fresh telemetry when it executes, and invalidate
+cancelled or superseded work. Stale data cannot satisfy visual confirmation.
 
 On OpenRouter, photo upload defaults to the high-reasoning detailed-shape preset
 (openai/gpt-6-astra, high reasoning, 24576 output tokens, 300-second transport
@@ -192,3 +234,7 @@ verified asset wheel contains the identical complete tree. Keep application Pyth
 modules byte-identical to the retained source. Checkout launches may use their
 adjacent resource tree; admitted exports resolve the installed asset package.
 No asset fetch, conversion, or network access occurs on application startup.
+
+Native worker synchronous shutdown allows up to 30 seconds for renderer teardown.
+A timeout retains the worker reference so cleanup can be joined again; GUI close
+continues asynchronously while native cleanup runs.

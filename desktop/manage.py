@@ -16,6 +16,31 @@ ROOT = Path(__file__).resolve().parent.parent
 SOURCE = ROOT / "desktop" / "source"
 ENVIRONMENT = ROOT / ".venv"
 PYTHON = ENVIRONMENT / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
+SETUP_RECEIPT = ENVIRONMENT / "lertx-setup.json"
+
+
+def setup_identity():
+    """Invalidate cached setup when the checkout or pinned inputs change."""
+    inputs = [Path(__file__).resolve(), SOURCE / "requirements.txt"]
+    inputs.extend(sorted((ROOT / "desktop/locks").glob("*.txt")))
+    inputs.extend(sorted((ROOT / "desktop/wheels").glob("*.whl")))
+    digest = hashlib.sha256()
+    for path in inputs:
+        digest.update(str(path.relative_to(ROOT)).encode())
+        with path.open("rb") as stream:
+            for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+                digest.update(chunk)
+    return {"schema": 1, "root": str(ROOT), "platform": sys.platform,
+            "machine": platform.machine(), "inputs": digest.hexdigest()}
+
+
+def setup_is_current():
+    if not PYTHON.is_file():
+        return False
+    try:
+        return json.loads(SETUP_RECEIPT.read_text(encoding="utf-8")) == setup_identity()
+    except (OSError, ValueError):
+        return False
 
 
 def run(arguments, **kwargs):
@@ -23,6 +48,9 @@ def run(arguments, **kwargs):
 
 
 def setup():
+    # A failed refresh must never leave an earlier successful receipt in use.
+    SETUP_RECEIPT.unlink(missing_ok=True)
+    identity = setup_identity()
     if not PYTHON.exists():
         uv = shutil.which("uv")
         if uv:
@@ -48,6 +76,9 @@ def setup():
     run([PYTHON, "-m", "pip", "check"])
     run([PYTHON, "-B", "-c", "from lertx.diagnostics import main; main()"], cwd=SOURCE)
     warmup()
+    temporary = SETUP_RECEIPT.with_suffix(".tmp")
+    temporary.write_text(json.dumps(identity), encoding="utf-8")
+    temporary.replace(SETUP_RECEIPT)
 
 
 def warmup():
@@ -130,6 +161,7 @@ def package():
     destination = ROOT / "dist" / "LeRTX-prototype.zip"
     destination.parent.mkdir(exist_ok=True)
     files = [ROOT / "desktop" / "manage.py", ROOT / "desktop" / "README.md"]
+    files.append(ROOT / "run.ps1")
     files.append(ROOT / 'docs/user/hardware.md')
     files.extend(SOURCE / name for name in ("main.py", "desktop_main.py", "requirements.txt", "pytest.ini", "tests/manifest.json"))
     files.extend(p for p in (SOURCE/'lertx').rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.suffix not in ('.pyc','.pyo'))
@@ -169,6 +201,9 @@ def main():
         setup()
         print("LeRTX environment ready. Run: python desktop/manage.py run")
         return
+    if args.command == "run" and not setup_is_current():
+        print("Preparing LeRTX for this checkout...", flush=True)
+        setup()
     if not PYTHON.exists():
         raise RuntimeError("LeRTX is not installed. Run: python desktop/manage.py setup")
     if args.command == "install":

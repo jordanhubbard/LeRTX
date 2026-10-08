@@ -1,0 +1,21 @@
+{
+  "complete": true,
+  "tests": {
+    "run": 104,
+    "skipped": 1,
+    "result": "pass",
+    "additional_existing_panel_handoff": "pass",
+    "saved_role_port_selection": "pass"
+  },
+  "native_windows_screenshot_review": [
+    "persistent joint diagram",
+    "shared telemetry with setup ownership and disabled manual controls"
+  ],
+  "physical_motors_actuated": false,
+  "architecture_review": "docs/architecture/application-review.md",
+  "limitations": [
+    "Formal application admission receipt remains stale",
+    "Physical-arm coupling not newly qualified",
+    "Remaining architecture extraction stages are documented"
+  ]
+}
