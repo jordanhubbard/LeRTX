@@ -62,7 +62,6 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
             self.scan_button=QPushButton('Refresh USB ports');self.scan_button.clicked.connect(self.scan);layout.addWidget(self.scan_button)
             self.release_result=QLabel();self.release_result.setWordWrap(True);layout.addWidget(self.release_result)
             self.direction=QCheckBox('Reverse this joint in the preview');self.direction.toggled.connect(self.reverse);layout.addWidget(self.direction)
-            self.confirm=QCheckBox('Recorded travel and 3D directions match my arm');layout.addWidget(self.confirm)
             self.live=QCheckBox('Mirror my arm in 3D');self.live.setChecked(True);self.live.toggled.connect(self.live_changed);layout.addWidget(self.live)
             self.readings=QLabel();self.readings.setWordWrap(True);self.readings.setTextFormat(Qt.TextFormat.PlainText);layout.addWidget(self.readings)
             self.connection=QLabel();self.connection.setWordWrap(True);layout.addWidget(self.connection)
@@ -91,7 +90,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
             self.preview_window.set_mode('reference' if self.step<=2 else 'waiting')
             if self.step<=2:self.guide_shown=False;self.guide_ready=False
             self.joint_map.set_state(active,confirmed=self.capture.confirmed if self.capture else ())
-            self.travel.setVisible(joint);self.movement.setVisible(joint)
+            self.travel.setVisible(joint);self.movement.setVisible(joint or self.step==9)
             self.movement.setText(self.sweep.prompt if self.sweep else '')
             self.travel.setValue(0)
             self.preview_title.setText(('Joint '+str(self.step-2)+' · '+JOINT_GUIDES[active][0]+' ('+JOINT_GUIDES[active][1]+')') if joint else 'Your '+self.role+' · '+('reference pose' if self.step==2 else '3D preview'))
@@ -101,17 +100,18 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
                 self.heading.setText(f'{self.step+1} / 11 · joint {self.step-2} of 6 · '+names[self.step])
             else:
                 self.heading.setText(f'{min(self.step+1,11)} / 11 · '+names[self.step])
-            self.progress.setValue(self.step)
-            self.progress.setVisible(self.step<10)
+            self.progress.setRange(0,6 if self.step>=9 else 10)
+            self.progress.setValue(6 if self.step>=9 else self.step)
+            self.progress.setFormat('Calibration saved' if self.step==10 else 'All 6 joints captured · Save to finish' if self.step==9 else f'Step {self.step+1} of 11')
+            self.progress.setVisible(True)
             self.back_button.setEnabled(not self.pending)
             self.back_button.setVisible(1<=self.step<=9)
             self.back_button.setText({1:'Back to arm selection',2:'Back to support check',3:'Back to reference pose'}.get(self.step,'Back to previous joint'))
             for widget in (self.role_box,self.ports,self.scan_button,self.color_button):widget.setVisible(self.step==0)
 
             self.release_result.setVisible(self.step==1)
-            self.direction.setVisible(joint);self.confirm.setVisible(self.step==9)
+            self.direction.setVisible(joint)
             self.live.setVisible(self.step>=3)
-            self.confirm.setChecked(False)
             if joint:
                 n=JOINT_NAMES[self.step-3]
                 self.direction.blockSignals(True);self.direction.setChecked(self.capture.directions[n]<0);self.direction.blockSignals(False)
@@ -127,7 +127,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
                 text='Match the solid arm in the RTX view:\n1. Center the rotating base (1).\n2. Put the first long link upright using the low hinge (2).\n3. Put the next link approximately horizontal using the middle hinge (3).\n4. Straighten the hand (4), center its twist (5), and half-open the claw / trigger (6).\n\nThis initial reference is a stationary pose to copy. Live 3D mirroring starts after you capture it. Choose “Arm matches reference — capture pose” below to confirm alignment. Hold still; this saves a backup and sets the homing offsets.'
                 self.next_button.setText('Arm matches reference — capture pose')
             elif self.step==9:
-                text='All six joint sweeps were captured automatically. Move the whole arm and review its live 3D motion. Check that you explored each comfortable travel limit and the directions match. Use Back to repeat a joint if needed. Confirm below, then Save writes the recorded limits and exports calibration plus the virtual binding. Motors remain off.'
+                text='All six joint sweeps were captured automatically. Move the whole arm and review its live 3D motion. Check that you explored each comfortable travel limit and the directions match. Use Back to repeat a joint if needed. Choose Save to confirm this review and write the recorded limits and exports calibration plus the virtual binding. Motors remain off.'
                 self.next_button.setText('Save calibration to arm and files')
             else:
                 text='Calibration is saved and verified against the arm. Continue to hardware controls for measured live view. Motor enabling and held movement remain separate explicit actions. Repeat setup for the other arm.'
@@ -250,10 +250,9 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
                     n=JOINT_NAMES[self.step-3];self.capture.ranges[n]=self.sweep.bounds
                     self.capture.confirm(n);self.step+=1;self.render_step()
                 elif self.step==9:
-                    if not self.confirm.isChecked():raise ValueError('Review all recorded travel and 3D directions, then confirm before saving.')
                     sample=self.require_sample()
-                    if any(not 0<=m['position']<=4095 for m in sample['motors'].values()):
-                        raise ValueError('Return wrist twist toward the reference pose before saving. Your captured joints are retained.')
+                    blocker=self.save_blocker(sample)
+                    if blocker:raise ValueError(blocker)
                     cal=self.capture.calibration();binding=self.capture.binding(self.session.device_id)
                     # Save pending artifacts before the hardware commit; never mark them accepted yet.
                     save_json(self.run_dir/'pending-calibration.json',cal.values)
@@ -261,6 +260,13 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
                     self.session.request('setup_save',cal);self.pending=True
                 elif self.step==10:self.finish_setup()
             except Exception as exc:self.status.setText(str(exc))
+
+        def save_blocker(self,sample):
+            outside=[(i,m['position']) for i,m in sample['motors'].items() if not 0<=m['position']<=4095]
+            if not outside:return ''
+            i,value=outside[0];name=JOINT_GUIDES[JOINT_NAMES[i-1]][0].lower()
+            return (f'Return {name} toward the reference pose to enable Save. '
+                    f'Current reading: {value}; required range: 0–4095. All six joints are captured and retained.')
 
         def preview_is_current(self):
             return (self.live.isChecked() and self.preview_window.isVisible() and self.preview_step==self.step
@@ -276,7 +282,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
                 self.back_target=2;self.pending=True;self.back_stop=self.session.stop(force=False)
                 self.status.setText('Restoring calibration registers before returning to the reference pose…')
             elif self.step==2 or 4<=self.step<=9:
-                self.step-=1;self.confirm.setChecked(False);self.sequence=-1;self.preview_step=None;self.render_step()
+                self.step-=1;self.sequence=-1;self.preview_step=None;self.render_step()
 
         def require_sample(self):
             s=self.session.snapshot() if self.session else {};sample=s.get('sample')
@@ -288,7 +294,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
             if self.capture and 3<=self.step<=8:
                 self.capture.directions[JOINT_NAMES[self.step-3]]=-1 if checked else 1
                 self.capture.confirmed.discard(JOINT_NAMES[self.step-3])
-                self.confirm.setChecked(False);self.sequence=-1;self.preview_step=None;self.preview_generation+=1;self.auto_due=None
+                self.sequence=-1;self.preview_step=None;self.preview_generation+=1;self.auto_due=None
         def live_changed(self,enabled):
             self.sequence=-1;self.preview_generation+=1;self.preview_step=None
             if not enabled:
@@ -429,11 +435,11 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
             if self.step==2 and setup.get('state')=='recording':
                 self.capture=RangeCapture(self.role,setup['homings'],setup.get('reference_positions'));self.pending=False;self.step=3;self.render_step()
             if self.step==9 and sample and not s['stale'] and not self.pending:
-                outside=any(not 0<=m['position']<=4095 for m in sample['motors'].values())
-                if outside:
-                    self.status.setText('Return wrist twist toward the reference pose before saving. Your captured joints are retained.')
-                    self.next_button.setEnabled(False)
-                elif self.status.text().startswith('Return wrist twist'):self.status.clear()
+                blocker=self.save_blocker(sample)
+                self.movement.setText(blocker or 'All six joints captured. Choose Save to confirm the review, or Back to correct a joint.')
+                self.next_button.setText('Return wrist twist to enable Save' if blocker else 'Save calibration to arm and files')
+                if blocker:self.next_button.setEnabled(False)
+                if not blocker and self.status.text().startswith('Return wrist twist'):self.status.clear()
             if self.step==9 and setup.get('state')=='saved':
                 try:
                     save_json(self.run_dir/'calibration.json',self.capture.calibration().values)
@@ -443,7 +449,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
                 except Exception as exc:self.status.setText('Calibration is on the arm but saving files failed: '+str(exc));return
             if sample and not s['stale']:
                 now=time.monotonic()
-                active=JOINT_NAMES[self.step-3] if 3<=self.step<=8 else None
+                active=JOINT_NAMES[self.step-3] if 3<=self.step<=8 else 'wrist_roll' if self.step==9 and self.save_blocker(sample) else None
                 self.joint_map.set_state(active,confirmed=self.capture.confirmed if self.capture else ())
                 if self.capture and 3<=self.step<=8:
                     n=JOINT_NAMES[self.step-3]

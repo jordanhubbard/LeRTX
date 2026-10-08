@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Desktop: final calibration Save confirms review without a checkbox. Show all
+  six joints as captured and make wrist-return blockers explicit instead of 90%.
+
 - Desktop: preserve calibration when torque-off wrist feedback crosses zero;
   require a normal-range review pose before saving. Make support and reference
   alignment explicit primary wizard actions instead of hidden checkboxes.

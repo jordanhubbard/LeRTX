@@ -183,3 +183,11 @@ actions, not checkboxes hidden in scrolling instructions. The support action
 explicitly confirms support and, if needed, releases torque; wait for fresh
 acknowledged OFF feedback before advancing. The reference action explicitly
 confirms alignment and captures it only once a current guide is visible.
+
+The final review has no confirmation checkbox. Its explicit Save action confirms
+travel/direction review and commits calibration; Back permits correction. All six
+captured joints must be described as captured, not an unexplained 90% stall. Keep
+capture completion distinct from hardware save completion. Show any wrist return
+requirement outside scrolling content, with current coordinates and the normal
+range, and highlight wrist twist in the reference diagram. Preserve captures while
+waiting; re-enable Save when fresh torque-off telemetry returns to normal range.

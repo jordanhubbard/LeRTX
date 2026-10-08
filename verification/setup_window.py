@@ -133,7 +133,6 @@ def attach(window,report,role='follower',extended_reference=False):
                 assert len(w.capture.confirmed)==6 and len(result['changed_joint_frames'])==6
                 result['automatic_joint_advancement']=True
                 w.grab().save(str(report.with_name('setup-review.png')))
-                w.confirm.setChecked(True)
                 if w.session.snapshot()['sample']['motors'][5]['position']<0:
                     w.advance();assert w.step==9 and 'Return wrist twist' in w.status.text()
                     serial.registers[5][56:58]=(2000).to_bytes(2,'little');return

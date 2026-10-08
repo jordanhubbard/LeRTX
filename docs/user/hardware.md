@@ -51,7 +51,11 @@ Wrist feedback may cross zero during torque-off calibration without losing your
 completed joints. If it is outside normal command coordinates at final review,
 the wizard asks you to turn the wrist back toward the reference pose before saving.
 
-Review all six joints, confirm travel and 3D directions once, and save.
+Review all six joints, then choose **Save calibration to arm and files**. This
+action confirms your review; there is no extra checkbox. Use Back to correct a
+joint. **All 6 joints captured** means capture is complete; **Calibration saved**
+confirms the hardware commit. If Save is blocked, the pinned guidance explains
+which joint to return, shows its reading and highlights it in the diagram.
 **Finish and open live hardware controls** keeps the embedded 3D view,
 the connection and enables measured live viewing. Motors stay off throughout.
 Cancel restores the original calibration when the bus remains available.
