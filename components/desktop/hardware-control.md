@@ -1,3 +1,8 @@
+---
+name: SO-101 USB hardware controls
+summary: Explicit telemetry, bounded motor writes and torque-off guided calibration
+kind: feature
+---
 # SO-101 USB hardware controls
 
 Implement explicit manual hardware reads/writes, superseding earlier blanket
@@ -5,7 +10,13 @@ read-only restrictions. Discovery and role assignment still perform no motor I/O
 Open only an explicitly selected, revalidated USB attachment. Use the pinned
 Feetech SDK used by LeRobot: IDs 1..6, STS3215 model 777, protocol 0, 1 Mbps.
 Never call high-level robot setup/connect that changes registers implicitly.
-Never change motor IDs, baud, operating mode or EEPROM calibration.
+Ordinary manual controls never change motor IDs, baud, operating mode or EEPROM calibration.
+The explicit setup wizard may write homing and range calibration with torque off,
+following the pinned LeRobot half-turn procedure. Capture and persist original
+registers before modification, verify every write and restore on cancellation or
+failure where communication permits; report any unconfirmed restoration.
+A calibration preview must be visibly provisional until reference, travel and
+direction have been confirmed. Never auto-enable torque on completing setup.
 
 One independent worker owns each port, bounded I/O and the latest complete
 timestamped sample. Read positions, voltage, temperature, load and torque state.

@@ -119,7 +119,7 @@
       "-flavor://literate-ai/build-make",
       "+flavor://lertx/desktop-wheels",
       "-flavor://literate-ai/os-macos",
-      "+flavor://lertx/desktop-linux-arm64"
+      "+flavor://lertx/desktop-linux"
     ]
   },
   "mcp_roots": [

@@ -2,6 +2,126 @@
 
 ## Unreleased
 
+### Scoped desktop release
+
+- Publish a reproducible source/setup ZIP and SHA-256 checksum to the private
+  LeRTX repository, with hosted portable regression and package checks.
+- Qualify the updated SDK combination on Linux x86-64; Windows and ARM64 locks
+  are provided, while fresh native validation on those targets remains follow-up.
+- Retain physical-arm qualification and cold-cache startup under a two-core
+  diagnostic limit as documented limitations, not claims of completed testing.
+
+
+- SDK qualification: refreshed candidate requirements and platform hash locks to
+  OVRTX 0.5.1.385782, OVStage 0.2.1.385922, Newton 1.6.1 and Warp 1.18.0,
+  with current USD, Qt and interpreter-compatible NumPy versions. Linux native
+  and portable checks are recorded separately from pending Windows and framework
+  admission gates in `verification/sdk-refresh-review.json`. Extended the exact-
+  archive USD metadata repair to 26.8 and added isolated native test execution.
+  Synchronous renderer shutdown now allows 30 seconds for measured SDK teardown;
+  stalled cleanup still times out and the GUI continues to close asynchronously.
+
+- Verification: reconciled legacy native UI scripts with direct dragging and the
+  twelve-joint panel, including the behavior specification and calibration test
+  scheduling. Earlier native reports remain historical. Local version labels
+  below identify development checkpoints, not published releases.
+
+- Packaging: added a Windows installer (`desktop/packaging/windows/LeRTX.iss`,
+  built with Inno Setup) that gives end users a normal double-click install
+  instead of opening a terminal. It installs a real Python 3.11 if needed
+  (detecting and bypassing the Microsoft Store's broken `python.exe`/`py`
+  stubs), runs the existing `manage.py setup` flow, and creates a Start Menu
+  shortcut via the installer's own icon management so uninstall cleanly
+  removes everything. The local development note reports an install→launch→uninstall cycle on
+  Windows 10 with an RTX 5080 Laptop GPU; a current, source-bound installer
+  qualification report is still required.
+
+- Desktop: an animated progress bar and status message now show while a USD
+  scene is loading (initial open, File → Open, photo-draft import, or
+  applying rendering settings) — previously the viewport kept showing the
+  stale "Empty — open a USD scene" placeholder the whole time, which made it
+  look like the app needed input when it was actually still working.
+
+- Desktop: Settings → Intelligence now has a Provider dropdown with NVIDIA
+  (default, matching the blank-API-key-by-default requirement), OpenAI and
+  OpenRouter presets, plus Custom for anything else. Picking a preset fills
+  in a known-working endpoint and model (still editable); editing either
+  field away from a preset's values switches the dropdown back to Custom.
+  Only providers compatible with this app's OpenAI Responses-API request
+  format are offered as presets — others (e.g. Anthropic, which uses a
+  different API shape entirely) need Custom with a compatible gateway.
+
+- Desktop: left- or right-drag now moves *any* object in the viewport, not
+  just arm joints — the ball, the obstacle, the work surface all follow the
+  mouse directly, the same gesture used for joints. The final position is
+  saved to the workspace on release. Non-editable prims (animated, singular,
+  or part of a robot's articulated geometry) report why they can't be moved.
+
+- Desktop: the Robot simulation panel's Load/Save pose row was sitting below
+  the entire 12-slider grid, off-screen in most window sizes. Moved it to the
+  top of the panel, right under the instructions, with a "Saved poses"
+  heading.
+
+### Local development checkpoint (formerly labeled v0.2.0)
+
+- Desktop: selecting any non-robot object (the ball, the obstacle, the work
+  surface) now automatically raises the Inspector tab so its Translate/
+  Rotate/Scale fields are immediately visible, instead of staying hidden
+  behind the Robot simulation tab. Hint text, tooltip and Help now explain
+  that this is how you move anything other than an arm joint.
+
+- Desktop: dragging a locked follower link (while "Follower tracks the
+  simulated leader" is checked) now shows a tooltip right at the cursor
+  explaining why, in addition to the status bar message — the status bar
+  alone was easy to miss while looking at the 3D viewport. Disabled follower
+  sliders in the Robot simulation panel now explain themselves on hover too.
+
+- Desktop: the Robot simulation panel can now save the current leader/follower
+  joint positions as a named pose and load it back later. Two bundled presets
+  ship with the app — "Danger" (arms raised, claws open) and "The Signal" (arm
+  extended, pointing) — alongside any poses you save, which are stored under
+  the settings directory. Loading a pose commands both arms to it directly,
+  independent of follower tracking.
+
+### Local development checkpoint (formerly labeled v0.1.0)
+
+- Desktop: left- or right-drag an arm link to move its joint directly, following
+  the mouse; both buttons grab and drive the joint the same way, and the earlier
+  right-click popup is gone. Every leader and follower joint (12 total) now has
+  its own labeled slider and numeric field, always visible in the Robot
+  simulation panel — no joint picker or hidden toggle required. Alt-left-drag
+  orbits, middle-drag pans, and wheel or trackpad scroll zooms. Clicking outside
+  the rendered image or on a non-joint link now reports a status message instead
+  of doing nothing. Verified with actual RTX picking and paused simulated motion
+  on Linux ARM64.
+
+- Desktop: grouped the toolbar with separators, added a leader/follower color
+  legend under the viewport matching the rendered arm colors, colorized device
+  role status, gave the device-assignment failure message concrete next steps,
+  stripped the raw Python exception type name from native error text, and added
+  a Back button plus joint-count/completion cues to the SO-101 setup wizard.
+
+- Verification: reconcile photo-preset authority and specification metadata;
+  package exact SO-101 resources as a hash-locked offline dependency so retained
+  application admission includes binary models without weakening source limits.
+  Current authority, component locks and receipt are checked by `litai verify`.
+
+- Desktop: persistent joint instructions, named joint selection and a prominent
+  angle slider. Added a modeless SO-101 USB calibration wizard with reference
+  alignment, six individual range/direction checks, live provisional RTX mirroring,
+  torque-off homing/limit writes, original-register backup and cancellation rollback.
+  Exports LeRobot calibration and the matching virtual binding. Tested with the
+  pinned SDK's emulated serial stream and Windows RTX; physical-arm acceptance is pending.
+- Photos: OpenRouter defaults to GPT-6 Astra with high reasoning for detailed
+  shapes, with explicit cost/latency guidance and a cheaper layout option.
+  Generated drafts show geometry counts before opening. The actual turtle photo
+  produced a recognizable low-poly turtle in native RTX, rather than a single box;
+  this remains approximate colored geometry, not textured photogrammetry.
+
+- Desktop: request schema-constrained photo scenes from OpenRouter while retaining local geometry validation; verified GPT-5 Mini image inference and Windows USD import.
+
+- Desktop: make locked follower joints directly unlockable, retain following changes while rendering, and provide an inline photo API-key field with explicit upload progress and retry feedback.
+
 - Desktop hardware: explicit SO-101 USB telemetry, LeRobot calibration import,
   motor arming, held bounded movement, torque-off stop and fault handling through
   the pinned Feetech SDK. Measured joint bindings support live articulated viewing

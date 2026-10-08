@@ -1,3 +1,8 @@
+---
+name: Installed LeRTX application
+summary: Desktop delivery, articulated robots, guided controls and photo reconstruction
+kind: feature
+---
 # Installed LeRTX application
 
 ## Desktop delivery
@@ -37,6 +42,9 @@ assuming equal angle limits. Clearly label simulated controls and measured
 virtual state. No physical port opening or actuation follows from these controls.
 
 Expose independent following on/off, joint position controls, Play/Pause and Reset.
+Show the shared "Follower tracks the simulated leader" checkbox beside the
+joint controls; clearing it enables independent follower manipulation. Retain following changes until the
+native worker can accept them; a busy renderer must not silently discard input.
 Pause holds simulation state; Reset restores the authored poses and target state.
 Report tracking or physics failure visibly instead of falling back to animation.
 Reject inconsistent articulation metadata. Arbitrary transform edits to an
@@ -45,12 +53,20 @@ individual robot link must not break its articulation silently.
 Allow grabbing a rendered arm link and dragging its associated joint. Native RTX
 picking must respect image scaling and letterboxing, and agree with hierarchy
 selection. Show the selected joint and target; clamp targets to model limits.
-Left drag manipulates joints, Alt-left drag orbits, right drag pans and the wheel
-zooms. A paused drag advances a bounded physics preview and remains paused;
+Keep all twelve joint controls visible in the robot panel, with arm and joint
+names, sliders and keyboard-accessible numeric targets bounded by model limits
+in degrees (normalized travel percent for a gripper). Explain following locks
+inline. Left or right drag on a rendered link manipulates its associated joint;
+a press without movement must not change its target. These controls never enable
+physical writes. Alt-left drag orbits, middle drag pans and the wheel
+or trackpad scroll zooms. A paused drag advances a bounded physics preview and remains paused;
 playing drags update targets through the normal simulation loop. Following must
 be disabled before manipulating the follower. Coalesce drag updates, preserve
 the final released target, and cancel gestures on reset, scene change or focus
 loss. Never teleport links or route these gestures to a physical USB device.
+Slider updates use the same coalesced simulated command path and preserve the final
+value when released normally. Escape, focus loss, reset and scene changes cancel
+unsent input and stale pick callbacks. Controls must remain inside the active screen.
 
 ## Qualification
 
@@ -82,7 +98,11 @@ not establish hardware qualification without observations from a calibrated arm.
 
 Native renderer initialization and simulation must not make the user's desktop
 unresponsive under memory pressure. Keep the UI responsive to cancellation and
-shutdown when native calls stall. Admit only one native qualification process per
+shutdown when native calls stall. Synchronous worker shutdown has a 30-second
+default deadline and retains
+the live worker on timeout so a caller can retry the join. Reject nonfinite or
+nonpositive deadlines. The GUI polls for completion asynchronously before joining;
+it must not block its event loop for that deadline. Admit only one native qualification process per
 host, enforce a bounded process memory budget and no swap for qualification, and
 monitor system memory headroom on unified-memory GPUs. Abort the owned workload
 before its reserve is exhausted; never terminate another project's processes to
@@ -98,3 +118,77 @@ frame interval after render completion. Simulation receives elapsed wall time
 between tick starts. Idle polling remains inexpensive. Use compact runtime USD
 snapshots, and discard previous owned snapshots after their native stage closes;
 reopening a document must not retain every prior runtime export until app exit.
+
+## Photo reconstruction workflow (milestone three)
+
+The milestone-three toolbar offers Reconstruct Photo. A modal dialog previews a
+user-selected PNG/JPEG and names the configured destination before an explicit
+Upload and Reconstruct action. Never scan for images or credentials. Bound input
+to 8 MiB and 16 million pixels, resize the upload to at most 2048 pixels per side,
+and re-encode it without source metadata. Explain this transformation before
+upload. Bind provenance to the actual uploaded bytes. Use a Responses user message
+with input_text and a base64 input_image data URL. Use the model, token budget
+and timeout explicitly selected in the photo dialog, as defined in
+`desktop-application.md`; its configured-model option uses saved settings.
+Never silently increase the selected budget or change the destination. Reject
+incomplete, failed, oversized, malformed or schema-invalid output. Reject
+redirects and suppress raw provider failures. Cancel invalidates late results
+without claiming server-side cancellation. Allow only one in-flight request per
+window, including after a cancelled dialog is closed.
+
+On success, ask before discarding unsaved work, then construct and adopt the
+validated draft on the native worker. Mark it dirty and require Save As outside
+the temporary workspace. Keep a visible unverified/estimated-dimensions warning
+when such USD is loaded again. Preserve existing scene state on invalid results;
+do not claim readiness until native initialization completes. Image inference is
+distinct from the inexpensive Intelligence connection test. Test with injected
+Responses transports plus separate live endpoint image-capability verification.
+
+## Photo request feedback
+
+The photo dialog must show missing credentials before upload, provide a masked
+in-memory API key field, and focus that field when an upload is blocked. Preserve
+the selected image for retries, show in-flight progress, and clear the dialog key
+on close. Do not persist or log the key or send the image before explicit Upload.
+
+For the OpenRouter Responses endpoint, request strict schema-constrained scene
+JSON and require provider support. Mesh triangles remain a flat integer array.
+The local parser still validates bounds, unique identities, nondegenerate meshes
+and aggregate budgets before importing USD; provider schema compliance is not
+trusted as a replacement. Other configured endpoints keep their request format.
+
+
+### Guided controls and photo quality
+
+Keep joint manipulation instructions visible above an arm selector, semantic joint
+selector and angle slider. Selecting a joint by name must pick its actual USD link
+and work while paused. Preserve requests made while the native owner is busy.
+Place advanced target/readback rows in an expandable area and allow scrolling.
+Expose “Set up real arms” in the toolbar and robot controls. The modeless setup
+wizard keeps the native viewport visible throughout reference alignment and each
+joint's measured range/direction check. Label provisional calibration poses distinctly
+from verified physical telemetry. Never enable motor torque in the wizard.
+
+On OpenRouter, photo upload defaults to the high-reasoning detailed-shape preset
+(openai/gpt-6-astra, high reasoning, 24576 output tokens, 300-second transport
+read timeout). Offer a cheaper coarse-layout preset and the configured model;
+never change saved connection settings or silently switch the destination/key.
+Explain latency, cost and colored-mesh limitations before upload. Instruct the
+model to preserve the main subject's silhouette and appendages, and omit large
+background proxies. Report primitive/mesh counts and offer a named initial focus before the user opens the draft;
+a schema-valid scene is not proof of visual fidelity. Only a native-rendered review
+of the user's actual input establishes whether a model trial improved shape.
+
+
+## Verified robot resource packaging
+
+For lifecycle admission, package the exact SO-101 resource tree (USD, STL, URDF,
+collision hulls, licenses and provenance) as the platform-independent
+`lertx-robot-assets==1.0.0` wheel. Its archive hash belongs in each target dependency
+lock; the offline installer verifies it alongside the SDK. A deterministic local
+builder must reproduce the wheel and compare every resource byte to the reviewed
+source tree. Retained source snapshots omit that resource subtree only when the
+verified asset wheel contains the identical complete tree. Keep application Python
+modules byte-identical to the retained source. Checkout launches may use their
+adjacent resource tree; admitted exports resolve the installed asset package.
+No asset fetch, conversion, or network access occurs on application startup.

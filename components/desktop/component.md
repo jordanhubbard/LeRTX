@@ -256,26 +256,8 @@ hardware-free boundary, its visible controls and read-only sample validation.
 
 ## Photo reconstruction workflow (milestone three)
 
-The milestone-three toolbar offers Reconstruct Photo. A modal dialog previews a
-user-selected PNG/JPEG and names the configured destination before an explicit
-Upload and Reconstruct action. Never scan for images or credentials. Bound input
-to 8 MiB and 16 million pixels, resize the upload to at most 2048 pixels per side,
-and re-encode it without source metadata. Explain this transformation before
-upload. Bind provenance to the actual uploaded bytes. Use a Responses user message
-with input_text and a base64 input_image data URL, the exact configured model,
-token limit and timeout. Do not silently increase the token budget. Reject
-incomplete, failed, oversized, malformed or schema-invalid output. Reject
-redirects and suppress raw provider failures. Cancel invalidates late results
-without claiming server-side cancellation. Allow only one in-flight request per
-window, including after a cancelled dialog is closed.
-
-On success, ask before discarding unsaved work, then construct and adopt the
-validated draft on the native worker. Mark it dirty and require Save As outside
-the temporary workspace. Keep a visible unverified/estimated-dimensions warning
-when such USD is loaded again. Preserve existing scene state on invalid results;
-do not claim readiness until native initialization completes. Image inference is
-distinct from the inexpensive Intelligence connection test. Test with injected
-Responses transports plus separate live endpoint image-capability verification.
+The photo workflow, request feedback and explicit quality presets are specified
+in `desktop-application.md`.
 
 ## Required tests
 

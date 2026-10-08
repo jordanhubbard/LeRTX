@@ -4,6 +4,117 @@ This file is the durable resumption queue for user-directed and discovered work.
 implementation, follow `skills/agent/record-user-directed-work/SKILL.md`.
 Keep detailed designs in focused roadmap documents and link them here.
 
+## Release the reconciled desktop
+
+The operator directed resolving the remaining issues and releasing on 2026-10-08.
+Publish the source/setup distribution to the existing private repository. The
+current release validation target is the freshly observed Linux x86-64 CPython
+3.12 environment. Windows/ARM64 native refresh, physical-arm qualification and
+cold-cache startup under a two-core diagnostic limit are documented follow-up
+coverage, not prerequisites for this scoped desktop release. Existing historical
+results remain historical; no new platform success is implied.
+
+- [ ] Refresh documentation authority, locks and retained-source admission.
+- [ ] Replace the scaffold greeting release gate with desktop evidence and
+  deterministic package checks; add hosted portable regression CI.
+- [ ] Land the reviewed changes, publish a versioned source/setup bundle and
+  verify remote tag, notes and asset digests.
+
+## Checkout reconciliation — APP-001, CONFIG-001, TWIN-001 and ROBOT-001
+
+### Current SDK qualification
+
+The operator approved qualifying the latest compatible native SDK releases in a
+clean environment instead of depending on a previously installed runtime.
+APP-001/RENDER-001 own this work. Start from published OVRTX 0.5.1.385782,
+OVStage 0.2.1.385922, Newton 1.6.1 and Warp 1.18.0. Resolve their full dependency
+closure against the supported targets, then refresh authoritative Flavor pins,
+hash locks and evidence only for the tested combination. The old pins and
+historical evidence remain a comparison baseline, not current acceptance.
+
+- [x] Inspect upstream metadata and release compatibility; prepare isolated
+  Linux and portable environments with resource headroom checks. Windows native
+  provisioning is held for insufficient system-drive capacity.
+- [x] Run portable and contained Linux native rendering/physics tests; fix or record
+  incompatibilities without substituting mock native success. Final source passes
+  239 portable tests plus 59 subtests and all 17 native tests.
+- [x] Update common requirements, platform pip hash locks and the observed Linux
+  x86-64 Flavor inventory to the candidate SDK set.
+- [ ] Refresh the selected ARM64 target inventory, Windows native evidence and
+  current framework admission. Their old inventories/receipts cannot certify the
+  new requirements. Windows has only 10.3 GiB free on its sole fixed volume.
+- [x] Re-qualify the reviewed metadata-only USD wheel repair for 26.8: its
+  published Linux CPython 3.12 wheel repeats the conflicting `Root-Is-Purelib`
+  headers. Preserve original hashes and prove native payload bytes unchanged.
+- [x] Qualify bounded shutdown with the new renderer. Native destruction finished
+  in 12.3 seconds after reset, exceeding the former ten-second synchronous join.
+  Allow a bounded 30-second join without blocking the GUI's asynchronous close,
+  and retain a stalled-cleanup timeout regression.
+- [x] Re-run the four offscreen Qt interaction checks against the final source:
+  live pose, independent follower, six-joint guided calibration with an emulated
+  bus, and native right-drag picking/motion all pass with clean shutdown.
+- [x] Run project gates and report remaining admission/platform blockers before
+  claiming the reconciled checkout ready to land.
+
+`verification/sdk-refresh-review.json` binds the final results to 126 identical
+local/worker source files and records prior failures, repairs and resource guards.
+This is Linux development qualification, not cross-platform release admission.
+
+The operator requested reconciliation of the local follow-on work against merged
+PR #1 (`03041b6`). The local backup branch
+`backup/pre-reconcile-20261008T063000Z` preserves the starting files. The 72-file
+delta includes calibration, photo inference, viewport/pose controls, packaging
+and historical verification records; it is not a validated release candidate.
+
+- [x] Compare against upstream and survey open issues/reviews: none are open.
+- [x] Review and classify retained features, obsolete verification and deferred
+  packaging; preserve historical native results without treating them as current.
+- [x] Reconcile obsolete popup tests and contradictory documentation with the
+  current direct-drag UI; Linux native reruns pass and Windows remains pending.
+- [x] Run portable/Qt regressions, resource-package checks and project gates;
+  record exact results and source identities separately from old native evidence.
+- [ ] Refresh the documentation authority review, locks as needed and
+  retained-source admission after reconciling the direct-drag specification.
+  This is the next action before a landing decision.
+- [ ] Qualify the resulting source on supported NVIDIA targets before landing
+  runtime changes. Physical-arm testing remains a separate ROBOT-001 gate.
+
+The retained direct-drag UI and shared following checkbox now have Linux native
+evidence. The desktop behavior specification has been reconciled to that UI,
+including the twelve persistent keyboard-accessible joint controls. Refresh
+locks/admission before landing; the former popup behavior is historical.
+Windows installer qualification is pending; the macOS wrapper is deferred because
+there is no supported renderer target. Keep both candidates preserved for review.
+Portable-test repairs cover canonical filesystem paths, the macOS PTY baud ioctl,
+renderer mock drift, pytest helper collection and timer scheduling tolerance.
+The Makefile now tracks locks/wheels in its setup stamp, packages without native
+setup and orders clean/build during a parallel rebuild.
+
+Local reconciliation results: 234 portable/Qt tests pass in isolated module
+processes, plus two USD/URDF checks and two resource-wheel tests (238 total).
+These results describe the initial reconciliation environment. The SDK refresh
+now has an isolated Linux NVIDIA environment installed from the new hash locks,
+and a separate macOS portable environment with Warp. The latter passes 239 tests
+and 59 subtests, plus two resource-wheel tests. Linux installation preflight and
+warm-cache native warmup pass; the first two-core cold warmup timed out. A
+diagnostic rerun completed after increasing its CPU budget, without relaxing
+memory containment. All 17 native tests pass after extending the bounded
+synchronous shutdown deadline for measured 12.3-second SDK destruction. A new
+stalled-cleanup regression verifies timeout and subsequent successful joining.
+The isolated runner avoids the combined suite's native-thread budget collision.
+The resource wheel matches all 26 source
+resources and all three platform-lock hashes. Repeated source packaging produces
+identical ZIP bytes including the poses and wheel. The new documentation edits
+invalidate the former authority-review marker; the current project gates are
+not green. `verification/reconciliation-review.json` records file dispositions,
+source identities and exact verification boundaries. No runtime feature is
+landed or release-qualified by this reconciliation.
+
+The initial reconciliation `litai verify` passes authority, locks and receipt;
+source-intelligence and HTML observability are configured skips. This result
+does not establish equality of later working-source edits with the admitted
+artifact. Review reports with mismatching source hashes remain historical.
+
 ## Current open-items checkpoint — 2026-09-25
 
 PORT-001 below records the current four-platform runtime and delivery evidence.
@@ -29,6 +140,14 @@ not an accepted or distributable release. HARNESS-001 is complete; RENDER-001,
 CONFIG-001, TWIN-001 and ROBOT-001 remain open at the boundaries listed here.
 
 ### RENDER-001: qualification, admission and delivery
+
+Historical September 27 repair: photo preset authority and specification metadata were reconciled;
+all three component locks are refreshed through the supported CLI. The exact
+SO-101 resource wheel preserves original model bytes and provenance while keeping
+retained source text-only. `verification/authority-refresh-review.json` records
+admission and gate results for that snapshot. Later source edits do not match
+all recorded hashes; a current `litai verify` pass alone does not qualify them. Physical-arm acceptance remains separate.
+
 
 - [x] Diagnose the failed Windows shard and adopt an exact framework revision
   with green full-matrix CI. PRs #482 and #491 supply the required repairs;
@@ -76,9 +195,12 @@ independent hardware workers, read/arm/move/stop controls and measured virtual
 binding. Connect/reconnect stays read-only. SDK byte-stream, OS serial endpoint,
 failure-path, Qt and native RTX checks are recorded in
 `verification/usb-control-review.json`. The Windows development app is deployed;
-formal framework authority/lock/receipt admission remains stale and is not claimed.
+Current framework authority/lock/receipt results are tracked separately in
+`verification/authority-refresh-review.json`; software checks do not qualify hardware.
 Actual leader/follower qualification remains pending for the connected arms.
-EEPROM setup, automatic calibration writes and autonomous policies are separate.
+Guided torque-off homing/range calibration now has a separate explicit write path
+and original-register backup. Individual motor-ID commissioning and autonomous
+policies remain separate; the wizard links the official fresh-motor setup guide.
 
 - [ ] Finish and verify USB candidate discovery, persistent explicit roles,
   ambiguous/missing serial handling, hotplug/reconnect and stale-state behavior.
@@ -937,6 +1059,12 @@ queue item or let `docs/roadmap/` become a plan archive.
 
 ### [ ] TWIN-001 — Milestone three: Astra photo-to-USD reconstruction
 
+- **Photo quality follow-up:** The operator turtle photograph became a blue block. The high-reasoning OpenRouter preset now produces a recognizable low-poly turtle from that exact input, verified in native Windows RTX. The final request took 301.43 seconds and reported $1.06554 for 29 parts (27 meshes). The dialog explains cost/latency, offers coarse/configured alternatives, shows geometry counts and lets the operator choose the initial view. See `verification/turtle-photo-review.json`. This qualifies an approximate colored-mesh improvement, not faithful textured reconstruction or measured collision geometry.
+
+- **OpenRouter trial:** Operator requested GPT-5 Mini after NVIDIA throttling. Two authenticated image requests completed but emitted nested mesh indices, rejected by the local flat-index contract. Add strict JSON-schema output for the OpenRouter Responses route, preserve independent scene validation, verify a live synthetic-image request through USD construction, and configure the Windows deployment with its own encrypted provider credential. Live structured-output request passed: three objects, 15.46 seconds, USD 0.003351. Windows passes 18 photo/UI/reconstruction tests and constructs the returned USD stage. Visible RTX validation passed on Windows with the imported cube, sphere and platform and the unverified-draft warning. No operator photo or robot actuation is part of this trial.
+
+- **Current usability repair:** The visible Windows dialog rejects upload because the session key is missing, but the small status message is easily missed. Add an inline password field, preflight feedback and visible in-flight progress while preserving the chosen photo; verify missing-key, success and failure paths without transmitting the operator photo during tests. Windows Qt verification passes missing-key, inline-key success, authentication failure/retry and cancellation cases. Live provider acceptance still requires the operator credential.
+
 - **Scope clarification:** The operator explicitly selected Astra photo-to-USD
   reconstruction as milestone three. USB discovery and read-only SO-101
   synchronization remain follow-on product work, not milestone-three acceptance
@@ -1031,6 +1159,8 @@ queue item or let `docs/roadmap/` become a plan archive.
 
 ### [ ] ROBOT-001 — SO-101 USB control and physical twin
 
+- **Guided setup direction:** Build in-window USB identification, role assignment, six-motor checks, explicit torque release, LeRobot-compatible reference homing and individual range capture, live provisional mirroring with direction verification, and paired calibration/binding export. The new calibration request authorizes scoped persistent homing/range writes after the wizard confirmation; ordinary hardware control still cannot write EEPROM. Back up original registers before writes, restore on cancellation/failure where possible, and report unconfirmed restoration. Verify with SDK emulator, Qt interaction and bounded Windows rendering; real-arm acceptance remains pending.
+
 - **Priority:** P1
 - **Owner:** desktop device and LeRobot adapters
 - **Direction:** Build robot support and a hardware-free mock; the physical devices are not currently attached.
@@ -1039,6 +1169,8 @@ queue item or let `docs/roadmap/` become a plan archive.
 - **Implementation:**
   - [x] Provide isolated simulated leader/follower streams with connection, pose, freeze and stale controls.
   - [x] Implement explicit discovery/roles, the pinned Feetech SDK, calibration import and separately armed manual controls.
+  - [x] Add the modeless six-joint calibration wizard, durable register backup/rollback, verified torque-off writes and provisional native preview. SDK/Qt/native evidence is in `verification/guided-setup-review.json`; assembled arms require motor IDs 1–6 at 1 Mbps.
+  - [ ] Qualify homing, travel, direction and cancellation on the physical leader and follower before treating this as hardware acceptance.
   - [x] Publish calibrated observations through SO-101 kinematics to the native viewport without conflicting Newton control or automatic motor writes.
 - **Evidence:**
   - [x] Exercise mock states, sample validation and cleanup on Linux and Windows.
@@ -1146,6 +1278,31 @@ queue item or let `docs/roadmap/` become a plan archive.
 
 ### [ ] APP-001 — Deliver an installed desktop application with a simulated SO-101 pair
 
+- **Historical contextual joint controls (superseded UI):** The operator reports that joint movement remains
+  difficult to discover. Implement cross-platform right-click joint controls with
+  a visible bounded slider, angle input and lock explanation; reserve middle-drag
+  for panning and keep camera input separate. Reuse the native picker and simulated
+  command path. Windows is a validation target, not an implementation constraint.
+  The operator also authorizes contained Linux ARM64 GPU validation for this work.
+  - [x] Implement contextual controls, cancellation and updated input guidance.
+  - [x] Verify delayed picking, slider coalescing, limits, locks and camera routing.
+  - [x] Verify actual picked-joint motion and rendered frames on Linux ARM64 and Windows.
+  For the recorded September 27 popup snapshot, native checks passed on both
+  platforms: a 25 degree target moved
+  the picked leader shoulder joint to approximately 26.1 degrees in the bounded
+  paused preview, changes RTX pixels, preserves authored USD, pans with the
+  middle button and shuts down cleanly. See `verification/joint-context-review.json`.
+  All 24 focused input/UI regressions pass on each platform. Retained-source
+  admission passes 30 contract tests and three unchanged independent acceptance
+  cases; all 90 application/test Python files match the admitted artifact.
+  That snapshot passed the pinned framework's three applicable gates. The later
+  direct-drag and twelve-slider implementation no longer matches these hashes;
+  fresh native evidence and reconciliation of the popup specification are pending.
+
+- **Discoverability direction:** Provide persistent on-screen joint instructions, named joint selection, direct angle controls, contextual lock recovery and an obvious real-arm setup entry point. Test the visible Windows flow without relying on the scene tree or undocumented gestures.
+
+- **Historical interaction repair (superseded controls):** The selected follower joint is locked by leader-following. Provide an explicit action beside the selected joint to disable following, retain toggle requests while the native worker is busy, and verify subsequent slider and pointer motion. Windows verification passes the busy-worker regression and visible native follower unlock plus slider motion (20 degree target, 21.8 degree measured paused pose, changed RTX frame). Physical motor control is unchanged.
+
 - **Priority:** high
 - **Owner:** Desktop Component and native delivery
 - **Direction:** Make LeRTX a proper application and preload a physically simulated SO-101 leader and follower pair.
@@ -1159,6 +1316,7 @@ queue item or let `docs/roadmap/` become a plan archive.
   - [ ] Implement owned, relocatable application installation, upgrade, removal, icons and file opening without a system Python requirement.
   - [x] Direct viewport joint manipulation: native RTX picking and outlines, shared hierarchy selection, bounded targets, coalesced pointer updates, cancellation and physics-driven paused previews. Windows passes seven focused input/runtime tests and the real Qt/RTX interaction check, including paused and playing motion; see `verification/windows-joint-interaction.json`. Runs were sequential under a 12 GiB committed-memory limit. This is feature evidence, not full APP-001 qualification.
     Documentation discovery now includes the existing performance evidence and NVIDIA methodology. Project validation reaches the pre-existing stale documentation authority review; the complete APP-001 authority review and retained-source admission remain pending, with no receipt or review marker advanced by this feature check.
+  - [x] Add persistent joint instructions, semantic joint selection, a prominent angle slider and a setup entry point; verify paused movement and all six calibration previews on Windows RTX.
   - [ ] Complete desktop menus, document identity, recent files, startup progress and actionable errors.
   - [ ] Source and attribute SO-101 leader/follower models; implement actual joint dynamics, limits, grippers and simulated following in the default scene.
 - **Evidence:**

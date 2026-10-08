@@ -205,7 +205,15 @@ class SerialEndpointTests(unittest.TestCase):
                         os.write(master,response)
             except Exception as exc:failures.append(exc)
         thread=threading.Thread(target=server,daemon=True);thread.start()
-        bus=FeetechBus(endpoint)
+        # macOS PTYs do not implement the IOSSIOSPEED ioctl for 1 Mbps.
+        # A PTY has no physical baud clock: use a standard speed there while
+        # retaining the real pyserial endpoint and SDK packet exchange.
+        import sys
+        import serial
+        def serial_factory(**kwargs):
+            if sys.platform == 'darwin':kwargs['baudrate']=115200
+            return serial.Serial(**kwargs)
+        bus=FeetechBus(endpoint,serial_factory=serial_factory)
         try:
             bus.open();self.assertEqual(bus.sample()[6]['position'],2048)
             bus.write(2,42,2090)

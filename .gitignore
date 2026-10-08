@@ -29,3 +29,7 @@ dist/
 .testmondata
 .testmondata-journal
 .testmondata.identity.json
+
+# Native SDK carb.tasking scheduler dumps, written next to the cwd on the
+# crash/dump path during desktop runs. Local diagnostics, never sources.
+desktop/source/tasking-*.txt

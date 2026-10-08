@@ -33,35 +33,27 @@ assignment. Use Hugging Face LeRobot code and models.
 
 ## Dependencies
 
-No blocking dependency on another repository's PROJECT.md completion is declared.
 Literate AI is pinned by its initialization lineage and lifecycle identity.
-Milestone two requires compatible OVRTX and OVStage SDK artifacts, Newton, and an
-accessible Linux or Windows NVIDIA GPU execution target. Exact SDK versions are
-selected in the native Python Flavor. RTX/OVStage/Newton application scene and
-Qt control tests pass on Linux and Windows. Linux ARM64 retained-source admission,
-independent acceptance, sealed dependency validation and all 160 tests against
-the admitted artifact now pass. Formal release packaging remains separate work.
-The Astra endpoint is `https://inference-api.nvidia.com/v1/responses`, using model
-`azure/openai/gpt-6-astra` and an initial output limit of 512 tokens. An authorized
-live text request and a synthetic-image reconstruction succeeded. The image
-workflow and validated local USD construction are implemented and covered by the
-current native prototype tests. Follow-on physical synchronization requires the
-SO-101 devices and calibration data, but is not a milestone-three gate.
+The desktop requires an NVIDIA GPU on Linux or Windows. Current SDK pins are
+OVRTX 0.5.1.385782, OVStage 0.2.1.385922, Newton 1.6.1 and Warp 1.18.0.
+The October SDK refresh passes 239 portable tests plus 59 subtests, 17 Linux
+native tests and four offscreen Qt/native interaction checks. Its observed Linux
+x86-64 CPython 3.12 target is selected for current framework admission. Previous
+Windows and ARM64 results describe the earlier SDK stack, not this candidate.
 
 ## Completeness
 
-| Area | State |
-| --- | --- |
-| Literate AI creation | Canonical application scaffold initialized with litai 1.1.0 |
-| Host development profile | Python / Make / macOS bootstrap; not a GPU product target |
-| Production targets | Current 160-test suites pass on Linux ARM64 GB10, Linux x86-64 RTX 5090, Omarchy RTX 5080 Laptop, and Windows 11 L40; fresh Windows 11 RTX 5080 Laptop installation also passes all 160 tests and Start Menu launch |
-| Starter Component | Framework greeting sample; not the LeRTX application |
-| LeRTX harness Component | `components/harness`: generated, built, launched; 13 tests passed on the bootstrap Mac |
-| Application window and real rendered frames | Retained Qt application renders on all four tested targets; visible controls and screenshots reviewed; ARM64 artifact acceptance passed |
-| OVRTX / OVStage / Newton integration | Application session tests verify motion, pause/camera, reset, edit/save/reopen and cleanup on both targets |
-| Native USD authoring | Private document layers, atomic save, transform editing and failure recovery tested; broader asset/interaction coverage remains |
-| USB, models, Astra, robot calibration | Explicit SO-101 USB reads, bounded manual writes, calibration import and measured joint binding implemented with emulated-bus tests; physical-arm qualification and world registration pending. Photo reconstruction remains unverified geometry |
-| LLM configuration | Settings UI and bounded asynchronous connection tests implemented; blank-key persistence and staged settings tested in the passing native suites |
+The release delivers a source/setup desktop bundle with real RTX rendering,
+Newton physics, USD editing, photo reconstruction drafts and SO-101 controls.
+Guided calibration tests use an emulated bus. Physical-arm qualification, measured
+world registration, fresh Windows/ARM64 validation and cold-cache startup within
+the two-core diagnostic limit remain follow-up work. They are not prerequisites
+for the operator-authorized scoped release. macOS is a development host only.
+Photo dimensions and collision geometry remain unverified. The harness's
+`runtime_ready: false` describes its original milestone and is not changed by
+publication of the desktop bundle. Application admission is reported by
+`litai verify`; native evidence is separately recorded in
+`verification/sdk-refresh-review.json`.
 
 ## Current work
 
@@ -84,27 +76,16 @@ CONFIG-001 owns application settings and the inference adapter. TWIN-001 owns
 milestone-three photo reconstruction. ROBOT-001 owns separately scoped follow-on
 mock support and SO-101 synchronization. The operator now authorizes implementing
 manual USB reads/writes, explicit motor arming, bounded motion and measured
-virtual binding. Connections remain read-only until armed. Automatic EEPROM
-calibration writes and autonomous execution remain separate work; physical
-qualification follows when the operator connects the hardware.
+virtual binding. The operator also authorizes a guided SO-101 setup/calibration
+wizard with torque-off homing and measured-limit EEPROM writes, a durable original
+register backup and rollback on cancellation. Connections initially read only;
+calibration and motor arming are separate explicit workflows. Autonomous execution
+remains separate work; physical qualification follows when the operator connects
+the hardware.
 
-PORT-001 records the current cross-platform delivery work. All four current
-native suites pass 160 tests, including a second Windows run in the isolated
-launcher environment. Setup uses platform-specific hash locks and a bounded real
-render warmup. The project has been copied to the additional Omarchy worker;
-desktop launcher installation and removal are implemented. Detailed evidence is
-in `verification/prototype-platform-review.json`.
-The project now binds the qualified framework revision containing both the
-directory-artifact count repair and oversized Windows filesystem-identifier
-repair. Its exact merged revision passes the full hosted matrix; the supported
-rebind preserves the policy and required receipt evidence. `litai verify` remains
-the authority for current application admission and passes all applicable gates.
-The admitted ARM64 artifact passes all 160 tests; the source/setup ZIP passes a
-fresh Omarchy installation, upgrade and all 160 tests. A fresh Windows 11 installation now passes all 160 tests and the real Start Menu
-launch, closing the earlier capacity-limited installation gap.
-The source/setup ZIP is a development bundle, not a published release.
-Measured registration, licensed robot kinematics, read-only physical telemetry
-and any later model/task-control workflow are separate follow-on work.
+Earlier cross-platform results are retained in
+`verification/prototype-platform-review.json`. They do not qualify the updated
+SDK stack. The release work and current evidence are tracked in the active queue.
 
 ## Completed work
 
@@ -115,6 +96,7 @@ frames with Newton motion and has passing Qt interaction tests on both GPU targe
 The 122-test photo-workflow snapshot passes on both GPU targets. Tests do not yet prove
 every product requirement or a distributable installation; see the current evidence
 and remaining checks in the active-work queue. Milestone-three photo inference,
-validation and local draft construction are implemented; physical telemetry and
-measured calibration remain unimplemented. A separate native import-order repair
+validation and local draft construction are implemented. USB telemetry, guided
+calibration and measured virtual binding now have SDK/emulated-arm coverage;
+qualification with physical arms remains pending. A separate native import-order repair
 passes fresh-process existing-file launch tests on both platforms.

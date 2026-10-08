@@ -9,6 +9,34 @@ MAX_RESPONSE_BYTES = 4 * 1024 * 1024
 SCHEMA = "lertx.photo-scene.v1"
 
 
+def scene_json_schema():
+    """Provider output shape; parse_scene remains the semantic authority."""
+    def obj(properties):
+        return {"type": "object", "properties": properties,
+                "required": list(properties), "additionalProperties": False}
+    def array(items, low, high):
+        return {"type": "array", "items": items, "minItems": low, "maxItems": high}
+    def number(low, high):
+        return {"type": "number", "minimum": low, "maximum": high}
+    def triple(low, high):
+        return array(number(low, high), 3, 3)
+    def text(limit):
+        return {"type": "string", "minLength": 1, "maxLength": limit}
+    geometry = {"anyOf": [
+        obj({"type": {"type": "string", "enum": ["box"]}, "size": triple(.0001, 100)}),
+        obj({"type": {"type": "string", "enum": ["sphere"]}, "radius": number(.0001, 100)}),
+        obj({"type": {"type": "string", "enum": ["mesh"]},
+             "points": array(triple(-100, 100), 3, 20000),
+             "triangles": array({"type": "integer", "minimum": 0, "maximum": 19999}, 3, 120000)})]}
+    item = obj({"id": {**text(64), "pattern": "^[A-Za-z_][A-Za-z0-9_]{0,63}$"},
+                "label": text(128), "translation": triple(-1000, 1000),
+                "rotation": triple(-360, 360), "color": triple(0, 1),
+                "confidence": number(0, 1), "geometry": geometry})
+    return obj({"schema": {"type": "string", "enum": [SCHEMA]},
+                "units": {"type": "string", "enum": ["m"]},
+                "objects": array(item, 1, 256), "unobserved": array(text(512), 0, 64)})
+
+
 def _fail():
     # Do not echo model content: it may contain uploaded or provider-private data.
     raise ValueError("Invalid photo scene response; workspace unchanged")

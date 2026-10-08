@@ -65,6 +65,7 @@ def build_main_window(
         QLineEdit,
         QMainWindow,
         QMessageBox,
+        QProgressBar,
         QPushButton,
         QSpinBox,
         QSizePolicy,
@@ -206,13 +207,49 @@ def build_main_window(
             layout.addRow(status_note)
             tabs.addTab(page, "Workspace")
 
+        PROVIDER_PRESETS = {
+            "NVIDIA": ("https://inference-api.nvidia.com/v1/responses", "azure/openai/gpt-6-astra"),
+            "OpenAI": ("https://api.openai.com/v1/responses", "gpt-5"),
+            "OpenRouter": ("https://openrouter.ai/api/v1/responses", "openai/gpt-5-mini"),
+        }
+
         def _build_intelligence_tab(self, tabs: QTabWidget) -> None:
             page = QWidget()
             layout = QFormLayout(page)
+
+            provider = QComboBox()
+            provider.addItems(list(self.PROVIDER_PRESETS) + ["Custom"])
+            note = QLabel(
+                "Presets fill in a known-working endpoint and model; edit them afterward if you like. "
+                "Only OpenAI Responses-API-compatible endpoints work here — many providers (e.g. Anthropic) "
+                "use a different API shape and need Custom with a compatible gateway such as OpenRouter.")
+            note.setWordWrap(True)
+            layout.addRow("Provider", provider)
+            layout.addRow(note)
             endpoint = QLineEdit(self._staged["llm"]["endpoint"])
             self._row(layout, "Endpoint", endpoint, "llm.endpoint")
             model = QLineEdit(self._staged["llm"]["model"])
             self._row(layout, "Model", model, "llm.model")
+
+            def _sync_provider_from_fields():
+                current = (endpoint.text(), model.text())
+                for name, preset in self.PROVIDER_PRESETS.items():
+                    if current == preset:
+                        provider.blockSignals(True); provider.setCurrentText(name); provider.blockSignals(False)
+                        return
+                provider.blockSignals(True); provider.setCurrentText("Custom"); provider.blockSignals(False)
+
+            def _apply_provider(name):
+                preset = self.PROVIDER_PRESETS.get(name)
+                if preset:
+                    endpoint.setText(preset[0])
+                    model.setText(preset[1])
+                    _clear_credential_on_endpoint_change(preset[0])
+
+            provider.currentTextChanged.connect(_apply_provider)
+            self._sync_provider_from_fields = _sync_provider_from_fields
+            self._provider_combo = provider
+            _sync_provider_from_fields()
 
             key_row = QHBoxLayout()
             self._key_edit = QLineEdit(self._staged["llm"]["api_key"])
@@ -275,6 +312,8 @@ def build_main_window(
                 self._connection_status.setText("")
 
             endpoint.textEdited.connect(_clear_credential_on_endpoint_change)
+            endpoint.textEdited.connect(lambda _: _sync_provider_from_fields())
+            model.textEdited.connect(lambda _: _sync_provider_from_fields())
             for field in (model, self._key_edit):
                 field.textChanged.connect(lambda _: self._invalidate_connection())
             tokens.valueChanged.connect(lambda _: self._invalidate_connection())
@@ -358,6 +397,8 @@ def build_main_window(
                     widget.setValue(value)
                 else:
                     widget.setText(",".join(value) if isinstance(value, list) else str(value))
+            if hasattr(self, "_sync_provider_from_fields"):
+                self._sync_provider_from_fields()
             self._validation_label.setText("Defaults staged. Save to apply, or Cancel to discard.")
 
         def result_profile(self) -> Optional[dict]:
@@ -421,6 +462,9 @@ def build_main_window(
             self.set_enabled_for_selection(editable, reason)
 
     class MainWindow(QMainWindow):
+        LEADER_COLOR = "#1FAD9E"
+        FOLLOWER_COLOR = "#F2A31F"
+
         def __init__(self) -> None:
             super().__init__()
             self.setWindowTitle("Untitled — LeRTX")
@@ -461,7 +505,9 @@ def build_main_window(
             self.robot_panel = build_robot_panel(self)
             self.robot_dock = QDockWidget("Robot simulation", self)
             self.robot_dock.setObjectName("robotSimulation")
-            self.robot_dock.setWidget(self.robot_panel)
+            from PySide6.QtWidgets import QScrollArea
+            robot_scroll=QScrollArea();robot_scroll.setWidgetResizable(True);robot_scroll.setWidget(self.robot_panel)
+            self.robot_dock.setWidget(robot_scroll)
             self.addDockWidget(Qt.DockWidgetArea.RightDockWidgetArea, self.robot_dock)
             self.tabifyDockWidget(self.inspector_dock, self.robot_dock)
             self.robot_dock.raise_()
@@ -518,9 +564,10 @@ def build_main_window(
 
         def _show_help(self):
             QMessageBox.information(self,'Getting started',
-                'Your workspace contains a teal SO-101 leader and an amber follower.\n\n'
+                'Your workspace contains a teal SO-101 leader and an amber follower (see the color key under the viewport).\n\n'
                 'Use Robot simulation to choose joint targets, then Play. The follower tracks the simulated leader. Pause holds the pose; Reset restores the workspace.\n\n'
-                'Drag an arm link to manipulate its joint. Alt-drag to orbit, right-drag to pan, and scroll to zoom. Click an object to select it. Paused joint drags preview simulated physics; disable following before dragging the follower. Use File → Save As to keep a workspace.\n\n'
+                'Left- or right-drag an arm link in the viewport to move its joint directly, following the mouse. Alt-left-drag orbits the camera, middle-drag pans, and wheel or trackpad scroll zooms. Every leader and follower joint also has its own labeled slider in the Robot simulation panel — drag a slider or type a value there for the same live control without touching the viewport. Joint controls work while paused; uncheck Follower tracks the simulated leader to move the follower independently.\n\n'
+                'To move anything else in the workspace — the ball, the obstacle, the work surface — left- or right-drag it in the viewport, same as an arm link. Selecting it also switches to the Inspector tab next to Robot simulation, where you can type exact Translate/Rotate/Scale values and click Apply transform. Use File → Save As to keep a workspace.\n\n'
                 'These are simulated arms. No hardware port is opened. The leader trigger geometry and inertia are upstream estimates; contact hulls approximate individual mechanical parts.')
 
         def _show_about(self):
@@ -549,10 +596,6 @@ def build_main_window(
             open_action.triggered.connect(self._on_open)
             toolbar.addAction(open_action)
 
-            photo_action = QAction("Reconstruct Photo", self)
-            photo_action.triggered.connect(self._on_photo)
-            toolbar.addAction(photo_action)
-
             save_action = QAction("Save", self)
             save_action.triggered.connect(self._on_save)
             toolbar.addAction(save_action)
@@ -561,17 +604,32 @@ def build_main_window(
             save_as_action.triggered.connect(self._on_save_as)
             toolbar.addAction(save_as_action)
 
-            settings_action = QAction("Settings", self)
-            settings_action.triggered.connect(self._on_open_settings)
-            toolbar.addAction(settings_action)
+            toolbar.addSeparator()
 
             devices_action = QAction("Devices", self)
             devices_action.triggered.connect(self._on_devices)
             toolbar.addAction(devices_action)
+            setup_action = QAction('Set up real arms', self)
+            setup_action.triggered.connect(self.open_setup)
+            toolbar.addAction(setup_action)
+
+            toolbar.addSeparator()
+
+            photo_action = QAction("Reconstruct Photo", self)
+            photo_action.triggered.connect(self._on_photo)
+            toolbar.addAction(photo_action)
+
+            toolbar.addSeparator()
 
             frame_action = QAction("Frame Selection", self)
             frame_action.triggered.connect(self._on_frame_selection)
             toolbar.addAction(frame_action)
+
+            toolbar.addSeparator()
+
+            settings_action = QAction("Settings", self)
+            settings_action.triggered.connect(self._on_open_settings)
+            toolbar.addAction(settings_action)
 
         def _build_central_widget(self) -> None:
             central = QWidget()
@@ -582,15 +640,42 @@ def build_main_window(
             self.reconstruction_warning.hide()
             layout.addWidget(self.reconstruction_warning)
 
+            self.loading_row = QWidget()
+            loading_layout = QHBoxLayout(self.loading_row)
+            loading_layout.setContentsMargins(0, 0, 0, 4)
+            self.loading_bar = QProgressBar()
+            self.loading_bar.setRange(0, 0)  # indeterminate: pulses while the duration is unknown
+            self.loading_bar.setTextVisible(False)
+            self.loading_bar.setFixedHeight(6)
+            self.loading_label = QLabel("Loading workspace…")
+            loading_layout.addWidget(self.loading_bar, 1)
+            loading_layout.addWidget(self.loading_label)
+            self.loading_row.hide()
+            layout.addWidget(self.loading_row)
+
             from .viewport_ui import build_viewport
             self.viewport_label = build_viewport(self)
             self.viewport_label.setObjectName("viewport")
             self.viewport_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.viewport_label.setMinimumSize(320, 180)
-            self.viewport_label.setText("Empty — open a USD scene")
-            self.viewport_label.setToolTip('Drag an arm link to turn its joint. Alt-drag: orbit · Right-drag: pan · Scroll: zoom. Simulation only.')
+            self.viewport_label.setText("Loading workspace…")
+            self.viewport_label.setToolTip('Left- or right-drag an arm link to move its joint, or any other object (ball, obstacle, surface) to move it directly — both follow the mouse. Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom. Every joint also has a labeled slider in Robot simulation; any object\'s exact position is in the Inspector tab.')
             layout.addWidget(self.viewport_label, stretch=1)
-            layout.addWidget(QLabel('Grab a joint: drag an arm link · Alt-drag: orbit · Right-drag: pan · Scroll: zoom'))
+
+            legend_row = QHBoxLayout()
+            legend_row.setContentsMargins(0, 0, 0, 0)
+            for swatch_color, name in ((self.LEADER_COLOR, "Leader"), (self.FOLLOWER_COLOR, "Follower")):
+                swatch = QLabel()
+                swatch.setFixedSize(12, 12)
+                swatch.setStyleSheet(f"background-color: {swatch_color}; border-radius: 2px;")
+                legend_row.addWidget(swatch)
+                legend_row.addWidget(QLabel(name))
+            legend_row.addStretch(1)
+            layout.addLayout(legend_row)
+
+            hint = QLabel('Left- or right-drag a link: move its joint · Drag any other object: move it directly · Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom')
+            hint.setWordWrap(True)
+            layout.addWidget(hint)
 
             transport_row = QHBoxLayout()
             self.play_button = QPushButton("Play")
@@ -713,8 +798,10 @@ def build_main_window(
         def _on_selection_changed(self):
             path = self._selected_path()
             if self._ready and self.worker and hasattr(self.worker, 'select'):
-                self._command(lambda: self.worker.select(path),
-                    lambda value:self.robot_panel.select_joint(value) if path==self._selected_path() else None)
+                def selected_joint(value):
+                    if path==self._selected_path() and value.get('joint'):
+                        self.robot_dock.show();self.robot_dock.raise_()
+                self._command(lambda: self.worker.select(path),selected_joint)
             self.inspector.set_enabled_for_selection(False)
             if path is None:
                 self.inspector.show_prim("", "", False)
@@ -726,6 +813,7 @@ def build_main_window(
                     self.inspector.show_prim(path, self._prim_types.get(path, ""), False, value["error"])
                     return
                 self.inspector.show_prim(path, self._prim_types.get(path, ""), True)
+                self.inspector_dock.show();self.inspector_dock.raise_()
                 for spins, name in ((self.inspector.translate, "translation"),
                                     (self.inspector.rotate, "rotation"), (self.inspector.scale, "scale")):
                     for spin, component in zip(spins, value[name]):
@@ -747,7 +835,12 @@ def build_main_window(
             self._ready = False
             self._command(lambda: self.worker.edit(path, *values), self._apply_status)
 
+        def _set_loading(self, active, message="Loading workspace…"):
+            self.loading_label.setText(message)
+            self.loading_row.setVisible(active)
+
         def _apply_status(self, status):
+            self._set_loading(False)
             self.statusBar().clearMessage()
             self.robot_panel.update_state(status.get("robots"))
             self.reconstruction_warning.setVisible(status.get("reconstruction_status") == "unverified")
@@ -815,14 +908,16 @@ def build_main_window(
             def adopt():
                 self._ready = False
                 self.native_status_label.setText("Native: loading photo draft")
+                self._set_loading(True, "Loading photo draft…")
                 def adopted(status):
                     self.requires_save_as = True
                     self._apply_status(status)
                 self._command(lambda: self.worker.import_photo_draft(result["scene_text"],
-                    result["image_sha256"], result["model"]), adopted)
+                    result["image_sha256"], result["model"], result.get("focus_id")), adopted)
             self._after_discard_confirmation(adopt)
 
         def open_scene(self, path):
+            from pathlib import Path
             self.viewport_label.cancel()
             for panel in self._hardware_windows.values():panel.live.setChecked(False)
             if self.worker is None:
@@ -834,6 +929,7 @@ def build_main_window(
                     return
             self._ready = False
             self.native_status_label.setText("Native: loading")
+            self._set_loading(True, f"Loading {Path(path).name}…")
             previous_path = self.current_scene_path
             def opened(status):
                 from pathlib import Path
@@ -892,6 +988,7 @@ def build_main_window(
                 self.viewport_label.cancel()
                 self._ready = False
                 self.native_status_label.setText("Native: applying settings")
+                self._set_loading(True, "Applying settings…")
                 self._command(lambda: self.worker.configure(profile, self.config_path), configured)
             else:
                 try:
@@ -922,6 +1019,14 @@ def build_main_window(
             panel=build_hardware_panel(self,candidate,role)
             self._hardware_windows[role]=panel
             panel.show()
+
+        def open_setup(self):
+            previous=getattr(self,'_setup_window',None)
+            if previous and previous.isVisible():
+                previous.raise_();previous.activateWindow();return
+            from .setup_ui import build_setup_wizard
+            self._setup_window=build_setup_wizard(self)
+            self._setup_window.show()
 
         def _display_factor(self):
             unit = self.profile["general"]["display_units"]
@@ -961,7 +1066,8 @@ def build_main_window(
 
         def _show_error(self, exc):
             self.viewport_label.cancel()
-            self.native_status_label.setText(f"Native: {type(exc).__name__}: {exc}")
+            self._set_loading(False)
+            self.native_status_label.setText(f"Native: {exc}")
             self.statusBar().showMessage(str(exc))
             if self.worker and self.worker._stop_event.is_set():
                 self._ready = False
@@ -1037,6 +1143,7 @@ def build_main_window(
                 self._on_open_settings()
                 return
             now = time.monotonic()
+            self.robot_panel.flush()
             self.viewport_label.flush()
             if self._ready and not self._idle_frame and not self._pending and now >= self._next_frame_at:
                 # Schedule start-to-start. Waiting a frame interval after the
@@ -1050,7 +1157,7 @@ def build_main_window(
         def closeEvent(self, event):
             self.viewport_label.cancel()
             for panel in self._hardware_windows.values():
-                if panel.session._thread.is_alive():panel.shutdown()
+                if panel.session and panel.session._thread.is_alive():panel.shutdown()
             if self._closing and self.worker is None:
                 self._frame_timer.stop()
                 from .desktop_state import save_state

@@ -102,3 +102,15 @@ matching the desktop entry point. Creating Qt only after previous headless OVRTX
 sessions crashed in `libEGL_nvidia`; this remains an SDK initialization-order
 limitation, not a resolved SDK defect. `verification/run_native_regression.py`
 preserves application startup order and must run through the resource guard.
+
+For the complete Linux native suite, use the application interpreter to run
+`verification/qualify_native.py --output <new-evidence-directory>`. It runs each
+native module in a fresh guarded process, initializing Qt before the SDK. This
+also isolates the fresh-process launch tests from native threads retained by
+earlier tests; a combined run exceeded the guard's 128-task limit. Each module
+keeps the memory cap, host reserve and deadline. The runner preserves logs and
+guard reports, and fails if any module fails. It may reuse shader caches and
+does not establish cold-cache startup performance.
+The guard records its CPU quota and task limit. `--cpu-cores` allows an explicit
+diagnostic budget after checking worker headroom; its default remains two cores.
+Changing that budget is a distinct experiment and must be recorded as such.

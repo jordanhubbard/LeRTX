@@ -89,11 +89,11 @@ class HardwareUITests(unittest.TestCase):
         from lertx.robot import home_positions
         owner=self.owner;owner._ready=True
         owner.robot_panel.update_state({'positions':{'leader':home_positions('leader')},'following':True})
-        owner.robot_panel.select_joint({'joint':dict(role='leader',name='shoulder_pan',low=-1.,high=1.,value=0.,locked=False)})
-        owner.robot_panel.joint_slider.setValue(1000)
-        self.assertEqual(owner.viewport_label.intent,('leader','shoulder_pan',1.))
+        low,high=owner.robot_panel._range['leader','shoulder_pan']
+        owner.robot_panel.sliders['leader','shoulder_pan'].setValue(1000)
+        self.assertEqual(owner.viewport_label.intent,('leader','shoulder_pan',high))
         owner.robot_panel.update_state({'positions':{'leader':home_positions('leader')},'following':True,'live_roles':['leader']})
-        self.assertFalse(owner.robot_panel.joint_slider.isEnabled())
+        self.assertFalse(owner.robot_panel.sliders['leader','shoulder_pan'].isEnabled())
         owner._ready=False
 
     def test_native_failure_turns_off_live_view_without_motor_writes(self):
@@ -118,3 +118,32 @@ class HardwareUITests(unittest.TestCase):
             self.assertIn('expired',self.panel.message.text())
             self.assertEqual(self.serial.writes,[])
         finally:owner._ready=False;owner.worker=None
+
+    def test_follower_unlock_survives_busy_worker(self):
+        from types import SimpleNamespace
+        from lertx.robot import home_positions
+        owner=self.owner;owner._ready=True;panel=owner.robot_panel
+        state={'positions':{'follower':home_positions('follower')},'following':True}
+        panel.update_state(state)
+        self.assertFalse(panel.sliders['follower','wrist_roll'].isEnabled())
+        owner._pending=[object()]
+        panel.follow.setChecked(False)
+        self.assertEqual(panel.pending_follow,False)
+        panel.update_state(state)
+        self.assertFalse(panel.follow.isChecked())
+        calls=[]
+        def command(role,following):
+            calls.append(following)
+            return {**state,'following':following}
+        owner.worker=SimpleNamespace(command_robot=command)
+        owner._command=lambda fn,callback:callback(fn())
+        owner._apply_status=panel.update_state
+        owner._pending=[]
+        try:
+            panel.flush()
+            self.assertEqual(calls,[False])
+            self.assertTrue(panel.sliders['follower','wrist_roll'].isEnabled())
+            low,high=panel._range['follower','wrist_roll']
+            panel.sliders['follower','wrist_roll'].setValue(800)
+            self.assertAlmostEqual(owner.viewport_label.intent[2],low+(high-low)*.8)
+        finally:owner._ready=False;owner.worker=None;owner._pending=[]

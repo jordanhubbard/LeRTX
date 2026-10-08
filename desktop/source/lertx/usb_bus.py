@@ -7,7 +7,7 @@ import os
 import time
 
 IDS = tuple(range(1, 7))
-# Volatile SRAM only. EEPROM/setup writes are deliberately absent.
+# Manual motion uses volatile SRAM only; write_calibration is a separate torque-off path.
 WRITABLE = {40: (1, 0, 1), 41: (1, 1, 10), 42: (2, 0, 4095),
             46: (2, 1, 100), 48: (2, 1, 300)}
 
@@ -96,6 +96,9 @@ class FeetechBus:
         size, low, high = WRITABLE[address]
         if type(value) is not int or not low <= value <= high:
             raise ValueError('Register value is outside the bounded write range')
+        self._write_checked(motor,address,size,value)
+
+    def _write_checked(self,motor,address,size,value):
         try:
             communication, error = self.packet.writeTxRx(self.port, motor, address, size, list(value.to_bytes(size,'little')))
             if communication != 0 or error:
@@ -104,6 +107,30 @@ class FeetechBus:
                 raise ConnectionError(f'Motor {motor}: register readback did not match')
         finally:
             self.port.is_using = False
+
+    def write_calibration(self,motor,homing,minimum,maximum):
+        """Explicit torque-off calibration transaction, unavailable to manual writes."""
+        if motor not in IDS or any(type(v) is not int for v in (homing,minimum,maximum)):
+            raise ValueError('Invalid calibration motor or value')
+        if not -2047<=homing<=2047 or not 0<=minimum<maximum<=4095:
+            raise ValueError('Invalid calibration limits')
+        identity=self.read(motor,3,3)
+        if int.from_bytes(identity[:2],'little')!=777 or identity[2]!=motor:
+            raise ValueError('Calibration motor identity changed')
+        if self.read(motor,40,1)!=b'\0':raise ValueError('Release motor torque before calibration')
+        lock=self.read(motor,55,1)[0]
+        if lock not in (0,1):raise ValueError('Invalid EEPROM lock state')
+        try:
+            self._write_checked(motor,55,1,0)
+            # Expand first so changing the coordinate offset cannot leave crossed limits.
+            self._write_checked(motor,9,2,0)
+            self._write_checked(motor,11,2,4095)
+            encoded=abs(homing)|((1<<11) if homing<0 else 0)
+            self._write_checked(motor,31,2,encoded)
+            self._write_checked(motor,9,2,minimum)
+            self._write_checked(motor,11,2,maximum)
+        finally:
+            self._write_checked(motor,55,1,lock)
 
     def sample(self):
         result = {}

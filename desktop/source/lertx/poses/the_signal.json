@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "label": "The Signal",
+  "leader": {
+    "shoulder_pan": 0.5,
+    "shoulder_lift": 0.35,
+    "elbow_flex": 0.15,
+    "wrist_flex": 0.5,
+    "wrist_roll": 0.5,
+    "gripper": 0.0
+  },
+  "follower": {
+    "shoulder_pan": 0.5,
+    "shoulder_lift": 0.35,
+    "elbow_flex": 0.15,
+    "wrist_flex": 0.5,
+    "wrist_roll": 0.5,
+    "gripper": 0.0
+  }
+}

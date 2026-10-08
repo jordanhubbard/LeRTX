@@ -112,6 +112,25 @@ class MainWindowTests(unittest.TestCase):
         finally:
             window.close()
 
+    def test_loading_indicator_shows_message_and_hides_on_status_or_error(self):
+        window = _build_window()
+        window.show()
+        try:
+            self.assertFalse(window.loading_row.isVisible())
+            window._set_loading(True, "Loading workspace…")
+            self.assertTrue(window.loading_row.isVisible())
+            self.assertEqual(window.loading_label.text(), "Loading workspace…")
+            window._apply_status({"path": "unused.usda", "dirty": False, "reconstruction_status": "",
+                "diagnostics": {}, "meters_per_unit": 1.0, "time": 0.0, "playing": False,
+                "physics_error": "", "hierarchy": [], "robots": {}})
+            self.assertFalse(window.loading_row.isVisible())
+            window._set_loading(True, "Loading workspace…")
+            self.assertTrue(window.loading_row.isVisible())
+            window._show_error(ValueError("boom"))
+            self.assertFalse(window.loading_row.isVisible())
+        finally:
+            window.close()
+
 
 if __name__ == "__main__":
     unittest.main()

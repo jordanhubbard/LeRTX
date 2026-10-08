@@ -97,6 +97,7 @@ class PhotoWindowNativeTests(unittest.TestCase):
                         self.assertEqual(window.worker.submit(authored).result(timeout=120), before)
                         self.assertEqual(source.read_bytes(), disk_before)
                         previous_frame = window._image.cacheKey()
+                        window._camera(orbit=(.03,0))  # Idle scenes render on demand.
                         wait(lambda: window._image.cacheKey() != previous_frame)
                         self.assertFalse(window.viewport_label.pixmap().isNull())
             finally:
@@ -142,6 +143,13 @@ class PhotoWindowNativeTests(unittest.TestCase):
                 def submit():
                     dialog.select_photo(root/"photo.png")
                     dialog.upload_button.click()
+                monitor=QTimer(dialog)
+                def review():
+                    if dialog.result_scene is not None:
+                        monitor.stop()
+                        self.assertEqual(dialog.focus_choice.currentData(),'table')
+                        dialog.review_button.click()
+                monitor.timeout.connect(review);monitor.start(40)
                 QTimer.singleShot(20, submit)
                 QTimer.singleShot(10000, dialog, dialog.reject)
                 return dialog
@@ -158,6 +166,7 @@ class PhotoWindowNativeTests(unittest.TestCase):
                 draft_path = Path(window.current_scene_path)
                 wait(lambda: window._ready and not window._pending)
                 adopted_frame_key = window._image.cacheKey()
+                window._camera(orbit=(.03,0))
                 wait(lambda: window._image.cacheKey() != adopted_frame_key
                      and bytes(window._image.constBits()) != before_pixels)
                 draft_pixels = bytes(window._image.constBits())

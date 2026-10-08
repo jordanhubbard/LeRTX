@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:46d74e3008e18df3ffcb3bea6b80ac6e4bf240aaa9b36b113b9cf4071047d932 -->
+<!-- literate-ai:authority-reviewed sha256:d678f273d7434cc639d0960bcaf12db4a1679ae5823ef3fe5ed76655caddb0fb -->
 
 [Project guide](../README.md) → design traceability
 
@@ -13,3 +13,10 @@ derived evidence outside source authority. Changes should update the owning arti
 its nearby explanation or diagram,
 and an end-to-end test. Illustrations aid understanding; prose requirements and
 acceptance scenarios remain normative. See the [project map](../user/project-layout.md).
+
+The current desktop implementation uses left/right dragging, a persistent
+twelve-joint slider grid and middle-button panning. The former right-click popup
+is superseded. Portable Qt tests exercise input routing; the updated native
+verification scripts require fresh NVIDIA runs before claiming current rendering
+or physics coverage. Earlier reports describe their recorded source snapshots,
+not later edits. Physical controls retain their separate hardware workflow.

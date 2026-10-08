@@ -1,0 +1,131 @@
+{
+  "admission": {
+    "application_and_test_python_files_match": 90,
+    "component_lock_identity": "sha256:b9739ca96b793d700fc153a6a10bebfc127aa9524d984fce941341db26f89c67",
+    "framework_distribution_identity": "sha256:119009a00d7144a477934f1b5d7201aad084f99ec4e9b92cdd60aa048a24ee8d",
+    "independent_acceptance_cases_unchanged": 3,
+    "passed": true,
+    "project_revision_identity": "sha256:be898c7efa587461420e91bf2e1a4309deab713a58ed03c02518e63af3738ef8",
+    "receipt_committed": true,
+    "receipt_identity": "sha256:d2c07a6835de2bd8bc146f2a0ebec96389670d553e702cd611e4cb187decb2b8",
+    "test_summary": {
+      "failed": 0,
+      "passed": 30,
+      "skipped": 0,
+      "total": 30
+    }
+  },
+  "date": "2026-09-27",
+  "linux_containment": {
+    "initial_available_bytes": 32112603136,
+    "launched": true,
+    "memory_limit_bytes": 12884901888,
+    "minimum_available_bytes": 26064793600,
+    "reserve_bytes": 17179869184,
+    "returncode": 0,
+    "seconds": 20.797,
+    "status": "passed",
+    "swap_limit_bytes": 0,
+    "timeout_seconds": 220.0
+  },
+  "platforms": {
+    "linux-arm64": {
+      "input_and_ui_passed": true,
+      "input_and_ui_tests": 24,
+      "native": {
+        "authored_scene_unchanged": true,
+        "clean_shutdown": true,
+        "complete": true,
+        "initial_radians": 1.1233678917643708e-11,
+        "measured_radians": 0.45517152547836304,
+        "middle_drag_pan": true,
+        "paused": true,
+        "physical_hardware_tested": false,
+        "rendered_motion": true,
+        "seconds": 15.58,
+        "selected_path": "/World/Leader/Geometry/base_link/shoulder_link/upper_arm_link/upper_arm_so101_v1",
+        "target_radians": 0.4363324999999998
+      },
+      "popup_screenshot": "verification/joint-context-linux-arm64.png",
+      "popup_sha256": "74c2113edac297c2d69b7dc9cc18f3f8743adafe81b249bf37865a22bdd07fe7"
+    },
+    "windows-x86_64": {
+      "input_and_ui_passed": true,
+      "input_and_ui_tests": 24,
+      "native": {
+        "authored_scene_unchanged": true,
+        "clean_shutdown": true,
+        "complete": true,
+        "initial_radians": 1.1233678917643708e-11,
+        "measured_radians": 0.45516932010650635,
+        "middle_drag_pan": true,
+        "paused": true,
+        "physical_hardware_tested": false,
+        "rendered_motion": true,
+        "seconds": 14.813,
+        "selected_path": "/World/Leader/Geometry/base_link/shoulder_link/upper_arm_link/upper_arm_so101_v1",
+        "target_radians": 0.4363324999999998
+      },
+      "popup_screenshot": "verification/joint-context-windows-x86_64.png",
+      "popup_sha256": "ebe45e89a28b6f84c3305f87db6a99c178687ee1b31c0d1fff4f32a5dd354be8"
+    }
+  },
+  "reproduction": {
+    "admission": "Use the pinned framework interpreter, CPython 3.11.14 and a complete hash-verified offline wheelhouse; prepare_retained_snapshot.py, retained-source plan, authorized litai rebuild --update-receipt, then litai verify.",
+    "native": "Run verification/joint_context_window.py --report <path> through native_guard.py on Linux or a 12 GiB Windows Job Object in an interactive session.",
+    "portable": "QT_QPA_PLATFORM=offscreen PYTHONPATH=desktop/source .venv/bin/python -m unittest tests.test_joint_interaction tests.test_ui -v"
+  },
+  "schema": "lertx/joint-context-review@1",
+  "scope": "Simulated joint controls only; no physical robot or external inference requests.",
+  "source_sha256": {
+    "desktop/source/lertx/joint_popup.py": "9bbf242b01178e9a3d2c62152c4410874e805133bbd5f266d31e4264f1a4453b",
+    "desktop/source/lertx/robot_ui.py": "74218bfe21572e5032f2dec51bf2f7985404ec498cd5694ffa44ec80578923f0",
+    "desktop/source/lertx/ui.py": "655d2145468416c9a15495c320fdda46af330dabc2932102b121cb49f6788885",
+    "desktop/source/lertx/viewport_ui.py": "9d35dc12137d9f5f4e053a50363de20610908b7f310bbcf4910c73f000a8afad",
+    "desktop/source/tests/test_joint_interaction.py": "d1667f9b56b8d6d4d7cf227d0733966f758c9a9c04c731f6cfbee4b9ba570b81",
+    "verification/joint_context_window.py": "25de13ffc9246ffaa51d4a512187d6adc4dd0412577f27971fc0ec62019bd8bc"
+  },
+  "verification": {
+    "counts": {
+      "fail": 0,
+      "pass": 3,
+      "skipped": 2
+    },
+    "gates": [
+      {
+        "detail": "project authority and documentation review",
+        "gate": "authority",
+        "state": "pass"
+      },
+      {
+        "detail": "3 committed lock(s) current",
+        "gate": "locks",
+        "state": "pass"
+      },
+      {
+        "detail": "project selects provider 'none'",
+        "gate": "source-intelligence",
+        "state": "skipped"
+      },
+      {
+        "artifacts": [],
+        "detail": "no declared HTML artifacts to verify",
+        "gate": "html-observability",
+        "state": "skipped"
+      },
+      {
+        "detail": "committed test receipt is current",
+        "gate": "receipt",
+        "state": "pass"
+      }
+    ],
+    "ok": true,
+    "project": ".",
+    "schema": "literate-ai/project-verify@1"
+  },
+  "windows_containment": {
+    "job_commit_limit_bytes": 12884901888,
+    "process_commit_limit_bytes": 12884901888
+  },
+  "windows_delivered_files_match_local": true
+}

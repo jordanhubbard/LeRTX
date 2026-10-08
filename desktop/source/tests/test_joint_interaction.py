@@ -41,6 +41,7 @@ class JointPointerTests(unittest.TestCase):
         self.view.setPixmap(QPixmap(400, 300))
 
     def tearDown(self):
+        self.view.cancel()
         self.view.deleteLater(); self.owner.deleteLater(); self.app.processEvents()
 
     def drain(self):
@@ -49,12 +50,13 @@ class JointPointerTests(unittest.TestCase):
             result = fn()
             if callback: callback(result)
 
-    def event(self, kind, x, y, modifiers=None):
+    def event(self, kind, x, y, modifiers=None, mouse_button=None):
         from PySide6.QtCore import QEvent, QPointF, Qt
         from PySide6.QtGui import QMouseEvent
         types = {'press':QEvent.Type.MouseButtonPress, 'move':QEvent.Type.MouseMove, 'release':QEvent.Type.MouseButtonRelease}
-        button = Qt.MouseButton.NoButton if kind == 'move' else Qt.MouseButton.LeftButton
-        buttons = Qt.MouseButton.NoButton if kind == 'release' else Qt.MouseButton.LeftButton
+        selected = mouse_button or Qt.MouseButton.LeftButton
+        button = Qt.MouseButton.NoButton if kind == 'move' else selected
+        buttons = Qt.MouseButton.NoButton if kind == 'release' else selected
         event = QMouseEvent(types[kind], QPointF(x,y), QPointF(x,y), button, buttons, modifiers or Qt.KeyboardModifier.NoModifier)
         self.app.sendEvent(self.view, event)
 
@@ -94,6 +96,106 @@ class JointPointerTests(unittest.TestCase):
         self.event('press',100,100); self.drain(); self.event('move',200,100)
         self.view.cancel(); self.view.flush()
         self.assertEqual(len(self.commands),2)
+
+    def right_click(self):
+        from PySide6.QtCore import Qt
+        self.event('press', 100, 100, mouse_button=Qt.MouseButton.RightButton)
+        self.event('release', 100, 100, mouse_button=Qt.MouseButton.RightButton)
+
+    def test_right_drag_moves_the_joint_exactly_like_left_drag(self):
+        from PySide6.QtCore import Qt
+        self.event('press', 100, 100, mouse_button=Qt.MouseButton.RightButton)
+        for x in range(110, 201, 10):
+            self.event('move', x, 100, mouse_button=Qt.MouseButton.RightButton)
+        self.event('release', 200, 100, mouse_button=Qt.MouseButton.RightButton)
+        self.assertEqual(len(self.owner._pending), 1)
+        self.drain(); self.view.flush(); self.drain()
+        self.assertEqual(len(self.commands), 1)
+        self.assertAlmostEqual(self.commands[0][2], math.radians(50))
+        self.assertIsNone(self.view.press)
+
+    def test_right_click_without_drag_selects_but_commands_nothing(self):
+        self.right_click(); self.drain()
+        self.assertEqual(self.commands, [])
+        self.assertIsNone(self.view.press)
+
+    def test_middle_drag_only_pans(self):
+        from PySide6.QtCore import Qt
+        self.event('press', 100, 100, mouse_button=Qt.MouseButton.MiddleButton)
+        self.event('move', 180, 100, mouse_button=Qt.MouseButton.MiddleButton)
+        self.event('release', 180, 100, mouse_button=Qt.MouseButton.MiddleButton)
+        self.assertEqual(len(self.camera), 1)
+        self.assertIn('pan', self.camera[0])
+        self.assertEqual(self.owner._pending, [])
+        self.assertEqual(self.commands, [])
+
+    def test_letterbox_click_reports_status_and_queues_no_pick(self):
+        from PySide6.QtGui import QPixmap
+        self.view.setPixmap(QPixmap(200, 100))  # smaller than the 400x300 view: a letterboxed margin exists
+        self.event('press', 0, 0)
+        self.event('release', 0, 0)
+        self.assertEqual(self.owner._pending, [])
+        self.assertIn('outside the rendered image', self.owner.statusBar().currentMessage())
+
+    def test_click_on_empty_space_reports_status_and_stays_idle(self):
+        self.joint = None
+        self.event('press', 100, 100); self.drain()
+        self.event('release', 100, 100)
+        self.assertIsNone(self.view.press)
+        self.assertIn('Nothing there', self.owner.statusBar().currentMessage())
+        self.assertEqual(self.commands, [])
+
+    def test_click_on_non_robot_object_drags_it_like_a_joint(self):
+        self.joint = None
+        self.owner.worker.pick = lambda *uv: dict(path='/World/Ball', joint=None)
+        self.owner.worker.begin_object_drag = lambda path: dict(
+            translation=[0., 0., 0.], rotation=[0., 0., 0.], scale=[1., 1., 1.],
+            camera_right=[1., 0., 0.], camera_up=[0., 1., 0.], distance=3.)
+        self.owner.worker.drag_object = lambda path, translation, rotation, scale, elapsed=0.: (
+            self.commands.append((path, translation, rotation, scale)) or {})
+        self.owner.worker.edit = lambda path, translation, rotation, scale: {}
+        self.owner._apply_status = lambda status: None
+        self.event('press', 100, 100); self.drain()
+        for x in range(110, 151, 10):
+            self.event('move', x, 100)
+        self.event('release', 150, 100)
+        self.drain(); self.view.flush(); self.drain()
+        self.assertEqual(len(self.commands), 1)
+        path, translation, rotation, scale = self.commands[0]
+        self.assertEqual(path, '/World/Ball')
+        self.assertGreater(translation[0], 0.)
+        self.assertEqual(rotation, [0., 0., 0.])
+        self.assertEqual(scale, [1., 1., 1.])
+
+    def test_non_editable_object_reports_the_reason_and_does_not_drag(self):
+        self.joint = None
+        self.owner.worker.pick = lambda *uv: dict(path='/World/Leader/shoulder_link', joint=None)
+        def fail(path):
+            raise ValueError('Use the robot joint controls; articulated links cannot be transformed independently')
+        self.owner.worker.begin_object_drag = fail
+        self.event('press', 100, 100); self.drain()
+        self.event('release', 100, 100)
+        self.assertIn('Use the robot joint controls', self.owner.statusBar().currentMessage())
+        self.assertEqual(self.commands, [])
+
+    def test_application_deactivate_discards_unsent_drag(self):
+        from PySide6.QtCore import QEvent
+        self.event('press', 100, 100); self.drain()
+        self.event('move', 200, 100)
+        self.app.sendEvent(self.owner, QEvent(QEvent.Type.ApplicationDeactivate))
+        self.view.flush(); self.drain()
+        self.assertIsNone(self.view.press)
+        self.assertEqual(self.commands, [])
+
+    def test_trackpad_pixel_scroll_zooms_without_joint_input(self):
+        from PySide6.QtCore import QPoint, QPointF, Qt
+        from PySide6.QtGui import QWheelEvent
+        event = QWheelEvent(QPointF(100,100), QPointF(100,100), QPoint(0,24), QPoint(),
+                            Qt.MouseButton.NoButton, Qt.KeyboardModifier.NoModifier,
+                            Qt.ScrollPhase.ScrollUpdate, False)
+        self.app.sendEvent(self.view, event)
+        self.assertEqual(self.camera, [{'zoom': -.02}])
+        self.assertEqual(self.commands, [])
 
 
 class JointRuntimeTests(unittest.TestCase):

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "date": "2026-09-27",
+  "provider": "openrouter",
+  "model": "openai/gpt-6-astra",
+  "reasoning_effort": "high",
+  "max_output_tokens": 24576,
+  "input": "Operator-supplied turtle photograph from iCloud Drive; private input and generated assets retained only in ignored worker artifacts.",
+  "image_sha256": "5849d06f0549be21d6cee0d8286cf163b670d9f1522f5eb197aa20589525d783",
+  "http_status": 200,
+  "state": "success",
+  "seconds": 301.43,
+  "reported_cost_usd": 1.06554,
+  "usage": {
+    "input_tokens": 914,
+    "input_tokens_details": {
+      "cached_tokens": 0
+    },
+    "output_tokens": 21128,
+    "output_tokens_details": {
+      "reasoning_tokens": 7038
+    },
+    "total_tokens": 22042,
+    "cost": 1.06554,
+    "is_byok": false,
+    "cost_details": {
+      "upstream_inference_cost": 1.06554,
+      "upstream_inference_input_cost": 0.00914,
+      "upstream_inference_output_cost": 1.0564
+    }
+  },
+  "objects": 29,
+  "meshes": 27,
+  "review": "Recognizable domed shell, head, eyes and separate flippers in native Windows RTX. Approximate colored low-poly geometry, no recovered texture or measured scale. Whole-scene camera still includes seabed fragments; named initial focus is offered in the review dialog.",
+  "qualification": "Feature evidence only; formal authority, locks and receipt remain stale."
+}

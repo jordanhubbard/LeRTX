@@ -17,12 +17,15 @@ def report():
         check_native_support()
     except RuntimeError as error:
         problems.append(str(error))
-    expected = {"ovrtx": "0.5.0.377615", "ovstage": "0.2.0.377349",
-                "newton": "1.6.0", "warp-lang": "1.17.0", "numpy": "2.4.6",
-                "PySide6": "6.10.2", "PySide6-Addons": "6.10.2",
-                "PySide6-Essentials": "6.10.2", "shiboken6": "6.10.2", "pyserial": "3.5"}
+    expected = {"ovrtx": "0.5.1.385782", "ovstage": "0.2.1.385922",
+                "newton": "1.6.1", "warp-lang": "1.18.0",
+                "numpy": "2.4.6" if sys.version_info < (3, 12) else "2.5.3",
+                "PySide6": "6.12.0", "PySide6-Addons": "6.12.0",
+                "PySide6-Essentials": "6.12.0", "shiboken6": "6.12.0", "pyserial": "3.5",
+                "PySide6-Pdf": "6.12.0.140", "PySide6-WebEngine": "6.12.0.140",
+                "lertx-robot-assets": "1.0.0"}
     provider = usd_distribution()
-    expected[provider] = "3.0.0" if provider == "usd-exchange" else "25.11"
+    expected[provider] = "3.0.1" if provider == "usd-exchange" else "26.8"
     installed = {}
     for name, version in expected.items():
         try:

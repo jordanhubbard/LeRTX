@@ -1,0 +1,885 @@
+{
+  "schema": "lertx/sdk-refresh-review@1",
+  "date": "2026-10-08",
+  "status": "linux-regressions-passed-cross-platform-admission-pending",
+  "runtime_ready": false,
+  "upstream_base": "03041b636f246aba0c4bde775d5f065ed9986f93",
+  "original_work_preserved": "backup/pre-reconcile-20261008T063000Z",
+  "versions": {
+    "lertx-robot-assets": "1.0.0",
+    "newton": "1.6.1",
+    "numpy": "2.5.3",
+    "ovrtx": "0.5.1.385782",
+    "ovstage": "0.2.1.385922",
+    "pyserial": "3.5",
+    "pyside6": "6.12.0",
+    "pyside6-addons": "6.12.0",
+    "pyside6-essentials": "6.12.0",
+    "pyside6-pdf": "6.12.0.140",
+    "pyside6-webengine": "6.12.0.140",
+    "shiboken6": "6.12.0",
+    "usd-core": "26.8",
+    "warp-lang": "1.18.0"
+  },
+  "version_policy": {
+    "python_targets": [
+      "3.11",
+      "3.12"
+    ],
+    "numpy_python_311": "2.4.6",
+    "numpy_python_312": "2.5.3",
+    "linux_arm64_usd_provider": "usd-exchange==3.0.1",
+    "both_usd_providers_may_coexist": false
+  },
+  "upstream_sources": [
+    "https://pypi.nvidia.com/ovrtx/",
+    "https://pypi.nvidia.com/ovstage/",
+    "https://github.com/NVIDIA-Omniverse/ovrtx/blob/main/CHANGELOG.md",
+    "https://github.com/NVIDIA-Omniverse/ovstage/blob/main/CHANGELOG.md",
+    "https://github.com/newton-physics/newton/releases/tag/v1.6.1",
+    "https://pypi.org/pypi/newton/json",
+    "https://pypi.org/pypi/warp-lang/json",
+    "https://pypi.org/pypi/numpy/json",
+    "https://pypi.org/pypi/usd-core/json",
+    "https://pypi.org/pypi/PySide6/json"
+  ],
+  "source_binding": {
+    "local_and_remote_files_identical": 126,
+    "files_relative_to_desktop_source": {
+      "desktop_main.py": "b774e50a945b668ed9c8f43dec424c058b580311c6c72f9fc1a7e8f7cab74a55",
+      "lertx/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "lertx/app.py": "32349345df7e24948e0ecc02b532c8925c3720ab16a6d884c86630d4c5af581e",
+      "lertx/assets.py": "4670660bc86e0e9debea8cf12039963ad5538edf1ef3db238a7aa5ed71d6a30f",
+      "lertx/binding_ui.py": "fc0ba586b41f5d9f48bf10213015d76e52a61362d8af2d9d35f93f32ef46cf14",
+      "lertx/branding.py": "d120dd0a3cfa5821c188dc0b4c89c846d1606f8150f622bcff0110cba889bded",
+      "lertx/config.py": "ae1ca5fc2fdec0ac42122143a3e35b40e4749ae303e642a521132534b78fcadc",
+      "lertx/desktop_entry.py": "8a53b3c7c2b4a60d11ef07bb16a30ce2d6b291288d311c2b5566f2b2b358de36",
+      "lertx/desktop_state.py": "7e37d19a42d02603670358c41ab0ca6b41ac7837a78891a68449046e42254337",
+      "lertx/devices.py": "e53d52e039096420cd32c9609c49bb2ebb2da4a513092e14eb9a8db5231e1d37",
+      "lertx/devices_ui.py": "7026e3d14b518148cf2d54077f4bcb27163d92793ed9dfa3d9e0e13f654b70a3",
+      "lertx/diagnostics.py": "c75cbaf23d61383ba54b4d940b07fdc331772ac291475882de8d3972ac5ea815",
+      "lertx/document.py": "8129c0ac237f5a6196da8d17df6e18649b03234be5edae3ffeb24544d96ca985",
+      "lertx/hardware.py": "b25f49bfedfb0c0de54c091c63e9e0d790f9831b4357290a5c2428437382f130",
+      "lertx/hardware_calibration.py": "d9c5416f46e42107a12f987ec122fb230bf73dbf9544d68c9bee5cb1fbd8ab69",
+      "lertx/hardware_ui.py": "fe0ff23bd89edb00834ccd1cb9dac4e6c7b943ec74ba2ce78798a178c8dcb0d7",
+      "lertx/host.py": "08e6166c9c88310ad6eda33b37a11609367606bc979a3afe67cb484bba156df0",
+      "lertx/joint_binding.py": "00d2905350dbafd23a64f62f8881784799228e0aa00a8d04e04ccceff80ece3b",
+      "lertx/joint_interaction.py": "b7ae0247954299c43347672675d4fc059bc02d8f9c57b552bc87bef768c29565",
+      "lertx/mock_ui.py": "eb79943a39817d68657fd765d86037d19ab04dc266409a189753413fb6ce253c",
+      "lertx/photo.py": "58d31b0f57527c5b639ed228c93fe4001567b06dfd06fff48ccddf1a1451375d",
+      "lertx/photo_ui.py": "8905553e1e4be3f15dbb00621651df232e8a75cce0718e29fdfb625f77214525",
+      "lertx/physics.py": "e59b672c83a6ce6428a9b9f3843f55c05ec3f6f079c0a167cdc0b7f0d99d2a5e",
+      "lertx/picking.py": "b5fdbd611bc0eaf4d187bc1b953b1d3c9e480a33a850f3c5c0158ec7c8714417",
+      "lertx/poses/danger.json": "df2de3fdfbee28483af2cac6995b36eba742244494dba4e96934aa53d53c42ea",
+      "lertx/poses/the_signal.json": "aeeded74e3abf45cae06f9e1f7aa3c0645d9bb59df8ad5efa8604ff97db3254a",
+      "lertx/reconstruction.py": "04ac1527696d5b2e8b52406be33b4e6d90646d1e4b140cffd31dd40b952cdd16",
+      "lertx/resources/branding/lertx.svg": "b8456f9627165dcf56fa42ff097db24be5744765d06995731a82a6c47d496146",
+      "lertx/resources/so101/LICENSE": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "lertx/resources/so101/README.md": "c6df213e471e4573ba6384cb957e9eee9644f5d671272f98f67d28866333f747",
+      "lertx/resources/so101/assets/Handle_SO101.stl": "a69b004691392cf0130b32ed9da5cc0c5fee49c2c8abee6ca27bf88e2a11347d",
+      "lertx/resources/so101/assets/Trigger_SO101.stl": "7122e0c476e69689eaf18441ecd36f5cf5cdca4d7033c15e5238a9b788e9d71a",
+      "lertx/resources/so101/assets/Wrist_Roll_SO101.stl": "db20e6ac7c08cf8d75692a38db5a217011c97c0ab5d73c248296535df81e39b7",
+      "lertx/resources/so101/assets/base_motor_holder_so101_v1.stl": "8cd2f241037ea377af1191fffe0dd9d9006beea6dcc48543660ed41647072424",
+      "lertx/resources/so101/assets/base_so101_v2.stl": "bb12b7026575e1f70ccc7240051f9d943553bf34e5128537de6cd86fae33924d",
+      "lertx/resources/so101/assets/motor_holder_so101_base_v1.stl": "31242ae6fb59d8b15c66617b88ad8e9bded62d57c35d11c0c43a70d2f4caa95b",
+      "lertx/resources/so101/assets/motor_holder_so101_wrist_v1.stl": "887f92e6013cb64ea3a1ab8675e92da1e0beacfd5e001f972523540545e08011",
+      "lertx/resources/so101/assets/moving_jaw_so101_v1.stl": "785a9dded2f474bc1d869e0d3dae398a3dcd9c0c345640040472210d2861fa9d",
+      "lertx/resources/so101/assets/rotation_pitch_so101_v1.stl": "9be900cc2a2bf718102841ef82ef8d2873842427648092c8ed2ca1e2ef4ffa34",
+      "lertx/resources/so101/assets/sts3215_03a_no_horn_v1.stl": "75ef3781b752e4065891aea855e34dc161a38a549549cd0970cedd07eae6f887",
+      "lertx/resources/so101/assets/sts3215_03a_v1.stl": "a37c871fb502483ab96c256baf457d36f2e97afc9205313d9c5ab275ef941cd0",
+      "lertx/resources/so101/assets/under_arm_so101_v1.stl": "d01d1f2de365651dcad9d6669e94ff87ff7652b5bb2d10752a66a456a86dbc71",
+      "lertx/resources/so101/assets/upper_arm_so101_v1.stl": "475056e03a17e71919b82fd88ab9a0b898ab50164f2a7943652a6b2941bb2d4f",
+      "lertx/resources/so101/assets/waveshare_mounting_plate_so101_v2.stl": "e197e24005a07d01bbc06a8c42311664eaeda415bf859f68fa247884d0f1a6e9",
+      "lertx/resources/so101/assets/wrist_roll_follower_so101_v1.stl": "4b17b410a12d64ec39554abc3e8054d8a97384b2dc4a8d95a5ecb2a93670f5f4",
+      "lertx/resources/so101/assets/wrist_roll_pitch_so101_v2.stl": "6c7ec5525b4d8b9e397a30ab4bb0037156a5d5f38a4adf2c7d943d6c56eda5ae",
+      "lertx/resources/so101/collision-hulls.json": "944ae5f428aa5c027596baf27956df28b252d342ca01850c92a60e3b6b58d382",
+      "lertx/resources/so101/follower.usdc": "8dad5bad3f99aa5ec37183e08488d694bd742265922aec975f1a4f0f8eaab4f6",
+      "lertx/resources/so101/leader.usdc": "ba4ed7dee7263143455cc398a89f66a79ce69d3140a166e9bc60d8fb6f3a6166",
+      "lertx/resources/so101/lerobot-LICENSE": "9e108af26a7ae92a6d2cb0273856a4a0a84da8819c2cffee8b2657cc4f905718",
+      "lertx/resources/so101/provenance.json": "c98baae178cded36388ce691ec6d79db5ea3bd7a0b920f4ef59461ddaa95d82e",
+      "lertx/resources/so101/so101_leader_new_calib.urdf": "bc947e2fea65dfc91b0fc40e4cff0c01c6bf426687995937e62e2b0f41122db5",
+      "lertx/resources/so101/so101_new_calib.urdf": "3a65d2d35e68a8d2f0c2cc176d19b884506543c93ba72980145b80abe276022c",
+      "lertx/resources/so101/usd-provenance.json": "a5f321e1285d7f10bb5703e8d6dbf5cf4e43c6fbcfef47c3353f57c1e1b82804",
+      "lertx/robot.py": "7844d3329637875b074002b051a4797f4e6b72be77a475bbeeea1f94f8316e9e",
+      "lertx/robot_poses.py": "801d20e6582b4f07fb2b8b402dee04154e085ce0f9f6c62b2959d00e1a596314",
+      "lertx/robot_ui.py": "7e866bfa857391122c19288997ec048ac47e5a956169ac7c254dc70089d37664",
+      "lertx/runtime.py": "a60a541adfe58a90e86f55d3e5472dc6c0b031450b089934c24353117db8a491",
+      "lertx/scene.py": "bacbf016ebd7d1ef7f801c5db1a864c8a508ef6c7ff262dafc4418b180a611ed",
+      "lertx/setup_calibration.py": "df85f74fd64143b6b3d81746f3dc36aa8f1bf72500637f5e753ec6b776732512",
+      "lertx/setup_ui.py": "1584472f2f0091bc404fcc3990d24e681649c72bbbf8bd767eded27e2d10d272",
+      "lertx/simulation.py": "a068e394b93afa25a24d01f8b47556cdd8d527a15060a1879f2fafebb94f036c",
+      "lertx/telemetry.py": "20578ae68ac89874eacb6fc12c3a55a8004089b6b8097f7a1ec4be8a312f8453",
+      "lertx/transport.py": "f4e759ddcfd7c3090c3c2b13b9d1c571336d2d2f5cb3695602231d5c17ea06c2",
+      "lertx/ui.py": "51b2969947ad6127631cbfdc6f3a0f6f6dea35333fa6e75684442ea7dd8a200e",
+      "lertx/usb_bus.py": "ff57183414f364afb2f18e5abd2b6b01eeb51d61d745a5f5715dddce5fe4e0d8",
+      "lertx/vendor/__init__.py": "9b43b6eeaf7f3e1cc8abba9c8b38c5999f6a6098e86bf89c203f7daa1373d562",
+      "lertx/vendor/feetech/LICENSE": "436a6d536138f203ac333858cff92a568be62797752b3adb94bcaa0f6ffe7ef6",
+      "lertx/vendor/feetech/__init__.py": "c3047515bd2992e6fc209386f11fd4c80722c519b21be2a3a7a91f2d96222941",
+      "lertx/vendor/feetech/group_sync_read.py": "ccbbb3a864c047bf3a7808a0b455676b198645ee1caffa58dac562339a86ad76",
+      "lertx/vendor/feetech/group_sync_write.py": "70d2a9e2157692932dd6e25515e53d600da9ca87ffab656c4660fb0de4d03476",
+      "lertx/vendor/feetech/packet_handler.py": "96bb801133436122d39e868bc6492a226222a737c04560ea7a02d0c5eacef2fd",
+      "lertx/vendor/feetech/port_handler.py": "c8dbb189ca98705bd71066d5a9a691b4c80b484c77ebe8a9ccc2d6c46321e999",
+      "lertx/vendor/feetech/protocol_packet_handler.py": "9932c85b9e2ac671a7e33f39e8e80b05d6592280d9f2bcebd85103845e36e655",
+      "lertx/vendor/feetech/provenance.json": "418f949fc4ee2f28248beda135aa75ccc660e0d8ee6db30f3f622a01c8a33780",
+      "lertx/vendor/feetech/scservo_def.py": "068f7ad5c453ad6e338543c706047253495fcd6bf9a632465501ace12fee0627",
+      "lertx/viewport_ui.py": "c5ae6465ea946f162978774b8c2d4eb7b68ae329a60c9680600c3f4bbaaeb4fd",
+      "lertx/warmup.py": "4d4dcb52435c114582d66ec0b5fb744fd153f984f84db27ebc9087118621205f",
+      "main.py": "4d1e3fc24167ac32482c2aa7e2fa3c84b213d785ca5dad1d5a59d69aed512762",
+      "pytest.ini": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "requirements.txt": "7fed1aac4593a0abb754a74efe7916c00864df530d2ed2a5cb9b0d76f575f6d9",
+      "tests/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "tests/manifest.json": "6dd7f1c8424553330c03f3d48ae2dddd936cbe0b4079a50aeaa484f547421889",
+      "tests/manifest_cases.py": "7a1d17b669cffc484c02f33bf6db6b78b4440457f25f9ecafd8ce9fecbab9b77",
+      "tests/test_asset_policy.py": "550c810b28ec501fc495f7994773afd635d73141d86bd775c356e531fc82f93f",
+      "tests/test_cli.py": "b3e1d33a63d7ad050da181865eeba20ffc1afc0dc44988e0873fd0dd3cb1f6c4",
+      "tests/test_config.py": "5f23069f4031987554311e6c434c6f45e44abb1ca9a2e4e614542d898405e715",
+      "tests/test_connection_probe.py": "6976dbd3065f90879879c6f7efc62a131626f77884a16515a3a78e419e3cd1b1",
+      "tests/test_devices.py": "6f02b1aff1fd937a8b7a07001530bb245abb79bdeebfc92915627a8a3e5ef9f0",
+      "tests/test_devices_ui.py": "22b384d2881b502d6fa95b892d692286e670ec853e74e706c6dfdb7072f56453",
+      "tests/test_dispatch.py": "24485eed377657d70758ff3abc61b2d4e8e6a6dbd19da15d1f401e37a08eb95a",
+      "tests/test_document.py": "2d5c93e4c35a01897c2ab778ba84ea7e09c80c44c877c32daa9ad17aa0195d47",
+      "tests/test_hardware.py": "7f0f6995da13fe652f251273dd10f6b6276d68e32bcec0afaf295f913231353c",
+      "tests/test_hardware_ui.py": "438c1816bc0a75a0b66c5440c2e6a171f00c68982a789d54293feec07a8f1dde",
+      "tests/test_host.py": "4fd38557044336513c19c06037d56b33b4f5561ef7aa0ba2ed900e4bf3b64e71",
+      "tests/test_joint_binding.py": "d0bfed9c0c930359cc3490f812a46c99de2247ebc99b16e6108b9e2b4bcf1d0d",
+      "tests/test_joint_interaction.py": "f5985aa589d3b485f1d0d7f9234296bc60a9b4dfa47487866041ad602bf21f24",
+      "tests/test_launch_native.py": "0b12746a0ede6a6a01d982caaf3686ff6cd6ff9d78d6ee27c89885ae983da97a",
+      "tests/test_manifest_cases.py": "63999257f67ffdcd856d7edfc6dc8ca1ff00170949fb140f7df1b1dcd4104adc",
+      "tests/test_mock_ui.py": "03d72e4f64c83f1d2f10c624e2604f9735a9448e13a7b185334b0be37c2e74d8",
+      "tests/test_native_integration.py": "c0b18843eb09e99a4584c25440b33579ffd136992b7138bd7f679edb0fc5ef7e",
+      "tests/test_photo.py": "a9f0fe721914fd3639aad30ca402c11ac2948ab713129110ec7e62efc4530105",
+      "tests/test_photo_ui.py": "bf48a0ad8193df595639bc54bc09bc8070ce19d8de5bce8a30af533a0b450840",
+      "tests/test_photo_window_native.py": "75e53c5a7b71946ff0183bb4aedadb89ff5ee04f30e545096a4c8d908472b238",
+      "tests/test_physics_native.py": "e8db45cc095d8d397da9273a686a73355cacabedab00fa59c893b2217949f6f5",
+      "tests/test_reconstruction.py": "f1a23b6458565101e507460ab975d03be751903d2a2fad9c0d6caa2ae0bd6d4a",
+      "tests/test_reconstruction_native.py": "639016fc91a9f7b38df25802b9b6ca8afa28dfbd32908aa5c13f5a35991e35c4",
+      "tests/test_robot_assets.py": "e23e4920d16482547508c6807811888fd361dad813b2acd69f018dbf7c1a5a39",
+      "tests/test_robot_dynamics.py": "a3c48962553f17e5d407c507abdd55294f3a24a1928322ab59f0b42e6338a6bf",
+      "tests/test_robot_poses.py": "3b76daa7604844a3e89ac6b80262d6e5d99b76f8c277921c835cf67129b5da79",
+      "tests/test_robot_render_native.py": "7021637acb64ed6b3162e5dbb1923846c525725b1413ac30280d359169aa0061",
+      "tests/test_robot_ui.py": "6e9482099d892326b34075c546700d6857f3d8ddd2ce269b1bbee4835280d28e",
+      "tests/test_runtime_idle.py": "7ba19c0e62df9a719234d77e9d1573949779456d394278732578bdee2187b074",
+      "tests/test_runtime_native.py": "ba913ea7b635baed2a84fdd9cb018afffe7c6878a78c5c097df1262b814c3995",
+      "tests/test_runtime_settings.py": "b5f27f58f745c0daa9a8096e2e04a66fe499978c9dbb76c38c32537be9a24bf2",
+      "tests/test_scene_mapping.py": "1b89577b280fd54808a78300b5b806972cfeb0aef124be20156964213452a1da",
+      "tests/test_settings_ui.py": "71c807ba09c1dabadf3de7d02076d8483a2fcdb4fe678ac91a3592a6cbb0456b",
+      "tests/test_setup.py": "99a42e6f794ec8919179a97c0221dba4a111030bf166a94318e14a71e32679a1",
+      "tests/test_setup_ui.py": "42c5b23465fda92950741aff0ed0a9fbb615e02e72b43868b01237eeac4df6a9",
+      "tests/test_simulation.py": "b8acb1db08c37c596f635a8eb8abb7753437684fb48be49c63c73a42e1200351",
+      "tests/test_telemetry.py": "8c150c00ea6c8f3dc7b8c2d07410049c6fabf8848755ab607485e4ad3177d291",
+      "tests/test_transport.py": "71074a20a3454a91fafe1a00444e5ccf03b2f5aaf269910264a0337ac0e7e4d8",
+      "tests/test_ui.py": "39bd184c3d6ca75a398b9c5b5a048221b5dcde717782dceb1079892f8252e273",
+      "tests/test_window_native.py": "0af9844b42492552cc213b3f396729a18ded20691c2b84c66ae5b956ef57dd61",
+      "tests/test_worker.py": "5c341e12ecff95919081f146928048887fca8a15fb89c59daa73e77306a5923c",
+      "tools/run_tests.py": "52ec76af18838c92e562f489f6fc8a2b428f9f0d26060415e9752c457e78e05d"
+    },
+    "verification_files_sha256": {
+      "native_guard.py": "94923faa5d0ae334739f2641e39d2aa08a0149e83e8f9f84a405d107fba288f4",
+      "qualify_native.py": "2e71d150a810624c3fb5585afdc83bab83c67fbe1420a49369565317dd7ee7e1",
+      "run_native_regression.py": "149e6f2cd01b0e99c874abcf4b4bc45adb9653e2eb4f896942a644d49d4d02c6",
+      "resolve_native_locks.py": "b795c423cfc333d0c6ca542ddef5ec38f194604e02b537dbf5795718553224e1",
+      "native_wheels.py": "a1018a07d37e7b9f5e9dfc7032bdfdc32e3349ab2f9f21916fbfeebc79ca0a95",
+      "native_target.py": "d9b48713bec34c78f1de119d67586f41e502e8decf6f158bdbb26674fba24a58",
+      "repair_usd_wheel.py": "a9ce781450526a2636a1c97bdb28e14e2118def99954cd3633c51256ada00d41",
+      "test_usd_metadata_repair.py": "a557225093081bf539842a37fc5fcb9718503968c6520aa57246b2bffb7f1071",
+      "hardware_window.py": "faeafd11ef26457069ccea070fefc777f35ba8949b9904098bb32c9068f9cfd6",
+      "interaction_recovery_window.py": "80da0347b729078115a7520648ae8df3dbc61d3fab17c86cc13932f397d6f567",
+      "setup_window.py": "875dd3a5853f48d1bb55608546edce7bfd624bd13056c0a6524b7a0665148531",
+      "joint_context_window.py": "b45543d0feababa2b188b2bf0cc2d3d26e8b248c4d0f15d24c19bd7012075ea2"
+    }
+  },
+  "portable": {
+    "status": "passed",
+    "modules": 32,
+    "tests": 239,
+    "subtests": 59,
+    "skipped": 0,
+    "interpreter": "CPython 3.12.15",
+    "platform": "macOS ARM64",
+    "module_results": [
+      {
+        "module": "test_asset_policy.py",
+        "returncode": 0,
+        "seconds": 0.84
+      },
+      {
+        "module": "test_cli.py",
+        "returncode": 0,
+        "seconds": 0.29
+      },
+      {
+        "module": "test_config.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_connection_probe.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_devices.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_devices_ui.py",
+        "returncode": 0,
+        "seconds": 0.73
+      },
+      {
+        "module": "test_dispatch.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_document.py",
+        "returncode": 0,
+        "seconds": 0.45
+      },
+      {
+        "module": "test_hardware.py",
+        "returncode": 0,
+        "seconds": 1.67
+      },
+      {
+        "module": "test_hardware_ui.py",
+        "returncode": 0,
+        "seconds": 1.99
+      },
+      {
+        "module": "test_host.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_joint_binding.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_joint_interaction.py",
+        "returncode": 0,
+        "seconds": 0.4
+      },
+      {
+        "module": "test_manifest_cases.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_mock_ui.py",
+        "returncode": 0,
+        "seconds": 1.36
+      },
+      {
+        "module": "test_photo.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_photo_ui.py",
+        "returncode": 0,
+        "seconds": 0.61
+      },
+      {
+        "module": "test_reconstruction.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_robot_assets.py",
+        "returncode": 0,
+        "seconds": 1.1
+      },
+      {
+        "module": "test_robot_poses.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_robot_ui.py",
+        "returncode": 0,
+        "seconds": 2.39
+      },
+      {
+        "module": "test_runtime_idle.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_runtime_settings.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_scene_mapping.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_settings_ui.py",
+        "returncode": 0,
+        "seconds": 22.03
+      },
+      {
+        "module": "test_setup.py",
+        "returncode": 0,
+        "seconds": 2.08
+      },
+      {
+        "module": "test_setup_ui.py",
+        "returncode": 0,
+        "seconds": 2.07
+      },
+      {
+        "module": "test_simulation.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_telemetry.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_transport.py",
+        "returncode": 0,
+        "seconds": 0.13
+      },
+      {
+        "module": "test_ui.py",
+        "returncode": 0,
+        "seconds": 3.64
+      },
+      {
+        "module": "test_worker.py",
+        "returncode": 0,
+        "seconds": 0.3
+      }
+    ]
+  },
+  "resource_wheel": {
+    "tests": 2,
+    "status": "passed"
+  },
+  "usd_metadata_repair": {
+    "status": "passed",
+    "tests": 6,
+    "tested_original_versions": [
+      "25.11-cp311-linux-x86_64",
+      "26.8-cp312-linux-x86_64"
+    ],
+    "review": "native/sdk-refresh-linux/usd-repair.json",
+    "unchanged_native_payload": true,
+    "only_changed_members": [
+      "WHEEL",
+      "RECORD"
+    ],
+    "validator_unchanged": true
+  },
+  "archive_validation": {
+    "original_status": "failed-usd-core-duplicate-Root-Is-Purelib",
+    "repaired_status": "passed",
+    "packages": 14,
+    "target_compatibility": "passed",
+    "framework_wheel_sha256": "17842314aa2f513483175e85610372b06c7222c63812203533fe40410509aaeb",
+    "scope": "independent-archive-validation-not-framework-execution-admission"
+  },
+  "linux_installation": {
+    "published_hash_locked_install": "passed",
+    "repaired_offline_hash_locked_reinstall": "passed",
+    "pip_check": "No broken requirements found.",
+    "preflight": {
+      "ready_for_launch": true,
+      "scope": "installation-preflight-not-rendering",
+      "platform": "Linux",
+      "architecture": "x86_64",
+      "python": "3.12.3",
+      "packages": {
+        "ovrtx": "0.5.1.385782",
+        "ovstage": "0.2.1.385922",
+        "newton": "1.6.1",
+        "warp-lang": "1.18.0",
+        "numpy": "2.5.3",
+        "PySide6": "6.12.0",
+        "PySide6-Addons": "6.12.0",
+        "PySide6-Essentials": "6.12.0",
+        "shiboken6": "6.12.0",
+        "pyserial": "3.5",
+        "PySide6-Pdf": "6.12.0.140",
+        "PySide6-WebEngine": "6.12.0.140",
+        "lertx-robot-assets": "1.0.0",
+        "usd-core": "26.8"
+      },
+      "gpu": "NVIDIA RTX PRO 5000 Blackwell, 595.80",
+      "problems": []
+    },
+    "target": "native/sdk-refresh-linux/python-target.json",
+    "retained_lock": "native/sdk-refresh-linux/retained-linux.lock"
+  },
+  "linux_native": {
+    "status": "passed",
+    "tests": 17,
+    "qt_platform": "offscreen",
+    "cold_cache_qualified": false,
+    "native_modules": [
+      {
+        "module": "test_launch_native",
+        "returncode": 0,
+        "seconds": 105.857,
+        "tests": 3,
+        "guard": {
+          "status": "passed",
+          "memory_limit_bytes": 12884901888,
+          "reserve_bytes": 17179869184,
+          "swap_limit_bytes": 0,
+          "timeout_seconds": 240.0,
+          "cpu_quota_percent": 200,
+          "task_limit": 128,
+          "launched": true,
+          "initial_available_bytes": 46316769280,
+          "minimum_available_bytes": 40719613952,
+          "seconds": 105.785,
+          "returncode": 0
+        },
+        "log_sha256": "2272a28ce649652413be48037446df8572afcb2758dbcfe82050ad38c498b70f"
+      },
+      {
+        "module": "test_native_integration",
+        "returncode": 0,
+        "seconds": 13.223,
+        "tests": 3,
+        "guard": {
+          "status": "passed",
+          "memory_limit_bytes": 12884901888,
+          "reserve_bytes": 17179869184,
+          "swap_limit_bytes": 0,
+          "timeout_seconds": 240.0,
+          "cpu_quota_percent": 200,
+          "task_limit": 128,
+          "launched": true,
+          "initial_available_bytes": 46498508800,
+          "minimum_available_bytes": 42915291136,
+          "seconds": 13.15,
+          "returncode": 0
+        },
+        "log_sha256": "159f934fc13f441b81e30092371e65fb3a7f88637aee59f8673edd5cab82bf64"
+      },
+      {
+        "module": "test_physics_native",
+        "returncode": 0,
+        "seconds": 4.654,
+        "tests": 2,
+        "guard": {
+          "status": "passed",
+          "memory_limit_bytes": 12884901888,
+          "reserve_bytes": 17179869184,
+          "swap_limit_bytes": 0,
+          "timeout_seconds": 240.0,
+          "cpu_quota_percent": 200,
+          "task_limit": 128,
+          "launched": true,
+          "initial_available_bytes": 46652473344,
+          "minimum_available_bytes": 46329696256,
+          "seconds": 4.578,
+          "returncode": 0
+        },
+        "log_sha256": "04a57526d3b0a8ef05c01819670cab1c7bbff1f563166c18c80526c83952955c"
+      },
+      {
+        "module": "test_robot_dynamics",
+        "returncode": 0,
+        "seconds": 9.895,
+        "tests": 1,
+        "guard": {
+          "status": "passed",
+          "memory_limit_bytes": 12884901888,
+          "reserve_bytes": 17179869184,
+          "swap_limit_bytes": 0,
+          "timeout_seconds": 240.0,
+          "cpu_quota_percent": 200,
+          "task_limit": 128,
+          "launched": true,
+          "initial_available_bytes": 46690656256,
+          "minimum_available_bytes": 44615905280,
+          "seconds": 9.828,
+          "returncode": 0
+        },
+        "log_sha256": "14d0107dbb10a1709b095948883f6c1e6897b7aac0ae85eea9d87dc14343efd6"
+      },
+      {
+        "module": "test_runtime_native",
+        "returncode": 0,
+        "seconds": 72.967,
+        "tests": 1,
+        "guard": {
+          "status": "passed",
+          "memory_limit_bytes": 12884901888,
+          "reserve_bytes": 17179869184,
+          "swap_limit_bytes": 0,
+          "timeout_seconds": 240.0,
+          "cpu_quota_percent": 200,
+          "task_limit": 128,
+          "launched": true,
+          "initial_available_bytes": 44866207744,
+          "minimum_available_bytes": 40083574784,
+          "seconds": 72.901,
+          "returncode": 0
+        },
+        "log_sha256": "ed0ee4efe5e68c8ce43284638fd37151d6c06d9abf471ffd86bd260711ddabc8"
+      },
+      {
+        "module": "test_robot_render_native",
+        "returncode": 0,
+        "seconds": 34.756,
+        "tests": 1,
+        "guard": {
+          "status": "passed",
+          "memory_limit_bytes": 12884901888,
+          "reserve_bytes": 17179869184,
+          "swap_limit_bytes": 0,
+          "timeout_seconds": 240.0,
+          "cpu_quota_percent": 200,
+          "task_limit": 128,
+          "launched": true,
+          "initial_available_bytes": 45897269248,
+          "minimum_available_bytes": 41875492864,
+          "seconds": 34.685,
+          "returncode": 0
+        },
+        "log_sha256": "84d91553a4444412fc91ce43c4057e6ddede3dc67e91e942c1cf3858e0fc4204"
+      },
+      {
+        "module": "test_window_native",
+        "returncode": 0,
+        "seconds": 32.76,
+        "tests": 1,
+        "guard": {
+          "status": "passed",
+          "memory_limit_bytes": 12884901888,
+          "reserve_bytes": 17179869184,
+          "swap_limit_bytes": 0,
+          "timeout_seconds": 240.0,
+          "cpu_quota_percent": 200,
+          "task_limit": 128,
+          "launched": true,
+          "initial_available_bytes": 46301839360,
+          "minimum_available_bytes": 40707448832,
+          "seconds": 32.687,
+          "returncode": 0
+        },
+        "log_sha256": "fd4ab647bb6d2b65f0b9f01cd4225788c59742e6caa8b098b58569789849c19e"
+      },
+      {
+        "module": "test_reconstruction_native",
+        "returncode": 0,
+        "seconds": 18.635,
+        "tests": 3,
+        "guard": {
+          "status": "passed",
+          "memory_limit_bytes": 12884901888,
+          "reserve_bytes": 17179869184,
+          "swap_limit_bytes": 0,
+          "timeout_seconds": 240.0,
+          "cpu_quota_percent": 200,
+          "task_limit": 128,
+          "launched": true,
+          "initial_available_bytes": 45848018944,
+          "minimum_available_bytes": 42422304768,
+          "seconds": 18.561,
+          "returncode": 0
+        },
+        "log_sha256": "76dbfd114763034d7c4dd854e09cd88f07098fbde26b3b0b664994817e4e3693"
+      },
+      {
+        "module": "test_photo_window_native",
+        "returncode": 0,
+        "seconds": 63.235,
+        "tests": 2,
+        "guard": {
+          "status": "passed",
+          "memory_limit_bytes": 12884901888,
+          "reserve_bytes": 17179869184,
+          "swap_limit_bytes": 0,
+          "timeout_seconds": 240.0,
+          "cpu_quota_percent": 200,
+          "task_limit": 128,
+          "launched": true,
+          "initial_available_bytes": 46526910464,
+          "minimum_available_bytes": 40324739072,
+          "seconds": 63.16,
+          "returncode": 0
+        },
+        "log_sha256": "a51d1e982e3b94dd02263cb495f5f5f7ff10c82fcfe38e91fd9d24720500a9da"
+      }
+    ],
+    "interaction_checks": {
+      "hardware_window": {
+        "result": {
+          "complete": true,
+          "physical_hardware_tested": false,
+          "live_pose_fk": true,
+          "live_render_changed": true,
+          "simulation_ownership": true,
+          "stale_pose_rejected": true,
+          "authored_usd_unchanged": true,
+          "selected_joint_slider": true,
+          "target_radians": 0.3490660000000001,
+          "measured_radians": 0.36534014344215393,
+          "paused": true,
+          "seconds": 19.46,
+          "clean_shutdown": true
+        },
+        "guard": {
+          "status": "passed",
+          "memory_limit_bytes": 12884901888,
+          "reserve_bytes": 17179869184,
+          "swap_limit_bytes": 0,
+          "timeout_seconds": 200.0,
+          "cpu_quota_percent": 200,
+          "task_limit": 128,
+          "launched": true,
+          "initial_available_bytes": 46050893824,
+          "minimum_available_bytes": 42036961280,
+          "seconds": 35.295,
+          "returncode": 0
+        },
+        "log_sha256": "88f3a0622f419e0ddf3b3f4fca7b28d54c0eb88b4e38fdfa10d3423521943653"
+      },
+      "interaction_recovery_window": {
+        "result": {
+          "complete": true,
+          "seconds": 15.22,
+          "physical_hardware_tested": false,
+          "provider_request_sent": false,
+          "follower_unlocked": true,
+          "slider_moved_articulation": true,
+          "paused": true,
+          "actual_radians": 0.38053959608078003,
+          "clean_shutdown": true
+        },
+        "guard": {
+          "status": "passed",
+          "memory_limit_bytes": 12884901888,
+          "reserve_bytes": 17179869184,
+          "swap_limit_bytes": 0,
+          "timeout_seconds": 200.0,
+          "cpu_quota_percent": 200,
+          "task_limit": 128,
+          "launched": true,
+          "initial_available_bytes": 46501085184,
+          "minimum_available_bytes": 42091163648,
+          "seconds": 32.407,
+          "returncode": 0
+        },
+        "log_sha256": "5f84b34717233b6047e6f1a7a0b6381a0e2978786e8e57843885dd867d403248"
+      },
+      "setup_window": {
+        "result": {
+          "complete": true,
+          "physical_hardware_tested": false,
+          "named_joint_slider": true,
+          "paused_kinematics": true,
+          "measured_radians": 0.36534014344215393,
+          "mirrored_joints": 6,
+          "calibration_saved": true,
+          "torque_never_enabled": true,
+          "register_backup": true,
+          "provisional_preview_label": true,
+          "seconds": 16.25,
+          "clean_shutdown": true
+        },
+        "guard": {
+          "status": "passed",
+          "memory_limit_bytes": 12884901888,
+          "reserve_bytes": 17179869184,
+          "swap_limit_bytes": 0,
+          "timeout_seconds": 200.0,
+          "cpu_quota_percent": 200,
+          "task_limit": 128,
+          "launched": true,
+          "initial_available_bytes": 46632226816,
+          "minimum_available_bytes": 42122379264,
+          "seconds": 32.443,
+          "returncode": 0
+        },
+        "log_sha256": "48bb998d63d9bfcfa5b73fc804d9765b0a8782404e4b953dc67e62b76555fd9e"
+      },
+      "joint-drag": {
+        "result": {
+          "complete": true,
+          "physical_hardware_tested": false,
+          "target_radians": 0.43633231300981606,
+          "measured_radians": 0.4551694095134735,
+          "initial_radians": 1.1233678917643708e-11,
+          "paused": true,
+          "authored_scene_unchanged": true,
+          "rendered_motion": true,
+          "selected_path": "/World/Leader/Geometry/base_link/shoulder_link/upper_arm_link/upper_arm_so101_v1",
+          "middle_drag_pan": true,
+          "seconds": 15.307,
+          "clean_shutdown": true
+        },
+        "guard": {
+          "status": "passed",
+          "memory_limit_bytes": 12884901888,
+          "reserve_bytes": 17179869184,
+          "swap_limit_bytes": 0,
+          "timeout_seconds": 200.0,
+          "cpu_quota_percent": 200,
+          "task_limit": 128,
+          "launched": true,
+          "initial_available_bytes": 45233074176,
+          "minimum_available_bytes": 42207707136,
+          "seconds": 31.847,
+          "returncode": 0
+        },
+        "log_sha256": "f250ae44d2f7cd99900dd6d306bb2c28336b40995b8dd8754adc1af182e63a70"
+      }
+    },
+    "physical_hardware_tested": false,
+    "desktop_compositor_tested": false
+  },
+  "diagnostic_history": [
+    {
+      "case": "first-cold-warmup",
+      "outcome": "timeout under two-core CPU quota",
+      "guard": {
+        "status": "failed",
+        "memory_limit_bytes": 12884901888,
+        "reserve_bytes": 17179869184,
+        "swap_limit_bytes": 0,
+        "timeout_seconds": 420.0,
+        "launched": true,
+        "initial_available_bytes": 45468983296,
+        "minimum_available_bytes": 38619316224,
+        "seconds": 303.025,
+        "returncode": 1
+      }
+    },
+    {
+      "case": "instrumented-warmup",
+      "outcome": "passed after in-flight CPU quota increase and affinity experiments",
+      "cpu_budget_changed_during_run": true,
+      "acceptance_run": false
+    },
+    {
+      "case": "normal-guard-warm-cache-warmup",
+      "outcome": "passed",
+      "guard": {
+        "status": "passed",
+        "memory_limit_bytes": 12884901888,
+        "reserve_bytes": 17179869184,
+        "swap_limit_bytes": 0,
+        "timeout_seconds": 350.0,
+        "launched": true,
+        "initial_available_bytes": 46199959552,
+        "minimum_available_bytes": 42610466816,
+        "seconds": 15.608,
+        "returncode": 0
+      }
+    },
+    {
+      "case": "combined-native-suite",
+      "outcome": "stopped after two task-limit rejections during nested SDK process launch",
+      "resolution": "Run native modules in separate guarded processes"
+    },
+    {
+      "case": "setup-driver-stall",
+      "outcome": "timed out at range-capture step 3 while live preview continued",
+      "resolution": "Do not wait for an empty viewport queue before advancing wizard controls"
+    },
+    {
+      "case": "post-repair-native-suite",
+      "outcome": "16 of 17 passed; renderer shutdown exceeded ten-second join",
+      "reproduced_at_cpu_cores": [
+        2,
+        8
+      ],
+      "measured_cleanup_seconds": 12.25690392870456,
+      "resolution": "30-second bounded synchronous join; GUI close stays asynchronous; stalled cleanup and invalid deadline tests pass"
+    },
+    {
+      "case": "cleanup-order-experiment",
+      "outcome": "Reordering stage/renderer destruction did not clear the timeout",
+      "adopted": false
+    }
+  ],
+  "platform_locks": {
+    "regeneration": "all three files reproduced byte-for-byte",
+    "resolver_checks": [
+      "Linux x86-64 CPython 3.11",
+      "Linux x86-64 CPython 3.12 installed",
+      "Windows x86-64 CPython 3.11",
+      "Windows x86-64 CPython 3.12",
+      "Linux ARM64 CPython 3.11",
+      "Linux ARM64 CPython 3.12"
+    ],
+    "sha256": {
+      "linux-x86_64.txt": "c63f306a144cde190027423413913c1d27e342143593e662f953beffbfc6266a",
+      "windows-x86_64.txt": "c63f306a144cde190027423413913c1d27e342143593e662f953beffbfc6266a",
+      "linux-arm64.txt": "06a7433f3a0a6228e0f22726554bba2069f805eae9e81ce270cf4a71626c5902"
+    },
+    "resolution_is_not_native_acceptance": true
+  },
+  "source_package": {
+    "status": "passed",
+    "sha256": "6aca07093c33d3f5bf966562dfd25b3c7b4122c77850d4581aaf644de0eaa25e",
+    "entries": 135,
+    "repeat_identical": true
+  },
+  "remaining": [
+    "Windows native and installer validation: sole fixed volume has 11046133760 bytes free of 428015071232; no installation or cleanup performed. Small inspected caches cannot restore adequate headroom.",
+    "Refresh the selected ARM64 target inventory for the new SDK set and acquire current target/native evidence.",
+    "Refresh documentation authority review, Component locks and verifier-owned retained-source admission receipt before landing.",
+    "Cold-cache startup under the default two-core guard exceeded the application deadline; warmed-cache regression success does not close that qualification gap.",
+    "Desktop compositor, full resource-growth profiling and physical SO-101 hardware qualification remain outside these tests."
+  ],
+  "project_gates": {
+    "counts": {
+      "fail": 3,
+      "pass": 0,
+      "skipped": 2
+    },
+    "gates": [
+      {
+        "detail": "project.documentation_authority_review_stale: documentation authority review is stale; review current authority and record exactly: <!-- literate-ai:authority-reviewed sha256:4a8aa204941721c1cc3ef34f2546e87614c5e1b0b48cfc0a295b0f6a99385ace -->",
+        "gate": "authority",
+        "state": "fail"
+      },
+      {
+        "detail": "desktop: not current; harness: not current; hello-component: not current",
+        "gate": "locks",
+        "state": "fail"
+      },
+      {
+        "detail": "project selects provider 'none'",
+        "gate": "source-intelligence",
+        "state": "skipped"
+      },
+      {
+        "artifacts": [],
+        "detail": "no declared HTML artifacts to verify",
+        "gate": "html-observability",
+        "state": "skipped"
+      },
+      {
+        "detail": "project.documentation_authority_review_stale: documentation authority review is stale; review current authority and record exactly: <!-- literate-ai:authority-reviewed sha256:4a8aa204941721c1cc3ef34f2546e87614c5e1b0b48cfc0a295b0f6a99385ace -->",
+        "gate": "receipt",
+        "state": "fail"
+      }
+    ],
+    "ok": false,
+    "project": ".",
+    "schema": "literate-ai/project-verify@1"
+  },
+  "git": {
+    "committed": false,
+    "pushed": false,
+    "head_matches_origin_main": true,
+    "backup_preserved": true,
+    "peer_work_gc": "dry run: no candidates, no deletion"
+  },
+  "local_evidence_directory": "_build/sdk-refresh/"
+}

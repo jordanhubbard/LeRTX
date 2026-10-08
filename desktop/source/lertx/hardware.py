@@ -26,6 +26,7 @@ class HardwareSession:
         self.bus_factory,self.verify,self.clock=bus_factory,verify,clock
         self.bus=None;self.calibration=None;self.owns_torque=False
         self.targets={};self.sent={};self.latest=None;self.sequence=0
+        self.setup=None;self._setup_backup=None;self._previous_calibration=None
         self._lock=threading.Lock();self._commands=queue.Queue(maxsize=8)
         self._stop=threading.Event();self._disconnect=threading.Event();self._shutdown=threading.Event()
         self._wake=threading.Event();self._force_stop=False;self._epoch=0;self._held=False;self._was_held=False
@@ -35,7 +36,7 @@ class HardwareSession:
         self._thread.start()
 
     def request(self,command,payload=None):
-        if command not in ('connect','calibration','arm','target'):raise ValueError('Unknown hardware command')
+        if command not in ('connect','calibration','arm','target','setup_begin','setup_save','setup_cancel'):raise ValueError('Unknown hardware command')
         with self._lock:
             if self._shutdown.is_set():raise ValueError('Hardware session is closing')
             item=(self._epoch,self.clock(),command,payload)
@@ -59,6 +60,7 @@ class HardwareSession:
             result=copy.deepcopy(dict(state=self._state,error=self._error,sample=self.latest,
                 calibration=self.calibration.values if self.calibration else None,
                 targets=self.targets,stop_confirmed=self._stop_confirmed,device_id=self.device_id))
+            result['setup']=copy.deepcopy(self.setup)
         result['alive']=self._thread.is_alive()
         if result['sample'] and self.clock()-result['sample']['timestamp']>self.STALE:
             result['stale']=True
@@ -70,7 +72,7 @@ class HardwareSession:
 
     def _check_cancel(self):
         if self._stop.is_set():raise InterruptedError('Hardware operation cancelled')
-        if self.owns_torque and self.clock()-self._heartbeat>self.HEARTBEAT:
+        if (self.owns_torque or self._setup_backup is not None) and self.clock()-self._heartbeat>self.HEARTBEAT:
             raise ConnectionError('Hardware panel heartbeat expired')
 
     def _connect(self):
@@ -125,6 +127,7 @@ class HardwareSession:
             raise ConnectionError('Hardware panel heartbeat expired')
 
     def _arm(self):
+        if self._setup_backup is not None:raise ValueError('Finish or cancel calibration before enabling motors')
         if not self.bus or self.owns_torque or not self.calibration:
             raise ValueError('Connect read-only and load matching calibration before arming')
         self.calibration.verify(self.bus.inspect())
@@ -155,9 +158,75 @@ class HardwareSession:
         except Exception:
             self._release_torque();raise
 
+    def _setup_begin(self,backup_path):
+        from .setup_calibration import save_json
+        if not self.bus or self.owns_torque or self._setup_backup is not None:
+            raise ValueError('Connect read-only before starting a new calibration')
+        self.verify(self.candidate)
+        metadata=copy.deepcopy(self.bus.inspect());self._read()
+        if any(m['torque'] for m in self.latest['motors'].values()):
+            raise ValueError('Support the arm and release torque before calibration')
+        # A durable backup precedes the first persistent write.
+        save_json(backup_path,dict(schema=1,device_id=self.device_id,role=self.role,motors=metadata))
+        self._setup_backup=metadata;self._previous_calibration=self.calibration
+        self.calibration=None;self.setup={'state':'homing','backup':str(backup_path)}
+        self._state_is('calibrating')
+        for i in IDS:
+            self._check_cancel();self.bus.write_calibration(i,0,0,4095)
+        self._read()
+        homings={i:m['position']-2047 for i,m in self.latest['motors'].items()}
+        if any(not -2047<=v<=2047 for v in homings.values()):
+            raise ValueError('Encoder is at its wrap boundary; slightly reposition the reference and retry')
+        for i in IDS:
+            self._check_cancel();self.bus.write_calibration(i,homings[i],0,4095)
+        self._read()
+        if any(abs(m['position']-2047)>24 for m in self.latest['motors'].values()):
+            raise ValueError('Arm moved during homing; hold the reference pose still and retry')
+        self.bus.inspect();self.setup={'state':'recording','homings':homings,'backup':str(backup_path)}
+        self._state_is('calibrating')
+
+    def _setup_save(self,calibration):
+        if self._setup_backup is None or not self.bus or self.setup['state']!='recording':
+            raise ValueError('Start reference calibration before saving')
+        self.verify(self.candidate);self._read()
+        if any(m['torque'] for m in self.latest['motors'].values()):raise ValueError('Torque must remain off')
+        for i,name in enumerate(JOINT_NAMES,1):
+            self._check_cancel();c=calibration.values[name]
+            if c['homing_offset']!=self.setup['homings'][i]:raise ValueError('Homing identity changed')
+            self.bus.write_calibration(i,c['homing_offset'],c['range_min'],c['range_max'])
+        calibration.verify(self.bus.inspect())
+        self.calibration=calibration;self._setup_backup=None;self._previous_calibration=None
+        self.setup={**self.setup,'state':'saved'};self._read();self._state_is('read-only')
+
+    def _setup_restore(self):
+        if self._setup_backup is None:return not (self.setup and self.setup.get('state')=='restore-unconfirmed')
+        errors=[]
+        try:self.verify(self.candidate)
+        except Exception as exc:errors.append(str(exc))
+        if not errors and self.bus:
+            for i,m in self._setup_backup.items():
+                try:self.bus.write_calibration(i,m['homing'],m['minimum'],m['maximum'])
+                except Exception as exc:errors.append(str(exc))
+        elif not self.bus:errors.append('Serial connection unavailable')
+        if not errors and self.bus:
+            try:self.bus.inspect();self._read()
+            except Exception as exc:errors.append(str(exc))
+        self._setup_backup=None
+        if errors:
+            self.setup={**(self.setup or {}),'state':'restore-unconfirmed'}
+            self.calibration=None
+            self._state_is('fault','CALIBRATION RESTORE UNCONFIRMED. Original registers are in the backup file. '+errors[0])
+            return False
+        self.calibration=self._previous_calibration;self._previous_calibration=None
+        self.setup={**(self.setup or {}),'state':'cancelled'}
+        if self._stop_confirmed is False:
+            self._state_is('fault','STOP UNCONFIRMED — calibration restored, but torque release was not acknowledged. Support the arm and cut motor power if needed.')
+        else:self._state_is('read-only')
+        return True
+
     def _release_torque(self,force=False):
         errors=[]
-        if not self.bus and self._stop_confirmed is False:
+        if self._stop_confirmed is False and (not self.bus or not (self.owns_torque or force)):
             return False
         if self.bus and (self.owns_torque or force):
             for i in IDS:
@@ -210,10 +279,11 @@ class HardwareSession:
                 if self._stop.is_set():
                     with self._lock:force=self._force_stop;self._force_stop=False
                     confirmed=self._release_torque(force)
+                    restored=self._setup_restore()
                     if self._disconnect.is_set():
                         self._close_bus();self._disconnect.clear()
-                        if confirmed:self._state_is('disconnected')
-                    elif confirmed:self._state_is('read-only' if self.bus else 'disconnected')
+                        if confirmed and restored:self._state_is('disconnected')
+                    elif confirmed and restored:self._state_is('read-only' if self.bus else 'disconnected')
                     self._stop.clear()
                     if self._shutdown.is_set():break
                 try:
@@ -231,12 +301,20 @@ class HardwareSession:
                             with self._lock:self.calibration=payload
                         elif command=='arm':self._arm()
                         elif command=='target':self._set_target(payload)
+                        elif command=='setup_begin':self._setup_begin(payload)
+                        elif command=='setup_save':self._setup_save(payload)
+                        elif command=='setup_cancel':self._setup_restore()
                     now=self.clock()
                     if self.bus and now>=deadline:
                         self._read()
+                        if self._setup_backup is not None and any(m['torque'] for m in self.latest['motors'].values()):
+                            raise ValueError('Unexpected torque during calibration')
                         if self.owns_torque:self._motion()
                         deadline=self.clock()+self.PERIOD
                 except Exception as exc:
+                    if self._setup_backup is not None:self._release_torque(force=True)
+                    if not self._setup_restore():
+                        self._close_bus();continue
                     if self.owns_torque:
                         confirmed=self._release_torque()
                         if confirmed:self._state_is('fault',str(exc))
@@ -248,5 +326,6 @@ class HardwareSession:
                 delay=max(0.,min(.05,deadline-self.clock())) if self.bus else .05
                 self._wake.wait(delay);self._wake.clear()
         finally:
-            try:self._release_torque()
+            try:
+                self._release_torque();self._setup_restore()
             finally:self._close_bus()

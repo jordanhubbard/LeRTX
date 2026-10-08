@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "label": "Danger",
+  "leader": {
+    "shoulder_pan": 0.5,
+    "shoulder_lift": 0.92,
+    "elbow_flex": 0.85,
+    "wrist_flex": 0.75,
+    "wrist_roll": 0.5,
+    "gripper": 1.0
+  },
+  "follower": {
+    "shoulder_pan": 0.5,
+    "shoulder_lift": 0.92,
+    "elbow_flex": 0.85,
+    "wrist_flex": 0.75,
+    "wrist_roll": 0.5,
+    "gripper": 1.0
+  }
+}

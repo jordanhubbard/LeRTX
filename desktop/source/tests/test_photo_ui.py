@@ -53,6 +53,7 @@ class PhotoUiTests(unittest.TestCase):
             calls.append(args)
             return {"state":"invalid_scene"}
         dialog = self.dialog(ConnectionProbe(tester))
+        dialog.key_input.setText('test-only-key')
         dialog.select_photo(self.path)
         self.assertEqual(calls, [])
         self.assertIsNotNone(dialog.image_bytes)
@@ -71,11 +72,13 @@ class PhotoUiTests(unittest.TestCase):
             return {"state":"success", "scene_text":json.dumps(scene_payload())}
         probe = ConnectionProbe(tester)
         first = self.dialog(probe)
+        first.key_input.setText('test-only-key')
         first.select_photo(self.path)
         first.upload()
         self.wait(started.is_set)
         first.reject()
         second = self.dialog(probe)
+        second.key_input.setText('test-only-key')
         second.select_photo(self.path)
         try:
             second.upload()
@@ -92,3 +95,47 @@ class PhotoUiTests(unittest.TestCase):
         dialog.select_photo(Path(self.directory.name)/"missing.png")
         self.assertIsNone(dialog.image_bytes)
         self.assertFalse(dialog.upload_button.isEnabled())
+
+    def test_missing_key_never_starts_request_then_inline_key_allows_success(self):
+        calls=[]
+        def tester(profile,image,**kwargs):
+            calls.append((profile,image))
+            return {'state':'success','scene_text':json.dumps(scene_payload())}
+        dialog=self.dialog(ConnectionProbe(tester));dialog.select_photo(self.path)
+        original=dialog.image_bytes
+        dialog.upload_button.click()
+        self.assertEqual(calls,[])
+        self.assertIn('Nothing has been uploaded',dialog.status.text())
+        dialog.key_input.setText('test-only-key');dialog.upload_button.click()
+        self.wait(lambda:dialog.result_scene is not None)
+        self.assertEqual(calls[0][0]['llm']['api_key'],'test-only-key')
+        self.assertEqual(calls[0][1],original)
+        self.assertTrue(dialog.isVisible())
+        self.assertTrue(dialog.review_button.isVisible())
+        self.assertIn('Draft ready',dialog.status.text())
+        self.assertEqual(dialog.focus_choice.currentData(),'table')
+        dialog.review_button.click()
+        self.assertEqual(dialog.result_scene['focus_id'],'table')
+        self.assertEqual(dialog.key_input.text(),'')
+
+    def test_auth_failure_keeps_photo_and_allows_key_correction(self):
+        dialog=self.dialog(ConnectionProbe(lambda *a,**k:{'state':'auth_failure'}))
+        dialog.select_photo(self.path);original=dialog.image_bytes
+        dialog.key_input.setText('test-only-key');dialog.upload_button.click()
+        self.wait(lambda:'Authentication failed' in dialog.status.text())
+        self.assertEqual(dialog.image_bytes,original)
+        self.assertTrue(dialog.key_input.isEnabled())
+        self.assertTrue(dialog.upload_button.isEnabled())
+        self.assertFalse(dialog.progress.isVisible())
+
+    def test_openrouter_defaults_to_detail_without_changing_saved_settings(self):
+        profile=copy.deepcopy(DEFAULT_PROFILE);profile['llm']['endpoint']='https://openrouter.ai/api/v1/responses'
+        profile['llm']['model']='openai/gpt-5-mini';profile['llm']['api_key']='test-only'
+        calls=[]
+        dialog=build_photo_dialog(profile,ConnectionProbe(lambda *a,**k:calls.append(a) or {'state':'invalid_scene'}))
+        self.dialogs.append(dialog);dialog.show();dialog.select_photo(self.path)
+        self.assertEqual(dialog.quality.currentData(),'detail');dialog.upload()
+        self.wait(lambda:bool(calls))
+        self.assertEqual(calls[0][0]['llm']['model'],'openai/gpt-6-astra')
+        self.assertEqual(calls[0][0]['llm']['max_output_tokens'],24576)
+        self.assertEqual(profile['llm']['model'],'openai/gpt-5-mini')

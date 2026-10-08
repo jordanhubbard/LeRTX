@@ -1,10 +1,41 @@
 import unittest
+import threading
 from types import SimpleNamespace
 from unittest.mock import patch
 from lertx.scene import NativeWorker
 
 
 class WorkerTests(unittest.TestCase):
+    def test_stalled_cleanup_times_out_and_can_be_joined_after_release(self):
+        entered, release = threading.Event(), threading.Event()
+        class Worker(NativeWorker):
+            def _initialize(self):
+                pass
+            def _cleanup(self):
+                entered.set()
+                release.wait()
+        worker = Worker()
+        with patch("lertx.host.check_native_support"):
+            worker.start()
+        try:
+            with self.assertRaisesRegex(TimeoutError, "finishing GPU work"):
+                worker.stop(timeout=.01)
+            self.assertTrue(entered.wait(timeout=1))
+            self.assertTrue(worker._thread.is_alive())
+            with self.assertRaisesRegex(RuntimeError, "stopped"):
+                worker.submit(lambda: None).result(timeout=1)
+        finally:
+            release.set()
+            worker.stop(timeout=1)
+        self.assertIsNone(worker._thread)
+
+    def test_shutdown_rejects_unbounded_or_nonpositive_deadline(self):
+        worker = NativeWorker()
+        for timeout in (0, -1, float('inf'), float('nan')):
+            with self.subTest(timeout=timeout), self.assertRaises(ValueError):
+                worker.stop(timeout=timeout)
+        self.assertFalse(worker._stop_event.is_set())
+
     def test_scene_worker_does_not_create_an_unused_renderer_at_thread_start(self):
         from lertx.config import DEFAULT_PROFILE
         from lertx.runtime import SceneWorker
@@ -29,19 +60,23 @@ class WorkerTests(unittest.TestCase):
                 configurations.append(config)
             def attach_ovstage(self, stage):
                 events.append("attach")
+            def set_selection_group_styles(self, styles):
+                pass
         def bootstrap():
             events.append("usd-stage")
             return object()
         modules = {
             "pxr": SimpleNamespace(Usd=SimpleNamespace(Stage=SimpleNamespace(CreateInMemory=bootstrap))),
-            "ovrtx": SimpleNamespace(RendererConfig=lambda **kwargs: kwargs, Renderer=Renderer),
+            "ovrtx": SimpleNamespace(RendererConfig=lambda **kwargs: kwargs, Renderer=Renderer,
+                                    SelectionGroupStyle=lambda **kwargs: kwargs),
             "ovstage": SimpleNamespace(Stage=lambda name: object()),
         }
         with patch.dict("sys.modules", modules):
             NativeWorker()._initialize()
         self.assertEqual(events, ["usd-stage", "renderer", "attach"])
-        self.assertEqual(configurations, [{"active_cuda_gpus": "0",
-                                           "keep_system_alive": False}])
+        self.assertEqual(len(configurations), 1)
+        self.assertEqual(configurations[0]["active_cuda_gpus"], "0")
+        self.assertFalse(configurations[0]["keep_system_alive"])
 
     def test_failed_usd_bootstrap_does_not_construct_renderer(self):
         from unittest.mock import Mock
