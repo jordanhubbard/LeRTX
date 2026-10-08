@@ -30,10 +30,10 @@ the write floor before consuming it. Matrix tensors are float64 and row-major. I
 convert simulated world poses through the current parent frame before publication;
 keep the multi-frame nested-articulation regression to verify that contract. Do not bake transient simulation transforms into authored USD.
 
-Pinned OVRTX outline selection can leave descendant render meshes visually stale
-when only an ancestor's local transform is written. The verified application
-workaround republishes local transforms for every previously highlighted mesh
-beneath moving ancestors, including after selection is cleared. Preserve local
+Pinned OVRTX can leave descendant render meshes visually stale when only an
+ancestor's local transform is written, including unselected preset previews.
+The verified application workaround republishes local transforms for all animated
+body meshes and every previously highlighted mesh, including after selection is cleared. Preserve local
 runtime edits and clear these identities on scene rebuild. The native regression
 must select, move, deselect and move again, asserting substantial pixel motion;
 a changed frame hash alone can be renderer noise.

@@ -4,7 +4,7 @@ from .devices import ROLES, RoleAssignments
 
 def build_devices_dialog(profile, probe, roles_path, parent=None):
     from PySide6.QtCore import Qt, QTimer
-    from PySide6.QtWidgets import QDialog, QHBoxLayout, QLabel, QPushButton, QTreeWidget, QTreeWidgetItem, QVBoxLayout
+    from PySide6.QtWidgets import QDialog, QHBoxLayout, QLabel, QPushButton, QTreeWidget, QTreeWidgetItem, QVBoxLayout,QComboBox,QGroupBox,QScrollArea,QWidget,QTabWidget
 
     from .role_ui import widgets,role_icon
     QLabel,QPushButton,QCheckBox=widgets(lambda: parent.profile if parent and hasattr(parent,'profile') else profile)
@@ -18,7 +18,10 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
             self.ticket = None
             self.active = True
             self.last_scan_ok = False
-            layout = QVBoxLayout(self)
+            outer=QVBoxLayout(self);tabs=QTabWidget();outer.addWidget(tabs,1)
+            scroll=QScrollArea(self);scroll.setWidgetResizable(True)
+            content=QWidget();scroll.setWidget(content);tabs.addTab(scroll,'Robot arms')
+            layout = QVBoxLayout(content)
             note = QLabel("Metadata discovery does not open serial ports. Candidates are not yet verified SO-101 robots. "
                           "Assign leader/follower explicitly. Unique USB serial identities are remembered; ambiguous "
                           "or absent serial IDs are session-only and cleared when disconnected or this panel closes. "
@@ -66,6 +69,24 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
             self.scan_button = QPushButton("Scan now")
             self.scan_button.clicked.connect(self.scan)
             layout.addWidget(self.scan_button)
+            camera=getattr(parent,'camera_service',None)
+            if camera:
+                from .camera import CameraPreview
+                group=QGroupBox('USB camera · select by live preview');camera_layout=QVBoxLayout(group)
+                self.camera_combo=QComboBox();camera_layout.addWidget(self.camera_combo)
+                self.camera_status=QLabel();self.camera_status.setWordWrap(True);camera_layout.addWidget(self.camera_status)
+                row=QHBoxLayout();camera_layout.addLayout(row)
+                preview=QPushButton('Preview selected camera');preview.clicked.connect(self.preview_camera);row.addWidget(preview)
+                use=QPushButton('Use this camera');use.clicked.connect(self.use_camera);row.addWidget(use)
+                self.camera_preview=CameraPreview(camera,self,hide_disabled=False)
+                camera_layout.addWidget(self.camera_preview,1)
+                tabs.addTab(group,'USB camera')
+                self.camera_ids=[];camera.changed.connect(self.refresh_cameras);self.refresh_cameras()
+                self.resize(1000,720)
+            layout=outer
+            if parent and hasattr(parent,"open_robot_session"):
+                session=QPushButton("Robot session · record, follow and replay")
+                session.clicked.connect(self.open_session);layout.addWidget(session)
             self.mock_button = QPushButton("Open telemetry mock (no hardware)")
             self.mock_button.clicked.connect(self.open_mock)
             layout.addWidget(self.mock_button)
@@ -90,6 +111,27 @@ def build_devices_dialog(profile, probe, roles_path, parent=None):
             self.finished.connect(self.finish)
             self.refresh_roles()
             self.scan()
+
+        def open_session(self):
+            if parent.open_robot_session(session_assignments=dict(self.roles.session) if self.roles else {}):self.accept()
+
+        def refresh_cameras(self):
+            camera=parent.camera_service;devices=camera.devices();ids=[d['id'] for d in devices]
+            if ids!=self.camera_ids:
+                previous=self.camera_combo.currentData() or camera.selected_id
+                self.camera_ids=ids;self.camera_combo.clear()
+                for d in devices:self.camera_combo.addItem(d['name']+(' · session-only' if not d.get('persistent',True) else ''),d['id'])
+                index=self.camera_combo.findData(previous)
+                self.camera_combo.setCurrentIndex(index if previous else (0 if devices else -1))
+            self.camera_status.setText(camera.status+(' · saved camera disconnected' if camera.selected_id and camera.selected_id not in ids else ''))
+
+        def preview_camera(self):
+            try:parent.camera_service.preview(self.camera_combo.currentData())
+            except (ValueError,OSError) as exc:self.camera_status.setText(str(exc))
+
+        def use_camera(self):
+            try:parent.camera_service.use_camera(self.camera_combo.currentData())
+            except (ValueError,OSError) as exc:self.camera_status.setText(str(exc))
 
         def open_mock(self):
             from .mock_ui import build_mock_dialog

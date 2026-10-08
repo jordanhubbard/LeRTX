@@ -49,7 +49,7 @@ class NativeSetupView(QWidget):
             p.setPen(QColor('#c4d0df'))
             p.drawText(self.rect().adjusted(24, 24, -24, -24),
                        Qt.AlignmentFlag.AlignCenter | Qt.TextFlag.TextWordWrap,
-                       'The 3D arm will appear here when the reference pose is ready.')
+                       getattr(self,'empty_message','The 3D arm will appear here when the reference pose is ready.'))
             return
         size = self.image.size().scaled(self.size(), Qt.AspectRatioMode.KeepAspectRatio)
         target = QRectF((self.width()-size.width())/2, (self.height()-size.height())/2,
@@ -88,7 +88,10 @@ class SetupPreviewPanel(QWidget):
         self.heading.setStyleSheet('font-size: 20px; font-weight: bold;')
         layout.addWidget(self.heading)
         self.view = NativeSetupView(self)
-        layout.addWidget(self.view, 1)
+        views=QHBoxLayout();layout.addLayout(views,1);views.addWidget(self.view,2)
+        if hasattr(owner,"camera_service"):
+            from .camera import CameraPreview
+            self.camera_preview=CameraPreview(owner.camera_service,self);views.addWidget(self.camera_preview,1)
         self.status = QLabel('Waiting for the reference pose. Capture it to start measured motion.')
         self.status.setWordWrap(True)
         layout.addWidget(self.status)
@@ -125,6 +128,7 @@ class SetupPreviewPanel(QWidget):
         title,message={
             'waiting':('RTX preview waiting','Waiting for setup · not mirroring physical motion'),
             'reference':('RTX reference guide','REFERENCE GUIDE · stationary pose to copy. Live mirroring starts after reference capture.'),
+            'simulation':('RTX simulation preview','SIMULATION · saved pose or sequence; physical motors are not commanded'),
             'live':('live NVIDIA RTX view','LIVE · following measured joint motion'),
             'paused':('RTX view paused','PAUSED · not following physical motion'),
             'stale':('RTX view stopped','STOPPED · waiting for fresh physical readings'),

@@ -124,7 +124,14 @@ class Diagnostics:
                 sweep=vars(sweep).copy() if sweep else None,
                 next_action=sweep.prompt if sweep else None,
                 ranges=wizard.capture.ranges if wizard.capture else None)
+        camera=getattr(owner,'camera_service',None)
+        panel=getattr(owner,'_robot_session_window',None)
+        session=panel.session if panel and not panel.closed else None
         return dict(schema=1, at=now, pid=os.getpid(), ready=owner._ready,
+            camera=dict(enabled=camera.enabled,selected=camera.selected_id,active=camera.active_id,
+                status=camera.status,frame_age_ms=(now-camera.frame_at)*1000 if camera.frame_at is not None else None) if camera else None,
+            robot_session=dict(mode=session.mode,recording=session.recording,unsaved=session.unsaved,
+                frames=len(session.record['frames']) if session.record else 0,error=session.error) if session else None,
             pending_commands=len(owner._pending), target_fps=getattr(owner, '_debug_target_fps', owner.profile['rendering']['target_fps']),
             native_status=owner.native_status_label.text(), devices=devices, setup=setup,
             render=getattr(owner, '_render_diagnostics', None), gpu=self.gpu,

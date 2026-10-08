@@ -34,3 +34,13 @@ jobs:
           }
       - name: Verify startup, failure recovery and pinned model bytes
         run: python -B verification/test_desktop_manage.py
+      - name: Install portable device test dependencies
+        run: python -m pip install PySide6==6.10.2 pyserial==3.5
+      - name: Install headless Qt runtime on Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libegl1 libopengl0 libpulse0
+      - name: Verify camera identities and robot sessions without physical devices
+        env:
+          QT_QPA_PLATFORM: offscreen
+          PYTHONPATH: desktop/source
+        run: python -m unittest tests.test_camera tests.test_robot_session tests.test_device_control tests.test_robot_session_ui -q
