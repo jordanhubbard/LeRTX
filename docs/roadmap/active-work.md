@@ -77,6 +77,11 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Operator confirmed the camera/session changes work and requested a release on
+2026-10-07. Stack the camera preview above RTX in the workspace and integrated
+arm views, refresh the final user documentation, then commit, push and publish
+through the repository release workflow. Keep release qualification limits explicit.
+
 Robot-session direction: operator has saved both real-arm calibrations and requests
 record/save/replay, physical follower tracking and discoverable bundled actions
 (The Signal, Danger), plus USB camera selection and live preview beside RTX.
@@ -96,7 +101,7 @@ confirm Use this camera. Do not ask the operator to identify cameras in chat.
 - [x] Implement and verify camera discovery, remembered selection, explicit enable,
   shared previews and disconnect cleanup; all three Windows camera inputs delivered live frames.
 - [ ] Operator identifies the mounted camera in Device Manager and tests physical motion.
-- [ ] Update help, land checked work and relaunch for operator testing.
+- [x] Update help, land checked work and relaunch for operator testing (PR #14).
 
 Verification: 60 camera/session/controller/device/hardware/setup tests pass on Windows.
 Native RTX preset changes appear in the integrated session preview without opening

@@ -86,12 +86,13 @@ class SetupPreviewPanel(QWidget):
         self.heading = QLabel('SO-101 · live 3D arm')
         self.heading.setWordWrap(True)
         self.heading.setStyleSheet('font-size: 20px; font-weight: bold;')
-        layout.addWidget(self.heading)
         self.view = NativeSetupView(self)
-        views=QHBoxLayout();layout.addLayout(views,1);views.addWidget(self.view,2)
+        views=QVBoxLayout();layout.addLayout(views,1)
         if hasattr(owner,"camera_service"):
             from .camera import CameraPreview
             self.camera_preview=CameraPreview(owner.camera_service,self);views.addWidget(self.camera_preview,1)
+        views.addWidget(self.heading)
+        views.addWidget(self.view,2)
         self.status = QLabel('Waiting for the reference pose. Capture it to start measured motion.')
         self.status.setWordWrap(True)
         layout.addWidget(self.status)

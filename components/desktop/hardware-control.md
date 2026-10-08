@@ -226,7 +226,7 @@ substantial pixel motion; renderer noise alone is not evidence of pose publicati
 Device Manager lists OS camera inputs with stable identities and a saved selection.
 Explicit Enable starts the selected camera without audio; Disable stops it. Never
 silently choose a replacement or reopen it after unplug/restart. One application
-camera service feeds shared preview widgets beside RTX in workspace and setup/
+camera service feeds shared preview widgets above RTX in workspace and setup/
 hardware views. Show selected camera, state and stale/error feedback. Keep capture
 and painting on Qt's supported paths, with bounded latest-frame storage. Robot
 recordings store joint data; camera preview alone does not save video or upload it.

@@ -126,12 +126,22 @@ the byte-preserving reference. Repaired code is not represented as an untouched
 generation or an accepted Standard lifecycle artifact.
 
 The retained application now has a Qt window, RTX viewport, Newton simulation,
-USD editing/saving, and settings. Current 160-test suites pass on Windows 11,
+USD editing/saving, and settings. Baseline 160-test suites passed on Windows 11,
 Linux x86-64, Linux ARM64 and Omarchy, including real Qt launches, photo failure
 preservation and simulated telemetry.
 This is a development application, not a completed milestone or accepted
-distribution. Physical robot integration is not implemented.
-Do not use this application to actuate a physical robot.
+distribution. Physical integration now includes guided SO-101 calibration, measured
+RTX motion, joint recording and explicit bounded follower tracking/playback. The
+operator has saved both real-arm calibrations and confirmed the interactive flow;
+this does not qualify collision-aware autonomous motion. Read the
+[hardware guide](../docs/user/hardware.md) before connecting arms.
+
+Device Manager's **USB camera** tab lets you identify a camera by live preview and
+confirm **Use this camera**. Its shared feed appears above the 3D view in the same
+window. The camera backend supports Windows and Linux; stable identities are saved,
+and Linux enumeration-only devices remain session-only. Camera preview does not
+record video. **Robot session** exposes recording, replay, following, Danger and
+The Signal alongside the RTX/camera views.
 
 Devices → Open telemetry mock exercises independent simulated leader/follower
 streams without hardware. Adjust five joint-degree inputs and gripper percentage,

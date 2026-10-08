@@ -75,6 +75,21 @@ Choose Open telemetry mock in Devices to exercise simulated leader/follower
 connections, degree inputs, gripper percentage and frozen/stale streams without
 hardware. This panel does not drive a rendered robot model yet.
 
+In **Devices → USB camera**, select a candidate, click **Preview selected camera**,
+and identify the mounted camera from its live image. Confirm **Use this camera**.
+The shared camera feed appears above RTX in the workspace and integrated arm views.
+Windows device IDs and Linux USB by-id identities are remembered; cameras without
+a stable Linux identity are labelled session-only. Enable capture explicitly after
+restart; **Disable camera** stops it.
+
+Open **Robot session** from the toolbar or Devices. Choose the arms and **Connect
+assigned arms** to load saved calibration. **Start joint recording**, then stop and
+**Save sequence**. **Preview sequence in RTX** never moves hardware. **Start follower
+following leader**, **Play sequence on follower**, and **Run pose on follower** ask
+before physical motion. **Danger** and **The Signal** are available in the pose list.
+Stop, lost focus and stale telemetry release follower motors. Support the arm before
+release. The [hardware guide](hardware.md) explains identity checks and motion limits.
+
 ### Original harness
 
 The harness entry point accepts `{"command":"info"}` and reports
