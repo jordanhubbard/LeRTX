@@ -675,10 +675,10 @@ def build_main_window(
             self.viewport_label.setText("Loading workspace…")
             self.viewport_label.setToolTip('Left- or right-drag an arm link to move its joint, or any other object (ball, obstacle, surface) to move it directly — both follow the mouse. Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom. Every joint also has a labeled slider in Robot simulation; any object\'s exact position is in the Inspector tab.')
             from .camera import CameraPreview
-            views=QHBoxLayout();layout.addLayout(views,1)
-            views.addWidget(self.viewport_label,2)
+            views=QVBoxLayout();layout.addLayout(views,1)
             self.camera_preview=CameraPreview(self.camera_service,self)
             views.addWidget(self.camera_preview,1)
+            views.addWidget(self.viewport_label,2)
 
             legend_row = QHBoxLayout()
             legend_row.setContentsMargins(0, 0, 0, 0)

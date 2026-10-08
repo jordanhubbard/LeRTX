@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+- Device Manager: preview and select USB cameras on Windows and Linux, remember
+  stable device identities, and share one live camera feed above the RTX view.
+  Unplugging or stale frames clears the preview; camera capture starts explicitly.
+- Robot session: record and save measured leader/follower sequences, preview them
+  in RTX, explicitly start follower tracking or playback, and access Danger and
+  The Signal poses. Shared controllers preserve calibration ownership and stop
+  follower motion on stale telemetry, lost focus or close.
+- RTX: refresh all animated mesh transforms so unselected preset and physical
+  pose updates visibly move the arm. Add a native regression checking joint
+  coordinates and substantial image changes.
+- Refresh camera, recording, calibration and motion help, and expose camera/session
+  state through live co-session diagnostics. Portable camera and device tests run
+  on Linux and Windows in CI; real camera capture was verified on Windows.
+
 - Desktop: replace simulation-only help with a scrollable guide to current device
   setup, calibration, save requirements and manual controls; align online docs.
 

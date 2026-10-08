@@ -53,18 +53,23 @@ This opens the actual Qt/RTX workspace, not the harness below. Wait for
 `Native: ready`. Use Play/Reset for Newton physics, the hierarchy and inspector
 to edit objects, and Save As to retain an untitled scene. Settings configures the
 LLM; its API key starts blank. Reconstruct Photo imports an explicitly unverified
-draft. Devices includes USB candidate discovery and a hardware-free telemetry mock.
+draft. **Devices** assigns leader/follower USB roles, opens calibration and hardware
+controls, and selects a USB camera using its live preview. The enabled camera appears
+above the RTX view. **Robot session** records and saves measured joint sequences,
+previews poses/sequences, and explicitly starts follower tracking or playback.
 
 Use `python3` if needed on Linux. `doctor` checks the installation, `test` runs
-the full suite, and `package` creates a reproducible source/setup ZIP. Current
-160-test suites pass on Windows 11, Linux x86-64, Linux ARM64 and Omarchy;
+the full suite, and `package` creates a reproducible source/setup ZIP. Baseline
+160-test suites passed on Windows 11, Linux x86-64, Linux ARM64 and Omarchy;
 see the [platform evidence](verification/prototype-platform-review.json).
 
 See [desktop notes](desktop/README.md) for prerequisites and limitations. This is
-a development prototype. Fresh Windows 11 and Omarchy installations pass the full
+a development prototype. Baseline fresh Windows 11 and Omarchy installations passed the
 160-test suite and native desktop launch checks.
-Mock telemetry does not yet drive rendered robot joints; physical
-servo synchronization, calibration and actuation are not implemented.
+Physical calibration, measured RTX synchronization and bounded follower motion are
+implemented. Both real-arm calibrations were saved and the operator confirmed the
+interactive workflow. Broad hardware qualification and collision-aware autonomous
+execution remain separate work. See the [hardware guide](docs/user/hardware.md).
 
 ## Harness workflow
 

@@ -60,7 +60,7 @@ SO-101 devices and calibration data, but is not a milestone-three gate.
 | Application window and real rendered frames | Retained Qt application renders on all four tested targets; visible controls and screenshots reviewed; ARM64 artifact acceptance passed |
 | OVRTX / OVStage / Newton integration | Application session tests verify motion, pause/camera, reset, edit/save/reopen and cleanup on both targets |
 | Native USD authoring | Private document layers, atomic save, transform editing and failure recovery tested; broader asset/interaction coverage remains |
-| USB, models, Astra, robot calibration | Explicit SO-101 USB reads, bounded manual writes, calibration import and measured joint binding implemented with emulated-bus tests; physical-arm qualification and world registration pending. Photo reconstruction remains unverified geometry |
+| USB, models, Astra, robot calibration | Shared SO-101 controllers, guided calibration, measured RTX viewing, joint recordings, explicit follower tracking/playback and action presets implemented. Operator saved both calibrations and confirmed the workflow. USB camera selection/preview works on Windows, with Windows/Linux device CI; broader hardware qualification and world registration remain. Photo reconstruction remains unverified geometry |
 | LLM configuration | Settings UI and bounded asynchronous connection tests implemented; blank-key persistence and staged settings tested in the passing native suites |
 
 ## Current work

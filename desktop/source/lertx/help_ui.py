@@ -75,7 +75,7 @@ physical power switch.</p>
 <h2>USB camera</h2>
 <p>In <b>Devices</b>, select a camera and choose <b>Preview selected camera</b>.
 Move something in front of the mounted camera to identify its live image, then
-choose <b>Use this camera</b>. The feed also appears alongside RTX. <b>Disable camera</b>
+choose <b>Use this camera</b>. The feed appears above the RTX view. <b>Disable camera</b>
 stops capture. Stable selections are remembered on Windows and Linux; Linux cameras
 without a stable USB identity are marked session-only. Preview explicitly after
 restart or reconnect. Camera preview does not record video.</p>

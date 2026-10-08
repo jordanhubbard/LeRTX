@@ -157,7 +157,8 @@ restores original calibration before another reference capture.
 Device Manager lists camera inputs supplied by Qt Multimedia. Select a candidate
 and click **Preview selected camera**. Move an object in front of the camera mounted
 on your arm to identify its live feed, then click **Use this camera**. The same feed
-appears beside RTX in the workspace and integrated arm previews. **Disable camera**
+appears above RTX in the workspace and integrated arm previews, keeping both views
+visible in one column. **Disable camera**
 stops capture; no audio is opened and preview does not record or upload video.
 
 Windows device interface IDs and Linux `/dev/v4l/by-id` identities are remembered.

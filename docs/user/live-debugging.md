@@ -24,6 +24,9 @@ There is no remote execution or physical motor command endpoint.
 
 - `state`: current device roles/ports, sample sequence/age, raw encoders, torque,
   calibration state, control ownership, wizard progress and native frame data.
+  Camera state includes the selected/active device, enable state and frame age;
+  robot-session state includes motion mode, recording frame count, unsaved data
+  and errors. Camera images appear in normal window captures while preview is enabled.
 - `ui`: visible control labels, checked/disabled states and progress values.
 - `events`: bounded recent state, command queue/work/delivery timings and frames.
 - `watch --seconds 30 --output trace.jsonl`: sample state five times per second.
