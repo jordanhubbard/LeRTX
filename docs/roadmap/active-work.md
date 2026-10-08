@@ -77,6 +77,11 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Online help follow-up: replace simulation-only Getting started text with a
+scrollable guide covering Device Manager, explicit wizard actions, automatic
+sweeps, final save blockers, saved artifacts and manual controls. Align web
+getting-started/hardware documentation with that same workflow.
+
 Final-review follow-up: leader saved successfully on real hardware; follower has
 all six captures but wrist feedback is 5017, so the normal-range save guard is
 correctly blocking. Replace the misleading 90% display with captured-versus-saved

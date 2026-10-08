@@ -191,3 +191,10 @@ capture completion distinct from hardware save completion. Show any wrist return
 requirement outside scrolling content, with current coordinates and the normal
 range, and highlight wrist twist in the reference diagram. Preserve captures while
 waiting; re-enable Save when fresh torque-off telemetry returns to normal range.
+
+Help → Getting started provides a scrollable, navigable guide matching current
+simulation and device controls. Cover role/port selection, both explicit setup
+confirmations, selected-joint automatic sweeps, captured versus saved states,
+wrist-return blockers, saved calibration/binding files and deliberate manual
+motor controls. Retain role badges and link the detailed online hardware guide.
+Opening help must not open a port or change the device control owner.

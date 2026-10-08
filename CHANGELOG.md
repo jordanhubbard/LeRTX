@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Desktop: replace simulation-only help with a scrollable guide to current device
+  setup, calibration, save requirements and manual controls; align online docs.
+
 - Desktop: final calibration Save confirms review without a checkbox. Show all
   six joints as captured and make wrist-return blockers explicit instead of 90%.
 
