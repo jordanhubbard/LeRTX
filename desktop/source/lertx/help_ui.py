@@ -72,6 +72,27 @@ other hardware views observe telemetry while setup owns control. Back buttons
 return to the parent panel after required cleanup. If telemetry becomes stale,
 check USB and power. If <b>STOP UNCONFIRMED</b> appears, support the arm and use its
 physical power switch.</p>
+<h2>USB camera</h2>
+<p>In <b>Devices</b>, select a camera and choose <b>Preview selected camera</b>.
+Move something in front of the mounted camera to identify its live image, then
+choose <b>Use this camera</b>. The feed also appears alongside RTX. <b>Disable camera</b>
+stops capture. Stable selections are remembered on Windows and Linux; Linux cameras
+without a stable USB identity are marked session-only. Preview explicitly after
+restart or reconnect. Camera preview does not record video.</p>
+<h2>Robot sessions and action profiles</h2>
+<p>Open <b>Robot session</b> from Devices or the toolbar, choose which arms to use,
+then <b>Connect assigned arms</b>. Saved calibration is loaded by device identity.
+<b>Start joint recording</b> captures measured motion without engaging motors.
+Stop recording, then <b>Save sequence</b>. Open a saved sequence to preview it in RTX.</p>
+<p><b>Start follower following leader</b> explicitly engages the follower after
+confirmation. Keep the leader free. <b>Play sequence on follower</b> requires a
+recording containing this follower with its current calibration. Playback slows
+as needed to respect motor speed limits. <b>STOP</b>, loss of focus, or stale
+telemetry stops motion and requests follower release.</p>
+<p><b>The Signal</b> and <b>Danger</b> are available under Robot action profiles.
+Preview poses in RTX, or explicitly run a pose on the calibrated follower.
+Targets are limited to measured travel. Support the arm before releasing motors.
+These are joint motions, with no collision avoidance.</p>
 <a name="scene"></a><h2>Simulation and workspace</h2>
 <p>Use <b>Robot simulation</b> to choose joint targets, then Play. The simulated
 follower can track the simulated leader; disable following to move it independently.

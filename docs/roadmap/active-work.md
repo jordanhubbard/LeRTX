@@ -77,6 +77,34 @@ for freshness. Physical-arm acceptance remains separate.
 
 ### ROBOT-001: manual USB controls, physical twin and deferred product vision
 
+Robot-session direction: operator has saved both real-arm calibrations and requests
+record/save/replay, physical follower tracking and discoverable bundled actions
+(The Signal, Danger), plus USB camera selection and live preview beside RTX.
+Before this change, presets and following were simulation-only, without a physical sequence UI.
+Add a shared-controller Robot session panel with explicit connect/start/stop,
+read-only joint recording, validated portable sequence files, simulated previews,
+and explicit bounded follower actuation. Never actuate the leader or start hardware
+motion by loading a file/preset. Stale data, stop, close and ownership loss stop
+physical following/playback. Reuse verified saved calibration/binding identities.
+Camera discovery/configuration belongs to Device Manager; one application-owned
+Qt capture service supplies live previews alongside RTX without opening audio.
+Remember the selected camera but require explicit enable; handle missing devices
+and stale/error states. Device Manager owns camera identification: preview a selected camera, then
+confirm Use this camera. Do not ask the operator to identify cameras in chat.
+- [x] Implement and verify robot-session ownership, recording persistence, bounded
+  following/action/replay and visible stop behavior using serial emulators.
+- [x] Implement and verify camera discovery, remembered selection, explicit enable,
+  shared previews and disconnect cleanup; all three Windows camera inputs delivered live frames.
+- [ ] Operator identifies the mounted camera in Device Manager and tests physical motion.
+- [ ] Update help, land checked work and relaunch for operator testing.
+
+Verification: 60 camera/session/controller/device/hardware/setup tests pass on Windows.
+Native RTX preset changes appear in the integrated session preview without opening
+robot ports. CI now runs camera identity and serial-emulator session tests on Windows,
+Linux and macOS; native RTX remains Windows/Linux only. No physical motors were
+commanded during development checks. See `verification/camera-session-review.json`.
+
+
 Online help follow-up: replace simulation-only Getting started text with a
 scrollable guide covering Device Manager, explicit wizard actions, automatic
 sweeps, final save blockers, saved artifacts and manual controls. Align web

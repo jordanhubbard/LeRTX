@@ -198,3 +198,38 @@ confirmations, selected-joint automatic sweeps, captured versus saved states,
 wrist-return blockers, saved calibration/binding files and deliberate manual
 motor controls. Retain role badges and link the detailed online hardware guide.
 Opening help must not open a port or change the device control owner.
+
+## Robot sessions and USB camera preview
+
+Expose Robot session from Device Manager and the workspace. Connect explicitly to
+assigned arms through the existing application registry; load saved calibration
+and binding only for matching device/role identities and verify motor registers.
+Use an exclusive session control lease while other panels observe. Calibration
+and robot sessions cannot steal each other's control; takeover from manual views
+requires torque off and no pending engage. Return ownership only after verified stop.
+Recording captures fresh calibrated leader/follower joint observations, sample
+sequences and monotonic times with device/calibration/binding identity. Select one
+or both roles, bound recording duration/memory, save atomically, validate loaded
+files, and preserve unsaved data on errors. Recording never enables motors.
+Replay offers simulation preview and explicit physical follower playback; loading
+recordings or bundled The Signal/Danger poses never actuates hardware. Keep the
+bundled poses discoverable. Physical follower tracking maps fresh leader joint
+measurements through both bindings, clamps to qualified follower travel and uses
+the existing bounded command path. Explicit confirmation starts follower motors;
+leader torque remains off. A persistent Stop releases follower motors; stale or
+invalid data, focus loss, close or lost ownership stop motion with no auto-resume.
+Retain hardware speed/tracking/fault guards and do not claim collision qualification.
+
+Device Manager lists OS camera inputs with stable identities and a saved selection.
+Explicit Enable starts the selected camera without audio; Disable stops it. Never
+silently choose a replacement or reopen it after unplug/restart. One application
+camera service feeds shared preview widgets beside RTX in workspace and setup/
+hardware views. Show selected camera, state and stale/error feedback. Keep capture
+and painting on Qt's supported paths, with bounded latest-frame storage. Robot
+recordings store joint data; camera preview alone does not save video or upload it.
+
+Camera discovery and preview must support Windows and Linux through Qt Multimedia.
+Windows camera interface IDs and Linux /dev/v4l/by-id identities may be remembered.
+Linux enumeration-only /dev/videoN devices are session-only; do not silently bind
+one to a saved role after enumeration changes. Device Manager lets users preview
+candidates and confirm Use this camera to identify the physically mounted unit.

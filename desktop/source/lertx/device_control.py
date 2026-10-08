@@ -65,23 +65,23 @@ class DeviceController:
         self._connect_stop_sequence = 0
 
     def acquire(self, purpose):
-        if purpose not in ("hardware", "setup", "observer"):
+        if purpose not in ("hardware", "setup", "session", "observer"):
             raise ValueError("Unknown device access purpose")
         snapshot = self.session.snapshot()
         self._reconcile(snapshot)
         if any(a.closing for a in self._accesses):
             raise ValueError("Wait for device stop and calibration recovery to complete")
-        if purpose == "setup":
-            if self._writer and self._writer.purpose == "setup":
-                raise ValueError("This arm already has an active setup wizard")
+        if purpose in ("setup","session"):
+            if self._writer and self._writer.purpose in ("setup","session"):
+                raise ValueError("This arm already has an active "+self._writer.purpose+" controller")
             sample = snapshot["sample"]
             if (self._engage_stop_sequence is not None or
                     snapshot["state"] in ("armed", "arming") or
                     (sample and any(m["torque"] for m in sample["motors"].values()))):
-                raise ValueError("Support the arm and release motors in hardware controls before entering setup")
+                raise ValueError("Support the arm and release motors in hardware controls before changing device control")
         access = DeviceAccess(self, purpose)
         self._accesses.append(access)
-        if purpose == "setup" or (self._writer is None and purpose != "observer"):
+        if purpose in ("setup","session") or (self._writer is None and purpose != "observer"):
             self._writer = access
             self.session.heartbeat(False)
         return access
@@ -176,10 +176,10 @@ class DeviceAccess:
 
     def request(self, command, payload=None):
         if not self.writable:
-            raise ValueError("Device control belongs to another panel; wait for setup to finish")
+            raise ValueError("Device control belongs to another panel; finish or disconnect that session first")
         if command.startswith('setup_') and self.purpose != 'setup':
             raise ValueError("Calibration writes require setup control")
-        if command in ('arm','target','calibration') and self.purpose != 'hardware':
+        if command in ('arm','target','calibration') and self.purpose not in ('hardware','session'):
             raise ValueError("Manual motor commands are unavailable during setup")
         controller = self.controller
         snapshot = controller.session.snapshot()
@@ -209,7 +209,7 @@ class DeviceAccess:
             self.controller.release(self)
             return 0
         if not self.writable:
-            raise ValueError("Device control belongs to setup; use that panel's release control")
+            raise ValueError("Device control belongs to another panel; use that panel's release control")
         return self.controller.session.stop(disconnect=disconnect, force=force)
 
     def complete_setup(self):

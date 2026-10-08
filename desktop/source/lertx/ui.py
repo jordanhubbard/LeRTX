@@ -495,6 +495,8 @@ def build_main_window(
             from .device_control import DeviceRegistry
             self.devices = device_registry if device_registry is not None else DeviceRegistry()
             self._hardware_windows = {}
+            from .camera import CameraService
+            self.camera_service=CameraService(self.config_path,self)
             self.clock = SimulationClock(self.profile["physics"]["timestep_hz"])
             self._pending = []
             self._ready = False
@@ -622,6 +624,8 @@ def build_main_window(
             devices_action = QAction("Devices", self)
             devices_action.triggered.connect(self._on_devices)
             toolbar.addAction(devices_action)
+            session_action=QAction("Robot session",self)
+            session_action.triggered.connect(self.open_robot_session);toolbar.addAction(session_action)
 
             toolbar.addSeparator()
 
@@ -670,7 +674,11 @@ def build_main_window(
             self.viewport_label.setMinimumSize(320, 180)
             self.viewport_label.setText("Loading workspace…")
             self.viewport_label.setToolTip('Left- or right-drag an arm link to move its joint, or any other object (ball, obstacle, surface) to move it directly — both follow the mouse. Alt-left-drag: orbit · Middle-drag: pan · Scroll: zoom. Every joint also has a labeled slider in Robot simulation; any object\'s exact position is in the Inspector tab.')
-            layout.addWidget(self.viewport_label, stretch=1)
+            from .camera import CameraPreview
+            views=QHBoxLayout();layout.addLayout(views,1)
+            views.addWidget(self.viewport_label,2)
+            self.camera_preview=CameraPreview(self.camera_service,self)
+            views.addWidget(self.camera_preview,1)
 
             legend_row = QHBoxLayout()
             legend_row.setContentsMargins(0, 0, 0, 0)
@@ -1077,6 +1085,15 @@ def build_main_window(
             panel.show()
             return True
 
+        def open_robot_session(self,checked=False,*,session_assignments=None):
+            panel=getattr(self,'_robot_session_window',None)
+            if panel is None or panel.closed:
+                from .robot_session_ui import build_robot_session_panel
+                panel=build_robot_session_panel(self);self._robot_session_window=panel
+            if session_assignments and not panel.session.accesses:panel.session_assignments=dict(session_assignments)
+            panel.show();panel.raise_();panel.activateWindow()
+            return True
+
         def open_setup(self, *, role=None, candidate=None):
             previous=getattr(self,'_setup_window',None)
             if previous and previous.isVisible():
@@ -1239,6 +1256,9 @@ def build_main_window(
                 self.statusBar().showMessage("Finishing current operation before closing")
                 return
             def begin_close():
+                session=getattr(self,"_robot_session_window",None)
+                if session and not session.closed and not session.close():return
+                self.camera_service.close()
                 self.devices.shutdown()
                 for panel in self._hardware_windows.values():
                     if panel.session and not panel.closing:panel.shutdown()

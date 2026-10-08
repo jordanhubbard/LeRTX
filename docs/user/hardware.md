@@ -151,3 +151,42 @@ not interrupt calibration. Cancel restores the prior registers before returning
 control; finishing setup reuses the hardware panel with the new calibration.
 Use Back to revisit support or the reference pose; returning from the first joint
 restores original calibration before another reference capture.
+
+## Camera selection on Windows and Linux
+
+Device Manager lists camera inputs supplied by Qt Multimedia. Select a candidate
+and click **Preview selected camera**. Move an object in front of the camera mounted
+on your arm to identify its live feed, then click **Use this camera**. The same feed
+appears beside RTX in the workspace and integrated arm previews. **Disable camera**
+stops capture; no audio is opened and preview does not record or upload video.
+
+Windows device interface IDs and Linux `/dev/v4l/by-id` identities are remembered.
+Linux cameras without a stable identity are labelled session-only: select them again
+after reconnecting or restarting. Device numbers such as `/dev/video0` are never
+remembered as permanent assignments. A remembered selection does not automatically
+start capture. Explicitly preview it after startup. Unplugging clears the image;
+another camera is never silently substituted. Permission, busy-device and missing
+frame errors appear in the camera panel.
+
+## Record, follow and replay
+
+Open **Robot session** from Devices or the toolbar. Choose leader, follower, or both,
+then **Connect assigned arms**. The session shares the application's device controllers
+and loads saved calibration and binding by device identity. Finish calibration or
+release engaged motors before changing controllers.
+
+**Start joint recording** records measured joint positions without engaging motors.
+Stop and **Save sequence** to write a portable JSON recording, with device identities,
+calibration, binding and timestamps. Recordings are bounded to 72,000 frames or one
+hour. **Open sequence** and **Preview sequence in RTX** work without moving hardware.
+
+**Start follower following leader** asks before engaging the follower; the leader
+remains torque-free. **Play sequence on follower** requires recorded follower data
+matching that device and calibration. Playback is slowed where necessary to respect
+the motor speed limit. **The Signal** and **Danger** are available in Robot action
+profiles: preview in RTX, or explicitly run the pose on the follower. Pose/follow
+targets are restricted to measured travel; this is not collision avoidance.
+
+Keep the session focused during physical motion. **STOP**, loss of focus, stale
+telemetry or closing the session stops motion and requests motor release. Support
+the arm before release. The leader receives no motor commands from this session.
