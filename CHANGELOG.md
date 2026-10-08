@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 1.1.0 - 2026-10-08
+
+[README.md](https://github.com/jordanhubbard/LeRTX/blob/v1.1.0/README.md)
+
 - Preserve the final joint-drag target when asynchronous selection updates the
   inspector; dock activation and inspector content wait until the final gesture
   command has been submitted.
