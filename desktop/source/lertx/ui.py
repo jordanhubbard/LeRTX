@@ -835,10 +835,18 @@ def build_main_window(
             return items[0].data(0, Qt.ItemDataRole.UserRole) if items else None
 
         def _on_selection_changed(self):
+            if self._closing:
+                return
+            # Both dock activation and inspector content can resize the viewport.
+            # Let a pending gesture deliver its final command before changing layout.
+            if self.viewport_label.press is not None:
+                QTimer.singleShot(50, self._on_selection_changed)
+                return
             path = self._selected_path()
             if self._ready and self.worker and hasattr(self.worker, 'select'):
                 def selected_joint(value):
-                    if path==self._selected_path() and value.get('joint'):
+                    if (path==self._selected_path() and value.get('joint')
+                            and self.viewport_label.press is None):
                         self.robot_dock.show();self.robot_dock.raise_()
                 self._command(lambda: self.worker.select(path),selected_joint)
             self.inspector.set_enabled_for_selection(False)
@@ -848,11 +856,17 @@ def build_main_window(
             def selected(value):
                 if path != self._selected_path():
                     return
+                if self.viewport_label.press is not None:
+                    QTimer.singleShot(50, self._on_selection_changed)
+                    return
                 if "error" in value:
                     self.inspector.show_prim(path, self._prim_types.get(path, ""), False, value["error"])
                     return
                 self.inspector.show_prim(path, self._prim_types.get(path, ""), True)
-                self.inspector_dock.show();self.inspector_dock.raise_()
+                # Raising a dock can resize the viewport and cancel its pending
+                # released drag before the native owner accepts the final value.
+                if self.viewport_label.press is None:
+                    self.inspector_dock.show();self.inspector_dock.raise_()
                 for spins, name in ((self.inspector.translate, "translation"),
                                     (self.inspector.rotate, "rotation"), (self.inspector.scale, "scale")):
                     for spin, component in zip(spins, value[name]):

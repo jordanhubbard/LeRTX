@@ -8,6 +8,15 @@ approved retaining and directly repairing the generated desktop source. See
 [project goals](PROJECT.md), [active work](docs/roadmap/active-work.md),
 and the [runtime contract](docs/architecture/runtime.md).
 
+## SDK refresh release
+
+The next source/setup release retains the camera, recording and integrated device
+workflows from the current upstream. Its SDK combination is OVRTX 0.5.1.385782,
+OVStage 0.2.1.385922, Newton 1.6.1 and Warp 1.18.0. Portable and Linux native
+qualification is refreshed for this combined source. Earlier platform reports
+remain historical; fresh Windows/ARM64 and physical-device qualification are
+follow-up coverage for this cut. macOS remains a development host only.
+
 ## Milestones
 
 1. Application harness created, generated, and verified through `litai`.
@@ -84,3 +93,7 @@ litai run components/harness --target host -- '[{"command":"info"}]'
 
 The harness reports planned integrations and `runtime_ready: false`; it is not
 the graphical application. The macOS bootstrap host cannot run the NVIDIA desktop.
+
+## Release engineers
+
+- `jordanhubbard`

@@ -12,18 +12,25 @@ without importing unavailable native packages. Native commands must reject an
 unsupported host or Python ABI with an actionable error before SDK initialization.
 
 Use these exact runtime distributions and declare them honestly in requirements
-and the source SBOM: `ovrtx==0.5.0.377615`, `ovstage==0.2.0.377349`,
-`newton==1.6.0`, `warp-lang==1.17.0`, `numpy==2.4.6`, `usd-core==25.11`,
-`PySide6==6.10.2`, `pyserial==3.5`, and the locally supplied
+and the source SBOM: `ovrtx==0.5.1.385782`, `ovstage==0.2.1.385922`,
+`newton==1.6.1`, `warp-lang==1.18.0`, `numpy==2.4.6`, `usd-core==26.8`,
+`PySide6==6.12.0`, `pyserial==3.5`, and the locally supplied
 `lertx-robot-assets==1.0.0` resource wheel. The unchanged, vendored
 `feetech-servo-sdk==1.0.0` source and license are part of the application payload,
 with archive/file hashes in `lertx/vendor/feetech/provenance.json`.
-On Linux ARM64 use `usd-exchange==3.0.0` instead of
+On Linux ARM64 use `usd-exchange==3.0.1` instead of
 `usd-core`: its wheel supplies the native `pxr` bindings and OpenUSD libraries.
 Never install both USD distributions into one environment. Acquire the exact
 OVRTX wheel from NVIDIA's public Python index when PyPI only provides a stub.
-Qt dependencies are `PySide6_Addons==6.10.2`,
-`PySide6_Essentials==6.10.2`, `shiboken6==6.10.2`. Do not substitute mock SDKs or
+Use `numpy==2.4.6` on Python 3.11 and `numpy==2.5.3` on Python 3.12;
+the latter no longer supports 3.11. Preserve both declared interpreter targets.
+Qt dependencies are `PySide6_Addons==6.12.0`,
+`PySide6_Essentials==6.12.0`, `shiboken6==6.12.0`,
+`PySide6_Pdf==6.12.0.140` and `PySide6_WebEngine==6.12.0.140`.
+The PDF/WebEngine distributions are dependencies of the published PySide6 wheel;
+their presence does not introduce browser rendering into the application.
+Regenerate hash locks with `python verification/resolve_native_locks.py` using uv.
+Do not substitute mock SDKs or
 hide requirements to evade a dependency gate. Pillow is an independent verifier
 dependency, not required by the application. Network transport may use the
 standard library; tests must inject bounded transport without live credentials.

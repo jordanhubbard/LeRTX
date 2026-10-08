@@ -1,0 +1,132 @@
+{
+  "schema": "lertx/release-preparation-review@1",
+  "date": "2026-10-08",
+  "status": "local-checks-passed-publication-awaits-repository-decision",
+  "intended_version": "1.1.0",
+  "version_prepared": false,
+  "scope": "Source/setup desktop bundle; Linux x86-64 native qualification",
+  "native_evidence": "verification/sdk-refresh-review.json",
+  "portable": {
+    "tests": 239,
+    "subtests": 59,
+    "failed": 0
+  },
+  "linux_native": {
+    "tests": 17,
+    "additional_qt_checks": 4,
+    "failed": 0
+  },
+  "admission": {
+    "passed": true,
+    "test_summary": {
+      "failed": 0,
+      "passed": 30,
+      "skipped": 0,
+      "total": 30
+    },
+    "framework_distribution_identity": "sha256:119009a00d7144a477934f1b5d7201aad084f99ec4e9b92cdd60aa048a24ee8d",
+    "project_revision_identity": "sha256:cd295096e73dc0ee477e88850ad33a4ae861b8e39f363b5f8d871af86ee93f5b",
+    "component_lock_identity": "sha256:b505de6b661d7e1949dd84dce2e261d923c4b8bad4dd85617c403774df4aa690",
+    "receipt_identity": "sha256:87188ead1fdc531d65e7932dbcc4d4cfdc381b776b7279ef7845fdc11d085ae0",
+    "finalized_candidate_identity": "sha256:edc94528d3a596f91f0be898cd61c74c30e37f216cad3112fc1a907cfa64b4f6",
+    "source_generation": {
+      "sha256:b92de31c0cdf6c90f4acbe5aa57a3554867b97b8b0657836d5183a6277ac94a0": "retained"
+    },
+    "runtime_retained": false
+  },
+  "independent_acceptance": {
+    "cases": 3,
+    "expectations_changed": false,
+    "specification_binding_refreshed": true
+  },
+  "offline_install": {
+    "status": "pass",
+    "cleanup": "pass",
+    "installed_files": 11737,
+    "installed_tree_identity": "sha256:39e90ac420b792c6a8394e7520973b859f8698de143009825da6752494d41900",
+    "installer_identity": "sha256:3992bc9c31631db31d92d0e6f94290e50b7138cce0cffbfdeb41d26005390773",
+    "target_identity": "sha256:dc3ecbed11461fe3d216608e697daf9407f9b3c5d802ed34e6ebc0e75317f48c"
+  },
+  "source_preparation": {
+    "recipe_identity": "sha256:e183d5727922c31985b1ec356579650270c232b259d62e3b606c9a295414a513",
+    "metadata_changes": [
+      "requirements.txt",
+      "tests/manifest.json",
+      "python-wheel-lock.json",
+      ".literate/sbom.cdx.json"
+    ],
+    "preserved_files": 98,
+    "original_files": 100,
+    "snapshot_files": 102,
+    "externalized_resources": {
+      "path": "lertx/resources/so101",
+      "wheel_sha256": "69fa417e81e0faa0c5f476adc04932b2842fb8db8d9e07253b47ce8f501acb24"
+    }
+  },
+  "verification": {
+    "counts": {
+      "fail": 0,
+      "pass": 3,
+      "skipped": 2
+    },
+    "gates": [
+      {
+        "detail": "project authority and documentation review",
+        "gate": "authority",
+        "state": "pass"
+      },
+      {
+        "detail": "3 committed lock(s) current",
+        "gate": "locks",
+        "state": "pass"
+      },
+      {
+        "detail": "project selects provider 'none'",
+        "gate": "source-intelligence",
+        "state": "skipped"
+      },
+      {
+        "artifacts": [],
+        "detail": "no declared HTML artifacts to verify",
+        "gate": "html-observability",
+        "state": "skipped"
+      },
+      {
+        "detail": "committed test receipt is current",
+        "gate": "receipt",
+        "state": "pass"
+      }
+    ],
+    "ok": true,
+    "project": ".",
+    "schema": "literate-ai/project-verify@1"
+  },
+  "package": {
+    "reproducible": true,
+    "all_members_match_checkout": true,
+    "extracted_defaults_command": "passed",
+    "sha256": "c309e24941b071a666eb9663729545a88cb040872677e90445c24c4a128ff441",
+    "bytes": 51712759,
+    "versioned_assets_produced_at_release_check": true
+  },
+  "publication": {
+    "remote": "https://github.com/NVIDIA-dev/LeRTX",
+    "archived": true,
+    "push_succeeded": false,
+    "release_published": false,
+    "hosted_ci": "not-run-repository-archived",
+    "operator_decision": "unarchive existing repository or provide replacement"
+  },
+  "named_skips": {
+    "source_intelligence": "project selects provider none",
+    "html_observability": "no declared HTML artifacts",
+    "jira": "no associated issue or opted-in MCP integration",
+    "ci_sharding": "framework detector found no recognized suite; all portable modules run serially"
+  },
+  "follow_up": [
+    "Fresh Windows and ARM64 native validation with this SDK set",
+    "Physical SO-101 qualification",
+    "Cold-cache startup under the two-core diagnostic limit",
+    "Native installer qualification and desktop compositor coverage"
+  ]
+}

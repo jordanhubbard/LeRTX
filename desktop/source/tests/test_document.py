@@ -21,7 +21,7 @@ class DocumentTests(unittest.TestCase):
             layer.Save()
             doc = SceneDocument(root/"scene.usda", [str(assets)])
             self.assertTrue(doc.stage.GetPrimAtPath("/ResolvedChild"))
-            self.assertEqual(Path(doc.stage.GetRootLayer().subLayerPaths[0]), assets/"child.usda")
+            self.assertEqual(Path(doc.stage.GetRootLayer().subLayerPaths[0]), (assets/"child.usda").resolve())
 
     def test_relative_assets_survive_private_layer_and_save_as(self):
         from pxr import Usd, Sdf
@@ -43,7 +43,7 @@ class DocumentTests(unittest.TestCase):
             loaded = SceneDocument(destination/"scene.usda")
             self.assertTrue(loaded.stage.GetPrimAtPath("/Child"))
             self.assertEqual(Path(loaded.stage.GetPrimAtPath("/Asset").GetAttribute("texture").Get().path),
-                             root/"texture.png")
+                             (root/"texture.png").resolve())
 
     def test_shear_is_rejected_without_mutating(self):
         from pxr import Usd, UsdGeom, Gf

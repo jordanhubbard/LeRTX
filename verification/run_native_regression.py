@@ -5,6 +5,7 @@ after earlier headless SDK sessions crashed libEGL_nvidia on the Omarchy worker.
 Run through native_guard.py with the worker's native display environment.
 """
 from pathlib import Path
+import argparse
 import sys
 import unittest
 
@@ -14,8 +15,11 @@ from lertx.ui import build_application
 
 
 def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--module', help='Run one test module in a fresh SDK process')
+    args=parser.parse_args()
     application=build_application([])
-    suite=unittest.defaultTestLoader.loadTestsFromNames([
+    suite=unittest.defaultTestLoader.loadTestsFromNames([args.module] if args.module else [
         'test_runtime_native','test_robot_render_native','test_window_native',
         'test_runtime_idle','test_runtime_settings','test_mock_ui'])
     result=unittest.TextTestRunner(verbosity=2).run(suite)

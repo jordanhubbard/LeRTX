@@ -62,8 +62,8 @@ assuming equal angle limits. Clearly label simulated controls and measured
 virtual state. No physical port opening or actuation follows from these controls.
 
 Expose independent following on/off, joint position controls, Play/Pause and Reset.
-When following locks a selected follower joint, expose an adjacent explicit
-"Manipulate follower independently" action. Retain following changes until the
+Show the shared "Follower tracks the simulated leader" checkbox beside the
+joint controls; clearing it enables independent follower manipulation. Retain following changes until the
 native worker can accept them; a busy renderer must not silently discard input.
 Pause holds simulation state; Reset restores the authored poses and target state.
 Report tracking or physics failure visibly instead of falling back to animation.
@@ -73,12 +73,12 @@ individual robot link must not break its articulation silently.
 Allow grabbing a rendered arm link and dragging its associated joint. Native RTX
 picking must respect image scaling and letterboxing, and agree with hierarchy
 selection. Show the selected joint and target; clamp targets to model limits.
-Right-clicking a rendered joint opens an adjacent control with its arm and joint
-name, a visible slider, numeric target and model limits in degrees (normalized
-travel percent for a gripper). Opening the control never moves a joint. Explain
-locks inline and expose explicit follower-unlock without enabling physical writes.
-Support native trackpad context-menu events and keyboard access to the controls.
-Left drag manipulates joints, Alt-left drag orbits, middle drag pans and the wheel
+Keep all twelve joint controls visible in the robot panel, with arm and joint
+names, sliders and keyboard-accessible numeric targets bounded by model limits
+in degrees (normalized travel percent for a gripper). Explain following locks
+inline. Left or right drag on a rendered link manipulates its associated joint;
+a press without movement must not change its target. These controls never enable
+physical writes. Alt-left drag orbits, middle drag pans and the wheel
 or trackpad scroll zooms. A paused drag advances a bounded physics preview and remains paused;
 playing drags update targets through the normal simulation loop. Following must
 be disabled before manipulating the follower. Coalesce drag updates, preserve
@@ -234,3 +234,7 @@ verified asset wheel contains the identical complete tree. Keep application Pyth
 modules byte-identical to the retained source. Checkout launches may use their
 adjacent resource tree; admitted exports resolve the installed asset package.
 No asset fetch, conversion, or network access occurs on application startup.
+
+Native worker synchronous shutdown allows up to 30 seconds for renderer teardown.
+A timeout retains the worker reference so cleanup can be joined again; GUI close
+continues asynchronously while native cleanup runs.

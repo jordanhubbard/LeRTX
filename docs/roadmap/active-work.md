@@ -1,5 +1,16 @@
 # Active work
 
+## Reconciled SDK release
+
+The operator selected `https://github.com/jordanhubbard/LeRTX` as the replacement
+release repository. Integrate its current main (including camera and recording
+work) with the SDK updates and bounded shutdown repair, then rerun portable and
+Linux NVIDIA qualification against the combined source. Earlier October reports
+remain historical and cannot admit the merged source. Publish a source/setup
+bundle after review and exact-commit CI; Windows/ARM refresh and physical-arm
+qualification remain follow-up coverage, not prerequisites for this scoped cut.
+
+
 This file is the durable resumption queue for user-directed and discovered work. Before
 implementation, follow `skills/agent/record-user-directed-work/SKILL.md`.
 Keep detailed designs in focused roadmap documents and link them here.

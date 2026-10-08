@@ -1,6 +1,6 @@
 """Application identity shared by the native entry point, windows and installer."""
 from pathlib import Path
-VERSION='0.2.0-dev'
+VERSION = "1.0.0"
 APP_ID='org.lertx.LeRTX'
 RESOURCES=Path(__file__).with_name('resources')
 

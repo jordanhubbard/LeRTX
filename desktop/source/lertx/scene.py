@@ -6,6 +6,7 @@ such as ``defaults`` and ``validate-settings`` never touch Qt or a GPU.
 """
 from __future__ import annotations
 
+import math
 import queue
 import threading
 from concurrent.futures import Future
@@ -199,10 +200,15 @@ class NativeWorker:
         with self._latest_frame_lock:
             return self._latest_frame
 
-    def stop(self) -> None:
+    def stop(self, timeout: float = 30) -> None:
+        # RTX teardown can take over ten seconds even after completed GPU work.
+        # The GUI waits asynchronously before calling this join; synchronous
+        # callers still get a bounded failure when native cleanup stalls.
+        if timeout <= 0 or not math.isfinite(timeout):
+            raise ValueError("Native shutdown timeout must be positive and finite")
         self._stop_event.set()
         if self._thread is not None:
-            self._thread.join(timeout=10)
+            self._thread.join(timeout=timeout)
             if self._thread.is_alive():
                 raise TimeoutError("Native worker is still finishing GPU work")
             self._thread = None

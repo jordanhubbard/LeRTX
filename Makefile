@@ -60,10 +60,11 @@ install: build
 uninstall:
 	$(MANAGE) uninstall
 
-package: build
+package:
 	$(MANAGE) package
 
-rebuild: clean build
+rebuild: clean
+	$(MAKE) build
 
 # Leaves any launcher installed by 'make install' in place; use 'make uninstall'
 # for that. Does not touch _build/ or generated/, which are shared with the

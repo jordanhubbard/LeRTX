@@ -43,10 +43,12 @@ def attach(window,report):
             if time.monotonic()-started>120:finish('Native interaction deadline exceeded');return
             if phase['name']=='startup' and window._image is not None and window._idle_frame and not window._pending:
                 phase['name']='native';window._command(native,restored)
-            elif phase['name']=='selection' and not window._pending and window.robot_panel.selected:
-                joint=window.robot_panel.selected
-                assert joint['name']=='shoulder_lift' and window.robot_panel.joint_slider.isEnabled()
-                window.robot_panel.joint_slider.setValue(round(1000*(math.radians(20)-joint['low'])/(joint['high']-joint['low'])))
+            elif phase['name']=='selection' and not window._pending:
+                panel=window.robot_panel
+                slider=panel.sliders['leader','shoulder_lift']
+                low,high=panel._range['leader','shoulder_lift']
+                assert slider.isEnabled()
+                slider.setValue(round(1000*(math.radians(20)-low)/(high-low)))
                 phase['name']='slider'
             elif phase['name']=='slider' and not window._pending and window._idle_frame and window.viewport_label.intent is None:
                 phase['name']='verify'

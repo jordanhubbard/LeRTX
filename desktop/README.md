@@ -1,5 +1,13 @@
 # Retained LeRTX application
 
+The current SDK refresh uses OVRTX 0.5.1.385782, OVStage 0.2.1.385922, Newton
+1.6.1 and Warp 1.18.0. The source/setup ZIP is the release artifact. Current
+Linux qualification is recorded in `verification/upstream-release-review.json`
+in the repository; older cross-platform reports apply to earlier SDK snapshots.
+Fresh Windows/ARM64 validation and physical-arm qualification remain follow-up
+coverage. Native installer candidates are not included in this release.
+
+
 SO-101 USB reads, explicitly armed manual writes and measured virtual bindings
 are described in the [hardware guide](../docs/user/hardware.md). Emulated-bus and
 native viewport checks pass; physical-arm qualification is still pending.

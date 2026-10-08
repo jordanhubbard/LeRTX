@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from repair_usd_wheel import FILENAME, repair
+from repair_usd_wheel import repair
 
 
 class RepairTests(unittest.TestCase):
@@ -20,8 +20,8 @@ class RepairTests(unittest.TestCase):
             second = repair(self.source, root / "b")
             self.assertEqual(first, second)
             self.assertEqual(
-                (root / "a/repaired" / FILENAME).read_bytes(),
-                (root / "b/repaired" / FILENAME).read_bytes(),
+                (root / "a/repaired" / self.source.name).read_bytes(),
+                (root / "b/repaired" / self.source.name).read_bytes(),
             )
             with self.assertRaises(FileExistsError):
                 repair(self.source, root / "a")
@@ -29,7 +29,7 @@ class RepairTests(unittest.TestCase):
     def test_modified_input_rejected_before_output(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            source = root / FILENAME
+            source = root / self.source.name
             source.write_bytes(self.source.read_bytes() + b"tampered")
             with self.assertRaisesRegex(ValueError, "hash differs"):
                 repair(source, root / "output")
@@ -38,7 +38,7 @@ class RepairTests(unittest.TestCase):
     def test_symlink_rejected_before_output(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            source = root / FILENAME
+            source = root / self.source.name
             source.symlink_to(self.source)
             with self.assertRaisesRegex(ValueError, "regular-file"):
                 repair(source, root / "output")

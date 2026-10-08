@@ -31,6 +31,17 @@ assignment. Use Hugging Face LeRobot code and models.
    credentials must never become application defaults or appear in logs, exports,
    generated source, or screenshots.
 
+## Current release qualification
+
+The replacement upstream is `https://github.com/jordanhubbard/LeRTX`. Its camera,
+recording and integrated calibration work is retained. The next source/setup
+release combines that code with OVRTX 0.5.1.385782, OVStage 0.2.1.385922, Newton
+1.6.1 and Warp 1.18.0. Historical platform and admission results below describe
+earlier snapshots. Fresh portable, Linux NVIDIA and framework admission checks
+must bind the combined source before publication. Windows/ARM64 refresh,
+physical-arm qualification and two-core cold-cache qualification remain separate
+follow-up coverage for the operator-authorized scoped release.
+
 ## Dependencies
 
 No blocking dependency on another repository's PROJECT.md completion is declared.

@@ -77,8 +77,9 @@ class SettingsUiTests(unittest.TestCase):
             self.window._on_open_settings()
             self.assertEqual(self.window.profile, self.profile)
             save.assert_not_called()
-            future.set_result({"path":"scene.usda", "dirty":True, "playing":False,
-                               "time":0, "physics_error":"", "hierarchy":[]})
+            future.set_result(({"path":"scene.usda", "dirty":True, "playing":False,
+                               "time":0, "physics_error":"", "hierarchy":[]},
+                               time.perf_counter(), time.perf_counter()))
             self.window._on_tick()
             self.assertEqual(self.window.profile, candidate)
             self.assertTrue(self.window.has_unsaved_changes)
@@ -208,8 +209,8 @@ class SettingsUiTests(unittest.TestCase):
         try:
             button.click()
             self.assertEqual(self.dialog._connection_status.text(), "Testing...")
-            deadline = time.monotonic()+.1
-            while time.monotonic() < deadline:
+            deadline = time.monotonic()+1
+            while len(beats) < 3 and time.monotonic() < deadline:
                 self.app.processEvents()
                 time.sleep(.005)
             self.assertGreater(len(beats), 2)

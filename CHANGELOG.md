@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- Preserve the final joint-drag target when asynchronous selection updates the
+  inspector; dock activation and inspector content wait until the final gesture
+  command has been submitted.
+
+- Refresh OVRTX to 0.5.1.385782, OVStage to 0.2.1.385922, Newton to 1.6.1,
+  Warp to 1.18.0 and Qt to 6.12.0 with regenerated platform hash locks.
+- Allow bounded 30-second renderer shutdown after measured teardown exceeded
+  ten seconds; preserve asynchronous GUI close and retry after a timeout.
+- Reconcile current upstream camera, recording and calibration improvements;
+  add complete portable CI, native source binding and reproducible release assets.
+
+
 - Device Manager: preview and select USB cameras on Windows and Linux, remember
   stable device identities, and share one live camera feed above the RTX view.
   Unplugging or stale frames clears the preview; camera capture starts explicitly.

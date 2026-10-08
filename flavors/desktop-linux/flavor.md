@@ -30,5 +30,5 @@ order_after: []
 ---
 # Verified Linux native target
 
-This project-owned target binds the observed CPython 3.11 Linux interpreter and
+This project-owned target binds the observed CPython 3.12 Linux interpreter and
 the separately verified native wheel closure. It is not Windows evidence.

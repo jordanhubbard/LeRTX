@@ -24,14 +24,16 @@ def attach(window, report):
             if phase=='startup' and window._image is not None and window._idle_frame:
                 window.tree.setCurrentItem(window._tree_items['/World/Follower/Geometry/base_link/shoulder_link/upper_arm_link'])
                 phase='selected'
-            elif phase=='selected' and panel.selected:
-                assert panel.selected['role']=='follower' and not panel.joint_slider.isEnabled()
-                assert panel.unlock.isVisible()
-                panel.unlock.click();phase='unlocked'
+            elif phase=='selected':
+                assert not panel.sliders['follower','shoulder_lift'].isEnabled()
+                assert panel.follow.isChecked() and panel.follow.isEnabled()
+                panel.follow.setChecked(False);phase='unlocked'
             elif phase=='unlocked' and not panel.state['following']:
-                assert panel.joint_slider.isEnabled() and not panel.unlock.isVisible()
+                slider=panel.sliders['follower','shoulder_lift']
+                assert slider.isEnabled() and not panel.follow.isChecked()
                 baseline=window._image.copy()
-                j=panel.selected;panel.joint_slider.setValue(round(1000*(.35-j['low'])/(j['high']-j['low'])))
+                low,high=panel._range['follower','shoulder_lift']
+                slider.setValue(round(1000*(.35-low)/(high-low)))
                 phase='moved'
             elif phase=='moved' and window.viewport_label.intent is None and window._idle_frame:
                 actual=panel.state['positions']['follower']['shoulder_lift']

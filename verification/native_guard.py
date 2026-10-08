@@ -39,14 +39,17 @@ def main(argv=None):
     parser.add_argument('--memory-gib', type=float, default=8)
     parser.add_argument('--reserve-gib', type=float, default=16)
     parser.add_argument('--timeout', type=float, default=180)
+    parser.add_argument('--cpu-cores', type=int, default=2,
+                        help='CPU quota in cores; record an explicit workload budget')
     parser.add_argument('command', nargs=argparse.REMAINDER)
     args = parser.parse_args(argv)
     command = args.command[1:] if args.command[:1] == ['--'] else args.command
-    if not command or min(args.memory_gib, args.reserve_gib, args.timeout) <= 0:
+    if not command or min(args.memory_gib, args.reserve_gib, args.timeout, args.cpu_cores) <= 0:
         parser.error('A command and positive resource budgets are required')
     report = {'status': 'blocked', 'memory_limit_bytes': int(args.memory_gib*GIB),
               'reserve_bytes': int(args.reserve_gib*GIB), 'swap_limit_bytes': 0,
-              'timeout_seconds': args.timeout, 'launched': False}
+              'timeout_seconds': args.timeout, 'cpu_quota_percent': args.cpu_cores*100,
+              'task_limit': 128, 'launched': False}
     process = None
     lock = None
     unit = 'lertx-native-' + uuid.uuid4().hex + '.scope'
@@ -68,7 +71,7 @@ def main(argv=None):
         launch = ['systemd-run', '--user', '--scope', '--quiet', '--unit='+unit,
                   '-p', 'MemoryMax='+str(report['memory_limit_bytes']),
                   '-p', 'MemorySwapMax=0',
-                  '-p', 'CPUQuota=200%', '-p', 'TasksMax=128',
+                  '-p', 'CPUQuota='+str(report['cpu_quota_percent'])+'%', '-p', 'TasksMax=128',
                   '-p', 'RuntimeMaxSec='+str(args.timeout), '--', *command]
         start = time.monotonic()
         process = subprocess.Popen(launch, start_new_session=True)

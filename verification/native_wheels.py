@@ -26,29 +26,36 @@ from literate_ai.adapters.dependencies.python_lock import (
 from literate_ai.adapters.dependencies.types import DependencyObservationError
 
 PINS = {
-    "ovrtx": "0.5.0.377615",
-    "ovstage": "0.2.0.377349",
-    "newton": "1.6.0",
-    "warp-lang": "1.17.0",
-    "numpy": "2.4.6",
-    "usd-core": "25.11",
-    "pyside6": "6.10.2",
-    "pyside6-addons": "6.10.2",
-    "pyside6-essentials": "6.10.2",
-    "shiboken6": "6.10.2",
+    "ovrtx": "0.5.1.385782",
+    "ovstage": "0.2.1.385922",
+    "newton": "1.6.1",
+    "warp-lang": "1.18.0",
+    "numpy": "2.5.3",
+    "usd-core": "26.8",
+    "pyside6": "6.12.0",
+    "pyside6-addons": "6.12.0",
+    "pyside6-essentials": "6.12.0",
+    "pyside6-pdf": "6.12.0.140",
+    "pyside6-webengine": "6.12.0.140",
+    "shiboken6": "6.12.0",
     "pyserial": "3.5",
     "lertx-robot-assets": "1.0.0",
 }
 ROOTS = ("newton", "numpy", "ovrtx", "ovstage", "pyside6", "usd-core", "warp-lang", "pyserial", "lertx-robot-assets")
 
 
-def inventory(packages):
+def inventory(packages, environment=None):
     """Permit exactly one platform's declared USD provider, never both."""
     expected = dict(PINS)
+    if environment is not None:
+        if tuple(map(int, environment['python_version'].split('.'))) < (3, 12):
+            expected['numpy'] = '2.4.6'
+    elif any(p['name'] == 'numpy' and p['version'] == '2.4.6' for p in packages):
+        expected['numpy'] = '2.4.6'
     roots = ROOTS
     if any(package["name"] == "usd-exchange" for package in packages):
         del expected["usd-core"]
-        expected["usd-exchange"] = "3.0.0"
+        expected["usd-exchange"] = "3.0.1"
         roots = tuple("usd-exchange" if name == "usd-core" else name for name in ROOTS)
     if {p["name"]: p["version"] for p in packages} != expected or len(packages) != len(expected):
         raise ValueError("Native application wheel inventory differs from the declared closure")
@@ -62,8 +69,8 @@ def compatibility(archives: dict, target: dict) -> dict:
     if target.get("schema") != "lertx/native-python-target-review@1":
         raise ValueError("Target input is not a native interpreter observation")
     packages = archives["packages"]
-    pins, roots = inventory(packages)
     environment = target["environment"]
+    pins, roots = inventory(packages, environment)
     arm_linux = environment["sys_platform"] == "linux" and environment["platform_machine"].lower() in ("arm64", "aarch64")
     if ("usd-exchange" in pins) != arm_linux:
         raise ValueError("USD provider differs from the target platform policy")
@@ -118,7 +125,9 @@ def inspect(directory: Path) -> dict:
                     raise ValueError("Wheel metadata is ambiguous or oversized")
                 metadata = BytesParser().parsebytes(archive.read(entries[0]))
             name = canonicalize_name(metadata["Name"])
-            allowed = {**PINS, "usd-exchange": "3.0.0"}
+            allowed = {**PINS, "usd-exchange": "3.0.1"}
+            if name == 'numpy' and metadata['Version'] == '2.4.6':
+                allowed['numpy'] = '2.4.6'
             if name in seen or allowed.get(name) != metadata["Version"]:
                 raise ValueError("Wheel inventory differs from native application pins")
             seen.add(name)
