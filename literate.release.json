@@ -55,7 +55,7 @@
       "--package-only"
     ],
     "timeout_seconds": 180,
-    "manifest": "dist/release-files.json",
+    "manifest": "_build/release/release-files.json",
     "required_roles": [
       "source-setup",
       "checksums"

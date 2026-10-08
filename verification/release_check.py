@@ -117,7 +117,9 @@ def package():
     }
     value["identity"] = "sha256:" + hashlib.sha256(
         json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()).hexdigest()
-    (ROOT / "dist/release-files.json").write_text(json.dumps(value, indent=2) + "\n")
+    manifest = ROOT / "_build/release/release-files.json"
+    manifest.parent.mkdir(parents=True, exist_ok=True)
+    manifest.write_text(json.dumps(value, indent=2) + "\n")
 
 
 if __name__ == "__main__":
