@@ -219,6 +219,9 @@ the existing bounded command path. Explicit confirmation starts follower motors;
 leader torque remains off. A persistent Stop releases follower motors; stale or
 invalid data, focus loss, close or lost ownership stop motion with no auto-resume.
 Retain hardware speed/tracking/fault guards and do not claim collision qualification.
+Preset and recorded-pose previews must update rendered mesh geometry while paused,
+including without a prior selection. Verify measured virtual joint positions and
+substantial pixel motion; renderer noise alone is not evidence of pose publication.
 
 Device Manager lists OS camera inputs with stable identities and a saved selection.
 Explicit Enable starts the selected camera without audio; Disable stops it. Never

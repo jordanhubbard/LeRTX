@@ -93,6 +93,15 @@ class SceneWorker(NativeWorker):
                 device=f"cuda:{self._gpu_index}", gravity=float(self.profile["physics"]["gravity_m_s2"]))
         except SimulationDisabledError as exc:
             self.physics_error = str(exc)
+        if self.physics is not None:
+            # The attached renderer can retain descendant mesh transforms after
+            # ancestor-only pose updates, even without an outline selection.
+            # Refresh mesh locals for every animated body, preserving runtime
+            # edits through NativeWorker.publish_transforms's existing cache.
+            for path in self.physics.render_mapping.paths_in_index_order():
+                for prim in Usd.PrimRange(self.document.stage.GetPrimAtPath(path)):
+                    if prim.IsA(UsdGeom.Gprim):
+                        self._selection_transform_refresh[str(prim.GetPath())]=UsdGeom.Xformable(prim).GetLocalTransformation()
         # Render a flattened runtime copy, never inject cameras or simulated poses
         # into the authored document. Flatten resolves local asset paths.
         if self._temporary is None:

@@ -6,6 +6,8 @@
   "all_windows_camera_inputs_delivered_live_frames": true,
   "camera_selection_saved_during_verification": false,
   "native_rtx_preset_frames_changed": true,
+  "fraction_pixels_changed_above_20_levels": 0.059145833333333335,
+  "native_regression": "verification/robot_session_window.py",
   "integrated_preview_matches_native_image": true,
   "presets": ["Danger", "The Signal"],
   "physical_motor_commands_sent": false,
