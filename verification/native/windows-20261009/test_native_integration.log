@@ -1,0 +1,23 @@
+qt.qpa.window: SetProcessDpiAwarenessContext() failed: Access is denied.
+Qt's default DPI awareness context is DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2. If you know what you are doing, you can overwrite this default using qt.conf (https://doc.qt.io/qt-6/highdpi.html#configuring-windows).
+test_default_scene_authors_required_render_and_physics_schemas (test_native_integration.NativeIntegrationTests.test_default_scene_authors_required_render_and_physics_schemas) ... ok
+test_native_worker_full_lifecycle_produces_owned_frame (test_native_integration.NativeIntegrationTests.test_native_worker_full_lifecycle_produces_owned_frame) ... I: Initializing Version 2.75.1-release.7540+gl.d3c5c5b8
+I: Client ID: J98N56SF
+I: ThreadId(02) hub_client::client::Client::new Launching client mode=Shared with_cleaner=false cache_path=None cache_size=None
+I: ThreadId(03) launch self=Launcher { discovery_lock: RwLock { lock: RwLock { inner: File { handle: 0xe10, path: "\\\\?\\<worker-home>\\AppData\\Local\\Temp\\hub-worker.lock" } } }, mode: Shared, with_cleaner: false, config_file: "<worker-home>\\AppData\\Local\\Temp\\hub-worker-E6C27E86.config.json" } cmd="hub.exe" "--mode=shared" "--write-config" "<worker-home>\\AppData\\Local\\Temp\\hub-worker-E6C27E86.config.json" "--"
+I: Not using Hub: Hub not found
+ok
+test_newton_model_maps_bodies_to_authored_prim_paths (test_native_integration.NativeIntegrationTests.test_newton_model_maps_bodies_to_authored_prim_paths) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 22.258s
+
+OK
+Warp 1.18.0 initialized:
+   CUDA Toolkit 13.4, Driver 13.2
+   Devices:
+     "cpu"      : "Intel64 Family 6 Model 134 Stepping 0, GenuineIntel"
+     "cuda:0"   : "NVIDIA L40" (48 GiB, sm_89, mempool enabled)
+   Kernel cache:
+     \\?\<worker-home>\AppData\Local\NVIDIA\warp\Cache\1.18.0
+[Warning] [carb] Source: carb_profiler_nvtx_plugin was already registered.

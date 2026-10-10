@@ -1,0 +1,66 @@
+Looking in links: <worker-home>\AppData\Local\Temp\tmpmjvc08os
+Requirement already satisfied: setuptools in <worker-home>\lr-wincheck-1009\.venv\lib\site-packages (84.0.0)
+Requirement already satisfied: pip in <worker-home>\lr-wincheck-1009\.venv\lib\site-packages (26.2.1)
+Looking in indexes: https://pypi.org/simple, https://pypi.nvidia.com
+Looking in links: <worker-home>\lr-wincheck-1009\desktop\wheels
+Ignoring numpy: markers 'python_full_version >= "3.12"' don't match your environment
+Requirement already satisfied: lertx-robot-assets==1.0.0 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 2)) (1.0.0)
+Requirement already satisfied: newton==1.6.1 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 4)) (1.6.1)
+Requirement already satisfied: numpy==2.4.6 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 6)) (2.4.6)
+Requirement already satisfied: ovrtx==0.5.1.385782 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 146)) (0.5.1.385782)
+Requirement already satisfied: ovstage==0.2.1.385922 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 150)) (0.2.1.385922)
+Requirement already satisfied: pyserial==3.5 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 154)) (3.5)
+Requirement already satisfied: pyside6==6.12.0 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 157)) (6.12.0)
+Requirement already satisfied: pyside6-addons==6.12.0 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 163)) (6.12.0)
+Requirement already satisfied: pyside6-essentials==6.12.0 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 169)) (6.12.0)
+Requirement already satisfied: pyside6-pdf==6.12.0.140 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 175)) (6.12.0.140)
+Requirement already satisfied: pyside6-webengine==6.12.0.140 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 181)) (6.12.0.140)
+Requirement already satisfied: shiboken6==6.12.0 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 187)) (6.12.0)
+Requirement already satisfied: usd-core==26.8 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 193)) (26.8)
+Requirement already satisfied: warp-lang==1.18.0 in .\.venv\Lib\site-packages (from -r <worker-home>\lr-wincheck-1009\desktop\locks\windows-x86_64.txt (line 212)) (1.18.0)
+No broken requirements found.
+{
+  "ready_for_launch": true,
+  "scope": "installation-preflight-not-rendering",
+  "platform": "Windows",
+  "architecture": "AMD64",
+  "python": "3.11.16",
+  "packages": {
+    "ovrtx": "0.5.1.385782",
+    "ovstage": "0.2.1.385922",
+    "newton": "1.6.1",
+    "warp-lang": "1.18.0",
+    "numpy": "2.4.6",
+    "PySide6": "6.12.0",
+    "PySide6-Addons": "6.12.0",
+    "PySide6-Essentials": "6.12.0",
+    "shiboken6": "6.12.0",
+    "pyserial": "3.5",
+    "PySide6-Pdf": "6.12.0.140",
+    "PySide6-WebEngine": "6.12.0.140",
+    "lertx-robot-assets": "1.0.0",
+    "usd-core": "26.8"
+  },
+  "gpu": "NVIDIA L40, 595.97",
+  "problems": []
+}
+Preparing the NVIDIA renderer; first-install shader compilation may take up to 14 minutes.
+I: Initializing Version 2.75.1-release.7540+gl.d3c5c5b8
+I: Client ID: 1ZUAT2J2
+I: ThreadId(02) hub_client::client::Client::new Launching client mode=Shared with_cleaner=false cache_path=None cache_size=None
+I: ThreadId(03) launch self=Launcher { discovery_lock: RwLock { lock: RwLock { inner: File { handle: 0xddc, path: "\\\\?\\<worker-home>\\AppData\\Local\\Temp\\hub-worker.lock" } } }, mode: Shared, with_cleaner: false, config_file: "<worker-home>\\AppData\\Local\\Temp\\hub-worker-EE710F3B.config.json" } cmd="hub.exe" "--mode=shared" "--write-config" "<worker-home>\\AppData\\Local\\Temp\\hub-worker-EE710F3B.config.json" "--"
+I: Not using Hub: Hub not found
+Warp 1.18.0 initialized:
+   CUDA Toolkit 13.4, Driver 13.2
+   Devices:
+     "cpu"      : "Intel64 Family 6 Model 134 Stepping 0, GenuineIntel"
+     "cuda:0"   : "NVIDIA L40" (48 GiB, sm_89, mempool enabled)
+   Kernel cache:
+     \\?\<worker-home>\AppData\Local\NVIDIA\warp\Cache\1.18.0
+Module validate_and_correct_inertia_kernel_1ff2ac62 1ff2ac6 load on device 'cuda:0' took 4.04 ms  (cached)
+Module newton._src.geometry.bvh 58a3a49 load on device 'cuda:0' took 2.44 ms  (cached)
+Module newton._src.solvers.solver d7b7ff4 load on device 'cuda:0' took 2.44 ms  (cached)
+{"native_warmup": "passed", "cleanup_completed": true, "seconds": 21.359}
+[Warning] [carb] Source: carb_profiler_nvtx_plugin was already registered.
+2026-10-10T06:04:45Z [7,337ms] [Warning] [omni.rtx] DLSS increasing input dimensions: Render resolution of (371, 209) is below minimal input resolution of 300.
+LeRTX environment ready. Run: python desktop/manage.py run

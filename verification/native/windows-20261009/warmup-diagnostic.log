@@ -1,0 +1,124 @@
+Preparing the NVIDIA renderer; first-install shader compilation may take several minutes.
+Warp 1.18.0 initialized:
+   CUDA Toolkit 13.4, Driver 13.2
+   Devices:
+     "cpu"      : "Intel64 Family 6 Model 134 Stepping 0, GenuineIntel"
+     "cuda:0"   : "NVIDIA L40" (48 GiB, sm_89, mempool enabled)
+   Kernel cache:
+     \\?\<worker-home>\AppData\Local\NVIDIA\warp\Cache\1.18.0
+Module validate_and_correct_inertia_kernel_1ff2ac62 1ff2ac6 load on device 'cuda:0' took 4.77 ms  (cached)
+Module newton._src.geometry.bvh 58a3a49 load on device 'cuda:0' took 3.21 ms  (cached)
+Module newton._src.solvers.solver d7b7ff4 load on device 'cuda:0' took 3.20 ms  (cached)
+DIAG native initialization starting
+[Warning] [carb] Source: carb_profiler_nvtx_plugin was already registered.
+python.exe : I: Initializing Version 2.75.1-release.7540+gl.d3c5c5b8
+At line:20 char:11
++ $script | & ..\..\.venv\Scripts\python.exe -u - 2>&1 | Tee-Object ..\ ...
++           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (I: Initializing...540+gl.d3c5c5b8:String) [], Remote
+   Exception
+    + FullyQualifiedErrorId : NativeCommandError
+
+I: Client ID: BTX8F68W
+I: ThreadId(02) hub_client::client::Client::new Launching client mode=Shared with_cleaner=false
+cache_path=None cache_size=None
+I: ThreadId(03) launch self=Launcher { discovery_lock: RwLock { lock: RwLock { inner: File {
+handle: 0xe3c, path: "\\\\?\\<worker-home>\\AppData\\Local\\Temp\\hub-worker.lock" } } }, mode:
+Shared, with_cleaner: false, config_file:
+"<worker-home>\\AppData\\Local\\Temp\\hub-worker-A5FE57B4.config.json" } cmd="hub.exe"
+"--mode=shared" "--write-config"
+"<worker-home>\\AppData\\Local\\Temp\\hub-worker-A5FE57B4.config.json" "--"
+I: Not using Hub: Hub not found
+Timeout (0:01:00)!
+Thread 0x00002f40 (most recent call first):
+  File "<worker-home>\lr-wincheck-1009\.venv\Lib\site-packages\ovrtx\_src\bindings.py", line
+1213 in attach_ovstage
+  File "<worker-home>\lr-wincheck-1009\.venv\Lib\site-packages\ovrtx\_src\renderer.py", line 472
+in attach_ovstage
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\scene.py", line 281 in _initialize
+  File "<stdin>", line 7 in init
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\runtime.py", line 135 in rebuild
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\runtime.py", line 57 in open_document
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\warmup.py", line 27 in <lambda>
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\scene.py", line 231 in _run
+  File
+"<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py",
+line 982 in run
+  File
+"<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py",
+line 1045 in _bootstrap_inner
+  File
+"<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py",
+line 1002 in _bootstrap
+
+Thread 0x00002144 (most recent call first):
+  File
+"<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py",
+line 331 in wait
+  File "<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\concurrent\f
+utures\_base.py", line 451 in result
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\warmup.py", line 27 in main
+  File "<stdin>", line 12 in <module>
+Timeout (0:01:00)!
+Thread 0x00002f40 (most recent call first):
+  File "<worker-home>\lr-wincheck-1009\.venv\Lib\site-packages\ovrtx\_src\bindings.py", line
+1213 in attach_ovstage
+  File "<worker-home>\lr-wincheck-1009\.venv\Lib\site-packages\ovrtx\_src\renderer.py", line 472
+in attach_ovstage
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\scene.py", line 281 in _initialize
+  File "<stdin>", line 7 in init
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\runtime.py", line 135 in rebuild
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\runtime.py", line 57 in open_document
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\warmup.py", line 27 in <lambda>
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\scene.py", line 231 in _run
+  File
+"<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py",
+line 982 in run
+  File
+"<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py",
+line 1045 in _bootstrap_inner
+  File
+"<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py",
+line 1002 in _bootstrap
+
+Thread 0x00002144 (most recent call first):
+  File
+"<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py",
+line 331 in wait
+  File "<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\concurrent\f
+utures\_base.py", line 451 in result
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\warmup.py", line 27 in main
+  File "<stdin>", line 12 in <module>
+Timeout (0:01:00)!
+Thread 0x00002f40 (most recent call first):
+  File "<worker-home>\lr-wincheck-1009\.venv\Lib\site-packages\ovrtx\_src\bindings.py", line
+1213 in attach_ovstage
+  File "<worker-home>\lr-wincheck-1009\.venv\Lib\site-packages\ovrtx\_src\renderer.py", line 472
+in attach_ovstage
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\scene.py", line 281 in _initialize
+  File "<stdin>", line 7 in init
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\runtime.py", line 135 in rebuild
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\runtime.py", line 57 in open_document
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\warmup.py", line 27 in <lambda>
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\scene.py", line 231 in _run
+  File
+"<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py",
+line 982 in run
+  File
+"<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py",
+line 1045 in _bootstrap_inner
+  File
+"<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py",
+line 1002 in _bootstrap
+
+Thread 0x00002144 (most recent call first):
+  File
+"<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\threading.py",
+line 331 in wait
+  File "<worker-home>\AppData\Roaming\uv\python\cpython-3.11-windows-x86_64-none\Lib\concurrent\f
+utures\_base.py", line 451 in result
+  File "<worker-home>\lr-wincheck-1009\desktop\source\lertx\warmup.py", line 27 in main
+  File "<stdin>", line 12 in <module>
+DIAG native initialization finished 212.4220000000205
+2026-10-10T05:52:23Z [212,106ms] [Warning] [omni.rtx] DLSS increasing input dimensions: Render resolution of (371, 209) is below minimal input resolution of 300.
+{"native_warmup": "passed", "cleanup_completed": true, "seconds": 229.844}

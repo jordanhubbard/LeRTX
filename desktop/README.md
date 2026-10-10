@@ -4,8 +4,10 @@ The current SDK refresh uses OVRTX 0.5.1.385782, OVStage 0.2.1.385922, Newton
 1.6.1 and Warp 1.18.0. The source/setup ZIP is the release artifact. Current
 Linux qualification is recorded in `verification/upstream-release-review.json`
 in the repository; older cross-platform reports apply to earlier SDK snapshots.
-Fresh Windows/ARM64 validation and physical-arm qualification remain follow-up
-coverage. Native installer candidates are not included in this release.
+Windows x86-64 qualification is recorded in
+`verification/windows-qualification-review.json`. Fresh ARM64 validation and
+physical-arm qualification remain follow-up coverage. Native installer candidates
+are not included in this release.
 
 
 SO-101 USB reads, explicitly armed manual writes and measured virtual bindings
@@ -43,8 +45,9 @@ python desktop/manage.py run
 Use `python3` if that is your system's Python command. Setup selects Python
 3.11 through `uv` when available; it keeps the runtime in `.venv` and downloads
 the large native SDK wheels from PyPI/NVIDIA. It does not install GPU drivers.
-Setup then renders a real test frame and prepares native caches, with a five-minute
-deadline. First-install shader compilation can take several minutes. A failed
+Setup then renders a real test frame and prepares native caches, with a fifteen-minute
+process deadline, including up to fourteen minutes for the first frame. First-install
+Windows shader compilation can exceed five minutes. A failed
 warmup is a setup failure; check available memory and the NVIDIA driver, then
 use `python desktop/manage.py warmup` to retry after addressing the cause.
 Linux ARM64 uses NVIDIA `usd-exchange` for `pxr`; other targets use `usd-core`.

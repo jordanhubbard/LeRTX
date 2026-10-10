@@ -1,0 +1,32 @@
+qt.qpa.window: SetProcessDpiAwarenessContext() failed: Access is denied.
+Qt's default DPI awareness context is DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2. If you know what you are doing, you can overwrite this default using qt.conf (https://doc.qt.io/qt-6/highdpi.html#configuring-windows).
+test_nested_geometry_survives_publication_and_tracks_dynamics (test_robot_render_native.RobotRenderNativeTests.test_nested_geometry_survives_publication_and_tracks_dynamics) ... I: Initializing Version 2.75.1-release.7540+gl.d3c5c5b8
+I: Client ID: TQGE16XB
+I: ThreadId(02) hub_client::client::Client::new Launching client mode=Shared with_cleaner=false cache_path=None cache_size=None
+I: ThreadId(03) launch self=Launcher { discovery_lock: RwLock { lock: RwLock { inner: File { handle: 0xf30, path: "\\\\?\\<worker-home>\\AppData\\Local\\Temp\\hub-worker.lock" } } }, mode: Shared, with_cleaner: false, config_file: "<worker-home>\\AppData\\Local\\Temp\\hub-worker-C51F35D0.config.json" } cmd="hub.exe" "--mode=shared" "--write-config" "<worker-home>\\AppData\\Local\\Temp\\hub-worker-C51F35D0.config.json" "--"
+I: Not using Hub: Hub not found
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 48.582s
+
+OK
+Warp 1.18.0 initialized:
+   CUDA Toolkit 13.4, Driver 13.2
+   Devices:
+     "cpu"      : "Intel64 Family 6 Model 134 Stepping 0, GenuineIntel"
+     "cuda:0"   : "NVIDIA L40" (48 GiB, sm_89, mempool enabled)
+   Kernel cache:
+     \\?\<worker-home>\AppData\Local\NVIDIA\warp\Cache\1.18.0
+Module validate_and_correct_inertia_kernel_1ff2ac62 1ff2ac6 load on device 'cuda:0' took 2.18 ms  (cached)
+Module newton._src.geometry.bvh 58a3a49 load on device 'cuda:0' took 4.60 ms  (cached)
+Module newton._src.solvers.solver d7b7ff4 load on device 'cuda:0' took 2.97 ms  (cached)
+Module newton._src.sim.articulation cc479e3 load on device 'cuda:0' took 7.17 ms  (cached)
+Module newton._src.sim.collide f369c1a load on device 'cuda:0' took 3.78 ms  (cached)
+Module newton._src.geometry.broad_phase_nxn 0c4afcd load on device 'cuda:0' took 3.01 ms  (cached)
+Module narrow_phase_primitive_write_contact_False_False_False 6b2fd5c load on device 'cuda:0' took 2.40 ms  (cached)
+Module narrow_phase_gjk_mpr_True_False_write_contact_support_map_lean_accelerated_post_process_minkowski_only 0db84bb load on device 'cuda:0' took 2.47 ms  (cached)
+Module newton._src.geometry.narrow_phase 3519ebf load on device 'cuda:0' took 41.47 ms  (cached)
+Module newton._src.solvers.xpbd.kernels 3a6178a load on device 'cuda:0' took 4.17 ms  (cached)
+[Warning] [carb] Source: carb_profiler_nvtx_plugin was already registered.
+2026-10-10T06:00:42Z [8,296ms] [Warning] [omni.rtx] DLSS increasing input dimensions: Render resolution of (278, 174) is below minimal input resolution of 300.

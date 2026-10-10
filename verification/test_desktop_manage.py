@@ -62,6 +62,34 @@ class StartupTests(unittest.TestCase):
                 manage.setup()
         self.assertFalse(manage.setup_is_current())
 
+    def test_first_install_can_finish_after_five_minutes(self):
+        # Model a slow but successful shader compile without making CI sleep.
+        with patch.object(manage.subprocess, "Popen") as popen:
+            process = popen.return_value.__enter__.return_value
+            def completed(timeout):
+                if timeout < 600:
+                    raise subprocess.TimeoutExpired("shader preparation", timeout)
+                return 0
+            process.wait.side_effect = completed
+            manage.warmup()
+            process.kill.assert_not_called()
+
+    @unittest.skipUnless(sys.platform == "win32", "Windows process-tree cleanup")
+    def test_warmup_timeout_kills_windows_children_and_fails_setup(self):
+        self.mark_current()
+        with patch.object(manage, "run"), \
+                patch.object(manage.subprocess, "Popen") as popen, \
+                patch.object(manage.subprocess, "run") as taskkill:
+            process = popen.return_value.__enter__.return_value
+            process.pid = 12345
+            process.wait.side_effect = [subprocess.TimeoutExpired("warmup", 900), 1]
+            with self.assertRaises(subprocess.TimeoutExpired):
+                manage.setup()
+            self.assertEqual(taskkill.call_args.args[0],
+                             ["taskkill", "/PID", "12345", "/T", "/F"])
+            process.kill.assert_called_once()
+        self.assertFalse(manage.setup_is_current())
+
     def test_first_run_builds_before_launch_and_forwards_scene(self):
         events = []
         with patch.object(sys, "argv", ["manage.py", "run", "--scene", "scene with spaces.usda"]), \

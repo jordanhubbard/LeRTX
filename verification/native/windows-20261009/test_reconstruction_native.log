@@ -1,0 +1,25 @@
+qt.qpa.window: SetProcessDpiAwarenessContext() failed: Access is denied.
+Qt's default DPI awareness context is DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2. If you know what you are doing, you can overwrite this default using qt.conf (https://doc.qt.io/qt-6/highdpi.html#configuring-windows).
+test_bad_response_does_not_change_existing_stage (test_reconstruction_native.ReconstructionNativeTests.test_bad_response_does_not_change_existing_stage) ... ok
+test_draft_renders_and_edits_without_claiming_physics (test_reconstruction_native.ReconstructionNativeTests.test_draft_renders_and_edits_without_claiming_physics) ... I: Initializing Version 2.75.1-release.7540+gl.d3c5c5b8
+I: Client ID: 0TE1SNT2
+I: ThreadId(02) hub_client::client::Client::new Launching client mode=Shared with_cleaner=false cache_path=None cache_size=None
+I: ThreadId(03) launch self=Launcher { discovery_lock: RwLock { lock: RwLock { inner: File { handle: 0xefc, path: "\\\\?\\<worker-home>\\AppData\\Local\\Temp\\hub-worker.lock" } } }, mode: Shared, with_cleaner: false, config_file: "<worker-home>\\AppData\\Local\\Temp\\hub-worker-96C54929.config.json" } cmd="hub.exe" "--mode=shared" "--write-config" "<worker-home>\\AppData\\Local\\Temp\\hub-worker-96C54929.config.json" "--"
+I: Not using Hub: Hub not found
+ok
+test_edit_save_reopen_preserves_geometry_and_unverified_provenance (test_reconstruction_native.ReconstructionNativeTests.test_edit_save_reopen_preserves_geometry_and_unverified_provenance) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 30.305s
+
+OK
+Warp 1.18.0 initialized:
+   CUDA Toolkit 13.4, Driver 13.2
+   Devices:
+     "cpu"      : "Intel64 Family 6 Model 134 Stepping 0, GenuineIntel"
+     "cuda:0"   : "NVIDIA L40" (48 GiB, sm_89, mempool enabled)
+   Kernel cache:
+     \\?\<worker-home>\AppData\Local\NVIDIA\warp\Cache\1.18.0
+[Warning] [carb] Source: carb_profiler_nvtx_plugin was already registered.
+2026-10-10T05:59:13Z [7,754ms] [Warning] [omni.rtx] DLSS increasing input dimensions: Render resolution of (186, 104) is below minimal input resolution of 300.
+2026-10-10T05:59:23Z [17,248ms] [Warning] [omni.rtx] PCIe link generation current (1) and maximum (4) for device 0 don't match.
