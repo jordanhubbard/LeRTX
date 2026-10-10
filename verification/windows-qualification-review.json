@@ -229,8 +229,7 @@
     "No physical SO-101 motors or USB camera were connected for this qualification. Device workflows used serial emulators and deterministic fixtures.",
     "No Windows ARM64 result is claimed.",
     "Native Qt frames were verified in the SSH execution session; the operator desktop was not remotely driven.",
-    "Fixed setup reused caches from the initial failed warmup and successful retry; fully cleared driver-cache timing is not claimed.",
-    "GitHub authentication is invalid; publication and hosted CI are pending."
+    "Fixed setup reused caches from the initial failed warmup and successful retry; fully cleared driver-cache timing is not claimed."
   ],
   "framework_admission": {
     "receipt_identity": "sha256:cda34e10af532e2b0266684dcf078a61d733b2640efd9036d0f43fce86f82aad",
@@ -248,5 +247,22 @@
     "portable_tests": 311,
     "portable_subtests": 61,
     "reproducible_package": "passed"
+  },
+  "publication": {
+    "version": "1.1.1",
+    "url": "https://github.com/jordanhubbard/LeRTX/releases/tag/v1.1.1",
+    "revision": "ce330013f5f49d914ff154b664fc71e650101f69",
+    "main_pull_request": 18,
+    "main_ci": "passed",
+    "release_ci": "https://github.com/jordanhubbard/LeRTX/actions/runs/38033365907",
+    "release_check": "passed",
+    "verify_published": "passed",
+    "release_acceptance": {
+      "passed": 30,
+      "failed": 0,
+      "skipped": 0,
+      "receipt_identity": "sha256:46b72141bd9dcb344e89c6e5a0738700115a2c797b87fa753b4c3c5261bae66c"
+    },
+    "source_setup_sha256": "6d13bd9ea4608a99d4df1347bb0c4583656d78f9a434b305df549cc536bca793"
   }
 }

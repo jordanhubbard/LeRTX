@@ -1509,7 +1509,7 @@ queue item or let `docs/roadmap/` become a plan archive.
   - [ ] Test robot kinematics, commanded tracking, limit enforcement, leader/follower mapping, gripper motion, contacts, reset and saved-scene behavior.
   - [ ] Review real installed UI screenshots and retain current framework acceptance and model provenance.
 
-### [ ] PORT-003 — Qualify the current desktop on Windows workers
+### [x] PORT-003 — Qualify the current desktop on Windows workers
 
 - **Priority:** high
 - **Owner:** desktop application and Windows delivery
@@ -1521,6 +1521,6 @@ queue item or let `docs/roadmap/` become a plan archive.
   - [x] Diagnose and repair any reproducible Windows application or delivery defects at their owning authority. The initial native warmup exceeded the five-minute process limit; a diagnostic retry rendered and closed in 229.844 seconds. Extend setup to a fourteen-minute frame budget within a fifteen-minute process deadline, retaining Windows child-process termination and failed-receipt invalidation. Fixed setup passes with prepared caches in 21.359 seconds.
 - **Evidence:**
   - [x] Retain source-bound Windows portable, startup, native rendering and physics results with all failures and coverage limits. See `verification/windows-qualification-review.json`: 310 portable tests plus 61 subtests, one POSIX-only skip; 15 startup checks; all 17 native tests across nine isolated modules; real Shell Link create/inspect/remove; reproducible source bundle and extracted defaults. The fixed source also passes 17 guarded Linux native tests, local release checks and all 30 verifier-owned acceptance tests. The exact current receipt passes `litai verify`.
-  - [ ] If code changes are required, rerun affected platform gates and publish through the exact-commit release workflow.
+  - [x] Publish [v1.1.1](https://github.com/jordanhubbard/LeRTX/releases/tag/v1.1.1) after main PR #18 and exact release-commit CI passed. Fresh release acceptance passed all 30 checks; `litai release check` and `verify-published` passed for `ce330013f5f49d914ff154b664fc71e650101f69`, including the annotated tag and both asset hashes.
 - **Combined acceptance:** The documented `python desktop/manage.py test` command passes 327 tests with one POSIX-only skip in 801.891 seconds including process startup/shutdown. The fixed source/setup ZIP is byte-identical on Windows and macOS after restoring canonical LF bytes in the two patch-staged Python files; no application logic changed during that restoration.
-- **Next action:** Restore GitHub authentication, then land and backport the bounded warmup fix for a 1.1 maintenance release. Tracker survey and contribution sweep currently fail with HTTP 401 because the stored GitHub credential is invalid; do not publish or claim hosted CI until authentication is restored. Physical devices, Windows ARM64, fully cleared shader-cache timing and native installer delivery remain outside this evidence.
+- **Outcome:** Completed on 2026-10-10. GitHub access was restored, the bounded warmup fix landed on main and was backported to the 1.1 maintenance line, and v1.1.1 was published and verified. Physical devices, Windows ARM64, fully cleared shader-cache timing and native installer delivery remain outside this evidence.
