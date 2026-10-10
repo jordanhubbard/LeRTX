@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 1.1.1 - 2026-10-10
+
+[README.md](https://github.com/jordanhubbard/LeRTX/blob/v1.1.1/README.md)
+
 - Allow first-install NVIDIA shader preparation to exceed five minutes while
   retaining a fifteen-minute setup deadline and bounded process-tree cleanup.
 - Qualify the pinned SDK stack on Windows 11 x86-64 with real rendering and
