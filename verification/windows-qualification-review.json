@@ -1,0 +1,252 @@
+{
+  "schema": "lertx/windows-qualification-review@1",
+  "date": "2026-10-09",
+  "base_commit": "d085593018c49b83c956358221b4bd930a615343",
+  "source_binding": {
+    "baseline_files_sha256": "093c4f350ceb604f26e0844d3877cd6a743c6361dedeea363bf8aba841d94f69",
+    "baseline_matches_both_windows_workers": true,
+    "current_files_sha256": "3c14d57fa5b072b6479efc217cdc3bf52106db2683b3d73510f0d4efa971d760",
+    "application_changes": {
+      "lertx/warmup.py": {
+        "before": "4d4dcb52435c114582d66ec0b5fb744fd153f984f84db27ebc9087118621205f",
+        "after": "6282d43ecf019cc819ff31812c8157dc25b416b0e17eb23c9fa9449cc6167a86"
+      }
+    },
+    "native_runtime_and_all_application_test_modules_unchanged": true,
+    "combined_suite_staging": {
+      "warmup_py_raw_sha256": "f57acd1637c88ad3f95df1dd834564b5f1f1c651ba57af7278e92008de531058",
+      "manage_py_raw_sha256": "cdb7d9e0aa12327b813c828f8d816226eeda881e926a549f67ea1dd28507a2fb",
+      "difference": "Patch staging converted these two files to CRLF; replacing CRLF with LF exactly reproduces the repository bytes. Canonical LF files restored before final packaging/setup checks."
+    },
+    "canonical_windows_source_matches_fixed_linux_source": true
+  },
+  "workers": {
+    "portable": {
+      "os": "Windows 11 Pro",
+      "version": "10.0.26200.9457",
+      "architecture": "x86_64",
+      "python": "3.12",
+      "gpu": null
+    },
+    "native": {
+      "os": "Windows 11 Enterprise",
+      "version": "10.0.26100.6899",
+      "architecture": "x86_64",
+      "python": "3.11.16",
+      "gpu": "NVIDIA L40",
+      "driver": "595.97"
+    }
+  },
+  "portable": {
+    "modules": 40,
+    "passed": 310,
+    "subtests_passed": 61,
+    "skipped": 1,
+    "skip_reason": "POSIX-only pseudo-terminal test",
+    "failures": 0
+  },
+  "startup": {
+    "tests": 15,
+    "passed": 15,
+    "skipped": 0,
+    "log": "native/windows-20261009/startup-fixed.log"
+  },
+  "native": {
+    "modules": [
+      {
+        "name": "test_launch_native",
+        "returncode": 0,
+        "timeout": false,
+        "seconds": 203.969,
+        "log": "test_launch_native.log",
+        "tests": 3,
+        "log_sha256": "633638961716e403717fbdd429cde76d8fee95ad98852c23c74a4eee735bcb6a"
+      },
+      {
+        "name": "test_native_integration",
+        "returncode": 0,
+        "timeout": false,
+        "seconds": 24.75,
+        "log": "test_native_integration.log",
+        "tests": 3,
+        "log_sha256": "60d10eb5e16c2c7ae9994f1a3d2726d10eccee49e0ae8173a64625b74c009c0c"
+      },
+      {
+        "name": "test_photo_window_native",
+        "returncode": 0,
+        "timeout": false,
+        "seconds": 86.844,
+        "log": "test_photo_window_native.log",
+        "tests": 2,
+        "log_sha256": "b5eaaad07bc3d139db676fb8d72442540ccf4c8c07739e14758bafe6fd0c0b98"
+      },
+      {
+        "name": "test_physics_native",
+        "returncode": 0,
+        "timeout": false,
+        "seconds": 49.531,
+        "log": "test_physics_native.log",
+        "tests": 2,
+        "log_sha256": "c38b46692edce93132c41317f4b45376c28d5d492ba6d8db8488a7cffdccf941"
+      },
+      {
+        "name": "test_reconstruction_native",
+        "returncode": 0,
+        "timeout": false,
+        "seconds": 32.953,
+        "log": "test_reconstruction_native.log",
+        "tests": 3,
+        "log_sha256": "103920a0fb2e1cbcec4ba16880358dd86b465598b105af9fe4008e300a4fa556"
+      },
+      {
+        "name": "test_robot_dynamics",
+        "returncode": 0,
+        "timeout": false,
+        "seconds": 43.609,
+        "log": "test_robot_dynamics.log",
+        "tests": 1,
+        "log_sha256": "daf2427bbfbc2b85f855bf9b33a7483baf5d2c9183494f0482044cc4f50812db"
+      },
+      {
+        "name": "test_robot_render_native",
+        "returncode": 0,
+        "timeout": false,
+        "seconds": 51.156,
+        "log": "test_robot_render_native.log",
+        "tests": 1,
+        "log_sha256": "9bab8820d6e282ae17f949dbadb1bde1d824ef107105a073f2024ae450e5973e"
+      },
+      {
+        "name": "test_runtime_native",
+        "returncode": 0,
+        "timeout": false,
+        "seconds": 112.594,
+        "log": "test_runtime_native.log",
+        "tests": 1,
+        "log_sha256": "318adcd855dee9066208ce531873b18d45755d2e33488a169f54f39bafabf620"
+      },
+      {
+        "name": "test_window_native",
+        "returncode": 0,
+        "timeout": false,
+        "seconds": 37.36,
+        "log": "test_window_native.log",
+        "tests": 1,
+        "log_sha256": "eb0a4e9ac0ec783eee4e68e117c599419e12f9d3debafa1c0711438a9f2b10c9"
+      }
+    ],
+    "tests": 17,
+    "passed": true,
+    "cold_cache_qualified": false,
+    "qt_platform": "Windows native; not offscreen",
+    "screenshot": "native/windows-20261009/window.png"
+  },
+  "setup": {
+    "fresh_environment": "All hash-locked runtime dependencies installed; pip check and exact-version doctor passed.",
+    "original_first_warmup": {
+      "status": "failed",
+      "timeout_seconds": 300,
+      "trace_location": "ovrtx attach_ovstage"
+    },
+    "diagnostic_retry": {
+      "status": "passed",
+      "seconds": 229.844,
+      "cleanup_completed": true
+    },
+    "fixed_setup": {
+      "status": "passed",
+      "warmup_seconds": 21.359,
+      "cleanup_completed": true,
+      "prepared_caches_reused": true
+    },
+    "repair": {
+      "frame_budget_seconds": 840,
+      "process_deadline_seconds": 900,
+      "windows_process_tree_timeout_cleanup_regression": "passed"
+    },
+    "canonical_byte_setup": {
+      "status": "passed",
+      "warmup_seconds": 21.343,
+      "cleanup_completed": true,
+      "setup_receipt_current": true,
+      "prepared_caches_reused": true
+    }
+  },
+  "delivery": {
+    "source_bundle_reproducible": true,
+    "extracted_defaults": "passed",
+    "real_shell_link_create_inspect_remove": "passed",
+    "operator_start_menu_unchanged": true,
+    "native_installer_qualified": false,
+    "fixed_bundle_version": "1.2.0 development",
+    "windows_and_macos_zip_sha256": "cd620d2d3fee0579731ecefc92c3b63ee07a0343d86ce0e05d4855e5372a0fb6",
+    "fixed_bundle_evidence": "native/windows-20261009/package-final.log",
+    "baseline_bundle_evidence": "native/windows-20261009/package-smoke.log"
+  },
+  "combined_suite": {
+    "returncode": 0,
+    "seconds": 801.891,
+    "command": "python desktop/manage.py test",
+    "timeout_seconds": 1500,
+    "status": "passed",
+    "tests": 328,
+    "passed": 327,
+    "skipped": 1,
+    "skip_reason": "POSIX-only pseudo-terminal test",
+    "failures": 0,
+    "log": "native/windows-20261009/full-suite.log"
+  },
+  "worker_capacity": {
+    "native_initial_free_bytes": 11022901248,
+    "read_only_cleanup_candidates_bytes": 210938946,
+    "cleanup_performed": false,
+    "post_install_free_bytes": 6826442752,
+    "test_reserve_bytes": 2147483648,
+    "reserve_override": "Bounded tests reuse the installed runtime; no further large downloads or installs."
+  },
+  "retained_artifacts": {
+    "test_physics_native.log": "c38b46692edce93132c41317f4b45376c28d5d492ba6d8db8488a7cffdccf941",
+    "test_native_integration.log": "60d10eb5e16c2c7ae9994f1a3d2726d10eccee49e0ae8173a64625b74c009c0c",
+    "test_robot_render_native.log": "9bab8820d6e282ae17f949dbadb1bde1d824ef107105a073f2024ae450e5973e",
+    "test_launch_native.log": "633638961716e403717fbdd429cde76d8fee95ad98852c23c74a4eee735bcb6a",
+    "test_reconstruction_native.log": "103920a0fb2e1cbcec4ba16880358dd86b465598b105af9fe4008e300a4fa556",
+    "test_window_native.log": "eb0a4e9ac0ec783eee4e68e117c599419e12f9d3debafa1c0711438a9f2b10c9",
+    "test_photo_window_native.log": "b5eaaad07bc3d139db676fb8d72442540ccf4c8c07739e14758bafe6fd0c0b98",
+    "test_robot_dynamics.log": "daf2427bbfbc2b85f855bf9b33a7483baf5d2c9183494f0482044cc4f50812db",
+    "test_runtime_native.log": "318adcd855dee9066208ce531873b18d45755d2e33488a169f54f39bafabf620",
+    "startup-fixed.log": "353923f83ac5cffbe7b52f7da69c1366ec7c8c22a6f5b404e2b4325dccdfedf2",
+    "setup-fixed.log": "c1c91ec2508b86edaff2f4cf162957996e2fbbd97a7e284877ac53e585b7b5b1",
+    "package-smoke.log": "a2b5bb0f48e29441fb2848767977759016e2bfefceb4ed1e55f3c2d73585a962",
+    "launcher-smoke.log": "9a16a95237d1d443ca47f7dce378b6d0c8537d7dca0f43c6c81c724fdbeaecf6",
+    "window.png": "54381fb9ab903e54bee8609c9f7e1fb9822142924446f543f4ef0289bd7e9f11",
+    "setup-first-attempt.log": "e93146e250f065ff4c9277640732709a38fbd49088c1de97e1410f83dfd58672",
+    "warmup-diagnostic.log": "e2097273b78c06d2b825bebe3a95d184e119ba8733c8d8e15f058ef86122e742",
+    "full-suite.log": "074f09671500f975ae175275c4bdc43b499d32ea3f964bf6e13dded365a2e79a",
+    "package-final.log": "71e32db3b83b96545dc7d2d6082d3c5cae2cb5000315b740bb88d4ca199ca5cc",
+    "setup-final.log": "f970482549a46790f3d77932b31a1b2f7dda69663956eaf152cf288bca3c2ca3"
+  },
+  "limitations": [
+    "No physical SO-101 motors or USB camera were connected for this qualification. Device workflows used serial emulators and deterministic fixtures.",
+    "No Windows ARM64 result is claimed.",
+    "Native Qt frames were verified in the SSH execution session; the operator desktop was not remotely driven.",
+    "Fixed setup reused caches from the initial failed warmup and successful retry; fully cleared driver-cache timing is not claimed.",
+    "GitHub authentication is invalid; publication and hosted CI are pending."
+  ],
+  "framework_admission": {
+    "receipt_identity": "sha256:cda34e10af532e2b0266684dcf078a61d733b2640efd9036d0f43fce86f82aad",
+    "test_summary": {
+      "failed": 0,
+      "passed": 30,
+      "skipped": 0,
+      "total": 30
+    },
+    "finalized_candidate_identity": "sha256:a8365e86b8bc6dfaadd659c0bb2aed9ee44105e6bc0ede416270be7691ac640a"
+  },
+  "local_release_check": {
+    "status": "passed",
+    "python": "3.12.15",
+    "portable_tests": 311,
+    "portable_subtests": 61,
+    "reproducible_package": "passed"
+  }
+}

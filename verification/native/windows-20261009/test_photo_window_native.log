@@ -1,0 +1,33 @@
+qt.qpa.window: SetProcessDpiAwarenessContext() failed: Access is denied.
+Qt's default DPI awareness context is DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2. If you know what you are doing, you can overwrite this default using qt.conf (https://doc.qt.io/qt-6/highdpi.html#configuring-windows).
+test_failed_reconstruction_preserves_dirty_workspace_and_rendering (test_photo_window_native.PhotoWindowNativeTests.test_failed_reconstruction_preserves_dirty_workspace_and_rendering) ... qt.multimedia.ffmpeg: Using Qt multimedia with FFmpeg version 9.0.1 LGPL version 2.1 or later
+I: Initializing Version 2.75.1-release.7540+gl.d3c5c5b8
+I: Client ID: ID48J4OK
+I: ThreadId(02) hub_client::client::Client::new Launching client mode=Shared with_cleaner=false cache_path=None cache_size=None
+I: ThreadId(03) launch self=Launcher { discovery_lock: RwLock { lock: RwLock { inner: File { handle: 0x11ec, path: "\\\\?\\<worker-home>\\AppData\\Local\\Temp\\hub-worker.lock" } } }, mode: Shared, with_cleaner: false, config_file: "<worker-home>\\AppData\\Local\\Temp\\hub-worker-1F80FF72.config.json" } cmd="hub.exe" "--mode=shared" "--write-config" "<worker-home>\\AppData\\Local\\Temp\\hub-worker-1F80FF72.config.json" "--"
+I: Not using Hub: Hub not found
+QMainWindow::saveState(): 'objectName' not set for QToolBar 0x2bd9b017900 'Main'
+ok
+test_preview_upload_adopt_render_save_and_reopen (test_photo_window_native.PhotoWindowNativeTests.test_preview_upload_adopt_render_save_and_reopen) ... QMainWindow::saveState(): 'objectName' not set for QToolBar 0x2d0a7e92ee0 'Main'
+ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 83.654s
+
+OK
+Warp 1.18.0 initialized:
+   CUDA Toolkit 13.4, Driver 13.2
+   Devices:
+     "cpu"      : "Intel64 Family 6 Model 134 Stepping 0, GenuineIntel"
+     "cuda:0"   : "NVIDIA L40" (48 GiB, sm_89, mempool enabled)
+   Kernel cache:
+     \\?\<worker-home>\AppData\Local\NVIDIA\warp\Cache\1.18.0
+Module validate_and_correct_inertia_kernel_1ff2ac62 1ff2ac6 load on device 'cuda:0' took 5.95 ms  (cached)
+Module newton._src.geometry.bvh 58a3a49 load on device 'cuda:0' took 2.72 ms  (cached)
+Module newton._src.solvers.solver d7b7ff4 load on device 'cuda:0' took 1.71 ms  (cached)
+[Warning] [carb] Source: carb_profiler_nvtx_plugin was already registered.
+2026-10-10T05:56:59Z [8,024ms] [Warning] [omni.rtx] DLSS increasing input dimensions: Render resolution of (186, 104) is below minimal input resolution of 300.
+2026-10-10T05:57:11Z [20,469ms] [Warning] [omni.rtx] PCIe link generation current (1) and maximum (4) for device 0 don't match.
+2026-10-10T05:57:28Z [37,194ms] [Warning] [omni.rtx] PCIe link generation current (1) and maximum (4) for device 0 don't match.
+2026-10-10T05:57:44Z [53,250ms] [Warning] [omni.rtx] PCIe link generation current (1) and maximum (4) for device 0 don't match.
+2026-10-10T05:58:00Z [69,246ms] [Warning] [omni.rtx] PCIe link generation current (1) and maximum (4) for device 0 don't match.
