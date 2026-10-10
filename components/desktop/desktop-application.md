@@ -35,7 +35,11 @@ Windows contributors can also prepare and launch a checkout with one command,
 `run.ps1`, using a real Python 3.11/3.12 or uv. The desktop management `run`
 command prepares missing or stale environments before launching. Setup uses
 the pinned hash locks and succeeds only after diagnostics and a real rendered
-warmup frame pass. Reuse successful setup for unchanged inputs; changed locks,
+warmup frame pass. First-install shader preparation may exceed five minutes on
+Windows: allow up to fourteen minutes for that frame within a fifteen-minute
+process deadline, retaining bounded cleanup and Windows process-tree termination
+on timeout. This setup budget does not relax interactive/native test deadlines.
+Reuse successful setup for unchanged inputs; changed locks,
 bundled wheels, requirements or management code invalidate it. Interrupted or
 failed setup must retry and must not launch the application. Forward explicit
 scene paths and return setup/launch failures to the invoking shell. Preserve

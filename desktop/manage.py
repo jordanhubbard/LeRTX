@@ -85,7 +85,9 @@ def warmup():
     command = [str(PYTHON), "-B", "-m", "lertx.warmup"]
     with subprocess.Popen(command, cwd=SOURCE) as process:
         try:
-            result = process.wait(timeout=300)
+            # First-install Windows shader compilation can exceed five minutes.
+            # Allow the child's 14-minute frame budget plus bounded teardown.
+            result = process.wait(timeout=900)
         except subprocess.TimeoutExpired:
             if os.name == "nt":
                 # Windows venv Python delegates to another process. Killing only

@@ -1,11 +1,11 @@
 {
   "schema": "lertx/upstream-release-review@1",
-  "date": "2026-10-08",
+  "date": "2026-10-09",
   "upstream_base": "26f3f82",
   "repository": "https://github.com/jordanhubbard/LeRTX",
   "status": "passed-scoped-source-release-qualification",
   "source_binding": {
-    "qualification_version": "1.0.0",
+    "qualification_version": "1.2.0",
     "files_relative_to_desktop_source": {
       "pytest.ini": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
       "requirements.txt": "7fed1aac4593a0abb754a74efe7916c00864df530d2ed2a5cb9b0d76f575f6d9",
@@ -72,7 +72,7 @@
       "lertx/mock_ui.py": "ace0e107ebda10decb3138edbecee34c517f470ed31f26a71b7a2e45c3593dde",
       "lertx/joint_binding.py": "00d2905350dbafd23a64f62f8881784799228e0aa00a8d04e04ccceff80ece3b",
       "lertx/photo_ui.py": "8905553e1e4be3f15dbb00621651df232e8a75cce0718e29fdfb625f77214525",
-      "lertx/branding.py": "1cd4a6587dfcbe4687a4162b8ea954145c07782f5af0a229b11365c09a5b8597",
+      "lertx/branding.py": "d72d58228de1bc317664d232310d4c522c54b6893ed68b1ba56177adc91473b4",
       "lertx/hardware_ui.py": "74ff3d65e7cfa433eff326110bce7f0f2402fcf6c9e411c083a1c4462cf74c04",
       "lertx/device_control.py": "bf59d82fb8d488b0907892118ade899d43a561fdacf517dbae6a6e22633da96d",
       "lertx/robot_poses.py": "801d20e6582b4f07fb2b8b402dee04154e085ce0f9f6c62b2959d00e1a596314",
@@ -93,7 +93,7 @@
       "lertx/runtime.py": "1112351eae95d127289ea45859417df01609194acb29823c0e08b821ee213686",
       "lertx/physics.py": "e59b672c83a6ce6428a9b9f3843f55c05ec3f6f079c0a167cdc0b7f0d99d2a5e",
       "lertx/camera.py": "8f3d4cf80ebbccb99b3cad3723822d965259edad3139c3f5781f7b2b091e6810",
-      "lertx/warmup.py": "4d4dcb52435c114582d66ec0b5fb744fd153f984f84db27ebc9087118621205f",
+      "lertx/warmup.py": "6282d43ecf019cc819ff31812c8157dc25b416b0e17eb23c9fa9449cc6167a86",
       "lertx/arm_colors.py": "4a19bd006c5bea61257b48c9bf0121fd7d75375749a083098cb5b5cf9a0a7705",
       "lertx/assets.py": "4670660bc86e0e9debea8cf12039963ad5538edf1ef3db238a7aa5ed71d6a30f",
       "lertx/robot_ui.py": "643fbf12ab604e148e6ac9481e0ae99a249eb6c50768bd0bca2c22d15d483f15",
@@ -172,7 +172,7 @@
       {
         "module": "test_launch_native",
         "returncode": 0,
-        "seconds": 96.268,
+        "seconds": 97.938,
         "tests": 3,
         "guard": {
           "status": "passed",
@@ -183,17 +183,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 47644737536,
-          "minimum_available_bytes": 41666383872,
-          "seconds": 96.194,
+          "initial_available_bytes": 46339977216,
+          "minimum_available_bytes": 42459111424,
+          "seconds": 97.856,
           "returncode": 0
         },
-        "log_sha256": "7a983a0ff7ee4ad34103ed663b58b53e3de4b0bf9444e906d3abbbd3b15d06af"
+        "log_sha256": "0e393ef25b1573da85e5edf916175a0fdde3bff993f666d89b79d8eca323071d"
       },
       {
         "module": "test_native_integration",
         "returncode": 0,
-        "seconds": 13.227,
+        "seconds": 14.582,
         "tests": 3,
         "guard": {
           "status": "passed",
@@ -204,17 +204,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 47240171520,
-          "minimum_available_bytes": 42963537920,
-          "seconds": 13.151,
+          "initial_available_bytes": 47453425664,
+          "minimum_available_bytes": 42465427456,
+          "seconds": 14.505,
           "returncode": 0
         },
-        "log_sha256": "334584ad16dede3e39d5d904e88ded2b943434bffacc29dc7040b67efc58fab9"
+        "log_sha256": "c2cccc8bfee6d3f027f2f7694619cc771ef98f4256e917903936d441292f3088"
       },
       {
         "module": "test_physics_native",
         "returncode": 0,
-        "seconds": 4.397,
+        "seconds": 4.319,
         "tests": 2,
         "guard": {
           "status": "passed",
@@ -225,17 +225,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 46491693056,
-          "minimum_available_bytes": 46188859392,
-          "seconds": 4.326,
+          "initial_available_bytes": 46396997632,
+          "minimum_available_bytes": 46189490176,
+          "seconds": 4.244,
           "returncode": 0
         },
-        "log_sha256": "78e6307a2dc21709ba509a993b2635c5485ef276e4d9ff9d4fab5a3df959711a"
+        "log_sha256": "7a898e79c0652f23e00f933b5d1194f40eed96efc791fff5c567573c9f7baf36"
       },
       {
         "module": "test_robot_dynamics",
         "returncode": 0,
-        "seconds": 9.927,
+        "seconds": 11.612,
         "tests": 1,
         "guard": {
           "status": "passed",
@@ -246,17 +246,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 46569107456,
-          "minimum_available_bytes": 46249439232,
-          "seconds": 9.859,
+          "initial_available_bytes": 46547591168,
+          "minimum_available_bytes": 46070657024,
+          "seconds": 11.543,
           "returncode": 0
         },
-        "log_sha256": "74e2043684a4f9d09d491b2f8640501adc411f4ed2054d3cc560c6327a1b8200"
+        "log_sha256": "fcb2b4f1839ef9741e52bc64961e14b6c1c502bb4a5126feb7f5434ee96459dd"
       },
       {
         "module": "test_runtime_native",
         "returncode": 0,
-        "seconds": 72.826,
+        "seconds": 86.064,
         "tests": 1,
         "guard": {
           "status": "passed",
@@ -267,17 +267,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 46675197952,
-          "minimum_available_bytes": 41039048704,
-          "seconds": 72.748,
+          "initial_available_bytes": 46561361920,
+          "minimum_available_bytes": 41070469120,
+          "seconds": 85.994,
           "returncode": 0
         },
-        "log_sha256": "59650e50b6932e8f029db096802bad544f01ff950216c80c01adb67868cee75e"
+        "log_sha256": "47411ea98ed7d591403b131af1b6f4671607db01fd0569f902017d7b42e3f1f8"
       },
       {
         "module": "test_robot_render_native",
         "returncode": 0,
-        "seconds": 35.827,
+        "seconds": 36.075,
         "tests": 1,
         "guard": {
           "status": "passed",
@@ -288,17 +288,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 47709396992,
-          "minimum_available_bytes": 43360182272,
-          "seconds": 35.755,
+          "initial_available_bytes": 47247486976,
+          "minimum_available_bytes": 41544802304,
+          "seconds": 36.01,
           "returncode": 0
         },
-        "log_sha256": "1f8d59753457effcab8b58028fbbd4971aeade2aaba5b3762669920cdd4dceb8"
+        "log_sha256": "d62130ef38baabfdf7aa2ced4987d412a7ae8d57b3e28fa3a0ef7585505f5c8e"
       },
       {
         "module": "test_window_native",
         "returncode": 0,
-        "seconds": 32.073,
+        "seconds": 33.986,
         "tests": 1,
         "guard": {
           "status": "passed",
@@ -309,17 +309,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 47026417664,
-          "minimum_available_bytes": 42802089984,
-          "seconds": 32.001,
+          "initial_available_bytes": 47213101056,
+          "minimum_available_bytes": 42938277888,
+          "seconds": 33.914,
           "returncode": 0
         },
-        "log_sha256": "2a56fe47b03aba704ced7b9777e413e775ccc7ed0728034a0668fbcea978b526"
+        "log_sha256": "f8619fc029913ae3252b1bc2c346f4a1dae32ac0ed0f0077bca940caa196264e"
       },
       {
         "module": "test_reconstruction_native",
         "returncode": 0,
-        "seconds": 18.718,
+        "seconds": 17.28,
         "tests": 3,
         "guard": {
           "status": "passed",
@@ -330,17 +330,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 47424925696,
-          "minimum_available_bytes": 42915454976,
-          "seconds": 18.649,
+          "initial_available_bytes": 47299997696,
+          "minimum_available_bytes": 42759471104,
+          "seconds": 17.207,
           "returncode": 0
         },
-        "log_sha256": "678bce595d9b8deb579af9cb46218f6bc4a1edc7b128d82c261918682eabddaa"
+        "log_sha256": "0bb698afe275d23a3e01094ced43b7c563c8d6573ed7f222e7b4340ad0717649"
       },
       {
         "module": "test_photo_window_native",
         "returncode": 0,
-        "seconds": 65.32,
+        "seconds": 63.91,
         "tests": 2,
         "guard": {
           "status": "passed",
@@ -351,12 +351,12 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 47586959360,
-          "minimum_available_bytes": 42566471680,
-          "seconds": 65.249,
+          "initial_available_bytes": 47267921920,
+          "minimum_available_bytes": 41295278080,
+          "seconds": 63.838,
           "returncode": 0
         },
-        "log_sha256": "fda2f8777ba8c17240ad7ab65b3d7685089f41cbd4ba70e33228b91730d75c6d"
+        "log_sha256": "5a1d1390cb41f6ca549b55c368039ae0ff6ddc080d839e0920096e5b33343a85"
       }
     ],
     "qt_interactions": {
@@ -534,25 +534,33 @@
     }
   },
   "startup": {
-    "tests": 13,
-    "failed": 0,
-    "skipped": 1,
-    "skip_reason": "Windows-specific launcher test on macOS; covered by hosted Windows matrix"
+    "tests": 15,
+    "passed": 15,
+    "skipped": 0,
+    "log": "native/windows-20261009/startup-fixed.log"
   },
   "remaining": [
-    "Fresh Windows/ARM64 native SDK refresh, cold-cache qualification, and physical hardware qualification remain follow-up; this release does not claim those results."
+    "Fresh ARM64 SDK validation, fully cleared-cache startup timing, native installer validation and physical hardware qualification remain follow-up."
   ],
   "regressions_repaired": [
     "Preserve asynchronous right-drag targets while selection docks and inspector content update; real Qt and native RTX/Newton checks pass.",
-    "Update new upstream Qt command fixtures and declarative arm-color defaults without weakening expectations."
+    "Update new upstream Qt command fixtures and declarative arm-color defaults without weakening expectations.",
+    "Allow first-install shader preparation beyond five minutes, preserving a fifteen-minute outer deadline and Windows process-tree termination."
   ],
   "qualification_metadata_adjustments": [
     "Native suite used the same application version value 1.0.0; standard spacing and double quotes in the VERSION assignment were subsequently added for the declared release mirror parser.",
-    "The portable inspector regression wait now polls a bounded deadline instead of assuming a 50ms timer fires within 60ms."
+    "The portable inspector regression wait now polls a bounded deadline instead of assuming a 50ms timer fires within 60ms.",
+    "Windows qualification covers the unchanged rendering/runtime/test modules from d085593; the warmup-only amendment also passed fixed Windows setup and fresh guarded Linux native qualification."
   ],
   "framework_admission": {
-    "prior_combined_source_tests": 30,
-    "prior_combined_source_failed": 0,
-    "release_gate": "Final versioned authority requires a fresh verifier-owned verification/current.json before publication."
-  }
+    "test_summary": {
+      "failed": 0,
+      "passed": 30,
+      "skipped": 0,
+      "total": 30
+    },
+    "receipt_identity": "sha256:cda34e10af532e2b0266684dcf078a61d733b2640efd9036d0f43fce86f82aad",
+    "release_gate": "Current development authority passes litai verify; a prepared release still requires exact versioned authority and hosted CI."
+  },
+  "windows_qualification": "windows-qualification-review.json"
 }
