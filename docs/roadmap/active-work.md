@@ -1524,3 +1524,35 @@ queue item or let `docs/roadmap/` become a plan archive.
   - [x] Publish [v1.1.1](https://github.com/jordanhubbard/LeRTX/releases/tag/v1.1.1) after main PR #18 and exact release-commit CI passed. Fresh release acceptance passed all 30 checks; `litai release check` and `verify-published` passed for `ce330013f5f49d914ff154b664fc71e650101f69`, including the annotated tag and both asset hashes.
 - **Combined acceptance:** The documented `python desktop/manage.py test` command passes 327 tests with one POSIX-only skip in 801.891 seconds including process startup/shutdown. The fixed source/setup ZIP is byte-identical on Windows and macOS after restoring canonical LF bytes in the two patch-staged Python files; no application logic changed during that restoration.
 - **Outcome:** Completed on 2026-10-10. GitHub access was restored, the bounded warmup fix landed on main and was backported to the 1.1 maintenance line, and v1.1.1 was published and verified. Physical devices, Windows ARM64, fully cleared shader-cache timing and native installer delivery remain outside this evidence.
+
+### [ ] FRAMEWORK-001 — Migrate to published Literate AI 1.2.0
+
+- **Priority:** high
+- **Owner:** Project lineage and Standard lifecycle
+- **Direction:** Migrate LeRTX to the latest published Literate AI.
+- **Conclusion:** Use the verified 1.2.0 release wheel and public parent tag; preserve application authority and review inherited changes before applying them.
+- **Depends on:** none
+- **Implementation:**
+  - [x] Reparent to public Literate AI v1.2.0 at `04d033b9ba0379bb70f0de54bcbc6d7f244d3831` through the reviewed CLI plan.
+  - [ ] Reconcile inherited framework files to v1.2.0 after origin migration is supported.
+  - [x] Rebind the Standard lifecycle through its reviewed plan. Published 1.2.0 wheel verified against the release asset SHA-256; reviewed plan retained in `verification/framework-1.2.0-rebind-plan.json`.
+- **Evidence:**
+  - [ ] Run project validation and verification; record any remaining admission limitations.
+  - [ ] Review the migration diff and run relevant CI before landing.
+
+- **Current outcome:** Partial. The project-local published 1.2.0 CLI is installed
+  and the Standard lifecycle/runner identities are rebound. The global development
+  CLI is unchanged. Application source and prior release receipts remain intact.
+- **Blocker:** Framework update rejects the historical initialization publisher
+  with `project.update_origin_changed`. The destination does not contain the
+  recorded initialization commit; no provenance normalization was performed.
+  See the [sanitized upstream issue draft](framework-origin-migration.md).
+- **Next action:** Obtain upstream origin-migration support, reconcile scaffold
+  changes, then refresh verifier-owned acceptance before claiming full migration.
+- **Validation:** Published-wheel `litai verify` passes authority and all three
+  committed locks; source intelligence and HTML observability are configured skips.
+  The receipt gate reports `project.test_receipt_stale` after the authorized rebind.
+  Full migration and release qualification remain unchecked.
+- **Peer-work survey:** No open issues or reviews. The historical backup branch
+  remains unmerged and was preserved; the cleanup plan rejected it as too young
+  and unmerged. No branch cleanup or unrelated work collection was performed.
