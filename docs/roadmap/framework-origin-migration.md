@@ -1,7 +1,7 @@
 # Literate AI 1.2.0 migration
 
 - **Status:** completed
-- **Owning queue item:** [FRAMEWORK-001](active-work.md#framework-001-migrate-to-published-literate-ai-120)
+- **Owning queue item:** [FRAMEWORK-001](active-work.md#x-framework-001-migrate-to-published-literate-ai-120)
 - **Completion / archival evidence:** fresh acceptance, portable/package checks and hosted CI passed; [PR #20](https://github.com/jordanhubbard/LeRTX/pull/20)
 
 ## Authority decision
