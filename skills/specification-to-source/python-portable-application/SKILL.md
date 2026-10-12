@@ -5,18 +5,18 @@ metadata:
   author: "Literate AI maintainers <literate-ai-maintainers@users.noreply.github.com>"
 schema: "urn:literate-ai:schema:v1:specification-to-source-skill"
 skill_id: "python-portable-application"
-version: "1.4.10"
+version: "1.4.12"
 title: "Python portable application"
 stages:
   - "generate"
 dependencies:
   - schema: "urn:literate-ai:schema:v1:skill-reference"
     skill_id: "portable-application-implementation"
-    version: "1.8.3"
+    version: "1.8.4"
     identity:
       schema: "urn:literate-ai:schema:v1:content-identity"
       algorithm: "sha256"
-      digest: "fab3c132f6c1133b0a6aa970f20b767d194031b918af46a80f43640ca948a54d"
+      digest: "55dece8843519c6ced884d7cd9eb5d8bff04ebccef055c74c5bfcf176ccd06cd"
 limitations:
   - "Do not require standard input, a shell, or environment-specific package installation."
   - "Do not rely on repository-local modules unless the execution contract explicitly permits them."
@@ -25,11 +25,20 @@ trust: "repository-reviewed"
 ---
 # Python portable application
 
-Implement the selected Python Flavor with the standard library only. Expose a callable main at source/main.py, accept the specified positional arguments directly, return JSON-compatible values, and keep module imports portable across Linux, macOS, and Windows. Its executable wrapper must dispatch the Standard `--litai-test` and `--litai-smoke` modes, otherwise parse one complete UTF-8 JSON arguments array from argv[1], call main(*arguments), and emit only the returned JSON value plus a trailing newline on standard output. Put the native generated-test implementation at source/tests/litai_test.py and keep it independent of source/tests/manifest.json. If a build target invokes `unittest discover`, implement every discovered test as a `unittest.TestCase` method; do not emit pytest-style free test functions for that runner. Before completing generation, run the exact build system's ordinary test target and require it to discover and pass every manifest case—zero discovered tests is a failure even when the command exits successfully.
+Implement the selected Python Flavor with the standard library and any explicitly admitted native SDK imports supplied in the locked recipe. Expose a callable main at source/main.py, accept the specified positional arguments directly, return JSON-compatible values, and keep module imports portable across Linux, macOS, and Windows. Its executable wrapper must dispatch the Standard `--litai-test` and `--litai-smoke` modes, otherwise parse one complete UTF-8 JSON arguments array from argv[1], call main(*arguments), and emit only the returned JSON value plus a trailing newline on standard output. Put the native generated-test implementation at source/tests/litai_test.py and keep it independent of source/tests/manifest.json. If a build target invokes `unittest discover`, implement every discovered test as a `unittest.TestCase` method; do not emit pytest-style free test functions for that runner. Before completing generation, run the exact build system's ordinary test target and require it to discover and pass every manifest case—zero discovered tests is a failure even when the command exits successfully.
+
+When the recipe contains admitted native SDK dependencies, import their declared
+packages and use the locked public integration contracts. Do not replace a dependency
+with a generated imitation, install another version, or guess paths to SDK caches. The
+Standard lifecycle supplies the verified imports. Generate the real behavior tests and
+check syntax during generation; defer SDK-dependent execution checks, including the
+ordinary test target and `--litai-test`, to that authorized lifecycle. Do not claim
+runtime success from a syntax check or a mock. The ordinary self-check instructions
+below apply to checks that do not require those framework-supplied SDK imports.
 
 When the selected build exports one file, that file must implement normal execution,
 `--litai-test`, and `--litai-smoke` without importing any module that was not embedded in
-the export. Source-only `tests` modules are unavailable after custody is discarded; copy
+the export or supplied as an explicitly admitted SDK dependency. Source-only `tests` modules are unavailable after custody is discarded; copy
 or generate the current test dispatcher into the artifact rather than importing it at
 runtime. Exercise both framework modes against the exact exported path before completing
 generation.
@@ -41,6 +50,17 @@ the selected callable itself accept no required arguments. Never point a zipapp 
 at `_cli(argv)` or another callable that requires an argument. The build's default target
 must still create the one self-contained runnable file at the framework-supplied exact
 `EXPORT_PATH`; running tests without creating that export is not a successful build.
+
+A single-file zipapp has no directory on disk: inside it, `Path(__file__).parent` is the
+archive file itself, so opening a packaged runtime-data asset beside `__file__` fails
+with `NotADirectoryError`, not `FileNotFoundError`. Read every asset embedded in the
+archive through `pkgutil.get_data` or `importlib.resources`, which work both from the
+archive and from the source tree. Keep those assets inside an importable package and
+name that package, as in `pkgutil.get_data("app", "data/bands.json")`; a top-level
+`__main__` script has no package to resolve them from. Generated tests that substitute inline data do not
+exercise this path, so `--litai-smoke` must load the real runtime-data assets, and the
+build's test target must run `--litai-smoke` against `EXPORT_PATH` as well as
+`--litai-test`.
 
 Before completing generation, walk PATH directories in their declared order. Within
 each directory consider both `python` and `python3`, select the first compatible Python

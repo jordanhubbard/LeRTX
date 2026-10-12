@@ -24,7 +24,7 @@ timing and GPU inspection while using the application.
 
 ## Development
 
-This project is built with [Literate AI](https://github.com/NVIDIA-dev/literate-ai).
+This project is built with [Literate AI](https://github.com/jordanhubbard/literate-ai).
 The [framework flow](user/framework-flow.md) explains the specification-led lifecycle,
 and the [project map](user/project-layout.md) identifies the authority for a change.
 

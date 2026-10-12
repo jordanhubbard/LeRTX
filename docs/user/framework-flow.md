@@ -2,14 +2,22 @@
 
 [Project guide](../README.md) → framework flow
 
-LeRTX currently binds to the reviewed local Python-wheel admission patch at
-`0449e10c3a487ae21c4f606d69ee416dd853056f`. Use
-`_build/local-litai-0449/venv/bin/litai` from the project root for lifecycle commands.
-This is a non-editable, project-local wheel installation; global Litai is unchanged.
-The reviewed transition plan is retained in
-`verification/shared-wheel-rebind-plan.json`. The previous environment and plan
-are retained. Rebinding does not accept generated
-source or refresh test receipts: a new rebuild and acceptance run are required.
+LeRTX's Standard lifecycle now binds to the published Literate AI 1.2.0 wheel
+at `04d033b9ba0379bb70f0de54bcbc6d7f244d3831`. Parent lineage and framework
+update provenance select the public GitHub release. The operator explicitly
+retired the old initialization publisher. See
+[FRAMEWORK-001](../roadmap/active-work.md) for migration evidence.
+
+For this migration, use `_build/framework-migration/venv/bin/litai` from the
+project root. The environment was installed from the official
+[literate_ai-1.2.0-py3-none-any.whl](https://github.com/jordanhubbard/literate-ai/releases/download/v1.2.0/literate_ai-1.2.0-py3-none-any.whl),
+with SHA-256 `e6ece36ee714ce30b4b63fc19dc880ce4838ca157e45607a3e524850d80c9686`.
+This is a non-editable, project-local installation; global Litai is unchanged.
+The reviewed transition is retained in
+[the rebind plan](../../verification/framework-1.2.0-rebind-plan.json).
+The previous environment and plan remain available for recovery. Rebinding does
+not accept generated source or refresh test receipts: a new rebuild and acceptance
+run are required before release qualification.
 
 The desktop's Linux native candidate uses `--target linux` with
 `--flavor=-flavor://literate-ai/os-macos` and

@@ -17,7 +17,7 @@ Use `litai config paths` to obtain the destination instead of constructing an OS
 1. List MCP servers **already connected in this session** (host MCP attachments).
    Those ids are the default catalog. Ask which to opt into.
 2. Optionally consult a reachable MCP registry if one is already in session.
-   Absence of NVIDIA MaaS or any registry is not a failure and is not required.
+   Absence of an organization MCP service or any registry is not a failure and is not required.
 3. Ask which discovered ids to opt into, then run
    `litai config mcp write --server ID[:USE]` for each explicit selection. The
    typed writer owns schema validation and atomic private custody. Verify with

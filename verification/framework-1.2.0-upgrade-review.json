@@ -1,0 +1,72 @@
+{
+  "schema": "lertx/framework-upgrade-review@1",
+  "version": "1.2.0",
+  "release_commit": "04d033b9ba0379bb70f0de54bcbc6d7f244d3831",
+  "wheel_sha256": "e6ece36ee714ce30b4b63fc19dc880ce4838ca157e45607a3e524850d80c9686",
+  "publisher_transition": "operator-authorized replacement; prior GitLab origin retired",
+  "framework_applied": 6,
+  "catalog_adopted": 161,
+  "conflict_decisions": 33,
+  "repeat_update_counts": {
+    "framework": {
+      "already-current": 0,
+      "conflict": 0,
+      "local-only": 10,
+      "mergeable": 0,
+      "preserved-dynamic": 7,
+      "unchanged": 15,
+      "upstream-added": 0,
+      "upstream-only": 0
+    },
+    "repository_lineage": {
+      "already-current": 0,
+      "conflict": 0,
+      "local-only": 3,
+      "mergeable": 0,
+      "preserved-dynamic": 0,
+      "unchanged": 248,
+      "upstream-added": 0,
+      "upstream-only": 0
+    }
+  },
+  "application_source_changed": false,
+  "portable_validation": {
+    "status": "pass",
+    "platform": "Linux x86-64",
+    "pytest_invocations": 41,
+    "passed": 313,
+    "subtests_passed": 61,
+    "command": "python verification/release_check.py",
+    "reproducible_package": true,
+    "extracted_defaults": true
+  },
+  "acceptance": {
+    "passed": true,
+    "receipt_identity": "sha256:20289791d2f634be4c5b6b3e802401bba94f0f7d5ab428ba8279bc7a97910c25",
+    "project_revision_identity": "sha256:2535a15cae50c4d200d7b0a9dbe225e336adca725f835d211ec8098fb8f197fc",
+    "test_summary": {
+      "failed": 0,
+      "passed": 30,
+      "skipped": 0,
+      "total": 30
+    },
+    "component_lock_identities": [
+      "sha256:3e835cba9140d4a9252702f54ee68724a3c0f837a400d8fb9adab2059dff201b"
+    ],
+    "source_generation": {
+      "sha256:63b064546359a957473721fa8a32ca1cc723b0303767fc50c1fcafbbd101580c": "retained"
+    }
+  },
+  "hosted_ci": {
+    "revision": "f62ff1ffba94a95dc82ceebea69a470584e4bf9a",
+    "status": "pass",
+    "runs": [
+      38322046433,
+      38322085639,
+      38322085592
+    ],
+    "startup_matrix_cells": 6,
+    "security_check": "pass"
+  },
+  "formatting_review": "Published worker-health skill retains its upstream trailing blank line. All other whitespace checks pass with git -c core.whitespace=-blank-at-eof diff --check."
+}
