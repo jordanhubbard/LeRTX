@@ -19,3 +19,20 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y libegl1 libopengl0 libpulse0
       - name: Check desktop source, portable regressions and package
         run: python verification/release_check.py
+
+  framework:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Install the pinned Literate AI release
+        run: >-
+          python -m pip install
+          'literate-ai @ https://github.com/jordanhubbard/literate-ai/releases/download/v1.2.0/literate_ai-1.2.0-py3-none-any.whl#sha256=e6ece36ee714ce30b4b63fc19dc880ce4838ca157e45607a3e524850d80c9686'
+      - name: Verify framework authority, locks and acceptance receipt
+        run: |
+          litai verify > framework-verification.json
+          python -c 'import json; r=json.load(open("framework-verification.json")); print(json.dumps(r, indent=2)); assert r["ok"] and r["result"]["ok"], "Framework verification failed"'

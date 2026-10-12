@@ -5,7 +5,7 @@ metadata:
   author: "Literate AI maintainers <literate-ai-maintainers@users.noreply.github.com>"
 schema: "urn:literate-ai:schema:v1:specification-to-source-skill"
 skill_id: "bazel-build-system"
-version: "1.6.8"
+version: "1.6.9"
 title: "Bazel-preferred build-system design"
 stages:
   - "plan"
@@ -18,6 +18,7 @@ limitations:
   - "Always set main explicitly on every rules_python py_binary and py_test target. The path must name an executable Python source also present in srcs; never rely on target-name-based entrypoint inference."
   - "For aspect_rules_js js_binary and js_test, set entry_point to the executable JavaScript source. These rules do not accept srcs; place additional runtime files in data when needed."
   - "For every rules_rust rust_binary or rust_test, declare every Rust source file reachable through mod or #[path] from the crate root in srcs. A Rust module declaration does not make the file visible inside Bazel's sandbox."
+  - "Set crate_root explicitly on every rules_rust rust_binary or rust_test whose srcs list more than one Rust file. Bazel infers a root only from the default main.rs (rust_binary) or lib.rs (libtest rust_test), or a file named after the target (name.rs or crate_name.rs); a rust_test compiling main.rs plus tests/litai_test.rs without crate_root fails analysis."
   - "Do not treat this preference or its reviewed ruleset baselines as authority over an explicit Component specification or selected Flavor."
   - "Do not claim fine-grained Bazel dependency tracking when Bazel merely wraps a native build."
   - "Treat every literal bazel_dep version as a requested version subject to Bzlmod Minimal Version Selection, not proof of the final selected version."
@@ -32,6 +33,8 @@ limitations:
   - "Never embed Python, JavaScript, or another programming language inside a genrule cmd or cmd_bat string, and never use python -c there. Nested Starlark, shell, and language quoting is not a portable build contract. Generate a self-contained source entrypoint that the genrule only copies, or declare a hermetic packaging tool as an ordinary input and invoke it without inline source."
   - "Never execute an aspect_rules_js target, or any other rules_js action, from inside a genrule. js_binary requires BAZEL_BINDIR, which Bazel sets only for rules_js actions and never for a genrule, so such a build fails with `BAZEL_BINDIR must be set in environment`. Build //:litai_artifact for JavaScript with a genrule that only copies or concatenates already-generated source into run.js."
   - "Represent each direct bazel_dep request in the source CycloneDX BOM as unresolved build intent: type library, isExternal true, no version or hashes, purl exactly pkg:generic/module-name with no query, versionRange exactly vers:generic/>=requested-version, and single build-scope, build-kind, and literate-ai:bzlmod-requested-version properties. The root dependency entry must depend on that component's bom-ref."
+  - "A cc_library whose sources register themselves through static initializers (plugin registries, factory registration, test registries) rather than through a direct call from the binary's own srcs must set alwayslink = True. Bazel's default linking performs dead-code elimination (--gc-sections) and silently drops the whole translation unit otherwise: the build and link succeed, but the registered behavior is simply absent at runtime, with no error to signal it."
+  - "A cc_import whose shared_library or static_library path does not exist on disk will still report a successful bazel build if nothing forces that artifact to materialize. Bazel does not eagerly validate cc_import file existence. Do not treat a clean build of a target depending on a cc_import as proof the referenced library file actually exists; verify the path directly."
 trust: "repository-reviewed"
 ---
 # Bazel-preferred build-system design
@@ -83,6 +86,15 @@ For Rust, treat the crate root's complete module graph as declared inputs. If
 `tests/litai_test.rs` in `srcs`. Apply the same rule recursively to ordinary `mod`
 declarations and other explicit paths. Bazel does not infer these Rust source files;
 omitting one creates an incomplete sandbox even when direct `rustc` can see the file.
+
+Once `srcs` lists more than one Rust file, rules_rust must be told which one is the
+crate root. It infers the root only from the rule's default (`main.rs` for
+`rust_binary`, `lib.rs` for a `rust_test` using the libtest harness) or a file named
+after the target, `<name>.rs` or `<crate_name>.rs`. A `rust_test` named
+`behavior_test` with `srcs = ["main.rs", "tests/litai_test.rs"]` therefore fails
+analysis with "Couldn't find lib.rs or behavior_test.rs among `srcs`, please use
+`crate_root`". Set `crate_root` explicitly, for example `crate_root = "main.rs"`, on
+every `rust_binary` and `rust_test` whose `srcs` list more than one Rust file.
 
 Do not confuse two integrations: wrapping a native build under Bazel provides one coarse cached action, while native fine-grained Bazel targets provide materially better dependency tracking. Prefer fine-grained targets when they faithfully preserve ecosystem semantics, but use an honest wrapper or native build when translation would be brittle or misleading.
 

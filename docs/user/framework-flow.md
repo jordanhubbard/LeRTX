@@ -3,10 +3,10 @@
 [Project guide](../README.md) → framework flow
 
 LeRTX's Standard lifecycle now binds to the published Literate AI 1.2.0 wheel
-at `04d033b9ba0379bb70f0de54bcbc6d7f244d3831`. The migration is **partial**:
-framework scaffold reconciliation is blocked by the old initialization origin,
-and the existing test receipt is stale. See
-[FRAMEWORK-001](../roadmap/active-work.md).
+at `04d033b9ba0379bb70f0de54bcbc6d7f244d3831`. Parent lineage and framework
+update provenance select the public GitHub release. The operator explicitly
+retired the old initialization publisher. See
+[FRAMEWORK-001](../roadmap/active-work.md) for migration evidence.
 
 For this migration, use `_build/framework-migration/venv/bin/litai` from the
 project root. The environment was installed from the official

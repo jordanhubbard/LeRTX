@@ -1,0 +1,367 @@
+{
+  "conflict_reviews": [
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "docs/README.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "6cffa23fe2d1d9616a2aa66cfdd31be542284a0d8aeae270b315cbf881aeb2b0",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "keep-local",
+      "rationale": "Preserve authored product documentation, the existing greeting contract, or explicit no-fallback generation routing and matching workflow."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "docs/user/getting-started.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "533ca2dbab36f9f439d6cf66a3410319445b5812266df533e5f65ecefde36536",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "keep-local",
+      "rationale": "Preserve authored product documentation, the existing greeting contract, or explicit no-fallback generation routing and matching workflow."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "flavors/lang-python/openspec/spec.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "075bf2c41a70824f5a7c9459328b32d99f7c11e05c402df883e225f8e26e8cc8",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "flavors/os-linux/host-install/linux-debian/arm64/none.cdx.json",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "06e1c3b8a7c82e87abdab89ffdb6685f0c5bfccaef84bd5b1aba1e70e43c0751",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "flavors/os-linux/host-install/linux-debian/x86_64/none.cdx.json",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "6f9d844b15027e9e720a45c9fbf1a8e00b81ccdfdcc33b6ef8a1d6810a742dcb",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "flavors/os-macos/host-install/macos/arm64/none.cdx.json",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "4d7503ffc92558881ae00b5b4c10fa5391dc8a76b99cefcf667e09c85c3f1a10",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "flavors/os-macos/host-install/macos/x86_64/none.cdx.json",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "43b4a9a83852cd5b442798a54e05495628b09b8ee32a8fd7b1e48b2bec486150",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "flavors/os-windows/host-install/windows/x86_64/none.cdx.json",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "593a2dd44a46532bc206ec558f1c6cd00132348f26366bb31ab170393fb6342b",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "routing/production/staging/dev/routing.json",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "efad77b3db6c887b763457c669ba62465a0703f6d60fdcb118ebf85d20c9c156",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "keep-local",
+      "rationale": "Preserve authored product documentation, the existing greeting contract, or explicit no-fallback generation routing and matching workflow."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "samples/hello-component/component.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "efa25d4f9b0bd97f59292f147ca84822e098912c798d1157b84edda4ea5d9784",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "keep-local",
+      "rationale": "Preserve authored product documentation, the existing greeting contract, or explicit no-fallback generation routing and matching workflow."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/agent/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "1ababf2879891d305bac323e5abbca105fb1bf36231a4fa9e85e66825465ff55",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/agent/ci-test-plan/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "5b984452c668e27190a7b97da9da3de040898fa48b3e9a2e97cf41f78602a161",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/agent/configure-operator-mcp/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "2334e7c65e958494bb76a6afa469283dd141679b434a455bf18b11ab586de149",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/agent/configure-test-workers/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "297aa354c7f36b149839085adfa8a9cce2a1991c05f0542a64376b116d96f11f",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/agent/develop-in-production-workflow/staging/dev/survey-peer-work/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "6cc5d8da3bd8ee3afa918332275c05c17a875da407057d6175ee315711c20e94",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/agent/package-artifacts/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "7bf7fc14f66d2f732eaea8542cca006b83324dc3033feefa57b2e0e32ff6a259",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/agent/prompt-master/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "780a853e39ead0020dc36c3bcfdd745bd874ee928c28fde3b8d818637098ac93",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/agent/release-project/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "b171b66a13a2cc39f246d414d537be14dfba03f537a1cd0c80fc23d8e8783380",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/agent/release-project/ci-status/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "4b5592c697139130ea9abaf038d212ea51162335fafe76324236b61a08b123b7",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/agent/release-project/notify-descendants/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "453c0a5c903888678851a4006266f4007016d4c2e0c49abb527d4ee59b9509eb",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/agent/release-project/verify-published/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "6c00809b89a0edd8d2b5a3d2db17ecd0f0df79f725ae0c7a7c67e6316257463c",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/agent/write-mac-project-contract/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "e2db8c689d7f574677da57e41a8b9d1a77e1b888d30418ad4a5814d54d30beb2",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/specification-to-source/bazel-build-system/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "9409830ddb0f22c7a60a2818bf59897fb6ee288ff667b83f17236eeb3b2958c3",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/specification-to-source/cpp17-portable-json-application/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "773468beb477289a0cc6531c4f435a9ba37a54b3ad21dde01c5d9d54d9a43ca6",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/specification-to-source/javascript-portable-json-application/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "cb38e5073cf7833de83aab7c7e2defc2fe46f3da2ef304f7c74cd925f305bdd7",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/specification-to-source/portable-application-implementation/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "e6c8221b71838906f2d5a3ff7833c1e474f8f74797e29aa32a1f5749bfbe43c3",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/specification-to-source/python-portable-application/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "d75e84dff1ad1ae2570ef93515c34139e425cf5d1489f49230cd6bbbc7fa6deb",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/specification-to-source/python-repository-layout/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "2166d938a802a83b61fcc651d742f69ea8ee109907a138481084cb073c0421aa",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/specification-to-source/rust-portable-json-application/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "54871f5fa38470b7ef84f18fd34aea7603fae6e9a4d63745504f1e70c9af3c64",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/specification-to-source/swift-portable-json-application/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "afbfb4ec974155c8f00a78b0988cf59f41f44ae3d97d881de97dd4d128253da9",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/specification-to-source/typescript-portable-application/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "18187aef014d8c4809d50b427844547805b83f7c0a8e456df222c97a28e5d801",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "skills/specification-to-source/zig-portable-application/SKILL.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "a59336ffc745e414f4155837e4f8cc115e816e4d17339e85b9d4f150f63fec91",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "take-upstream",
+      "rationale": "Adopt the selected public 1.2.0 framework catalog as a consistent release, including mutually pinned specification skill dependencies."
+    },
+    {
+      "schema": "literate-ai/project-update-conflict-review@1",
+      "path": "workflows/production/staging/dev/workflow.md",
+      "file_identity": {
+        "algorithm": "sha256",
+        "digest": "b8ed0cb722d7702e097ffc99bf8682b6162ec013fda139aedb9f141f97e90b21",
+        "schema": "urn:literate-ai:schema:v1:content-identity"
+      },
+      "decision": "keep-local",
+      "rationale": "Preserve authored product documentation, the existing greeting contract, or explicit no-fallback generation routing and matching workflow."
+    }
+  ]
+}

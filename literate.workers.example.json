@@ -6,6 +6,7 @@
       "worker_id": "linux-example",
       "kind": "ssh",
       "target_profile": "host",
+      "slots": 1,
       "requirements": {
         "schema": "urn:literate-ai:schema:v1:execution-requirements",
         "os_family": "linux",
@@ -33,6 +34,7 @@
       "worker_id": "macos-example",
       "kind": "ssh",
       "target_profile": "host",
+      "slots": 1,
       "requirements": {
         "schema": "urn:literate-ai:schema:v1:execution-requirements",
         "os_family": "macos",
@@ -60,6 +62,7 @@
       "worker_id": "windows-example",
       "kind": "ssh",
       "target_profile": "host",
+      "slots": 1,
       "requirements": {
         "schema": "urn:literate-ai:schema:v1:execution-requirements",
         "os_family": "windows",
@@ -87,6 +90,7 @@
       "worker_id": "worker-dispatcher-example",
       "kind": "command",
       "target_profile": "host",
+      "slots": 1,
       "requirements": {
         "schema": "urn:literate-ai:schema:v1:execution-requirements",
         "os_family": null,

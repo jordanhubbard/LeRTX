@@ -12,11 +12,11 @@ stages:
 dependencies:
   - schema: "urn:literate-ai:schema:v1:skill-reference"
     skill_id: "portable-application-implementation"
-    version: "1.8.3"
+    version: "1.8.4"
     identity:
       schema: "urn:literate-ai:schema:v1:content-identity"
       algorithm: "sha256"
-      digest: "fab3c132f6c1133b0a6aa970f20b767d194031b918af46a80f43640ca948a54d"
+      digest: "55dece8843519c6ced884d7cd9eb5d8bff04ebccef055c74c5bfcf176ccd06cd"
 limitations:
   - "Do not declare or depend on an npm package unless the `package-npm` Flavor is selected. Without that Flavor, use only Node.js built-in modules; with it, use only the exact package closure admitted by `javascript-ecosystem`."
   - "Do not detect, install, or update Node.js, npm, package dependencies, or any other host tool during generation; tool discovery and dependency replay belong only to the authorized lifecycle."

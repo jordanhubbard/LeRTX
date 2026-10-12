@@ -10,7 +10,7 @@ metadata:
 Inherits `../SKILL.md`. There is no consumer registry in this repository.
 
 `litai catalog graph` is **this** project's parent provenance DAG, not a
-list of downstream pins. Do not treat it as OVStudio or any other child.
+list of downstream pins. Do not treat it as Physics Workbench sample or any other child.
 
 ## What to run
 

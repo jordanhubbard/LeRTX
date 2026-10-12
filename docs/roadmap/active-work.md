@@ -1534,25 +1534,25 @@ queue item or let `docs/roadmap/` become a plan archive.
 - **Depends on:** none
 - **Implementation:**
   - [x] Reparent to public Literate AI v1.2.0 at `04d033b9ba0379bb70f0de54bcbc6d7f244d3831` through the reviewed CLI plan.
-  - [ ] Reconcile inherited framework files to v1.2.0 after origin migration is supported.
+  - [x] Reconcile inherited framework files to v1.2.0 using the explicitly selected public publisher. Reviewed 33 conflict decisions; preserved product guides, greeting contract and no-fallback routing/workflow. Adopted the public catalog and updated exact skill dependencies.
   - [x] Rebind the Standard lifecycle through its reviewed plan. Published 1.2.0 wheel verified against the release asset SHA-256; reviewed plan retained in `verification/framework-1.2.0-rebind-plan.json`.
 - **Evidence:**
-  - [ ] Run project validation and verification; record any remaining admission limitations.
+  - [x] Run project validation and verification; record any remaining admission limitations. Fresh 1.2.0 retained-source acceptance passed all 30 checks; local `litai verify` passes authority, all three locks and the current receipt. Configured source-intelligence and HTML gates remain explicit skips.
   - [ ] Review the migration diff and run relevant CI before landing.
 
-- **Current outcome:** Partial. The project-local published 1.2.0 CLI is installed
-  and the Standard lifecycle/runner identities are rebound. The global development
-  CLI is unchanged. Application source and prior release receipts remain intact.
-- **Blocker:** Framework update rejects the historical initialization publisher
-  with `project.update_origin_changed`. The destination does not contain the
-  recorded initialization commit; no provenance normalization was performed.
-  See the [sanitized upstream issue draft](framework-origin-migration.md).
-- **Next action:** Obtain upstream origin-migration support, reconcile scaffold
-  changes, then refresh verifier-owned acceptance before claiming full migration.
-- **Validation:** Published-wheel `litai verify` passes authority and all three
-  committed locks; source intelligence and HTML observability are configured skips.
-  The receipt gate reports `project.test_receipt_stale` after the authorized rebind.
-  Full migration and release qualification remain unchecked.
+- **Current outcome:** Local upgrade complete; hosted CI and landing remain. The
+  public 1.2.0 CLI, parent lineage, initialization publisher, catalogs and Standard
+  lifecycle are current. The [migration record](framework-origin-migration.md)
+  owns reconciliation decisions. Portable validation passed 313 tests and 61
+  subtests across 41 pytest invocations, with reproducible packaging and extracted
+  defaults. `verification/framework-1.2.0-upgrade-review.json` records the evidence.
+- **Next action:** Obtain hosted CI and land the reviewed migration.
 - **Peer-work survey:** No open issues or reviews. The historical backup branch
   remains unmerged and was preserved; the cleanup plan rejected it as too young
   and unmerged. No branch cleanup or unrelated work collection was performed.
+
+- **Operator override:** Complete the upgrade using the public framework; the old
+  GitLab project and initialization origin are no longer constraints. Explicitly
+  replace initialization publisher authority, reconcile current scaffold content,
+  refresh locks and acceptance, and land through the normal review/CI workflow.
+  No upstream origin-migration feature or issue is required for this transition.

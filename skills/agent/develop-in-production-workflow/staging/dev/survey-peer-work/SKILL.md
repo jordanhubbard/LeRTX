@@ -13,6 +13,13 @@ report failures/skips; do not invent Git cleanup or merge without the operator.
 
 ## Start of cycle
 
+Resolve the owning repository's placement with
+`litai project worktree location <checkout>` before creating a worktree. Create it
+below the returned ignored `.worktrees/` root using a short name. Do not create
+sibling worktrees or place them in
+external temporary directories. Parent contribution checkouts still follow
+`record-user-directed-work` and belong under `parents/<id>/`.
+
 Prefer semantically relevant existing issues and green reviews over duplicate
 work. Inspect open tracker items as well as reviews, unmerged local and remote
 branches, and attached worktrees. Ask before switching branches; never interpret
@@ -33,5 +40,11 @@ Do not treat a branch as merged merely because a similarly named change landed;
 prove ancestry or patch equivalence, or bind it to a reviewed tracker disposition.
 Dirty, prunable, or otherwise abandoned worktrees remain explicit blockers until
 their owner resolves them or records a supported disposition.
+
+Before removing an operator-authorized redundant checkout, verify its tracked
+and untracked state, inspect ignored files for evidence or unique work, and prove
+its commits remain reachable in the owning repository. Preserve unique state
+inside that repository before removal. A separate clone also needs its refs,
+stashes, and local Git history checked; a clean checkout alone is insufficient.
 
 A local pass is not a substitute for this survey.

@@ -1,40 +1,43 @@
-# Framework origin migration blocker
+# Literate AI 1.2.0 migration
 
 - **Status:** partial
-- **Owning queue item:** [FRAMEWORK-001](active-work.md#framework-001-migrate-to-published-literate-ai-120).
-- **Completion / archival evidence:** pending while FRAMEWORK-001 remains open.
+- **Owning queue item:** [FRAMEWORK-001](active-work.md#framework-001-migrate-to-published-literate-ai-120)
+- **Completion / archival evidence:** current acceptance passed; hosted CI pending
 
-## Upstream issue draft
+## Authority decision
 
-Title: Provide a reviewed initialization-origin migration across forge hosts
+The operator explicitly retired the old GitLab project and initialization origin.
+The published public Literate AI 1.2.0 wheel and its exact GitHub release commit
+now own framework updates. This is an intentional replacement of publisher
+authority, not a claim of historical repository equivalence. The old initialization
+baseline hashes are retained only as local merge inputs; ordinary update records
+reviewed upstream bases for subsequent upgrades. No upstream issue is required.
 
-A derived project initialized from a previous GitLab distribution cannot update
-with the published GitHub distribution. `FilesystemProjectUpdateAdapter.plan`
-returns `project.update_origin_changed`. The repository succession table only
-recognizes the previous GitHub organization. Changing the repository parent does
-not migrate the separate initialization origin and baseline.
-
-Provide an explicit plan/apply migration that preserves the original origin and
-baseline, binds the expected old and proposed new identities, and requires review
-before accepting a new publisher. Do not silently treat arbitrary repository URLs
-as equivalent. Historical commits may be unavailable in the destination, so the
-plan must report that limitation and require explicit treatment of unresolved
-three-way bases and local changes.
-
-An upstream fixture should use synthetic old/new repository URLs and prove that
-ordinary update still rejects an unrecognized origin, a reviewed migration preserves
-local edits and provenance, stale plans fail, and failed validation rolls back.
-
-## Downstream evidence
-
-The official Literate AI 1.2.0 wheel SHA-256 is
-`e6ece36ee714ce30b4b63fc19dc880ce4838ca157e45607a3e524850d80c9686`.
 The release tag resolves to `04d033b9ba0379bb70f0de54bcbc6d7f244d3831`.
-The recorded initialization commit `143c268914e7168f5ded3e1271b08cefd71c2ad4`
-is unavailable through the destination GitHub commits API (HTTP 422).
-The original initialization origin and baseline remain unchanged.
+The official wheel SHA-256 is
+`e6ece36ee714ce30b4b63fc19dc880ce4838ca157e45607a3e524850d80c9686`.
+Standard lifecycle and runner identities were advanced through the reviewed
+[rebind plan](../../verification/framework-1.2.0-rebind-plan.json).
 
-Upstream searches for GitLab origin migration and initialization origin found no
-matching open issue. Closed issue #36 concerns SCP transport/base recovery rather
-than cross-forge publisher migration. Filing this draft requires external-write
-authorization; no upstream repository changes or issue posts were made.
+## Reconciliation decisions
+
+Keep LeRTX's project guide and getting-started documentation: the upstream
+versions are product-description placeholders. Adopt the reviewed Linux and
+Windows tool catalog additions for Elixir and Erlang. Apply the remaining
+framework updates and new standard catalog files with `litai update`.
+Preserve authored desktop source, specifications and project-specific Flavors.
+
+## Evidence
+
+Refresh committed resolution audits and run project validation, complete framework
+verification, retained desktop acceptance, portable regressions and hosted CI.
+Record the results in FRAMEWORK-001. Prior release and native qualification
+receipts remain historical evidence; this framework migration is not a new
+physical-hardware or native-rendering qualification claim.
+
+Fresh acceptance passed all 30 checks under the new lifecycle and local `litai
+verify` passes all enabled gates. Portable validation passed 313 tests and 61
+subtests, including reproducible packaging and extracted defaults. See
+[upgrade evidence](../../verification/framework-1.2.0-upgrade-review.json) and
+[framework verification](../../verification/framework-1.2.0-verification.json).
+A repeated update has zero conflicts and zero pending upstream changes/additions.
