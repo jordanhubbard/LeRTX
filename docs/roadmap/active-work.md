@@ -1525,7 +1525,7 @@ queue item or let `docs/roadmap/` become a plan archive.
 - **Combined acceptance:** The documented `python desktop/manage.py test` command passes 327 tests with one POSIX-only skip in 801.891 seconds including process startup/shutdown. The fixed source/setup ZIP is byte-identical on Windows and macOS after restoring canonical LF bytes in the two patch-staged Python files; no application logic changed during that restoration.
 - **Outcome:** Completed on 2026-10-10. GitHub access was restored, the bounded warmup fix landed on main and was backported to the 1.1 maintenance line, and v1.1.1 was published and verified. Physical devices, Windows ARM64, fully cleared shader-cache timing and native installer delivery remain outside this evidence.
 
-### [ ] FRAMEWORK-001 — Migrate to published Literate AI 1.2.0
+### [x] FRAMEWORK-001 — Migrate to published Literate AI 1.2.0
 
 - **Priority:** high
 - **Owner:** Project lineage and Standard lifecycle
@@ -1538,15 +1538,15 @@ queue item or let `docs/roadmap/` become a plan archive.
   - [x] Rebind the Standard lifecycle through its reviewed plan. Published 1.2.0 wheel verified against the release asset SHA-256; reviewed plan retained in `verification/framework-1.2.0-rebind-plan.json`.
 - **Evidence:**
   - [x] Run project validation and verification; record any remaining admission limitations. Fresh 1.2.0 retained-source acceptance passed all 30 checks; local `litai verify` passes authority, all three locks and the current receipt. Configured source-intelligence and HTML gates remain explicit skips.
-  - [ ] Review the migration diff and run relevant CI before landing.
+  - [x] Review the migration diff and run relevant CI before landing. [PR #20](https://github.com/jordanhubbard/LeRTX/pull/20) at `f62ff1ffba94a95dc82ceebea69a470584e4bf9a` passed both CI runs, all six Linux/Windows/macOS startup cells and the security check. Runs: `38322046433`, `38322085639`, `38322085592`.
 
-- **Current outcome:** Local upgrade complete; hosted CI and landing remain. The
+- **Current outcome:** Upgrade complete and hosted CI passed. The
   public 1.2.0 CLI, parent lineage, initialization publisher, catalogs and Standard
   lifecycle are current. The [migration record](framework-origin-migration.md)
   owns reconciliation decisions. Portable validation passed 313 tests and 61
   subtests across 41 pytest invocations, with reproducible packaging and extracted
   defaults. `verification/framework-1.2.0-upgrade-review.json` records the evidence.
-- **Next action:** Obtain hosted CI and land the reviewed migration.
+- **Landing:** [PR #20](https://github.com/jordanhubbard/LeRTX/pull/20) carries the completed migration through the configured main-branch merge gate.
 - **Peer-work survey:** No open issues or reviews. The historical backup branch
   remains unmerged and was preserved; the cleanup plan rejected it as too young
   and unmerged. No branch cleanup or unrelated work collection was performed.

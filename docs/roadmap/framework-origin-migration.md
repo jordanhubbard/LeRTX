@@ -1,8 +1,8 @@
 # Literate AI 1.2.0 migration
 
-- **Status:** partial
+- **Status:** completed
 - **Owning queue item:** [FRAMEWORK-001](active-work.md#framework-001-migrate-to-published-literate-ai-120)
-- **Completion / archival evidence:** current acceptance passed; hosted CI pending
+- **Completion / archival evidence:** fresh acceptance, portable/package checks and hosted CI passed; [PR #20](https://github.com/jordanhubbard/LeRTX/pull/20)
 
 ## Authority decision
 
@@ -29,9 +29,9 @@ Preserve authored desktop source, specifications and project-specific Flavors.
 
 ## Evidence
 
-Refresh committed resolution audits and run project validation, complete framework
-verification, retained desktop acceptance, portable regressions and hosted CI.
-Record the results in FRAMEWORK-001. Prior release and native qualification
+Committed resolution audits, project validation, complete framework verification,
+retained desktop acceptance, portable regressions and hosted CI all pass.
+FRAMEWORK-001 records the results. Prior release and native qualification
 receipts remain historical evidence; this framework migration is not a new
 physical-hardware or native-rendering qualification claim.
 

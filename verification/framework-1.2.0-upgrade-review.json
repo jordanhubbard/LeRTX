@@ -56,5 +56,17 @@
     "source_generation": {
       "sha256:63b064546359a957473721fa8a32ca1cc723b0303767fc50c1fcafbbd101580c": "retained"
     }
-  }
+  },
+  "hosted_ci": {
+    "revision": "f62ff1ffba94a95dc82ceebea69a470584e4bf9a",
+    "status": "pass",
+    "runs": [
+      38322046433,
+      38322085639,
+      38322085592
+    ],
+    "startup_matrix_cells": 6,
+    "security_check": "pass"
+  },
+  "formatting_review": "Published worker-health skill retains its upstream trailing blank line. All other whitespace checks pass with git -c core.whitespace=-blank-at-eof diff --check."
 }
