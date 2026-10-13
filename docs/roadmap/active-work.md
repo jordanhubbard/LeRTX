@@ -2,6 +2,17 @@
 
 ## Reconciled SDK release
 
+Windows contributor repair — 2026-10-13: `make build` and `make install`
+complete dependency setup and native warmup, then fail at the Unix-only `touch`
+recipe. Use the manager's successful setup receipt for build freshness, without
+modifying the Python executable. Make install repeatable for an unchanged,
+receipt-owned shortcut and retain protection for foreign or edited launchers.
+Verify the real Windows Make targets, repeated install, failure propagation and
+portable startup CI before landing this APP-001 repair.
+Local verification passes: actual build/install, repeated install, SDK warmup and
+`make run` reaching Native: ready; all 19 startup regressions pass. See
+`verification/windows-make-install-review.json`. Hosted CI and landing remain next.
+
 The operator selected `https://github.com/jordanhubbard/LeRTX` as the replacement
 release repository. Integrate its current main (including camera and recording
 work) with the SDK updates and bounded shutdown repair, then rerun portable and

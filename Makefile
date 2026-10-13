@@ -17,11 +17,6 @@ endif
 endif
 MANAGE  := $(PYTHON) desktop/manage.py
 
-VENV_PYTHON := .venv/bin/python
-ifeq ($(OS),Windows_NT)
-VENV_PYTHON := .venv/Scripts/python.exe
-endif
-
 .PHONY: help build run test doctor install uninstall package rebuild clean
 
 help:
@@ -35,16 +30,10 @@ help:
 	@echo "make rebuild    clean, then build from scratch"
 	@echo "make clean      remove .venv, dist/ and cached Python bytecode"
 
-build: $(VENV_PYTHON)
+build:
+	$(MANAGE) build
 
-# desktop/manage.py setup creates .venv on first run and installs the pinned,
-# hash-checked SDK dependencies for this platform; it is safe to re-run.
-$(VENV_PYTHON): desktop/manage.py desktop/source/requirements.txt
-	$(MANAGE) setup
-	@touch "$@"
-
-# manage.py run owns setup freshness and failure recovery. In particular, this
-# target must not inherit build's Unix-only touch recipe on Windows.
+# manage.py owns setup freshness and failure recovery for build and launch.
 run:
 	$(RUN)
 

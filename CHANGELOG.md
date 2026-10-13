@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Fix Windows `make build` and `make install` failing after successful setup
+  because the recipe required Unix `touch`. Check the setup receipt instead of
+  interpreter timestamps, and reuse unchanged checkout-owned launchers on reinstall.
+
 ## 1.2.0 - 2026-10-13
 
 [README.md](https://github.com/jordanhubbard/LeRTX/blob/v1.2.0/README.md)

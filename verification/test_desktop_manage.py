@@ -2,6 +2,7 @@
 import importlib.util
 import hashlib
 import json
+import os
 import shutil
 from pathlib import Path
 import subprocess
@@ -117,6 +118,39 @@ class StartupTests(unittest.TestCase):
                 manage.main()
         launch.assert_not_called()
 
+    def test_build_checks_receipt_and_reuses_successful_setup(self):
+        with patch.object(sys, "argv", ["manage.py", "build"]), \
+                patch.object(manage, "setup") as setup:
+            manage.main()
+            setup.assert_called_once()
+            setup.reset_mock()
+            self.mark_current()
+            manage.main()
+            setup.assert_not_called()
+
+    def test_install_checks_setup_before_creating_launcher(self):
+        events = []
+        with patch.object(sys, "argv", ["manage.py", "install"]), \
+                patch.object(manage, "setup", side_effect=lambda: events.append("setup")), \
+                patch.object(manage, "install_launcher", side_effect=lambda: events.append("install")):
+            manage.main()
+        self.assertEqual(events, ["setup", "install"])
+
+    def test_install_reuses_only_an_unchanged_owned_launcher(self):
+        destination = self.env / "LeRTX.lnk"
+        destination.write_bytes(b"existing launcher")
+        receipt = self.env / "lertx-launcher.json"
+        receipt.write_text(json.dumps({"path": str(destination),
+            "sha256": hashlib.sha256(destination.read_bytes()).hexdigest()}))
+        with patch.object(manage, "launcher_path", return_value=destination), patch.object(manage, "run") as run:
+            manage.install_launcher()
+            run.assert_not_called()
+            destination.write_bytes(b"user edited launcher")
+            with self.assertRaisesRegex(RuntimeError, "Launcher already exists"):
+                manage.install_launcher()
+            receipt.unlink()
+            with self.assertRaises(RuntimeError):manage.install_launcher()
+
     def test_robot_models_retain_their_pinned_upstream_bytes(self):
         resources = ROOT / "desktop/source/lertx/resources/so101"
         provenance = json.loads((resources / "provenance.json").read_text())
@@ -175,6 +209,30 @@ class StartupTests(unittest.TestCase):
         else:
             self.assertEqual(json.loads(marker.read_text()), ["run"])
             self.assertIn("7", result.stderr)
+
+    def test_make_build_and_install_route_without_unix_utilities(self):
+        make = shutil.which("make") or shutil.which("gmake")
+        self.assertIsNotNone(make)
+        root = self.env / "build checkout with spaces"
+        (root / "desktop").mkdir(parents=True)
+        (root / "Makefile").write_bytes((ROOT / "Makefile").read_bytes())
+        (root / "desktop/manage.py").write_text(
+            "import os,pathlib,sys; "
+            "f=pathlib.Path('commands.txt').open('a'); f.write(sys.argv[1]+'\\n'); f.close(); "
+            "sys.exit(int(os.environ.get('LERTX_TEST_EXIT','0')))", encoding="utf-8")
+        marker = root / "commands.txt"
+        for target, expected in (("build", ["build"]), ("install", ["build", "install"])):
+            with self.subTest(target=target):
+                marker.unlink(missing_ok=True)
+                result = subprocess.run([make, target, f'PYTHON="{sys.executable}"'], cwd=root,
+                    capture_output=True, text=True, timeout=60)
+                self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
+                self.assertEqual(marker.read_text().splitlines(), expected)
+        marker.unlink()
+        result = subprocess.run([make, "install", f'PYTHON="{sys.executable}"'], cwd=root,
+            env={**os.environ, "LERTX_TEST_EXIT": "7"}, capture_output=True, text=True, timeout=60)
+        self.assertEqual(result.returncode, 2, result.stdout+result.stderr)
+        self.assertEqual(marker.read_text().splitlines(), ["build"])
 
 
 if __name__ == "__main__":
