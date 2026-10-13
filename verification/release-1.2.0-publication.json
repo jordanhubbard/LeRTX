@@ -1,0 +1,49 @@
+{
+  "branch": "release/1.2.x",
+  "collateral": [],
+  "contributions": {
+    "branch_count": 1,
+    "current_milestone": "1.2.0",
+    "identity": "sha256:1cbcc94fbc8d3fba2a75e3d0863352e5a4b91fcaec825879c63304b8f0a8bb7a",
+    "issue_count": 0,
+    "ready": true,
+    "release": "1.2.0",
+    "review_count": 0,
+    "schema": "literate-ai/release-contributions@1",
+    "worktree_count": 1
+  },
+  "identity": "sha256:da4767c1131aba1044d644d00e9dd319c0b6df502b4f16f1c1167687643da6b9",
+  "prepared_release_identity": "sha256:97a3009d4b22cd43eb7cf01966cf26ea4fa15e02fd97f78472e851a5cf5a9c51",
+  "provider": "github",
+  "provider_release": {
+    "assets": [
+      {
+        "digest": "sha256:cd620d2d3fee0579731ecefc92c3b63ee07a0343d86ce0e05d4855e5372a0fb6",
+        "name": "LeRTX-1.2.0.zip",
+        "size": 51940036,
+        "state": "uploaded"
+      },
+      {
+        "digest": "sha256:9f795b9d52586aa0c5ddaac608d3529aa7354101ec0aea6ef0afd66ab7ed49b7",
+        "name": "LeRTX-1.2.0.zip.sha256",
+        "size": 82,
+        "state": "uploaded"
+      }
+    ],
+    "draft": false,
+    "notes_present": true,
+    "prerelease": false,
+    "url": "https://github.com/jordanhubbard/LeRTX/releases/tag/v1.2.0"
+  },
+  "provider_url": "https://github.com/jordanhubbard/LeRTX/releases/tag/v1.2.0",
+  "release_class": "minor",
+  "remote": "origin",
+  "remote_branch_revision": "d9b87245f12820c4314e68991afeb9ba186eaea5",
+  "remote_tag_annotated": true,
+  "remote_tag_revision": "d9b87245f12820c4314e68991afeb9ba186eaea5",
+  "revision": "d9b87245f12820c4314e68991afeb9ba186eaea5",
+  "schema": "literate-ai/release-published-verification@1",
+  "stable_predecessor": "1.1.1",
+  "tag": "v1.2.0",
+  "version": "1.2.0"
+}

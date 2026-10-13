@@ -1557,7 +1557,7 @@ queue item or let `docs/roadmap/` become a plan archive.
   refresh locks and acceptance, and land through the normal review/CI workflow.
   No upstream origin-migration feature or issue is required for this transition.
 
-### [ ] RELEASE-002 — Publish LeRTX 1.2.0
+### [x] RELEASE-002 — Publish LeRTX 1.2.0
 
 - **Priority:** high
 - **Owner:** Release policy
@@ -1565,8 +1565,12 @@ queue item or let `docs/roadmap/` become a plan archive.
 - **Conclusion:** Publish the current 1.2.0 source/setup release after exact revision checks; preserve native and physical qualification boundaries.
 - **Depends on:** none
 - **Implementation:**
-  - [ ] Prepare and land the 1.2.0 release metadata.
+  - [x] Prepare and land the 1.2.0 release metadata.
 - **Evidence:**
-  - [ ] Pass the release gate, publish required assets, and verify remote publication.
+  - [x] Pass the release gate, publish required assets, and verify remote publication.
 
-- **Release preparation evidence:** Pre-release 1.2 authority passed fresh verifier-owned retained-source acceptance (30 checks), current locks and receipt validation. Local portable qualification passed 313 tests and 61 subtests across 41 invocations; source/setup packaging is reproducible and extracted defaults pass. Next: land metadata, prepare the exact release line, run release check and publish.
+- **Release preparation evidence:** Pre-release 1.2 authority passed fresh verifier-owned retained-source acceptance (30 checks), current locks and receipt validation. Local portable qualification passed 313 tests and 61 subtests across 41 invocations; source/setup packaging is reproducible and extracted defaults pass. Release metadata landed through [PR #21](https://github.com/jordanhubbard/LeRTX/pull/21); the release line subsequently passed its exact-commit gate and publication.
+
+- **Publication:** [LeRTX v1.2.0](https://github.com/jordanhubbard/LeRTX/releases/tag/v1.2.0) is published at `d9b87245f12820c4314e68991afeb9ba186eaea5`. Exact release CI and the release gate passed. Remote verification confirms the annotated tag, release branch, nonempty notes, source/setup ZIP and checksum; see `verification/release-1.2.0-publication.json`. Post-release development advances to 1.3.0 with release state free; current acceptance and hosted CI gate its landing.
+
+- **Development continuation:** Fresh 1.3.0/free-state retained-source acceptance passed all 30 checks. Portable qualification again passed 313 tests and 61 subtests, reproducible source/setup packaging and extracted defaults. Framework authority, locks and receipt pass.
