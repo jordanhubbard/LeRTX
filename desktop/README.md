@@ -31,6 +31,12 @@ An interrupted or failed setup is retried on the next launch. Explicit `setup`
 still forces a refresh. This command launches in the invoking user's desktop
 session; a coding sandbox's desktop may not be visible to the operator.
 
+`make build` checks that same receipt and refreshes dependencies only when needed.
+`make install` prepares the environment and installs the Start Menu/desktop shortcut;
+repeating it accepts an unchanged shortcut owned by this checkout. Edited or foreign
+shortcuts require explicit removal before replacement. Neither target requires Unix
+`touch` on Windows.
+
 Use Windows 11 x86-64 or Linux x86-64/ARM64 with an NVIDIA RTX GPU and
 working NVIDIA driver. Linux ARM64 needs glibc 2.39 or newer for Qt (Ubuntu
 24.04 or newer qualifies). Install Python 3.11 or `uv`, then from the repository:

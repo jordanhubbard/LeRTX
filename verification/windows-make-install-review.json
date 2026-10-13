@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-13",
+  "platform": "Windows x86-64",
+  "cause": "Make invoked Unix touch after successful setup, preventing the install target from running",
+  "real_make_build": "passed",
+  "real_make_install": "passed",
+  "repeated_install": "passed; unchanged receipt-owned Start Menu shortcut reused",
+  "native_warmup": "passed",
+  "make_run": "Native: ready",
+  "startup_regressions": {"passed": 19},
+  "coverage": ["receipt freshness", "build/install routing", "paths with spaces", "setup failure propagation", "edited or foreign launcher protection"],
+  "physical_motor_commands": false
+}

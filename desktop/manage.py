@@ -111,6 +111,15 @@ def install_launcher():
     destination = launcher_path()
     destination.parent.mkdir(parents=True, exist_ok=True)
     if destination.exists():
+        receipt = ENVIRONMENT / "lertx-launcher.json"
+        try:
+            identity = json.loads(receipt.read_text(encoding="utf-8"))
+            if (identity["path"] == str(destination) and
+                    identity["sha256"] == hashlib.sha256(destination.read_bytes()).hexdigest()):
+                print(f"Launcher already installed: {destination}")
+                return
+        except (OSError, ValueError, KeyError, TypeError):
+            pass
         raise RuntimeError(f"Launcher already exists: {destination}. Remove it with uninstall before reinstalling.")
     if os.name == "nt":
         # PowerShell single-quoted literals escape apostrophes by doubling them.
@@ -188,7 +197,7 @@ def package():
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("setup", "doctor", "run", "test", "warmup", "install", "uninstall", "package"))
+    parser.add_argument("command", choices=("build", "setup", "doctor", "run", "test", "warmup", "install", "uninstall", "package"))
     parser.add_argument("--scene", type=Path, help="USD file to open with run")
     args = parser.parse_args()
     if args.scene and args.command != "run":
@@ -203,9 +212,12 @@ def main():
         setup()
         print("LeRTX environment ready. Run: python desktop/manage.py run")
         return
-    if args.command == "run" and not setup_is_current():
+    if args.command in ("build", "run", "install") and not setup_is_current():
         print("Preparing LeRTX for this checkout...", flush=True)
         setup()
+    if args.command == "build":
+        print("LeRTX environment ready. Run: make run")
+        return
     if not PYTHON.exists():
         raise RuntimeError("LeRTX is not installed. Run: python desktop/manage.py setup")
     if args.command == "install":
