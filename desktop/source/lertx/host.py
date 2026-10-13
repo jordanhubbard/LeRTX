@@ -12,8 +12,9 @@ _SUPPORTED_PYTHON = ((3, 11), (3, 12))
 _SUPPORTED_MACHINES = {
     "linux": ("x86_64", "amd64", "aarch64", "arm64"),
     "win32": ("x86_64", "amd64"),
+    "darwin": ("x86_64", "amd64", "arm64", "aarch64"),
 }
-_SUPPORTED_PLATFORMS = ("linux", "win32")
+_SUPPORTED_PLATFORMS = ("linux", "win32", "darwin")
 
 
 class UnsupportedHostError(RuntimeError):
@@ -30,13 +31,13 @@ def check_native_support() -> None:
         )
     if sys.platform not in _SUPPORTED_PLATFORMS:
         raise UnsupportedHostError(
-            "Native desktop execution requires Linux x86-64/ARM64 or Windows 11 x86-64; "
+            "Native desktop execution requires Linux x86-64/ARM64, Windows 11 x86-64, or macOS; "
             f"the running platform is {sys.platform!r}."
         )
     machine = platform.machine().lower()
     if machine not in _SUPPORTED_MACHINES[sys.platform]:
         raise UnsupportedHostError(
-            "Native desktop execution requires Linux x86-64/ARM64 or Windows 11 x86-64; "
+            "Native desktop execution requires Linux x86-64/ARM64, Windows 11 x86-64, or macOS; "
             f"the running host is {sys.platform}/{platform.machine()}."
         )
 

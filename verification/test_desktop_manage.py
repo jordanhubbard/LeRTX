@@ -187,6 +187,28 @@ class StartupTests(unittest.TestCase):
         self.assertEqual(result.returncode, 7, result.stderr)
         self.assertEqual(json.loads(result.stdout), ["run", "--scene", "scene with spaces.usda"])
 
+    def test_darwin_lock_omits_ovrtx_and_pins_metal(self):
+        lock = ROOT / "desktop/locks/darwin-arm64.txt"
+        self.assertTrue(lock.is_file(), "darwin-arm64 hash lock must exist")
+        text = lock.read_text()
+        self.assertNotIn("ovrtx", text)
+        self.assertNotIn("ovstage", text)
+        self.assertIn("usd-core==26.8", text)
+        self.assertIn("newton==1.6.1", text)
+        self.assertIn("warp-lang==1.18.0", text)
+        self.assertIn("pyside6==6.12.0", text)
+        self.assertIn("pyobjc-framework-metal", text.lower())
+
+    def test_darwin_launcher_is_an_executable_command_script(self):
+        destination = Path(self.directory.name) / "Applications" / "LeRTX.command"
+        with patch.object(manage.sys, "platform", "darwin"), \
+                patch.object(manage, "launcher_path", return_value=destination):
+            manage.install_launcher()
+        text = destination.read_text(encoding="utf-8")
+        self.assertTrue(text.startswith("#!/bin/bash"))
+        self.assertIn(" run", text)
+        self.assertTrue(os.access(destination, os.X_OK))
+
     def test_make_run_routes_launch_and_propagates_failure(self):
         make = shutil.which("make") or shutil.which("gmake")
         self.assertIsNotNone(make, "GNU Make is required for the startup CI gate")
@@ -203,12 +225,8 @@ class StartupTests(unittest.TestCase):
                                 cwd=root, capture_output=True, text=True, timeout=60)
         self.assertEqual(result.returncode, 2, result.stdout + result.stderr)
         self.assertFalse((root / ".venv").exists())
-        if sys.platform == "darwin":
-            self.assertIn("LeRTX cannot render on macOS", result.stderr)
-            self.assertFalse(marker.exists(), "Unsupported Mac must not start setup")
-        else:
-            self.assertEqual(json.loads(marker.read_text()), ["run"])
-            self.assertIn("7", result.stderr)
+        self.assertEqual(json.loads(marker.read_text()), ["run"])
+        self.assertIn("7", result.stderr)
 
     def test_make_build_and_install_route_without_unix_utilities(self):
         make = shutil.which("make") or shutil.which("gmake")

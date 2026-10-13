@@ -26,11 +26,10 @@ renderer states remain visible. A normal launch opens the robot workspace.
 ## Contributor checkout startup
 
 Contributors use `make run` as the common checkout entry point. On Windows it
-invokes the PowerShell launcher without Unix shell tools; on Linux it invokes
-the management setup/launch path. GNU Make and the documented Python bootstrap
-prerequisites are required. On macOS the target must fail before environment
-creation or downloads with an explanation that the pinned NVIDIA renderer is
-unavailable; portable launcher routing does not establish Mac rendering support.
+invokes the PowerShell launcher without Unix shell tools; on Linux and macOS it
+invokes the management setup/launch path. GNU Make and the documented Python
+bootstrap prerequisites are required. On macOS setup installs the Darwin hash
+lock without OVRTX/OVStage and warms up the Metal renderer.
 Windows contributors can also prepare and launch a checkout with one command,
 `run.ps1`, using a real Python 3.11/3.12 or uv. The desktop management `run`
 command prepares missing or stale environments before launching. Setup uses

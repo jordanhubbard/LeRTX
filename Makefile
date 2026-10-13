@@ -3,7 +3,8 @@
 # This wraps desktop/manage.py, the project's canonical entry point (see
 # desktop/README.md). It does not reimplement setup, packaging or test
 # logic. Requires Linux x86-64/ARM64 or Windows 11 with an NVIDIA RTX GPU
-# and driver, plus Python 3.11 or `uv` (see desktop/README.md for details).
+# and driver, or macOS 11+ with Metal, plus Python 3.11 or `uv`
+# (see desktop/README.md for details).
 
 ifeq ($(OS),Windows_NT)
 PYTHON  ?= python
@@ -11,9 +12,6 @@ RUN := powershell -NoProfile -ExecutionPolicy Bypass -File "./run.ps1"
 else
 PYTHON  ?= python3
 RUN = $(MANAGE) run
-ifeq ($(shell uname -s),Darwin)
-RUN := printf '%s\n' 'LeRTX cannot render on macOS: the pinned NVIDIA SDKs require Linux or Windows with an NVIDIA GPU.' >&2; exit 2
-endif
 endif
 MANAGE  := $(PYTHON) desktop/manage.py
 

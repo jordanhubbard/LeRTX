@@ -17,13 +17,20 @@ def report():
         check_native_support()
     except RuntimeError as error:
         problems.append(str(error))
-    expected = {"ovrtx": "0.5.1.385782", "ovstage": "0.2.1.385922",
-                "newton": "1.6.1", "warp-lang": "1.18.0",
+    from . import graphics
+    expected = {"newton": "1.6.1", "warp-lang": "1.18.0",
                 "numpy": "2.4.6" if sys.version_info < (3, 12) else "2.5.3",
                 "PySide6": "6.12.0", "PySide6-Addons": "6.12.0",
                 "PySide6-Essentials": "6.12.0", "shiboken6": "6.12.0", "pyserial": "3.5",
                 "PySide6-Pdf": "6.12.0.140", "PySide6-WebEngine": "6.12.0.140",
                 "lertx-robot-assets": "1.0.0"}
+    if graphics.backend() == "ovrtx":
+        expected["ovrtx"] = "0.5.1.385782"
+        expected["ovstage"] = "0.2.1.385922"
+    else:
+        expected["pyobjc-core"] = "12.2.2"
+        expected["pyobjc-framework-Cocoa"] = "12.2.2"
+        expected["pyobjc-framework-Metal"] = "12.2.2"
     provider = usd_distribution()
     expected[provider] = "3.0.1" if provider == "usd-exchange" else "26.8"
     installed = {}
@@ -40,19 +47,30 @@ def report():
         problems.append(f"Conflicting USD distribution {other}; recreate the isolated environment.")
     except importlib.metadata.PackageNotFoundError:
         pass
-    for module in ("pxr", "ovrtx", "ovstage", "newton", "warp", "PySide6", "serial"):
+    modules = ["pxr", "newton", "warp", "PySide6", "serial"]
+    if graphics.backend() == "ovrtx":
+        modules.extend(("ovrtx", "ovstage"))
+    else:
+        modules.append("Metal")
+    for module in modules:
         if importlib.util.find_spec(module) is None:
             problems.append(f"Missing import: {module}")
     gpu = None
-    try:
-        result = subprocess.run(["nvidia-smi", "--query-gpu=name,driver_version",
-                                 "--format=csv,noheader"], capture_output=True,
-                                text=True, timeout=15, check=True)
-        gpu = result.stdout.strip()
-        if not gpu:
-            problems.append("NVIDIA driver returned no GPU.")
-    except (OSError, subprocess.SubprocessError):
-        problems.append("NVIDIA driver unavailable: nvidia-smi failed.")
+    if graphics.backend() == "metal":
+        try:
+            gpu = graphics.device_name()
+        except RuntimeError as error:
+            problems.append(str(error))
+    else:
+        try:
+            result = subprocess.run(["nvidia-smi", "--query-gpu=name,driver_version",
+                                     "--format=csv,noheader"], capture_output=True,
+                                    text=True, timeout=15, check=True)
+            gpu = result.stdout.strip()
+            if not gpu:
+                problems.append("NVIDIA driver returned no GPU.")
+        except (OSError, subprocess.SubprocessError):
+            problems.append("NVIDIA driver unavailable: nvidia-smi failed.")
     return {"ready_for_launch": not problems, "scope": "installation-preflight-not-rendering",
             "platform": platform.system(), "architecture": platform.machine(),
             "python": platform.python_version(), "packages": installed,

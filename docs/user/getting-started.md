@@ -5,17 +5,18 @@
 ## What is this project?
 
 LeRTX is being built as a digital-twin workspace for the LeRobot SO-101 leader
-and follower. Its production targets are Linux and Windows with NVIDIA GPUs.
-The desktop application combines a rendered USD scene, Newton physics, guided
-physical-arm calibration and measured live RTX viewing. See the [runtime contract](../architecture/runtime.md).
+and follower. Its production targets are Linux and Windows with NVIDIA GPUs,
+and macOS 11+ with Metal. The desktop application combines a rendered USD scene,
+Newton physics, guided physical-arm calibration and measured live viewing.
+See the [runtime contract](../architecture/runtime.md).
 
 ## Installation
 
 The retained prototype now has an isolated setup helper and desktop/Start Menu
 launcher. From the repository, run `python desktop/manage.py setup`, then
 `python desktop/manage.py install` and `python desktop/manage.py run`.
-Python 3.11 (or `uv`) and a working NVIDIA driver are prerequisites; see
-`desktop/README.md` for Linux ARM64 and packaging details.
+Python 3.11 (or `uv`) and a working NVIDIA driver (or Metal on macOS) are
+prerequisites; see `desktop/README.md` for Linux ARM64, macOS and packaging details.
 There is no formally admitted graphical application release yet. Native SDK
 integration and application execution are tracked by RENDER-001 and PORT-001 in
 [active work](../roadmap/active-work.md). No service or hardware connection is
@@ -26,7 +27,7 @@ installed by the harness.
 ### Native development application
 
 The retained desktop application requires a provisioned Linux or Windows NVIDIA
-GPU environment with the exact SDK dependencies in
+GPU environment, or macOS with Metal, with the exact SDK dependencies in
 `desktop/source/requirements.txt`. It does not install dependencies at launch.
 See `desktop/README.md` for its source and acceptance status. From
 `desktop/source`, using that environment's Python:

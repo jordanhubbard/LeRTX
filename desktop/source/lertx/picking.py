@@ -4,11 +4,12 @@
 def pick(worker, u, v):
     import math
     import numpy as np
-    import ovrtx
+    from . import graphics
+    ovrtx = graphics.ovrtx()
     if not all(math.isfinite(n) and 0 <= n < 1 for n in (u, v)):
         raise ValueError('Pick is outside the rendered image')
     if worker._gpu_index != 0:
-        raise ValueError('Viewport picking requires CUDA-visible GPU 0 in this SDK')
+        raise ValueError('Viewport picking requires GPU 0')
     width = worker.profile['rendering']['width']
     height = worker.profile['rendering']['height']
     renderer = worker._renderer

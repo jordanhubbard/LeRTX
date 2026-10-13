@@ -2,7 +2,7 @@
 
 ## Goals
 
-Create a beautiful Windows 11, Linux x86-64 and Linux ARM64 application for NVIDIA GPUs that makes a
+Create a beautiful Windows 11, Linux x86-64, Linux ARM64 (NVIDIA GPUs) and macOS (Metal) application that makes a
 LeRobot robot and its workspace a usable digital twin. Start with the SO-101
 leader and follower, connected by USB with device discovery and persistent role
 assignment. Use Hugging Face LeRobot code and models.
@@ -12,8 +12,9 @@ assignment. Use Hugging Face LeRobot code and models.
    dependency resolution, and verified lifecycle. The operator has approved
    retaining and directly repairing generated desktop source with reviewable
    diffs and unchanged safety/acceptance requirements.
-2. **Milestone two — running 3D application:** render actual frames using OVRTX,
-   manage USD scenes through OVStage, and simulate scene bodies using Newton.
+2. **Milestone two — running 3D application:** render actual frames using OVRTX
+   on NVIDIA hosts and Metal on macOS, manage USD scenes through OVStage (or the
+   Darwin-compatible runtime stage), and simulate scene bodies using Newton.
    Provide a responsive application window, viewport, scene hierarchy, selection,
    transform inspection, and simulation play/pause/reset.
 3. **Milestone three — Astra photo-to-USD reconstruction:** reconstruct an
@@ -64,7 +65,7 @@ SO-101 devices and calibration data, but is not a milestone-three gate.
 | Area | State |
 | --- | --- |
 | Literate AI creation | Canonical application scaffold initialized with litai 1.1.0 |
-| Host development profile | Python / Make / macOS bootstrap; not a GPU product target |
+| Host development profile | Python / Make / macOS Metal viewport; NVIDIA RTX on Linux and Windows |
 | Production targets | Current 160-test suites pass on Linux ARM64 GB10, Linux x86-64 RTX 5090, Omarchy RTX 5080 Laptop, and Windows 11 L40; fresh Windows 11 RTX 5080 Laptop installation also passes all 160 tests and Start Menu launch |
 | Starter Component | Framework greeting sample; not the LeRTX application |
 | LeRTX harness Component | `components/harness`: generated, built, launched; 13 tests passed on the bootstrap Mac |

@@ -67,12 +67,23 @@ def setup():
     run([PYTHON, "-c", "from lertx.host import check_native_support; check_native_support()"], cwd=SOURCE)
     run([PYTHON, "-m", "ensurepip"])
     machine = platform.machine().lower()
-    target = "linux-arm64" if sys.platform == "linux" and machine in ("aarch64", "arm64") else (
-        "windows-x86_64" if os.name == "nt" else "linux-x86_64")
+    if sys.platform == "darwin":
+        target = "darwin-arm64" if machine in ("arm64", "aarch64") else "darwin-x86_64"
+    elif sys.platform == "linux" and machine in ("aarch64", "arm64"):
+        target = "linux-arm64"
+    elif os.name == "nt":
+        target = "windows-x86_64"
+    else:
+        target = "linux-x86_64"
     lock = ROOT / "desktop" / "locks" / f"{target}.txt"
-    run([PYTHON, "-m", "pip", "install", "--only-binary=:all:",
-         "--require-hashes", "--find-links", ROOT / "desktop/wheels", "--extra-index-url", "https://pypi.nvidia.com",
-         "-r", lock])
+    if not lock.is_file():
+        raise RuntimeError(f"No hash lock for {target}. Generate it with verification/resolve_native_locks.py.")
+    install = [PYTHON, "-m", "pip", "install", "--only-binary=:all:",
+               "--require-hashes", "--find-links", ROOT / "desktop/wheels"]
+    if sys.platform != "darwin":
+        install.extend(["--extra-index-url", "https://pypi.nvidia.com"])
+    install.extend(["-r", lock])
+    run(install)
     run([PYTHON, "-m", "pip", "check"])
     run([PYTHON, "-B", "-c", "from lertx.diagnostics import main; main()"], cwd=SOURCE)
     warmup()
@@ -104,6 +115,8 @@ def warmup():
 def launcher_path():
     if os.name == "nt":
         return Path(os.environ["APPDATA"]) / "Microsoft/Windows/Start Menu/Programs/LeRTX.lnk"
+    if sys.platform == "darwin":
+        return Path.home() / "Applications" / "LeRTX.command"
     return Path(os.environ.get("XDG_DATA_HOME", str(Path.home() / ".local/share"))) / "applications/lertx.desktop"
 
 
@@ -132,6 +145,14 @@ def install_launcher():
             f"$link.WorkingDirectory={quote(ROOT)}; $link.Description='LeRTX digital-twin workspace'; $link.Save()"
         )
         run(["powershell", "-NoProfile", "-NonInteractive", "-Command", script])
+    elif sys.platform == "darwin":
+        destination.write_text(
+            "#!/bin/bash\n"
+            f'cd {json.dumps(str(ROOT))}\n'
+            f'exec {json.dumps(str(PYTHON))} {json.dumps(str(Path(__file__).resolve()))} run\n',
+            encoding="utf-8",
+        )
+        destination.chmod(destination.stat().st_mode | 0o111)
     else:
         def quote(value):
             value = str(value)

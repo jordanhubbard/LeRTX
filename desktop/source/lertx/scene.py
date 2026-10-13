@@ -264,8 +264,9 @@ class NativeWorker:
         if usd_bootstrap is None:
             raise RuntimeError("Could not initialize OpenUSD")
         del usd_bootstrap
-        import ovrtx
-        import ovstage
+        from . import graphics
+        ovrtx = graphics.ovrtx()
+        ovstage = graphics.ovstage()
 
         # The SDK otherwise retains its backend after Renderer.destroy().
         # The worker owns that lifetime too: closing must release native work,
@@ -281,7 +282,8 @@ class NativeWorker:
         self._renderer.attach_ovstage(self._stage)
 
     def open_usd(self, absolute_usd_path: str) -> None:
-        import ovstage
+        from . import graphics
+        ovstage = graphics.ovstage()
 
         self._ordinal += 1
         ovstage.population.open_usd(self._stage, absolute_usd_path, ordinal=self._ordinal)
@@ -289,7 +291,8 @@ class NativeWorker:
 
     def publish_transforms(self, mapping: BodyMapping, matrices) -> None:
         import numpy as np
-        import ovstage
+        from . import graphics
+        ovstage = graphics.ovstage()
 
         target_paths = mapping.paths_in_index_order()
         matrices = list(matrices)
@@ -326,7 +329,8 @@ class NativeWorker:
                 self._stage.advance_write_floor(self._ordinal, ovstage.Scope.ALL).wait()
 
     def render(self, product_path: str, delta_time: float, var_path: str = "/Render/Vars/LdrColor") -> Frame:
-        import ovrtx
+        from . import graphics
+        ovrtx = graphics.ovrtx()
 
         products = self._renderer.step(
             render_products={product_path}, delta_time=delta_time, ordinal=self._ordinal

@@ -1,15 +1,11 @@
 #!/bin/bash
 # LeRTX.app/Contents/MacOS/LeRTX - double-click entry point.
 #
-# macOS is not yet a supported LeRTX rendering target (no pinned NVIDIA
-# OVRTX/Newton wheels exist for macOS, and no current Mac has an NVIDIA
-# GPU). This launcher still does real, useful work: it finds or asks for a
-# real Python 3.11/3.12, stages the bundled source into a writable location
+# Finds Python 3.11/3.12, stages the bundled source into a writable location
 # (required because Gatekeeper may run the bundle from a read-only
-# translocated path), and runs the same manage.py setup/run flow the other
-# platforms use - so the day a macOS SDK lock file exists, this wrapper
-# starts working with no changes. Until then, setup fails with a clear
-# explanation instead of a silent no-op or a buried traceback.
+# translocated path), and runs the same manage.py setup/run flow as Linux
+# and Windows. Setup installs the Darwin Metal lock and does not download
+# OVRTX or OVStage.
 set -u
 
 APP_SUPPORT="$HOME/Library/Application Support/LeRTX"
@@ -67,7 +63,7 @@ find_python() {
 
     if ! "$PYTHON_BIN" desktop/manage.py setup; then
         echo "manage.py setup failed."
-        show_dialog "LeRTX could not finish setup on this Mac.\\n\\nmacOS is not yet a supported LeRTX rendering target: the NVIDIA RTX/Newton SDK this app depends on is not published for macOS, and no current Mac has a compatible GPU.\\n\\nSee ~/Library/Logs/LeRTX/launcher.log for details." "caution"
+        show_dialog "LeRTX could not finish setup on this Mac.\\n\\nInstall Python 3.11 or 3.12 if needed, confirm this Mac has Metal, and see ~/Library/Logs/LeRTX/launcher.log for details." "caution"
         exit 1
     fi
 

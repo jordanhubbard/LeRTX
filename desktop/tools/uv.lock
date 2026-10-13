@@ -21,7 +21,7 @@ requires-dist = [
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "scipy", specifier = "==1.17.1" },
     { name = "urdf-usd-converter", specifier = "==0.3.3" },
-    { name = "usd-exchange", specifier = "==3.0.0" },
+    { name = "usd-exchange", specifier = "==3.0.1" },
     { name = "usd-validation-nvidia", specifier = "==1.22.0" },
 ]
 
@@ -199,12 +199,12 @@ wheels = [
 
 [[package]]
 name = "usd-exchange"
-version = "3.0.0"
+version = "3.0.1"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/67/34/585377aab3b09f1f039dc78db23e967814dfc669392dcb115c97c9e7b055/usd_exchange-3.0.0-cp312-cp312-manylinux_2_35_aarch64.whl", hash = "sha256:59a3b8ef4bc545c76059f7efc5fec94023e0818c5a714fae40f8e0411de79db5", size = 25988564, upload-time = "2026-08-20T21:19:27.866Z" },
-    { url = "https://files.pythonhosted.org/packages/5f/b7/746eb09779f624e593c025366f7d227f7376e0fef6226a7783ba5cff18a8/usd_exchange-3.0.0-cp312-cp312-manylinux_2_35_x86_64.whl", hash = "sha256:3d5a3ca9f6153abaf2bb4f8fda6c4026e174b6b050eb904a6e4a5bdf89a52926", size = 26729798, upload-time = "2026-08-20T21:19:50.636Z" },
-    { url = "https://files.pythonhosted.org/packages/31/43/d25c80097b3e975452bc5648b6b9fbcfe75457bf7e402cfaad9ef6730cd7/usd_exchange-3.0.0-cp312-cp312-win_amd64.whl", hash = "sha256:374499c3d06bd10f4cda2036239935222527f17e1f3ee059fc093aeb9058439b", size = 16032363, upload-time = "2026-08-20T21:20:14.5Z" },
+    { url = "https://files.pythonhosted.org/packages/0c/7f/6fc695ddc4904f9835084eb72523b3ffa82bf231d2818694fffaa9f297ce/usd_exchange-3.0.1-cp312-cp312-manylinux_2_34_aarch64.whl", hash = "sha256:687dae585ffceee4acacb19723bc6f61e9c61dcef332651be7dd230e3d99c9fb", size = 25810541, upload-time = "2026-10-07T14:46:03.864Z" },
+    { url = "https://files.pythonhosted.org/packages/05/a8/b1c3575cc72dd39d0bb7848ab3b8ee182d40c89d45c7d1da8a74c50351ae/usd_exchange-3.0.1-cp312-cp312-manylinux_2_34_x86_64.whl", hash = "sha256:67bdb602ddf86a38eb7d340cef62d2a891c84733c45f1f770d4db48961545c68", size = 26576561, upload-time = "2026-10-07T14:46:25.192Z" },
+    { url = "https://files.pythonhosted.org/packages/50/1a/896c954e8a8e625686d873525fce31291a6feccd44896e237bd8d1628d7f/usd_exchange-3.0.1-cp312-cp312-win_amd64.whl", hash = "sha256:062c1e20a47bc448a9778216136c2b0546af58275a2c65187db5efddca67c837", size = 16030931, upload-time = "2026-10-07T14:46:46.752Z" },
 ]
 
 [[package]]

@@ -7,8 +7,11 @@ This design is subordinate to the root `PROJECT.md`.
 
 The application owns its window, user interaction, session lifecycle, and project
 save state. OpenUSD owns authored scene descriptions; OVStage owns shared runtime
-scene data. OVRTX consumes that stage and produces real image frames. Newton owns
-simulation state. Body indices must map to USD prim paths using the actual importer
+scene data on NVIDIA hosts. OVRTX consumes that stage and produces real image
+frames on Linux and Windows. On macOS, `lertx.graphics` selects in-tree Metal
+modules that implement the same worker call sequence and must not import `ovrtx`
+or `ovstage`. Newton owns simulation state (`cuda:N` on NVIDIA, CPU on macOS).
+Body indices must map to USD prim paths using the actual importer
 mapping, never by slicing independently ordered arrays.
 
 One scene coordinator serializes edit and simulation publications. Each committed
@@ -65,7 +68,7 @@ application tests now pass using the verified SDK and isolated Qt installation;
 large installations remain subject to the worker's limited disk headroom.
 
 PORT-001 extends the same native application to Linux ARM64 and Arch/Omarchy.
-ARM64 uses `usd-exchange==3.0.0` as its sole `pxr` provider because the pinned
+ARM64 uses `usd-exchange==3.0.1` as its sole `pxr` provider because the pinned
 `usd-core` release has no Linux ARM64 wheel. The other SDK and Qt versions are
 unchanged; Qt requires glibc 2.39 on ARM64. `flavors/desktop-linux-arm64` binds
 the independently observed interpreter and verified native archives.

@@ -13,6 +13,8 @@ class HostTests(unittest.TestCase):
             ("linux", "aarch64", "usd-exchange"),
             ("linux", "arm64", "usd-exchange"),
             ("win32", "AMD64", "usd-core"),
+            ("darwin", "arm64", "usd-core"),
+            ("darwin", "x86_64", "usd-core"),
         ):
             for minor in (11, 12):
                 with self.subTest(system=system, machine=machine, minor=minor), \
@@ -24,7 +26,7 @@ class HostTests(unittest.TestCase):
 
     def test_unsupported_targets_fail_before_native_initialization(self):
         for system, machine, minor in (
-            ("win32", "ARM64", 11), ("darwin", "arm64", 11),
+            ("win32", "ARM64", 11), ("darwin", "ppc64", 11),
             ("linux", "i686", 11), ("linux", "aarch64", 14),
         ):
             with self.subTest(system=system, machine=machine, minor=minor), \

@@ -17,10 +17,10 @@ native viewport checks pass; physical-arm qualification is still pending.
 ## Development setup and launch
 
 Use `make run` from the repository root with GNU Make installed. On Windows it
-uses `run.ps1`; on Linux it uses `python3 desktop/manage.py run` (select another
-interpreter with `make run PYTHON=python3.11`). It builds missing or stale
-environments before launch. On macOS it exits before setup with an explanation
-that the pinned NVIDIA renderer is unavailable; see the macOS section below.
+uses `run.ps1`; on Linux and macOS it uses `python3 desktop/manage.py run`
+(select another interpreter with `make run PYTHON=python3.11`). It builds
+missing or stale environments before launch. macOS installs the Darwin hash lock
+(no OVRTX/OVStage) and warms up the Metal renderer.
 
 Windows contributors can build and launch from the repository root with
 `.\run.ps1` in PowerShell. `python desktop/manage.py run` also performs setup
@@ -38,8 +38,9 @@ shortcuts require explicit removal before replacement. Neither target requires U
 `touch` on Windows.
 
 Use Windows 11 x86-64 or Linux x86-64/ARM64 with an NVIDIA RTX GPU and
-working NVIDIA driver. Linux ARM64 needs glibc 2.39 or newer for Qt (Ubuntu
-24.04 or newer qualifies). Install Python 3.11 or `uv`, then from the repository:
+working NVIDIA driver, or macOS 11+ with Metal. Linux ARM64 needs glibc 2.39
+or newer for Qt (Ubuntu 24.04 or newer qualifies). Install Python 3.11 or `uv`,
+then from the repository:
 
 ```sh
 python desktop/manage.py setup
@@ -50,11 +51,12 @@ python desktop/manage.py run
 
 Use `python3` if that is your system's Python command. Setup selects Python
 3.11 through `uv` when available; it keeps the runtime in `.venv` and downloads
-the large native SDK wheels from PyPI/NVIDIA. It does not install GPU drivers.
+the large native SDK wheels from PyPI (and NVIDIA on Linux/Windows). It does not
+install GPU drivers. Darwin never downloads `ovrtx` or `ovstage`.
 Setup then renders a real test frame and prepares native caches, with a fifteen-minute
 process deadline, including up to fourteen minutes for the first frame. First-install
 Windows shader compilation can exceed five minutes. A failed
-warmup is a setup failure; check available memory and the NVIDIA driver, then
+warmup is a setup failure; check available memory and the GPU driver, then
 use `python desktop/manage.py warmup` to retry after addressing the cause.
 Linux ARM64 uses NVIDIA `usd-exchange` for `pxr`; other targets use `usd-core`.
 Do not install both USD distributions in the same environment.
@@ -98,12 +100,11 @@ into one executable.
 
 ### macOS app bundle
 
-**macOS is not yet a supported LeRTX rendering target.** There is no
-`desktop/locks/darwin-*.txt` — the pinned NVIDIA OVRTX/OVStage/Newton wheels
-are not published for macOS, and no current Mac has a compatible NVIDIA GPU.
-`desktop/packaging/macos/build.sh [version]` still builds a real
-`dist/LeRTX.app` (and `dist/LeRTX-<version>.dmg`) so the wrapper experience is
-ready for the day a macOS SDK path exists:
+macOS 11+ is a Metal rendering target. Setup installs `desktop/locks/darwin-arm64.txt`
+or `darwin-x86_64.txt` (usd-core, Newton on CPU, Warp, Qt, PyObjC Metal) and
+never installs OVRTX or OVStage. This is not an RTX/DLSS quality claim.
+`desktop/packaging/macos/build.sh [version]` builds `dist/LeRTX.app` and
+`dist/LeRTX-<version>.dmg`:
 
 ```sh
 desktop/packaging/macos/build.sh 0.2.0
@@ -114,12 +115,9 @@ python.org; the Xcode Command Line Tools' `/usr/bin/python3` doesn't count),
 stages the bundled source into `~/Library/Application Support/LeRTX/checkout`
 (required because Gatekeeper may run the bundle from a read-only translocated
 path), and runs the same `manage.py setup`/`run` flow as the other platforms.
-Today that setup step fails fast with a clear dialog explaining why, instead
-of silently doing nothing or downloading incompatible wheels — verified on a
-real Apple Silicon Mac. No Python auto-install is attempted here (unlike
-Windows): installing Python system-wide on macOS needs admin rights, so the
-dialog points you to python.org or `brew install python@3.11` instead of
-silently requesting elevated privileges.
+No Python auto-install is attempted (unlike Windows): installing Python
+system-wide on macOS needs admin rights, so a missing interpreter dialog points
+you to python.org or `brew install python@3.11`.
 
 `python desktop/manage.py package` creates `dist/LeRTX-prototype.zip` and a
 SHA-256 checksum. Extract the ZIP, enter `LeRTX`, and use the same setup commands.

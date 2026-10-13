@@ -20,7 +20,9 @@ def main():
     deadline = started + 840
     profile = copy.deepcopy(DEFAULT_PROFILE)
     profile["rendering"].update(width=640, height=360)
-    print("Preparing the NVIDIA renderer; first-install shader compilation may take up to 14 minutes.", flush=True)
+    from . import graphics
+    renderer = "Metal renderer" if graphics.backend() == "metal" else "NVIDIA renderer"
+    print(f"Preparing the {renderer}; first-install shader compilation may take up to 14 minutes.", flush=True)
     with tempfile.TemporaryDirectory(prefix="lertx-warmup-") as directory:
         scene = Path(directory) / "workspace.usda"
         create_default_scene(str(scene))

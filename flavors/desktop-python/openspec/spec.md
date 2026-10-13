@@ -4,23 +4,27 @@
 
 Implement `source/main.py` with callable `main(payload)` and the JSON argument
 array wrapper from the selected application implementation skill. Use Python
-3.11 or 3.12 for native GPU execution on Linux x86-64, Linux ARM64 and Windows
-11 x86-64. Linux includes Ubuntu and Arch/Omarchy; ARM64 requires glibc 2.39
-or newer for the pinned Qt wheels. The
-defaults command and portable tests must also run on the macOS bootstrap Python
-without importing unavailable native packages. Native commands must reject an
-unsupported host or Python ABI with an actionable error before SDK initialization.
+3.11 or 3.12 for native GPU execution on Linux x86-64, Linux ARM64, Windows
+11 x86-64, and macOS 11+ (Darwin arm64 and x86-64). Linux includes Ubuntu and
+Arch/Omarchy; ARM64 Linux requires glibc 2.39 or newer for the pinned Qt wheels.
+The defaults command and portable tests must also run on macOS without importing
+NVIDIA packages. Native commands must reject an unsupported host or Python ABI
+with an actionable error before SDK initialization.
 
 Use these exact runtime distributions and declare them honestly in requirements
-and the source SBOM: `ovrtx==0.5.1.385782`, `ovstage==0.2.1.385922`,
-`newton==1.6.1`, `warp-lang==1.18.0`, `numpy==2.4.6`, `usd-core==26.8`,
-`PySide6==6.12.0`, `pyserial==3.5`, and the locally supplied
-`lertx-robot-assets==1.0.0` resource wheel. The unchanged, vendored
+and the source SBOM. On Linux and Windows: `ovrtx==0.5.1.385782`,
+`ovstage==0.2.1.385922`, `newton==1.6.1`, `warp-lang==1.18.0`, `numpy==2.4.6`,
+`usd-core==26.8`, `PySide6==6.12.0`, `pyserial==3.5`, and the locally supplied
+`lertx-robot-assets==1.0.0` resource wheel. On macOS omit `ovrtx` and `ovstage`
+entirely and add `pyobjc-core==12.2.2`, `pyobjc-framework-Cocoa==12.2.2`, and
+`pyobjc-framework-Metal==12.2.2`; keep Newton, Warp, usd-core, Qt, NumPy,
+pyserial and the robot-assets wheel. Darwin must never download NVIDIA OVRTX or
+OVStage wheels. The unchanged, vendored
 `feetech-servo-sdk==1.0.0` source and license are part of the application payload,
 with archive/file hashes in `lertx/vendor/feetech/provenance.json`.
 On Linux ARM64 use `usd-exchange==3.0.1` instead of
 `usd-core`: its wheel supplies the native `pxr` bindings and OpenUSD libraries.
-Never install both USD distributions into one environment. Acquire the exact
+Never install both USD distributions into one environment. On Linux and Windows, acquire the exact
 OVRTX wheel from NVIDIA's public Python index when PyPI only provides a stub.
 Use `numpy==2.4.6` on Python 3.11 and `numpy==2.5.3` on Python 3.12;
 the latter no longer supports 3.11. Preserve both declared interpreter targets.
@@ -76,9 +80,10 @@ distinct from a verifier-admitted release artifact.
 
 #### Scenario: Native desktop target is admitted
 
-- **WHEN** the declared packages and complete dependency evidence are available on a supported NVIDIA target
+- **WHEN** the declared packages and complete dependency evidence are available on a supported NVIDIA target or on macOS with Metal
 - **THEN** the generated application opens a real Qt window and uses the native SDKs
 - **AND** missing or unsupported dependency evidence prevents execution admission
+- **AND** Darwin never installs or imports `ovrtx` or `ovstage`
 
 #### Scenario: Portable defaults are tested on the bootstrap host
 

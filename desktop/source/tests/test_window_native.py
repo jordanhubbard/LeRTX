@@ -45,7 +45,7 @@ class WindowNativeTests(unittest.TestCase):
                 self.assertGreaterEqual(window.tree.width(), 175)
                 self.assertLessEqual(window.inspector.width(), 420)
                 self.assertIn("gpu", window._diagnostics)
-                self.assertIn("ovrtx", window._diagnostics)
+                self.assertIn("renderer", window._diagnostics)
                 self.assertFalse(window.viewport_label.pixmap().isNull())
                 malformed = Path(directory)/"bad.usda"
                 malformed.write_text("invalid USD", encoding="utf-8")

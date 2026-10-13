@@ -1,8 +1,9 @@
 # Project guide
 
 LeRTX is a digital-twin application for LeRobot devices on Linux and Windows
-NVIDIA GPU machines. The first milestones establish a Literate AI harness and a
-running OVRTX / OVStage viewport with Newton physics.
+NVIDIA GPU machines and on macOS with Metal. The first milestones establish a
+Literate AI harness and a running viewport (OVRTX / OVStage on NVIDIA, Metal on
+Darwin) with Newton physics.
 
 See the [runtime contract](architecture/runtime.md) for integration boundaries
 and the required hardware acceptance evidence.

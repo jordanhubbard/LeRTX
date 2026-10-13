@@ -7,8 +7,10 @@ an external probe as application implementation.
 
 ## Renderer and runtime stage
 
-Construct `ovrtx.Renderer(config=ovrtx.RendererConfig(...))`. Renderer has no
-`device` keyword. GPU selection is `active_cuda_gpus=str(index)`; explicitly set
+Construct `ovrtx.Renderer(config=ovrtx.RendererConfig(...))` through
+`lertx.graphics.ovrtx()`. Renderer has no `device` keyword. GPU selection is
+`active_cuda_gpus=str(index)` on NVIDIA hosts; the macOS Metal shim accepts the
+same config keys and ignores CUDA-only fields. Explicitly set
 `keep_system_alive=False` on `RendererConfig` so destroying the last renderer
 also ends its rendering-system lifetime. The pinned SDK otherwise retains that
 system until process exit, which is not complete native worker shutdown.
@@ -71,7 +73,8 @@ Unsupported colliders, nonuniform sphere scale, shear, or nested rigid bodies
 must produce an affected-prim diagnostic and disable scene simulation rather
 than silently changing collision geometry.
 
-Finalize with `builder.finalize(device="cuda:N")`; allocate `model.state()` twice,
+Finalize with `builder.finalize(device=lertx.graphics.physics_device(N))`
+(`cuda:N` on NVIDIA hosts, `cpu` on macOS); allocate `model.state()` twice,
 `model.control()`, `newton.solvers.SolverXPBD(model)`,
 `newton.CollisionPipeline(model)`, and `pipeline.contacts()` once per scene rebuild.
 For each substep: clear forces on the current state; call

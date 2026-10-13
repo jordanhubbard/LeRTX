@@ -23,7 +23,9 @@ incompatible USD distributions into the application to satisfy an asset tool.
 
 ## RTX viewport
 
-OVRTX owns rendering and native picking. One native owner serializes scene
+On Linux and Windows, OVRTX owns rendering and native picking. On macOS, Metal
+implements the same owner-thread call sequence through `lertx.graphics`; do not
+import or install `ovrtx` there. One native owner serializes scene
 population, simulation, camera updates and rendering. Publish runtime state to
 OVStage with monotonically increasing ordinals; wait for completion and advance
 the write floor before consuming it. Matrix tensors are float64 and row-major. In the attached OVStage path,

@@ -65,13 +65,15 @@ class WorkerTests(unittest.TestCase):
         def bootstrap():
             events.append("usd-stage")
             return object()
+        ovrtx = SimpleNamespace(RendererConfig=lambda **kwargs: kwargs, Renderer=Renderer,
+                                SelectionGroupStyle=lambda **kwargs: kwargs)
+        ovstage = SimpleNamespace(Stage=lambda name: object())
         modules = {
             "pxr": SimpleNamespace(Usd=SimpleNamespace(Stage=SimpleNamespace(CreateInMemory=bootstrap))),
-            "ovrtx": SimpleNamespace(RendererConfig=lambda **kwargs: kwargs, Renderer=Renderer,
-                                    SelectionGroupStyle=lambda **kwargs: kwargs),
-            "ovstage": SimpleNamespace(Stage=lambda name: object()),
         }
-        with patch.dict("sys.modules", modules):
+        with patch.dict("sys.modules", modules), \
+                patch("lertx.graphics.ovrtx", return_value=ovrtx), \
+                patch("lertx.graphics.ovstage", return_value=ovstage):
             NativeWorker()._initialize()
         self.assertEqual(events, ["usd-stage", "renderer", "attach"])
         self.assertEqual(len(configurations), 1)

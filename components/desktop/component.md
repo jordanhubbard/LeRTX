@@ -77,21 +77,24 @@ actuation_enabled and remember_key. A non-object profile is a `profile` error.
 Unknown top-level command fields remain invocation errors, not profile errors.
 
 Native work has one dedicated worker owner. Initialize, mutate, render, map,
-detach, and destroy OVRTX/OVStage on that owner, not on the Qt UI thread. Bound
-pending commands and retain only the latest display frame. Shutdown stops work,
-releases mapped tensors and outstanding stage work, detaches and destroys the
-stage and renderer, then joins the worker. Repeated open/close must work.
+detach, and destroy the renderer and runtime stage on that owner, not on the Qt
+UI thread. Bound pending commands and retain only the latest display frame.
+Shutdown stops work, releases mapped tensors and outstanding stage work, detaches
+and destroys the stage and renderer, then joins the worker. Repeated open/close
+must work. On Linux and Windows the renderer is OVRTX attached to OVStage. On
+macOS the same worker APIs are satisfied by a Darwin-only Metal implementation
+that must not import, install, or link `ovrtx` or `ovstage`.
 
 ## Visual application
 
 Use a native Qt main window titled LeRTX, initially 1440 by 900 where the screen
 allows, with a restrained charcoal theme, teal selection accents, generous
-spacing, legible typography, and accessible focus states. Center the actual RTX
+spacing, legible typography, and accessible focus states. Center the actual GPU
 viewport between a searchable scene hierarchy and an object inspector. Put
 Open USD, Save, Save As, Settings and camera framing in a top toolbar and
 Play/Pause, Reset, simulation time, frame rate and native status below.
 Provide clear empty, loading, error and ready states; never show placeholder
-pixels as an RTX frame. Resize the viewport maintaining image aspect ratio.
+pixels as a rendered frame. Resize the viewport maintaining image aspect ratio.
 
 Selection through the hierarchy populates prim path/type and editable local
 translation, rotation and scale in the inspector. Label units. Unsupported
@@ -104,8 +107,9 @@ shortcuts. Unsaved changes prompt Save / Discard / Cancel on open and close.
 
 Create an original default metric Z-up scene containing a work surface, a static
 box obstacle, an orange dynamic sphere above the surface, a perspective camera
-and illumination. Use OpenUSD authored state plus a distinct OVStage runtime
-stage. OVRTX must render the runtime stage. Map each Newton body index to its
+and illumination. Use OpenUSD authored state plus a distinct runtime
+stage. The native renderer must draw that runtime stage: OVRTX on Linux and
+Windows, Metal on macOS. Map each Newton body index to its
 actual USD prim path during model construction; never zip independently ordered
 arrays. Import supported collision and rigid-body schemas from loaded USD. If
 unsupported geometry cannot be simulated, identify the affected prim and keep
@@ -125,10 +129,14 @@ Use the pinned public APIs: `ovrtx.Renderer`, `ovstage.Stage`,
 `renderer.attach_ovstage`, `ovstage.population.open_usd`,
 `stage.advance_write_floor(ordinal, ovstage.Scope.ALL).wait()`, and
 `renderer.step(render_products={product_path}, delta_time=dt, ordinal=ordinal)`.
-Copy mapped CPU DLPack frame bytes before unmapping; Qt images may not retain
-borrowed native memory. Newton 1.6 uses `newton.CollisionPipeline(model)`, its
+On macOS, `lertx.graphics` supplies Darwin-only modules that implement that same
+call sequence with Metal and `usd-core`; application code must import them
+through the facade so `import ovrtx` never runs on Darwin. Copy mapped CPU
+DLPack frame bytes before unmapping; Qt images may not retain borrowed native
+memory. Newton 1.6 uses `newton.CollisionPipeline(model)`, its
 `contacts()` allocation, `collide(state, contacts)`, and
-`SolverXPBD.step(state, next_state, control, contacts, dt)`. Release old states and
+`SolverXPBD.step(state, next_state, control, contacts, dt)`. Finalize Newton on
+`cuda:N` on NVIDIA hosts and on CPU on macOS. Release old states and
 scene resources on reload. SDK initialization alone is not native acceptance.
 
 Construct the Newton model inside the native worker, using ModelBuilder and the

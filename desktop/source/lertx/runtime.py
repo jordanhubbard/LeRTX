@@ -89,8 +89,9 @@ class SceneWorker(NativeWorker):
         self.physics = None
         self.physics_error = ""
         try:
+            from . import graphics
             self.physics = PhysicsScene(self.document.stage,
-                device=f"cuda:{self._gpu_index}", gravity=float(self.profile["physics"]["gravity_m_s2"]))
+                device=graphics.physics_device(self._gpu_index), gravity=float(self.profile["physics"]["gravity_m_s2"]))
         except SimulationDisabledError as exc:
             self.physics_error = str(exc)
         if self.physics is not None:
@@ -140,11 +141,14 @@ class SceneWorker(NativeWorker):
     def status(self):
         from pxr import UsdGeom
         import importlib.metadata
-        import warp as wp
         from .host import usd_distribution
-        diagnostics = {name: importlib.metadata.version(name) for name in
-                       ("ovrtx", "ovstage", "newton", "warp-lang", usd_distribution(), "PySide6")}
-        diagnostics["gpu"] = wp.get_device(f"cuda:{self._gpu_index}").name
+        from . import graphics
+        packages = ["newton", "warp-lang", usd_distribution(), "PySide6"]
+        if graphics.backend() == "ovrtx":
+            packages = ["ovrtx", "ovstage", *packages]
+        diagnostics = {name: importlib.metadata.version(name) for name in packages}
+        diagnostics["renderer"] = graphics.backend()
+        diagnostics["gpu"] = graphics.device_name(self._gpu_index)
         diagnostics["workspace"] = str(self.document.path.parent)
         diagnostics["temporary_directory"] = tempfile.gettempdir()
         world = self.document.stage.GetPrimAtPath("/World")
@@ -330,8 +334,9 @@ class SceneWorker(NativeWorker):
         self.physics = None
         self.physics_error = ""
         try:
+            from . import graphics
             self.physics = PhysicsScene(self.document.stage,
-                device=f"cuda:{self._gpu_index}", gravity=float(self.profile["physics"]["gravity_m_s2"]))
+                device=graphics.physics_device(self._gpu_index), gravity=float(self.profile["physics"]["gravity_m_s2"]))
         except SimulationDisabledError as exc:
             self.physics_error = str(exc)
         if self.physics is not None:

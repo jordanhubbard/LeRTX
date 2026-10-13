@@ -1585,3 +1585,39 @@ queue item or let `docs/roadmap/` become a plan archive.
 - **Publication:** [LeRTX v1.2.0](https://github.com/jordanhubbard/LeRTX/releases/tag/v1.2.0) is published at `d9b87245f12820c4314e68991afeb9ba186eaea5`. Exact release CI and the release gate passed. Remote verification confirms the annotated tag, release branch, nonempty notes, source/setup ZIP and checksum; see `verification/release-1.2.0-publication.json`. Post-release development advances to 1.3.0 with release state free; current acceptance and hosted CI gate its landing.
 
 - **Development continuation:** Fresh 1.3.0/free-state retained-source acceptance passed all 30 checks. Portable qualification again passed 313 tests and 61 subtests, reproducible source/setup packaging and extracted defaults. Framework authority, locks and receipt pass.
+
+### [x] TOOLS-001 — Slide tools usd-exchange pin to 3.0.1
+
+- **Priority:** medium
+- **Owner:** desktop asset tools and architecture documentation
+- **Direction:** Slide remaining NVIDIA library pins forward to the latest public versions. The application already pins usd-exchange 3.0.1 on ARM64; the isolated conversion tools still pin 3.0.0.
+- **Conclusion:** Advance only the lagging tools pin to usd-exchange==3.0.1, regenerate desktop/tools/uv.lock, and correct architecture docs that still state 3.0.0 as current ARM64 policy. Leave historical verification JSON, robot USD bytes, runtime OVRTX/OVStage/Newton pins, and prerelease Newton 1.7.0rc1 unchanged.
+- **Depends on:** none
+- **Implementation:**
+  - [x] Pin desktop/tools usd-exchange to 3.0.1 and regenerate the tools uv.lock from public indexes.
+  - [x] Correct docs/architecture/runtime.md so current ARM64 policy names usd-exchange 3.0.1.
+- **Evidence:**
+  - [x] desktop/tools/pyproject.toml and uv.lock declare usd-exchange==3.0.1.
+    `uv lock --project desktop/tools` resolved usd-exchange v3.0.0 -> v3.0.1 from PyPI; lock wheels are `usd_exchange-3.0.1-cp312-cp312-manylinux_2_34_{aarch64,x86_64}.whl` and `win_amd64`.
+  - [x] docs/architecture/runtime.md states the current ARM64 provider as usd-exchange==3.0.1.
+
+### [x] MAC-001 — macOS Metal renderer replacing OVRTX
+
+- **Priority:** high
+- **Owner:** Desktop Component, desktop-python Flavor, and native host delivery
+- **Direction:** On macOS, where RTX is unsupported, create a native Metal 3D renderer that replaces OVRTX. Do not compile or install ovrtx into the macOS binary at all; use Metal instead. An OVRTX-compatible API shim to Metal is acceptable so the rest of the scene session stays clean.
+- **Conclusion:** Admit Darwin arm64/x86-64 as a native target that renders with Metal and simulates Newton on CPU. Provide in-tree ovrtx/ovstage-compatible shims used only on Darwin so NativeWorker, picking and session code keep the pinned public API sequence. Darwin hash locks must omit ovrtx and ovstage entirely and pin usd-core, Newton, Warp, Qt and PyObjC Metal. Linux/Windows remain on real OVRTX. Do not claim RTX/DLSS quality on Mac.
+- **Depends on:** none
+- **Implementation:**
+  - [x] Change Component, Flavor, host policy and contributor startup so macOS is a Metal native target and never downloads or imports ovrtx/ovstage.
+  - [x] Add Darwin-only OVRTX/OVStage-compatible Metal/USD shims and route graphics/physics device selection through a host facade.
+  - [x] Generate darwin-arm64 (and x86_64 if wheels exist) hash locks without ovrtx/ovstage; install them from manage.py.
+  - [x] Verify host tests, shim unit tests, a real Metal warmup frame on this Mac, and that Linux/Windows import paths still name the real SDKs.
+- **Evidence:**
+  - [x] Portable host/Make tests pass on Darwin without importing ovrtx.
+    `python3 -B verification/test_desktop_manage.py` — 21 tests, 2 skipped, 0 failed.
+    `.venv/bin/python -B -m unittest tests.test_host tests.test_graphics tests.test_worker` — 13 tests OK; facade returns `lertx.metal_ovrtx` and `ovrtx` is absent from `sys.modules`.
+  - [x] darwin-arm64 lock contains usd-core, newton, warp-lang, PySide6 and pyobjc-framework-Metal hashes and does not mention ovrtx or ovstage.
+    `desktop/locks/darwin-arm64.txt` and `darwin-x86_64.txt` are identical; `make build` installed usd-core 26.8, newton 1.6.1, warp-lang 1.18.0, PySide6 6.12.0 and pyobjc-framework-Metal 12.2.2. `pip show ovrtx ovstage` reports not found.
+  - [x] Native warmup or integration on this Mac produces a Metal frame whose RGB stddev is at least 5, without ovrtx installed.
+    Warmup on Apple M4 Pro: `{"native_warmup": "passed", "cleanup_completed": true, "seconds": 1.503}` with Newton/Warp CPU. `tests.test_native_integration` 3 tests OK including an owned Metal framebuffer. Doctor gpu: `Apple M4 Pro`.

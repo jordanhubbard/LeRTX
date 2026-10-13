@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- On macOS, render the native viewport with Metal instead of OVRTX. Darwin
+  hash locks omit `ovrtx` and `ovstage`, pin PyObjC Metal, and run Newton on
+  CPU. Linux and Windows stay on the pinned NVIDIA SDKs.
+
+- Slide the isolated asset-tool `usd-exchange` pin to 3.0.1 so it matches the
+  ARM64 runtime provider, and correct architecture docs that still named 3.0.0.
+
 - Fix Windows `make build` and `make install` failing after successful setup
   because the recipe required Unix `touch`. Check the setup receipt instead of
   interpreter timestamps, and reuse unchanged checkout-owned launchers on reinstall.
