@@ -170,7 +170,11 @@ class PhotoWindowNativeTests(unittest.TestCase):
                 wait(lambda: window._image.cacheKey() != adopted_frame_key
                      and bytes(window._image.constBits()) != before_pixels)
                 draft_pixels = bytes(window._image.constBits())
-                self.assertGreater(len(set(draft_pixels)), 16)
+                import numpy as np
+                channels = 4 if window._image.format() == QImage.Format.Format_RGBA8888 else 3
+                rgb = np.frombuffer(draft_pixels, dtype=np.uint8).reshape(
+                    window._image.height(), window._image.width(), channels)[..., :3]
+                self.assertGreaterEqual(float(rgb.std()), 5)
                 self.assertFalse(window.viewport_label.pixmap().isNull())
                 destination = root/"saved-draft.usda"
                 with patch.object(QFileDialog, "getSaveFileName", return_value=(str(destination), "")):
@@ -180,7 +184,7 @@ class PhotoWindowNativeTests(unittest.TestCase):
                 self.assertTrue(destination.exists())
                 self.assertEqual(SceneDocument(destination).hierarchy()[0]["path"], "/World")
                 window.open_scene(str(destination))
-                wait(lambda: window._ready and window.current_scene_path == str(destination))
+                wait(lambda: window._ready and Path(window.current_scene_path).resolve() == destination.resolve())
                 self.assertTrue(window.reconstruction_warning.isVisible())
             finally:
                 window.has_unsaved_changes = False

@@ -91,8 +91,11 @@ def build_model(stage, gravity=-9.81):
 
 
 class PhysicsScene:
-    def __init__(self, stage, device="cuda:0", gravity=-9.81):
+    def __init__(self, stage, device=None, gravity=-9.81):
         import newton
+        from . import graphics
+        if device is None:
+            device = graphics.physics_device()
         builder, self.mapping, self.scales, self.units = build_model(stage, gravity)
         if not self.mapping.index_to_path:
             raise SimulationDisabledError("No supported rigid bodies; physics disabled")
