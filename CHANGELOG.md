@@ -4,9 +4,10 @@
 
 - On macOS, render the native viewport with Metal instead of OVRTX. Darwin
   hash locks omit `ovrtx` and `ovstage`, pin PyObjC Metal, and run Newton on
-  CPU. Linux and Windows stay on the pinned NVIDIA SDKs. PhysicsScene now
-  finalizes on the host physics device by default, and the photo-window native
-  test compares resolved paths and RGB variance so the macOS suite can pass.
+  CPU. Linux and Windows stay on the pinned NVIDIA SDKs.
+
+- Finalize Newton on the host physics device by default so macOS does not
+  require CUDA, and judge photo-draft frames by RGB variance and resolved paths.
 
 - Slide the isolated asset-tool `usd-exchange` pin to 3.0.1 so it matches the
   ARM64 runtime provider, and correct architecture docs that still named 3.0.0.
