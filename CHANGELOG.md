@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 1.2.0 - 2026-10-13
+
+[README.md](https://github.com/jordanhubbard/LeRTX/blob/v1.2.0/README.md)
+
 - Upgrade project tooling, inherited catalogs and Standard lifecycle to the
   published Literate AI 1.2.0 release; use the public GitHub publisher and enforce
   framework verification in CI.
