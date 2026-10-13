@@ -1556,3 +1556,17 @@ queue item or let `docs/roadmap/` become a plan archive.
   replace initialization publisher authority, reconcile current scaffold content,
   refresh locks and acceptance, and land through the normal review/CI workflow.
   No upstream origin-migration feature or issue is required for this transition.
+
+### [ ] RELEASE-002 — Publish LeRTX 1.2.0
+
+- **Priority:** high
+- **Owner:** Release policy
+- **Direction:** Merge and publish the completed Literate AI upgrade.
+- **Conclusion:** Publish the current 1.2.0 source/setup release after exact revision checks; preserve native and physical qualification boundaries.
+- **Depends on:** none
+- **Implementation:**
+  - [ ] Prepare and land the 1.2.0 release metadata.
+- **Evidence:**
+  - [ ] Pass the release gate, publish required assets, and verify remote publication.
+
+- **Release preparation evidence:** Pre-release 1.2 authority passed fresh verifier-owned retained-source acceptance (30 checks), current locks and receipt validation. Local portable qualification passed 313 tests and 61 subtests across 41 invocations; source/setup packaging is reproducible and extracted defaults pass. Next: land metadata, prepare the exact release line, run release check and publish.
