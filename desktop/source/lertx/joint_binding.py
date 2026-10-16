@@ -70,5 +70,9 @@ class RobotBinding:
             raise ValueError('Observation timestamp is stale or invalid')
         if any(j.name + '.pos' not in values for j in self.joints):
             raise ValueError('Observation is missing required joint positions')
-        return {ROOTS[self.role] + '/Physics/' + j.name: j.convert(values[j.name + '.pos'])
-                for j in self.joints}
+        mapped={};errors=[]
+        for joint in self.joints:
+            try:mapped[ROOTS[self.role]+'/Physics/'+joint.name]=joint.convert(values[joint.name+'.pos'])
+            except ValueError as exc:errors.append(str(exc))
+        if errors:raise ValueError('; '.join(errors))
+        return mapped

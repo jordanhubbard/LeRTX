@@ -229,6 +229,26 @@ class SetupUITests(unittest.TestCase):
         self.assertTrue(panel.session.writable)
         self.assertIs(panel.preview_window.navigation_parent,panel)
         self.assertIsNotNone(panel.calibration);self.assertIsNotNone(panel.binding)
+    def test_save_rejects_current_pose_outside_proposed_virtual_binding(self):
+        from lertx.setup_calibration import RangeCapture
+        from lertx.robot import JOINT_NAMES
+        self.begin();w=self.wizard
+        w.capture=RangeCapture('follower',dict.fromkeys(range(1,7),0))
+        w.capture.ranges={name:[1800,2300] for name in JOINT_NAMES}
+        w.capture.ranges['gripper']=[1500,3000]
+        w.capture.confirmed=set(JOINT_NAMES)
+        sample={'timestamp':time.monotonic(),'motors':{i:{'position':2047} for i in range(1,7)}}
+        sample['motors'][6]['position']=2800
+        writes=list(self.serial.writes)
+        error=w.save_blocker(sample)
+        self.assertIn('rejects the current arm pose',error)
+        self.assertIn('gripper',error)
+        self.assertEqual(w.save_blocked_joint,'gripper')
+        self.assertEqual(w.capture.confirmed,set(JOINT_NAMES))
+        self.assertEqual(self.serial.writes,writes)
+        sample['motors'][6]['position']=2047
+        self.assertEqual(w.save_blocker(sample),'')
+
     def test_cancel_restores_and_closes_without_enabling_motors(self):
         self.begin();self.wizard.close()
         self.wait(lambda:self.wizard.shutdown_complete)

@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:3af6c76ef48e21170eaa8f30ea0aac3bd51420267338cbadc6786ce0f326be9e -->
+<!-- literate-ai:authority-reviewed sha256:095f5c2c20fa06d852050e184cf20cb80938514deb89d74e033c0f0cba7a9f21 -->
 
 [Project guide](../README.md) → design traceability
 
@@ -35,6 +35,14 @@ Legacy profile migration adds only the two new color defaults.
 Hardware torque feedback derives from measured registers and serial stop-request
 completion, not button intent. The UI exposes unmet engagement/mirroring gates;
 the stationary reference remains explicit until capture supplies a mapping.
+Saved hardware calibration and bindings reload through the shared device owner;
+register validation precedes engagement. Opt-in live diagnostics can operate normal
+UI and service handlers, including confirmations, while retaining identity,
+ownership, freshness and motion limits. Physical follower actuation is verified;
+saved virtual binding coverage remains a separate open hardware acceptance item.
+Wizard Save validates the current measured pose against the proposed binding;
+unrepresentable poses keep their captures and offer Back navigation. Rejected
+live mappings report all failing joints and retain the reason beside the control.
 
 Reference capture accepts bounded extended encoder feedback only inside its
 torque-off homing transaction. It selects a representable offset and carries the

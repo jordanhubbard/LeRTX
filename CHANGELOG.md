@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Keep physical-mirroring failures visible with every rejected joint. Calibration
+  Save now rejects a binding that cannot represent the current physical pose.
+
 - Retry a lost or corrupt USB read response once without replaying motor writes
   or relaxing freshness checks. Bounded follower base actuation is verified;
   physical-to-RTX tracking remains blocked by saved binding range mismatches.

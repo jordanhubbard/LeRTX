@@ -64,7 +64,8 @@ class Calibration:
 
     def decode(self,name,ticks):
         c=self.values[name];low,high=c['range_min'],c['range_max']
-        if not finite(ticks) or not low<=ticks<=high:raise ValueError(f'{name}: reading outside calibrated range')
+        if not finite(ticks) or not low<=ticks<=high:
+            raise ValueError(f'{name}: reading {ticks!r} outside calibrated range [{low}, {high}] encoder ticks')
         if name=='gripper':
             value=100*(ticks-low)/(high-low)
             return 100-value if c['drive_mode'] else value

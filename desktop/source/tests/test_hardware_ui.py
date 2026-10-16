@@ -212,6 +212,8 @@ class HardwareUITests(unittest.TestCase):
             self.panel.live.setChecked(True);self.panel.poll()
             self.assertFalse(self.panel.live.isChecked())
             self.assertIn('expired',self.panel.message.text())
+            self.panel.poll()
+            self.assertIn('expired',self.panel.live_reason.text())
             self.assertEqual(self.serial.writes,[])
         finally:owner._ready=False;owner.worker=None
 

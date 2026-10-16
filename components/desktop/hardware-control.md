@@ -75,6 +75,11 @@ The stationary reference step must name the RTX view Reference guide, not Live,
 and prominently state that it does not follow the arm until reference capture.
 Waiting, paused, stale and live states must remain distinguishable. The hardware
 panel explains missing calibration/binding or telemetry beside its mirror control.
+When a measured pose is rejected, retain the failure reason beside the control
+and report every rejected joint without publishing a partial pose. Before saving
+wizard calibration, validate the current physical pose against the proposed
+binding so setup cannot report success and immediately fail live mirroring.
+Keep captured data and Back navigation available for reference/direction review.
 Device Manager shows the shared outlined role color in device rows and explicit
 role/port hardware buttons, with normal-contrast status text. Role assignment
 edits are unavailable while physical sessions remain open. A cached hardware
