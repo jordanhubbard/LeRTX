@@ -25,6 +25,12 @@ Open only an explicitly selected, revalidated USB attachment. Use the pinned
 Feetech SDK used by LeRobot: IDs 1..6, STS3215 model 777, protocol 0, 1 Mbps.
 Never call high-level robot setup/connect that changes registers implicitly.
 Ordinary manual controls never change motor IDs, baud, operating mode or EEPROM calibration.
+On an explicit read-only connection, restore the completed saved calibration and
+measured virtual binding matching this role and stable device identity. Verify
+the calibration against connected motor registers before using observations;
+missing, corrupt or mismatched records remain visible errors. Reloading does not
+write motor registers or enable torque. The existing measured-live-view control
+then uses calibrated observations without repeating setup or manual imports.
 The explicit setup wizard may write homing and range calibration with torque off,
 following the pinned LeRobot half-turn procedure. Capture and persist original
 registers before modification, verify every write and restore on cancellation or
@@ -138,7 +144,15 @@ JSON snapshots, bounded event/timing history, current RTX frames and application
 window captures without desktop occlusion. Bind only IPv4 loopback on an ephemeral
 port with a per-run bearer token in a user-local discovery file. Reject browser
 origins and unauthenticated requests. Remove discovery on shutdown. Diagnostics
-must never open a serial port, send motor commands or evaluate arbitrary code.
+must never evaluate arbitrary code. Enabling this interface also opts in to full
+LLM development control, without a second switch or human confirmation. Expose
+session-stable identities for UI controls and actions, typed interactions and
+named application services. Dispatch through the normal Qt handlers and device
+services, preserving device identity checks, ownership, limits and error handling.
+UI dialogs, including confirmations, are operable through the same interface.
+Queue interactions asynchronously so modal dialogs never block HTTP responses;
+report operation completion or failure in bounded events. Reject stale targets,
+disabled controls, invalid values and unsupported operations explicitly.
 Snapshots include role/port, measured encoder values, sample age and sequence,
 control owner, wizard step/sweep/next requirement, mapped joint angles, native
 publication ordinal, rendered pose and frame identity, pending work and timings.

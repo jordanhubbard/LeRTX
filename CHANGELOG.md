@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- Retry a lost or corrupt USB read response once without replaying motor writes
+  or relaxing freshness checks. Bounded follower base actuation is verified;
+  physical-to-RTX tracking remains blocked by saved binding range mismatches.
+
+- Hardware controls reload the connected arm's saved calibration and measured
+  binding on read-only connection, restoring calibrated observations for live 3D
+  mirroring without repeating setup.
+
+- Development diagnostics: enabling telemetry also enables LLM control of UI
+  widgets, dialogs and named application services, with discoverable control IDs
+  and asynchronous operation results.
+
 - On macOS, render the native viewport with Metal instead of OVRTX. Darwin
   hash locks omit `ovrtx` and `ovstage`, pin PyObjC Metal, and run Newton on
   CPU. Linux and Windows stay on the pinned NVIDIA SDKs.

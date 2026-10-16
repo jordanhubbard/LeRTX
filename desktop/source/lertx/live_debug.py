@@ -1,4 +1,4 @@
-"""Opt-in loopback co-session observability. Qt owns inspection and command dispatch."""
+"""Opt-in loopback development control. Qt owns inspection and command dispatch."""
 import collections
 import copy
 import concurrent.futures
@@ -17,6 +17,8 @@ class Diagnostics:
     def __init__(self, owner):
         from PySide6.QtCore import QTimer
         self.owner = owner
+        from .debug_control import DevelopmentControl
+        self.control = DevelopmentControl(self)
         self.requests = queue.Queue(maxsize=16)
         self.events = collections.deque(maxlen=1200)
         self.sequence = 0
@@ -163,6 +165,7 @@ class Diagnostics:
                 return self.snapshot()
             if path == '/events':
                 return list(self.events)
+            if path == '/services':return self.control.catalog()
             if path == '/ui':
                 from PySide6.QtWidgets import QWidget, QLabel, QAbstractButton, QProgressBar, QComboBox
                 result=[]
@@ -170,15 +173,31 @@ class Diagnostics:
                     widgets=[]
                     for widget in [window, *window.findChildren(QWidget)]:
                         if not widget.isVisible():continue
-                        item=dict(type=type(widget).__name__, name=widget.objectName(),
+                        item=dict(id=self.control.identify(widget), actions=self.control.actions(widget),
+                                  type=type(widget).__name__, name=widget.objectName(),
                                   enabled=widget.isEnabled(), accessible=widget.accessibleName())
                         if isinstance(widget,(QLabel,QAbstractButton)):
                             item['text']=widget.text()
                         if isinstance(widget,QAbstractButton) and widget.isCheckable():
                             item['checked']=widget.isChecked()
                         if isinstance(widget,QProgressBar):item['value']=widget.value()
-                        if isinstance(widget,QComboBox):item['text']=widget.currentText()
+                        if isinstance(widget,QComboBox):
+                            item.update(text=widget.currentText(), items=[widget.itemText(i) for i in range(widget.count())])
+                        from PySide6.QtWidgets import QAbstractItemView, QTabWidget
+                        if isinstance(widget,QTabWidget):item['items']=[widget.tabText(i) for i in range(widget.count())]
+                        if isinstance(widget,QAbstractItemView):
+                            def rows(parent=None, depth=0):
+                                from PySide6.QtCore import QModelIndex
+                                parent=parent if parent is not None else QModelIndex()
+                                model=widget.model()
+                                if model is None or depth>8:return []
+                                return [dict(row=i, text=str(model.data(model.index(i,0,parent)) or ''),
+                                    children=rows(model.index(i,0,parent),depth+1)) for i in range(min(model.rowCount(parent),100))]
+                            item['items']=rows()
                         widgets.append(item)
+                    from PySide6.QtGui import QAction
+                    widgets.extend(dict(id=self.control.identify(a),type='QAction',text=a.text(),
+                        enabled=a.isEnabled(),actions=self.control.actions(a)) for a in window.findChildren(QAction))
                     result.append(dict(id=str(int(window.winId())),title=window.windowTitle(),widgets=widgets))
                 return result
             if path == '/frame':
@@ -193,6 +212,7 @@ class Diagnostics:
         if method != 'POST' or path != '/command' or not isinstance(payload, dict):
             raise ValueError('Unknown diagnostic request')
         command = payload.get('command')
+        if command in ('ui_action', 'service'):return self.control.submit(payload)
         if command == 'target_fps' and set(payload) == {'command', 'value'}:
             value = payload['value']
             if type(value) is not int or not 1 <= value <= 120:

@@ -18,7 +18,9 @@ The client discovers the newest responsive process in the user configuration
 folder's `debug` directory. Use `--pid` when several instances are open. Discovery
 files contain a per-run credential: do not paste or commit them. The endpoint
 listens only on loopback, requires that token, and rejects browser-origin requests.
-There is no remote execution or physical motor command endpoint.
+Enabling diagnostics also opts in to full LLM development control, without a
+second switch or human confirmation. Controls use normal application handlers;
+device identity checks, ownership and motion limits remain enforced.
 
 ## Observe while the operator works
 
@@ -53,6 +55,27 @@ intentionally a pose to copy, not a live-pose indicator.
 
 ## Tune during a session
 
+`ui` returns session-stable control IDs and supported actions, combo/tab choices,
+tree/list row paths and Qt actions. `services` lists named application services.
+Use `command --json` with these payloads:
+
+```json
+{"command":"service","name":"open_hardware","role":"leader"}
+{"command":"ui_action","id":"ID_FROM_UI","action":"click"}
+{"command":"ui_action","id":"ID_FROM_UI","action":"set_checked","value":true}
+{"command":"ui_action","id":"ID_FROM_UI","action":"select_index","value":0}
+{"command":"ui_action","id":"ID_FROM_UI","action":"select_item","value":[0]}
+```
+
+Other actions include `set_text`, `set_value`, `focus`, `close`, `trigger`, and
+button `press`/`release`. Dialogs and confirmation buttons use the same interface.
+Services open devices, hardware, setup and robot-session views. Replies contain
+an operation ID; `events` reports matching `control.completed` or
+`control.failed` results. Modal operations stay pending until the dialog closes;
+HTTP remains responsive so its controls can be operated. Refresh `ui` after
+navigation. IDs expire when a control is destroyed or the application restarts.
+Disabled controls, invalid values and unknown operations fail explicitly.
+
 Use the command endpoint with JSON, for example:
 
 ```powershell
@@ -63,8 +86,8 @@ Use the command endpoint with JSON, for example:
 Frame rate accepts integers 1–120; camera deltas are bounded. Changes are temporary
 and do not save settings. Renderer-busy responses require a retry. Use the normal
 Settings UI for resolution/quality changes that rebuild the native scene; close
-hardware sessions first. No debug command can engage torque, move a physical arm,
-change calibration, replace a device owner, or bypass its confirmation controls.
+hardware sessions first. Development control can operate hardware and calibration
+workflows, including their normal confirmation controls, through UI actions.
 
 Diagnostic screenshots and traces may contain local device identities and user
 scene contents. Keep raw traces local and sanitize evidence before committing.

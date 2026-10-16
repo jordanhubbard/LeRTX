@@ -1,6 +1,59 @@
 # Active work
 
+Live physical proof — 2026-10-15 (ROBOT-001): actual follower engagement first
+failed on a corrupt Motor 2 response (-7); the next engagement succeeded, then
+motion aborted on a Motor 5 response timeout (-6). Both failures confirmed torque
+off. A single retry of timeout/corrupt read replies now recovers transient errors;
+writes are never replayed and freshness/heartbeat limits remain enforced.
+- [x] Verify bounded physical actuation through normal held-motion controls.
+  A 3-degree base command produced 2.20 degrees of encoder movement; a subsequent
+  8-degree command moved the base from 13.98 to 21.36 degrees (7.38 degrees).
+  Return commands were issued after both tests; exact return accuracy is unproven.
+  Final telemetry confirmed read-only state, no error, stop confirmed and torque
+  off on all six motors. Raw traces remain local because they contain device IDs.
+- [ ] Diagnose and repair saved physical-to-virtual correspondences. Current
+  follower elbow observation -96.53 degrees lies outside its saved binding
+  [-87.65, 96.62]; gripper observation 99.58 percent exceeds its binding
+  [0, 43.60]. One rejected joint pauses the whole live mirror. Verify reference
+  pose, direction, units and usable travel; do not silently clamp or expand data.
+- [ ] Prove end-to-end physical-to-RTX tracking after the binding repair, using
+  encoder traces, mapped angles, rendered poses, native publication ordinals and
+  substantial image motion for both roles. UI changes alone are insufficient.
+- [ ] Qualify sustained USB operation and persistent timeout/corrupt-response
+  recovery on both arms; verify bounded latency, heartbeat stops and torque-off.
+  The brief follower test does not establish prolonged communication reliability.
+- [ ] Verify leader-to-follower following with real devices through the normal
+  session workflow, including stop/disconnect behavior and tracking accuracy.
+  Current physical evidence covers follower base actuation only.
+Commit checkpoint: all 55 targeted diagnostics, hardware, hardware UI, device
+ownership and robot-session tests pass (one platform skip); diff whitespace checks
+pass. GitHub has no open issues or PRs at this checkpoint. Windows Application
+Control blocks the pinned local `litai` executable, so tracker/guidance inspection
+and formal framework verification are unavailable here; no admission or release
+qualification is claimed.
+
 ## Reconciled SDK release
+
+LLM development control — 2026-10-15 (ROBOT-001): the operator authorizes
+full UI and named application-service control by enabling the existing local
+telemetry interface. No second opt-in or human confirmation is required. Add
+session-stable widget/action identities, asynchronous UI operations, a service
+catalog and operation results; retain loopback authentication, GUI-thread
+dispatch and existing device validation. Then inspect calibration reload and
+physical-to-virtual motion using the running app directly.
+- [x] Implement and test diagnostic UI/service control, including modal dialogs.
+  Six diagnostics tests pass; existing authentication/origin rejection remains covered.
+- [x] Restart with the updated interface and inspect both connected arms.
+  Opened and connected both hardware panels through the endpoint. Both produce
+  fresh read-only telemetry with torque off. Saved setup reload now passes the
+  real register match and produces calibrated observations; 17 hardware UI tests pass.
+- [ ] Repair and verify calibration reload and live physical mirroring.
+  Reload is repaired. Mirroring remains blocked by observations beyond saved
+  virtual-binding intervals (including follower elbow and gripper); retain strict
+  correspondence validation and diagnose reference/direction/usable travel before
+  claiming visual tracking. Framework verify also reports an upstream dangling
+  macOS roadmap owner link, stale locks and unavailable current receipt; this
+  development evidence is not framework admission or release qualification.
 
 Windows contributor repair — 2026-10-13: `make build` and `make install`
 complete dependency setup and native warmup, then fail at the Unix-only `touch`

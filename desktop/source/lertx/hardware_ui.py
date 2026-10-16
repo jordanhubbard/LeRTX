@@ -24,6 +24,7 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             self.preview_pending=False;self.preview_generation=0
             self.preview_at=0.
             self.motor_action=None;self.motor_sequence=-1
+            self.saved_setup_checked=False
             self.session=access
             self.setWindowTitle('SO-101 hardware · '+role+' · '+candidate.port)
             from .role_ui import role_icon
@@ -196,6 +197,19 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
         def poll(self):
             self.session.heartbeat(self.move_button.isDown() and not self.closing and self.isActiveWindow())
             snapshot=self.session.snapshot();state=snapshot['state'];sample=snapshot['sample']
+            if state in ('disconnected','connecting'):self.saved_setup_checked=False
+            if state=='read-only' and self.session.writable and not self.saved_setup_checked:
+                self.saved_setup_checked=True
+                if self.calibration is None:
+                    try:
+                        from .robot_session import load_saved_setup
+                        calibration,binding=load_saved_setup(owner.config_path,role,self.session.device_id)
+                        self.session.request('calibration',calibration)
+                        self.calibration=calibration;self.binding=binding
+                        self.calibration_label.setText('Saved calibration loaded; verifying connected registers · '+calibration.identity[:12])
+                        self.binding_label.setText('Saved measured binding loaded: '+role)
+                    except (ValueError,OSError) as exc:
+                        self.message.setText(str(exc))
             stale=snapshot['stale'];armed=state=='armed' and not stale
             self.status.setText(state.upper()+(' · STALE' if stale else '')+(' · '+snapshot['error'] if snapshot['error'] else ''))
             self.connect_button.setEnabled(state in ('disconnected','fault') and not self.closing)

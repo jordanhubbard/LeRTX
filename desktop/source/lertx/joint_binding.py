@@ -42,7 +42,8 @@ class JointBinding:
 
     def convert(self, value):
         if not finite(value) or not min(self.observed) <= value <= max(self.observed):
-            raise ValueError('Observation is outside calibrated range')
+            raise ValueError(f'{self.name}: observation {value!r} is outside calibrated binding range '
+                             f'[{min(self.observed):.3f}, {max(self.observed):.3f}] {self.unit}')
         fraction = (value - self.observed[0]) / (self.observed[1] - self.observed[0])
         return self.radians[0] + fraction * (self.radians[1] - self.radians[0])
 

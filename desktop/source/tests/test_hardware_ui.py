@@ -16,6 +16,19 @@ from tests.test_hardware import SerialRobot,calibration
 
 
 class HardwareUITests(unittest.TestCase):
+    def test_readonly_connection_restores_saved_setup_without_motor_writes(self):
+        saved=calibration()
+        binding=object()
+        with patch('lertx.robot_session.load_saved_setup',return_value=(saved,binding)) as load:
+            self.panel.connect_button.click()
+            self.wait(lambda:self.panel.session.snapshot()['state']=='read-only')
+            self.panel.poll()
+            self.wait(lambda:bool(self.panel.session.snapshot()['sample']['observations']))
+            self.assertIs(self.panel.calibration,saved)
+            self.assertIs(self.panel.binding,binding)
+            self.assertEqual(load.call_count,1)
+            self.assertEqual(self.serial.writes,[])
+
     def test_cached_controls_must_match_role_and_attachment(self):
         self.connect();p=self.panel;owner=self.owner
         owner._hardware_windows['follower']=p
