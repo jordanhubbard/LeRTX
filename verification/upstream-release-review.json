@@ -1,11 +1,11 @@
 {
   "schema": "lertx/upstream-release-review@1",
-  "date": "2026-10-09",
+  "date": "2026-10-17",
   "upstream_base": "26f3f82",
   "repository": "https://github.com/jordanhubbard/LeRTX",
-  "status": "passed-scoped-source-release-qualification",
+  "status": "native-runtime-passed-framework-admission-blocked",
   "source_binding": {
-    "qualification_version": "1.2.0",
+    "qualification_version": "1.3.0",
     "files_relative_to_desktop_source": {
       "pytest.ini": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
       "requirements.txt": "179353a6c43c12805ce877d980abb5daa7df68beb1f9b4dd9adde98a2d333b54",
@@ -15,11 +15,11 @@
       "tests/test_launch_native.py": "0b12746a0ede6a6a01d982caaf3686ff6cd6ff9d78d6ee27c89885ae983da97a",
       "tests/test_dispatch.py": "24485eed377657d70758ff3abc61b2d4e8e6a6dbd19da15d1f401e37a08eb95a",
       "tests/test_mock_ui.py": "03d72e4f64c83f1d2f10c624e2604f9735a9448e13a7b185334b0be37c2e74d8",
-      "tests/test_diagnostics.py": "5a3533d99adc8259faaefcc35e74c5524f0e48fa834d37933e88639635c9a7db",
+      "tests/test_diagnostics.py": "0928f501a354c4b09d2b8d37c15d9eface58ec539d11129aad151140d3bb0968",
       "tests/test_robot_render_native.py": "d4d40188d3eef06fe42da424e5079494f5e50d22be5cec97ae4470e3b87a7f7b",
       "tests/test_camera.py": "49d23789215452b03d32eaea3b6ef9d17df9f91a8183010cfd49162a2f1741b0",
       "tests/test_setup.py": "74517075adc8eb7f12f7eacf1532fdac6138eba2c5dcf32bf13835190cd20b28",
-      "tests/test_joint_binding.py": "d0bfed9c0c930359cc3490f812a46c99de2247ebc99b16e6108b9e2b4bcf1d0d",
+      "tests/test_joint_binding.py": "2585e4d4337e2bb7d6410f3ae93d85d3f798a60b6f30f1b5e4ba57d08d784b4e",
       "tests/test_devices_ui.py": "5d54fe96994be6f00cdfe516871fab2be9f853627155253b85c011a3fe848f74",
       "tests/test_scene_mapping.py": "1b89577b280fd54808a78300b5b806972cfeb0aef124be20156964213452a1da",
       "tests/test_joint_interaction.py": "1a924ed3df4308ccd04868f801e47c9431a294d41c9369a5a61019b4b719fb9e",
@@ -30,6 +30,7 @@
       "tests/test_robot_dynamics.py": "a3c48962553f17e5d407c507abdd55294f3a24a1928322ab59f0b42e6338a6bf",
       "tests/test_photo.py": "a9f0fe721914fd3639aad30ca402c11ac2948ab713129110ec7e62efc4530105",
       "tests/test_arm_colors.py": "869cb3815a52401d5ff8f7dd06a536238a8ddc1f18589062817f835c8dff2960",
+      "tests/test_graphics.py": "9e938869ea5d9844f67a6efd54af8386d20e7866612a1fe5e4db8ab51de22bab",
       "tests/test_runtime_idle.py": "7ba19c0e62df9a719234d77e9d1573949779456d394278732578bdee2187b074",
       "tests/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
       "tests/test_asset_policy.py": "550c810b28ec501fc495f7994773afd635d73141d86bd775c356e531fc82f93f",
@@ -37,9 +38,9 @@
       "tests/test_physics_native.py": "e8db45cc095d8d397da9273a686a73355cacabedab00fa59c893b2217949f6f5",
       "tests/test_robot_poses.py": "3b76daa7604844a3e89ac6b80262d6e5d99b76f8c277921c835cf67129b5da79",
       "tests/test_host.py": "f07043e8dfdb75d97dca7fbea8d62d8a3304ee87cc472a310d0cf90d7a10c1ee",
-      "tests/test_native_integration.py": "c0b18843eb09e99a4584c25440b33579ffd136992b7138bd7f679edb0fc5ef7e",
+      "tests/test_native_integration.py": "ba57a920517ee035c2f06ca71f5895070321ea9359894064150a45af6894b908",
       "tests/test_connection_probe.py": "6976dbd3065f90879879c6f7efc62a131626f77884a16515a3a78e419e3cd1b1",
-      "tests/test_hardware_ui.py": "466453df434583e8fc62e30cc234b8b807174abf7de23feb44a65fddfa99669a",
+      "tests/test_hardware_ui.py": "9f2992b194088fd673abf1c6f37588fbde790640ad1561ff508dbd7cbd7c6d40",
       "tests/test_role_ui.py": "4fcc186bef5321ee838c13dc68201d6ecef0c9ab65aa9d594f2c0f6842140904",
       "tests/test_photo_ui.py": "bf48a0ad8193df595639bc54bc09bc8070ce19d8de5bce8a30af533a0b450840",
       "tests/test_runtime_native.py": "ba913ea7b635baed2a84fdd9cb018afffe7c6878a78c5c097df1262b814c3995",
@@ -58,24 +59,26 @@
       "tests/test_photo_window_native.py": "8f517a3d100a528ab73a8bd7cd3cb513e6c5e89dd0282f1e10cacd1dd95016ec",
       "tests/test_document.py": "2d5c93e4c35a01897c2ab778ba84ea7e09c80c44c877c32daa9ad17aa0195d47",
       "tests/test_device_control.py": "ce3168717ac55159c06c0507bee90c4f4f649028848bee1ff29539c1b0a2c9ec",
-      "tests/test_setup_ui.py": "81d120f61fa9e3cfabee66f1a2e57e660c3ef1985e4e3d0afded490d059fb580",
+      "tests/test_setup_ui.py": "192b25039e09bb12255251a6415cb2b18d6b243c5cd0ca936cd7611504af7eb6",
       "tests/test_robot_ui.py": "6e9482099d892326b34075c546700d6857f3d8ddd2ce269b1bbee4835280d28e",
       "tests/test_robot_session.py": "2cf74c610e992afec960548422fcb96c758c040f5c7357ae801ac38c550b4b3e",
       "tests/test_manifest_cases.py": "63999257f67ffdcd856d7edfc6dc8ca1ff00170949fb140f7df1b1dcd4104adc",
       "tests/test_reconstruction.py": "f1a23b6458565101e507460ab975d03be751903d2a2fad9c0d6caa2ae0bd6d4a",
-      "tests/test_hardware.py": "9182988cc41d370a11c85d4104d9778d4382a49a3ed46d870653bf71b26fdb61",
+      "tests/test_hardware.py": "32270fa6a6d0de54a04262eae9bfa5dafd6b42923125e58764421925883705f1",
       "lertx/simulation.py": "a068e394b93afa25a24d01f8b47556cdd8d527a15060a1879f2fafebb94f036c",
+      "lertx/graphics.py": "fa223b67446b750e77633574b29cfa35835d39217a3cc5b2b24ebd88a68ba8e8",
       "lertx/help_ui.py": "dd2ca8797adaa97590d6ae2da7c091ebc93b34fd81b2d487ec8ce1544100937e",
       "lertx/hardware_feedback.py": "108a665aa5f5779dec96b4125b4b82f28f9922baf885fc5b8b7aa547d8b274a2",
       "lertx/config.py": "ef513a7c33d20747df23c25153f7768b5a9ea6199b53a6125528a49196191edf",
       "lertx/reconstruction.py": "04ac1527696d5b2e8b52406be33b4e6d90646d1e4b140cffd31dd40b952cdd16",
       "lertx/mock_ui.py": "ace0e107ebda10decb3138edbecee34c517f470ed31f26a71b7a2e45c3593dde",
-      "lertx/joint_binding.py": "00d2905350dbafd23a64f62f8881784799228e0aa00a8d04e04ccceff80ece3b",
+      "lertx/joint_binding.py": "0cfeb84dcd157a7b31564dac8e666b5438c6c5feb3f66e647c1d16487919e4e6",
       "lertx/photo_ui.py": "8905553e1e4be3f15dbb00621651df232e8a75cce0718e29fdfb625f77214525",
-      "lertx/branding.py": "d72d58228de1bc317664d232310d4c522c54b6893ed68b1ba56177adc91473b4",
-      "lertx/hardware_ui.py": "74ff3d65e7cfa433eff326110bce7f0f2402fcf6c9e411c083a1c4462cf74c04",
+      "lertx/branding.py": "bbdaa7d81423326290120f0a74a3e76d2f11c2b6c9ca03bceaa3a4cf767b6864",
+      "lertx/hardware_ui.py": "e1d2fc8df518ee58a633bd7e7d8f52f516dc884e10979c24fc47cc52123f0176",
       "lertx/device_control.py": "bf59d82fb8d488b0907892118ade899d43a561fdacf517dbae6a6e22633da96d",
       "lertx/robot_poses.py": "801d20e6582b4f07fb2b8b402dee04154e085ce0f9f6c62b2959d00e1a596314",
+      "lertx/debug_control.py": "ec1ba8fe4bf15773f0c66f03434538d63fa50f0935181dd9a5e5b792c7096573",
       "lertx/setup_visuals.py": "8c4fa07c45529f63fc79b21814ed9183d1f66ec1c44cfa03da574d71e2acf566",
       "lertx/viewport_ui.py": "2dfd15236312a43224d393e59d3da66d64019bc36f35f14b8ec28a9d73c19dc3",
       "lertx/transport.py": "f4e759ddcfd7c3090c3c2b13b9d1c571336d2d2f5cb3695602231d5c17ea06c2",
@@ -83,13 +86,14 @@
       "lertx/host.py": "a082bdab48cbec1ad184f3936ec5e4ff5289add6ea655838a2c077992950e0e7",
       "lertx/diagnostics.py": "156ace011ad0dbc969a3ba2c3740b657662cf4ab83b6fd8ffe2c8052e2c8c1f7",
       "lertx/binding_ui.py": "8dde0bc3e8237740f08df28512ea3234a73dd8a13bd85926452a18467a8c15d8",
+      "lertx/metal_ovrtx.py": "48ca5ba2e0636657c9eabe8c1e98286268ac565de35b4690ac3a0b1e9d168a24",
       "lertx/role_ui.py": "023216e7d78c7766c2fe1d90974e31c76983a8ae5aaf4ce0ebb7baf1b6006bac",
       "lertx/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
       "lertx/telemetry.py": "20578ae68ac89874eacb6fc12c3a55a8004089b6b8097f7a1ec4be8a312f8453",
       "lertx/scene.py": "21edb9d48bdf21d079a845a2d50a3f542b91193883c0ee57c0b75ca77d25201a",
       "lertx/setup_calibration.py": "285f790dc8372f73dbfbe1e18d5892844426a17756b5b20632c9807ae1cfb4f7",
       "lertx/robot_session_ui.py": "f9b576fd6cc801a249dc2e31a3d2fc11b7af55a95f943aa09e64bd259511ea0d",
-      "lertx/live_debug.py": "64f4092707492ee7eb817534485b6908c92c5a32ce38fa36354a22a80710802e",
+      "lertx/live_debug.py": "ec754b16df0312843e56794eca8b7cb5d79d04f4be2fadee3cc89acfded14774",
       "lertx/runtime.py": "98989797a276ffa0853fdeb4f27d8ffa8899bf14c779ab9a7903624c86255088",
       "lertx/physics.py": "386d8f62122aae1caf9d7323e03c38abb9499b2aa17d1a7f56ca3d7857b55106",
       "lertx/camera.py": "8f3d4cf80ebbccb99b3cad3723822d965259edad3139c3f5781f7b2b091e6810",
@@ -97,9 +101,9 @@
       "lertx/arm_colors.py": "4a19bd006c5bea61257b48c9bf0121fd7d75375749a083098cb5b5cf9a0a7705",
       "lertx/assets.py": "4670660bc86e0e9debea8cf12039963ad5538edf1ef3db238a7aa5ed71d6a30f",
       "lertx/robot_ui.py": "643fbf12ab604e148e6ac9481e0ae99a249eb6c50768bd0bca2c22d15d483f15",
-      "lertx/setup_ui.py": "1294c11007209d0353c0a887beca8ddcf17dc4513135610fad5c85407ce90118",
+      "lertx/setup_ui.py": "c2127f74db6925ec2439a56e248c5845fec0e9c83ec70b637aa4d0a1f9098e86",
       "lertx/joint_interaction.py": "b7ae0247954299c43347672675d4fc059bc02d8f9c57b552bc87bef768c29565",
-      "lertx/hardware_calibration.py": "d9c5416f46e42107a12f987ec122fb230bf73dbf9544d68c9bee5cb1fbd8ab69",
+      "lertx/hardware_calibration.py": "fff0340e5701bb6256c3db3fcc9c49f2d3519778fb6edbac61d8cc9aa6bf727b",
       "lertx/document.py": "8129c0ac237f5a6196da8d17df6e18649b03234be5edae3ffeb24544d96ca985",
       "lertx/desktop_state.py": "7e37d19a42d02603670358c41ab0ca6b41ac7837a78891a68449046e42254337",
       "lertx/hardware.py": "ec0bc72afb6ce4d0071e2f2bb93275fbde279f417eddf43623312fb762792ce8",
@@ -108,11 +112,12 @@
       "lertx/picking.py": "081666b4d9d7d981f42ef9214a0127044dcaf2b8e3fdb5d6b7e5061dd584c809",
       "lertx/robot.py": "7844d3329637875b074002b051a4797f4e6b72be77a475bbeeea1f94f8316e9e",
       "lertx/robot_session.py": "026a1113743ee425522629aba22227eab90078c4a93c1d84a78fa44926811cda",
-      "lertx/usb_bus.py": "035dadf8e2dc62c7a39567bbf132b863859eac95e20d0a0115b0772209e03491",
+      "lertx/metal_ovstage.py": "e5cfa918fa91c7f8205abed2d0dcfd3800c7e7cc76a804ebcc314372933db2a9",
+      "lertx/usb_bus.py": "34809141b8b4464179f7bea3f938eaee84ce68064c6de4a0bbcb0a8bdcee6d42",
       "lertx/devices.py": "e53d52e039096420cd32c9609c49bb2ebb2da4a513092e14eb9a8db5231e1d37",
       "lertx/desktop_entry.py": "8a53b3c7c2b4a60d11ef07bb16a30ce2d6b291288d311c2b5566f2b2b358de36",
       "lertx/devices_ui.py": "2d8e8ec7d421155f30b4278f9504d55777fccac0441394c45d8af5d18860c4fc",
-      "lertx/debug_client.py": "4bbebf833b621e21ddd123a9f05ca152c0f7a247f9c3f79fdeb6bf14ff60956c",
+      "lertx/debug_client.py": "19167b104b3084b982c29528a9314ff0f161ed7de0c9e8ecb4f53b72459e0ae5",
       "lertx/poses/danger.json": "df2de3fdfbee28483af2cac6995b36eba742244494dba4e96934aa53d53c42ea",
       "lertx/poses/the_signal.json": "aeeded74e3abf45cae06f9e1f7aa3c0645d9bb59df8ad5efa8604ff97db3254a",
       "lertx/vendor/__init__.py": "9b43b6eeaf7f3e1cc8abba9c8b38c5999f6a6098e86bf89c203f7daa1373d562",
@@ -151,22 +156,17 @@
       "lertx/resources/so101/assets/rotation_pitch_so101_v1.stl": "9be900cc2a2bf718102841ef82ef8d2873842427648092c8ed2ca1e2ef4ffa34",
       "lertx/resources/so101/assets/wrist_roll_pitch_so101_v2.stl": "6c7ec5525b4d8b9e397a30ab4bb0037156a5d5f38a4adf2c7d943d6c56eda5ae",
       "lertx/resources/so101/assets/waveshare_mounting_plate_so101_v2.stl": "e197e24005a07d01bbc06a8c42311664eaeda415bf859f68fa247884d0f1a6e9",
-      "lertx/resources/so101/assets/Wrist_Roll_SO101.stl": "db20e6ac7c08cf8d75692a38db5a217011c97c0ab5d73c248296535df81e39b7",
-      "tests/test_graphics.py": "a61609549dc2ba2eac212422ac260a081d313eab1d5a4ab0b162f8cca46766b7",
-      "lertx/graphics.py": "fa223b67446b750e77633574b29cfa35835d39217a3cc5b2b24ebd88a68ba8e8",
-      "lertx/metal_ovrtx.py": "d319aeb417679fccc7a36ae34fc3cf04e7044beade7acccae64cb606b9db7928",
-      "lertx/metal_ovstage.py": "e5cfa918fa91c7f8205abed2d0dcfd3800c7e7cc76a804ebcc314372933db2a9"
+      "lertx/resources/so101/assets/Wrist_Roll_SO101.stl": "db20e6ac7c08cf8d75692a38db5a217011c97c0ab5d73c248296535df81e39b7"
     },
-    "local_and_remote_files_identical": 145
+    "local_and_remote_files_identical": true
   },
   "portable": {
     "status": "passed",
-    "modules": 40,
-    "tests": 311,
-    "subtests": 61,
-    "failed": 0,
-    "skipped": 0,
-    "total_including_subtests": 372
+    "platform": "macOS arm64",
+    "module_runs": 42,
+    "tests": 326,
+    "log_sha256": "3697070ce4a3c93a47fd64d23c7f40e64b989b52e2acede4c260afe1e916f6c0",
+    "scope": "Portable regression modules, resource-wheel checks and reproducible source bundle checks; Linux native modules verified separately."
   },
   "linux_native": {
     "status": "passed",
@@ -176,7 +176,7 @@
       {
         "module": "test_launch_native",
         "returncode": 0,
-        "seconds": 97.938,
+        "seconds": 67.229,
         "tests": 3,
         "guard": {
           "status": "passed",
@@ -187,17 +187,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 46339977216,
-          "minimum_available_bytes": 42459111424,
-          "seconds": 97.856,
+          "initial_available_bytes": 42331729920,
+          "minimum_available_bytes": 37421744128,
+          "seconds": 67.164,
           "returncode": 0
         },
-        "log_sha256": "0e393ef25b1573da85e5edf916175a0fdde3bff993f666d89b79d8eca323071d"
+        "log_sha256": "5881f5d97f2208d7cfffa779e3024afed5e37a10fdd3f2d26f1ce739a009ac92"
       },
       {
         "module": "test_native_integration",
         "returncode": 0,
-        "seconds": 14.582,
+        "seconds": 12.983,
         "tests": 3,
         "guard": {
           "status": "passed",
@@ -208,17 +208,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 47453425664,
-          "minimum_available_bytes": 42465427456,
-          "seconds": 14.505,
+          "initial_available_bytes": 41488191488,
+          "minimum_available_bytes": 37875179520,
+          "seconds": 12.947,
           "returncode": 0
         },
-        "log_sha256": "c2cccc8bfee6d3f027f2f7694619cc771ef98f4256e917903936d441292f3088"
+        "log_sha256": "7a7a6b464d25dcfb4be7060999ed95eae8016867fa7867aebadb2832cdb98827"
       },
       {
         "module": "test_physics_native",
         "returncode": 0,
-        "seconds": 4.319,
+        "seconds": 4.311,
         "tests": 2,
         "guard": {
           "status": "passed",
@@ -229,17 +229,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 46396997632,
-          "minimum_available_bytes": 46189490176,
-          "seconds": 4.244,
+          "initial_available_bytes": 41725001728,
+          "minimum_available_bytes": 41391726592,
+          "seconds": 4.243,
           "returncode": 0
         },
-        "log_sha256": "7a898e79c0652f23e00f933b5d1194f40eed96efc791fff5c567573c9f7baf36"
+        "log_sha256": "e7195e72793b7164b56bb5e6354855b889b636c5d95ca30e24cd3713e10f0d54"
       },
       {
         "module": "test_robot_dynamics",
         "returncode": 0,
-        "seconds": 11.612,
+        "seconds": 10.467,
         "tests": 1,
         "guard": {
           "status": "passed",
@@ -250,17 +250,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 46547591168,
-          "minimum_available_bytes": 46070657024,
-          "seconds": 11.543,
+          "initial_available_bytes": 41728208896,
+          "minimum_available_bytes": 41425797120,
+          "seconds": 10.428,
           "returncode": 0
         },
-        "log_sha256": "fcb2b4f1839ef9741e52bc64961e14b6c1c502bb4a5126feb7f5434ee96459dd"
+        "log_sha256": "f070e33225413653d53e92821fd9eebdd6e62a9943717a72295ba4dc4b2957b5"
       },
       {
         "module": "test_runtime_native",
         "returncode": 0,
-        "seconds": 86.064,
+        "seconds": 73.209,
         "tests": 1,
         "guard": {
           "status": "passed",
@@ -271,17 +271,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 46561361920,
-          "minimum_available_bytes": 41070469120,
-          "seconds": 85.994,
+          "initial_available_bytes": 41861214208,
+          "minimum_available_bytes": 36552261632,
+          "seconds": 73.146,
           "returncode": 0
         },
-        "log_sha256": "47411ea98ed7d591403b131af1b6f4671607db01fd0569f902017d7b42e3f1f8"
+        "log_sha256": "643fed823a993d690f8952c59fc2461f759fee1fae53ead59624f25c24b21da5"
       },
       {
         "module": "test_robot_render_native",
         "returncode": 0,
-        "seconds": 36.075,
+        "seconds": 35.168,
         "tests": 1,
         "guard": {
           "status": "passed",
@@ -292,17 +292,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 47247486976,
-          "minimum_available_bytes": 41544802304,
-          "seconds": 36.01,
+          "initial_available_bytes": 42318045184,
+          "minimum_available_bytes": 36672495616,
+          "seconds": 35.094,
           "returncode": 0
         },
-        "log_sha256": "d62130ef38baabfdf7aa2ced4987d412a7ae8d57b3e28fa3a0ef7585505f5c8e"
+        "log_sha256": "029eef839171c6252569badebfee84a23714fde357c035216cd4aab04409f63b"
       },
       {
         "module": "test_window_native",
         "returncode": 0,
-        "seconds": 33.986,
+        "seconds": 33.12,
         "tests": 1,
         "guard": {
           "status": "passed",
@@ -313,17 +313,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 47213101056,
-          "minimum_available_bytes": 42938277888,
-          "seconds": 33.914,
+          "initial_available_bytes": 42065580032,
+          "minimum_available_bytes": 37722587136,
+          "seconds": 33.055,
           "returncode": 0
         },
-        "log_sha256": "f8619fc029913ae3252b1bc2c346f4a1dae32ac0ed0f0077bca940caa196264e"
+        "log_sha256": "ff8da5ec92a48e9f1950c13ae29d5b6bf51e31d544b5014727ced026bcf9f071"
       },
       {
         "module": "test_reconstruction_native",
         "returncode": 0,
-        "seconds": 17.28,
+        "seconds": 17.924,
         "tests": 3,
         "guard": {
           "status": "passed",
@@ -334,17 +334,17 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 47299997696,
-          "minimum_available_bytes": 42759471104,
-          "seconds": 17.207,
+          "initial_available_bytes": 42246447104,
+          "minimum_available_bytes": 38209081344,
+          "seconds": 17.853,
           "returncode": 0
         },
-        "log_sha256": "0bb698afe275d23a3e01094ced43b7c563c8d6573ed7f222e7b4340ad0717649"
+        "log_sha256": "bd4cffa40b5d7cb294211502d493ab5ac78681bac5cfedb7c0bd032f639a6cc2"
       },
       {
         "module": "test_photo_window_native",
         "returncode": 0,
-        "seconds": 63.91,
+        "seconds": 63.591,
         "tests": 2,
         "guard": {
           "status": "passed",
@@ -355,196 +355,33 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 47267921920,
-          "minimum_available_bytes": 41295278080,
-          "seconds": 63.838,
+          "initial_available_bytes": 41482948608,
+          "minimum_available_bytes": 37243813888,
+          "seconds": 63.518,
           "returncode": 0
         },
-        "log_sha256": "5a1d1390cb41f6ca549b55c368039ae0ff6ddc080d839e0920096e5b33343a85"
+        "log_sha256": "1a744e698be8438ff0e7d752ecb7a6cddddfd8ef50db3fa9cb45b6e82222bdca"
       }
-    ],
-    "qt_interactions": {
-      "hardware_window": {
-        "result": {
-          "complete": true,
-          "physical_hardware_tested": false,
-          "live_pose_fk": true,
-          "live_render_changed": true,
-          "simulation_ownership": true,
-          "stale_pose_rejected": true,
-          "authored_usd_unchanged": true,
-          "selected_joint_slider": true,
-          "target_radians": 0.3490660000000001,
-          "measured_radians": 0.36534014344215393,
-          "paused": true,
-          "seconds": 18.36,
-          "clean_shutdown": true
-        },
-        "guard": {
-          "status": "passed",
-          "memory_limit_bytes": 12884901888,
-          "reserve_bytes": 17179869184,
-          "swap_limit_bytes": 0,
-          "timeout_seconds": 210.0,
-          "cpu_quota_percent": 200,
-          "task_limit": 128,
-          "launched": true,
-          "initial_available_bytes": 47741263872,
-          "minimum_available_bytes": 42667053056,
-          "seconds": 34.567,
-          "returncode": 0
-        },
-        "log_sha256": "bb69ffc98bfe2d804c7b6e2ae005f7adf4b5820f3572658a04138e96decf2c2e"
-      },
-      "interaction_recovery_window": {
-        "result": {
-          "complete": true,
-          "seconds": 14.62,
-          "physical_hardware_tested": false,
-          "provider_request_sent": false,
-          "follower_unlocked": true,
-          "slider_moved_articulation": true,
-          "paused": true,
-          "actual_radians": 0.38053959608078003,
-          "clean_shutdown": true
-        },
-        "guard": {
-          "status": "passed",
-          "memory_limit_bytes": 12884901888,
-          "reserve_bytes": 17179869184,
-          "swap_limit_bytes": 0,
-          "timeout_seconds": 210.0,
-          "cpu_quota_percent": 200,
-          "task_limit": 128,
-          "launched": true,
-          "initial_available_bytes": 47087841280,
-          "minimum_available_bytes": 43376058368,
-          "seconds": 31.992,
-          "returncode": 0
-        },
-        "log_sha256": "0f71aaf27c645b92f5465c03f3e94152b1475a6ec7304506283a4e28a1822fa5"
-      },
-      "setup_window": {
-        "result": {
-          "complete": true,
-          "physical_hardware_tested": false,
-          "changed_joint_frames": [
-            "shoulder_pan",
-            "shoulder_lift",
-            "elbow_flex",
-            "wrist_flex",
-            "wrist_roll",
-            "gripper"
-          ],
-          "role": "follower",
-          "extended_reference": false,
-          "named_joint_slider": true,
-          "paused_kinematics": true,
-          "measured_radians": 0.36534014344215393,
-          "custom_color_materials": 1,
-          "role_identity": true,
-          "color_persistence": true,
-          "pixel_motion_fraction": {
-            "shoulder_pan": 0.04438802083333333,
-            "shoulder_lift": 0.04059787326388889,
-            "elbow_flex": 0.029645182291666666,
-            "wrist_flex": 0.01798068576388889,
-            "wrist_roll": 0.0059331597222222225,
-            "gripper": 0.00322265625
-          },
-          "mirrored_joints": 6,
-          "automatic_joint_advancement": true,
-          "signed_wrist_capture_and_review": true,
-          "calibration_saved": true,
-          "torque_never_enabled": true,
-          "register_backup": true,
-          "provisional_preview_label": true,
-          "seconds": 57.81,
-          "clean_shutdown": true
-        },
-        "guard": {
-          "status": "passed",
-          "memory_limit_bytes": 12884901888,
-          "reserve_bytes": 17179869184,
-          "swap_limit_bytes": 0,
-          "timeout_seconds": 210.0,
-          "cpu_quota_percent": 200,
-          "task_limit": 128,
-          "launched": true,
-          "initial_available_bytes": 47673626624,
-          "minimum_available_bytes": 42643910656,
-          "seconds": 64.037,
-          "returncode": 0
-        },
-        "log_sha256": "09c82bffb3ca082d5ab6dafc9fa1091f650d37771eb14ab934273d587741ff0f"
-      },
-      "robot_session_window": {
-        "result": {
-          "complete": true,
-          "physical_motors_commanded": false,
-          "fraction_pixels_changed_above_20_levels": 0.07972222222222222,
-          "poses_match": true,
-          "integrated_preview_matches": true,
-          "error": null,
-          "clean_shutdown": true
-        },
-        "guard": {
-          "status": "passed",
-          "memory_limit_bytes": 12884901888,
-          "reserve_bytes": 17179869184,
-          "swap_limit_bytes": 0,
-          "timeout_seconds": 210.0,
-          "cpu_quota_percent": 200,
-          "task_limit": 128,
-          "launched": true,
-          "initial_available_bytes": 47711703040,
-          "minimum_available_bytes": 42632695808,
-          "seconds": 32.658,
-          "returncode": 0
-        },
-        "log_sha256": "65d06ab37c2637e0e5ecfe6bc4f1b4725d7f30dd8dd99d873817e8bf959d99fd"
-      },
-      "joint-inspector-fixed": {
-        "result": {
-          "complete": true,
-          "physical_hardware_tested": false,
-          "target_radians": 0.43633231300981606,
-          "measured_radians": 0.4551694095134735,
-          "initial_radians": 1.1233678917643708e-11,
-          "paused": true,
-          "authored_scene_unchanged": true,
-          "rendered_motion": true,
-          "selected_path": "/World/Leader/Geometry/base_link/shoulder_link/upper_arm_link/upper_arm_so101_v1",
-          "middle_drag_pan": true,
-          "seconds": 15.524,
-          "clean_shutdown": true
-        },
-        "guard": {
-          "status": "passed",
-          "memory_limit_bytes": 12884901888,
-          "reserve_bytes": 17179869184,
-          "swap_limit_bytes": 0,
-          "timeout_seconds": 210.0,
-          "cpu_quota_percent": 200,
-          "task_limit": 128,
-          "launched": true,
-          "initial_available_bytes": 47062212608,
-          "minimum_available_bytes": 43286106112,
-          "seconds": 31.487,
-          "returncode": 0
-        },
-        "log_sha256": "326574411038d1312b26d33450100a9a57a59190435c7b47301403b0ad10c912"
-      }
-    }
+    ]
   },
   "startup": {
-    "tests": 15,
-    "passed": 15,
-    "skipped": 0,
-    "log": "native/windows-20261009/startup-fixed.log"
+    "status": "passed",
+    "platforms": [
+      "macos",
+      "linux",
+      "windows"
+    ],
+    "python_versions": [
+      "3.11",
+      "3.12"
+    ],
+    "revision": "52502fa",
+    "scope": "Hosted startup matrix, not physical Windows GPU qualification."
   },
   "remaining": [
-    "Fresh ARM64 SDK validation, fully cleared-cache startup timing, native installer validation and physical hardware qualification remain follow-up."
+    "Framework target-specific dependency admission and exact current receipt are required before landing.",
+    "The Windows qualification report is historical and does not bind this refreshed source.",
+    "Cold-cache startup, installation and physical robot qualification remain separate."
   ],
   "regressions_repaired": [
     "Preserve asynchronous right-drag targets while selection docks and inspector content update; real Qt and native RTX/Newton checks pass.",
@@ -557,14 +394,10 @@
     "Windows qualification covers the unchanged rendering/runtime/test modules from d085593; the warmup-only amendment also passed fixed Windows setup and fresh guarded Linux native qualification."
   ],
   "framework_admission": {
-    "test_summary": {
-      "failed": 0,
-      "passed": 30,
-      "skipped": 0,
-      "total": 30
-    },
-    "receipt_identity": "sha256:cda34e10af532e2b0266684dcf078a61d733b2640efd9036d0f43fce86f82aad",
-    "release_gate": "Current development authority passes litai verify; a prepared release still requires exact versioned authority and hosted CI."
+    "status": "blocked",
+    "reason": "Pinned framework rejects Darwin-only Metal imports during Linux retained-source dependency admission.",
+    "issue": "https://github.com/jordanhubbard/literate-ai/issues/65",
+    "release_gate": "Keep receipt verification required; the prior receipt does not qualify current source."
   },
   "windows_qualification": "windows-qualification-review.json"
 }
