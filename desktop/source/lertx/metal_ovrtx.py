@@ -17,31 +17,31 @@ using namespace metal;
 struct VertexIn {
     float3 position [[attribute(0)]];
     float3 normal   [[attribute(1)]];
-    float3 color    [[attribute(2)]];
 };
 struct VertexOut {
     float4 position [[position]];
     float3 worldNormal;
-    float3 color;
 };
 struct Uniforms {
     float4x4 mvp;
     float4x4 model;
-    float3 lightDir;
+    float4 lightDir;
+    float4 tint;
+    float4 baseColor;
 };
 
 vertex VertexOut vertex_main(VertexIn in [[stage_in]], constant Uniforms& u [[buffer(1)]]) {
     VertexOut out;
     out.position = u.mvp * float4(in.position, 1.0);
     out.worldNormal = (u.model * float4(in.normal, 0.0)).xyz;
-    out.color = in.color;
     return out;
 }
 
 fragment float4 fragment_main(VertexOut in [[stage_in]], constant Uniforms& u [[buffer(1)]]) {
     float3 n = normalize(in.worldNormal);
-    float ndl = saturate(dot(n, normalize(u.lightDir)));
-    float3 lit = in.color * (0.18 + 0.82 * ndl);
+    float ndl = saturate(dot(n, normalize(u.lightDir.xyz)));
+    float3 color = mix(u.baseColor.xyz, mix(u.baseColor.xyz, u.tint.xyz, 0.65), u.tint.w);
+    float3 lit = color * (0.18 + 0.82 * ndl);
     return float4(lit, 1.0);
 }
 """
@@ -98,19 +98,23 @@ def _metal_device():
     return device
 
 
-def _fill_buffer(buf, data: bytes):
+UNIFORM_STRIDE = 256
+
+
+def _fill_buffer(buf, data: bytes, offset: int = 0):
     dest = buf.contents()
+    end = offset + len(data)
     try:
-        memoryview(dest)[:len(data)] = data
+        memoryview(dest)[offset:end] = data
         return
     except (TypeError, ValueError):
         pass
     try:
-        dest.as_buffer(len(data))[:] = data
+        dest.as_buffer(end)[offset:end] = data
         return
     except AttributeError:
         pass
-    ctypes.memmove(int(dest), data, len(data))
+    ctypes.memmove(int(dest) + offset, data, len(data))
 
 
 def _gf_to_numpy(matrix):
@@ -136,14 +140,29 @@ def _local_matrix(prim, overrides):
     return Gf.Matrix4d(1)
 
 
-def _world_matrix(prim, overrides):
-    from pxr import Gf
-    matrix = Gf.Matrix4d(1)
-    node = prim
-    while node and not node.IsPseudoRoot():
-        matrix = matrix * _local_matrix(node, overrides)
-        node = node.GetParent()
+def _world_matrix(prim, overrides, cache=None):
+    path = str(prim.GetPath())
+    if cache is not None and path in cache:
+        return cache[path]
+    local = _local_matrix(prim, overrides)
+    parent = prim.GetParent()
+    if parent and not parent.IsPseudoRoot():
+        matrix = local * _world_matrix(parent, overrides, cache)
+    else:
+        matrix = local
+    if cache is not None:
+        cache[path] = matrix
     return matrix
+
+
+def _local_numpy(prim, overrides):
+    path = str(prim.GetPath())
+    if path in overrides:
+        return np.asarray(overrides[path], dtype=np.float64).reshape(4, 4)
+    from pxr import UsdGeom
+    if prim.IsA(UsdGeom.Xformable):
+        return _gf_to_numpy(UsdGeom.Xformable(prim).GetLocalTransformation())
+    return np.eye(4, dtype=np.float64)
 
 
 def _prim_color(prim):
@@ -211,34 +230,69 @@ def _sphere_triangles(radius, slices=16, stacks=12):
     return np.asarray(vertices, dtype=np.float32).reshape(-1, 6)
 
 
-def _mesh_triangles(mesh):
+def _fan_triangles(counts, indices):
+    tri_count = int(np.maximum(np.asarray(counts, dtype=np.int64) - 2, 0).sum())
+    if tri_count <= 0:
+        return None
+    out = np.empty((tri_count, 3), dtype=np.int32)
+    cursor = 0
+    triangle = 0
+    for count in counts:
+        count = int(count)
+        if count >= 3:
+            origin = int(indices[cursor])
+            for offset in range(1, count - 1):
+                out[triangle, 0] = origin
+                out[triangle, 1] = int(indices[cursor + offset])
+                out[triangle, 2] = int(indices[cursor + offset + 1])
+                triangle += 1
+        cursor += count
+    return out[:triangle]
+
+
+def _triangle_mesh(points, counts, indices):
+    points = np.ascontiguousarray(points, dtype=np.float32).reshape(-1, 3)
+    counts = np.asarray(counts, dtype=np.int32).reshape(-1)
+    indices = np.asarray(indices, dtype=np.int32).reshape(-1)
+    if points.size == 0 or counts.size == 0 or indices.size == 0:
+        return None
+    if np.all(counts == 3):
+        tris = indices.reshape(-1, 3)
+    else:
+        tris = _fan_triangles(counts, indices)
+        if tris is None or len(tris) == 0:
+            return None
+    v0, v1, v2 = points[tris[:, 0]], points[tris[:, 1]], points[tris[:, 2]]
+    face_n = np.cross(v1 - v0, v2 - v0)
+    normals = np.zeros_like(points)
+    np.add.at(normals, tris[:, 0], face_n)
+    np.add.at(normals, tris[:, 1], face_n)
+    np.add.at(normals, tris[:, 2], face_n)
+    lengths = np.linalg.norm(normals, axis=1, keepdims=True)
+    normals = (normals / np.maximum(lengths, 1e-8)).astype(np.float32, copy=False)
+    return points, normals, np.ascontiguousarray(tris.reshape(-1), dtype=np.uint32)
+
+
+def _mesh_geometry(mesh):
     points = mesh.GetPointsAttr().Get()
     counts = mesh.GetFaceVertexCountsAttr().Get()
     indices = mesh.GetFaceVertexIndicesAttr().Get()
     if not points or not counts or not indices:
         return None
-    points = np.asarray(points, dtype=np.float32)
-    vertices = []
-    cursor = 0
-    for count in counts:
-        face = [int(indices[cursor + i]) for i in range(int(count))]
-        cursor += int(count)
-        if len(face) < 3:
-            continue
-        origin = points[face[0]]
-        for i in range(1, len(face) - 1):
-            a, b, c = origin, points[face[i]], points[face[i + 1]]
-            normal = np.cross(b - a, c - a)
-            length = np.linalg.norm(normal)
-            if length < 1e-12:
-                normal = np.array((0.0, 0.0, 1.0), dtype=np.float32)
-            else:
-                normal = normal / length
-            for point in (a, b, c):
-                vertices.extend((*point, *normal))
-    if not vertices:
-        return None
-    return np.asarray(vertices, dtype=np.float32).reshape(-1, 6)
+    return _triangle_mesh(points, counts, indices)
+
+
+def _packed_geometry(packed, color):
+    packed = np.ascontiguousarray(packed, dtype=np.float32)
+    positions = packed[:, :3]
+    return {
+        "positions": positions,
+        "normals": packed[:, 3:6],
+        "indices": None,
+        "color": color,
+        "bmin": positions.min(axis=0),
+        "bmax": positions.max(axis=0),
+    }
 
 
 def _extract_drawables(stage):
@@ -250,22 +304,77 @@ def _extract_drawables(stage):
         imageable = UsdGeom.Imageable(prim)
         if imageable.ComputeVisibility() == UsdGeom.Tokens.invisible:
             continue
-        geometry = None
+        color = _prim_color(prim)
+        item = None
         if prim.IsA(UsdGeom.Mesh):
-            geometry = _mesh_triangles(UsdGeom.Mesh(prim))
+            geometry = _mesh_geometry(UsdGeom.Mesh(prim))
+            if geometry is not None:
+                positions, normals, indices = geometry
+                item = {
+                    "positions": positions,
+                    "normals": normals,
+                    "indices": indices,
+                    "color": color,
+                    "bmin": positions.min(axis=0),
+                    "bmax": positions.max(axis=0),
+                }
         elif prim.IsA(UsdGeom.Cube):
             size = UsdGeom.Cube(prim).GetSizeAttr().Get() or 1.0
-            geometry = _cube_triangles(size)
+            item = _packed_geometry(_cube_triangles(size), color)
         elif prim.IsA(UsdGeom.Sphere):
             radius = UsdGeom.Sphere(prim).GetRadiusAttr().Get() or 1.0
-            geometry = _sphere_triangles(radius)
-        if geometry is None:
+            item = _packed_geometry(_sphere_triangles(radius), color)
+        if item is None:
             continue
-        if geometry.shape[1] == 6:
-            color = _prim_color(prim)
-            geometry = np.concatenate([geometry, np.broadcast_to(color, (len(geometry), 3))], axis=1)
-        drawables.append({"path": str(prim.GetPath()), "prim": prim, "local": np.ascontiguousarray(geometry, dtype=np.float32)})
+        item["path"] = str(prim.GetPath())
+        item["prim"] = prim
+        drawables.append(item)
     return drawables
+
+
+def _capture_xform_graph(drawables, overrides):
+    nodes = {}
+    for item in drawables:
+        prim = item.get("prim")
+        if prim is None:
+            continue
+        node = prim
+        while node and not node.IsPseudoRoot():
+            path = str(node.GetPath())
+            if path not in nodes:
+                parent = node.GetParent()
+                parent_path = None
+                if parent and not parent.IsPseudoRoot():
+                    parent_path = str(parent.GetPath())
+                nodes[path] = {
+                    "parent": parent_path,
+                    "local": _local_numpy(node, {}),
+                }
+            node = node.GetParent()
+        item["xform_path"] = str(prim.GetPath())
+    del overrides
+    return nodes
+
+
+def _worlds_from_graph(nodes, overrides):
+    worlds = {}
+
+    def world_of(path):
+        cached = worlds.get(path)
+        if cached is not None:
+            return cached
+        node = nodes[path]
+        local = overrides[path] if path in overrides else node["local"]
+        parent = node["parent"]
+        matrix = np.asarray(local, dtype=np.float64).reshape(4, 4)
+        if parent is not None:
+            matrix = matrix @ world_of(parent)
+        worlds[path] = matrix
+        return matrix
+
+    for path in nodes:
+        world_of(path)
+    return worlds
 
 
 def _camera_matrices(stage, product_path, overrides, width, height):
@@ -316,23 +425,58 @@ def _ray_from_ndc(view, proj, u, v, frustum=None):
 
 
 def _ray_triangle(origin, direction, v0, v1, v2):
+    hit = _ray_triangles(origin, direction, np.stack((v0, v1, v2))[None, ...])
+    return None if hit is None else hit
+
+
+def _ray_triangles(origin, direction, tris):
+    if tris is None or len(tris) == 0:
+        return None
+    v0, v1, v2 = tris[:, 0], tris[:, 1], tris[:, 2]
     edge1 = v1 - v0
     edge2 = v2 - v0
     pvec = np.cross(direction, edge2)
-    det = np.dot(edge1, pvec)
-    if abs(det) < 1e-10:
-        return None
-    inv = 1.0 / det
+    det = np.einsum("ij,ij->i", edge1, pvec)
+    valid = np.abs(det) >= 1e-10
+    inv = np.zeros_like(det)
+    inv[valid] = 1.0 / det[valid]
     tvec = origin - v0
-    u = np.dot(tvec, pvec) * inv
-    if u < 0 or u > 1:
-        return None
+    u = np.einsum("ij,ij->i", tvec, pvec) * inv
+    valid &= (u >= 0.0) & (u <= 1.0)
     qvec = np.cross(tvec, edge1)
-    v = np.dot(direction, qvec) * inv
-    if v < 0 or u + v > 1:
+    v = np.einsum("ij,ij->i", np.broadcast_to(direction, qvec.shape), qvec) * inv
+    valid &= (v >= 0.0) & (u + v <= 1.0)
+    t = np.einsum("ij,ij->i", edge2, qvec) * inv
+    valid &= t > 1e-5
+    if not np.any(valid):
         return None
-    t = np.dot(edge2, qvec) * inv
-    return t if t > 1e-5 else None
+    return float(np.min(np.where(valid, t, np.inf)))
+
+
+def _ray_aabb(origin, direction, bmin, bmax):
+    inv = 1.0 / np.where(np.abs(direction) < 1e-12, 1e-12, direction)
+    t0 = (bmin - origin) * inv
+    t1 = (bmax - origin) * inv
+    tmin = np.minimum(t0, t1)
+    tmax = np.maximum(t0, t1)
+    return float(tmin.max()) <= float(tmax.min())
+
+
+def _world_aabb(model, bmin, bmax):
+    corners = np.array((
+        (bmin[0], bmin[1], bmin[2], 1.0),
+        (bmax[0], bmin[1], bmin[2], 1.0),
+        (bmin[0], bmax[1], bmin[2], 1.0),
+        (bmax[0], bmax[1], bmin[2], 1.0),
+        (bmin[0], bmin[1], bmax[2], 1.0),
+        (bmax[0], bmin[1], bmax[2], 1.0),
+        (bmin[0], bmax[1], bmax[2], 1.0),
+        (bmax[0], bmax[1], bmax[2], 1.0),
+    ), dtype=np.float64)
+    world = corners @ model
+    w = world[:, 3:4]
+    world = world[:, :3] / np.where(np.abs(w) < 1e-12, 1.0, w)
+    return world.min(axis=0), world.max(axis=0)
 
 
 class Renderer:
@@ -349,8 +493,15 @@ class Renderer:
         self._styles = {1: SelectionGroupStyle()}
         self._pick = None
         self._color = None
+        self._color_cpu = None
         self._depth = None
         self._size = (0, 0)
+        self._cpu_frame = None
+        self._usd_id = None
+        self._xform_nodes = {}
+        self._uniform_pool = None
+        self._uniform_cpu = None
+        self._gpu_allocs = 0
         self._pipeline = self._build_pipeline(Metal)
 
     def _build_pipeline(self, Metal):
@@ -364,16 +515,12 @@ class Renderer:
             Metal.MTLPixelFormatRGBA8Unorm)
         descriptor.setDepthAttachmentPixelFormat_(Metal.MTLPixelFormatDepth32Float)
         vertex = Metal.MTLVertexDescriptor.alloc().init()
-        for index, (offset, fmt) in enumerate((
-            (0, Metal.MTLVertexFormatFloat3),
-            (12, Metal.MTLVertexFormatFloat3),
-            (24, Metal.MTLVertexFormatFloat3),
-        )):
+        for index, offset in enumerate((0, 12)):
             attr = vertex.attributes().objectAtIndexedSubscript_(index)
-            attr.setFormat_(fmt)
+            attr.setFormat_(Metal.MTLVertexFormatFloat3)
             attr.setOffset_(offset)
             attr.setBufferIndex_(0)
-        vertex.layouts().objectAtIndexedSubscript_(0).setStride_(36)
+        vertex.layouts().objectAtIndexedSubscript_(0).setStride_(24)
         descriptor.setVertexDescriptor_(vertex)
         pipeline, error = self._device.newRenderPipelineStateWithDescriptor_error_(descriptor, None)
         if pipeline is None:
@@ -390,10 +537,12 @@ class Renderer:
     def detach_ovstage(self):
         self._stage = None
         self._drawables = []
+        self._usd_id = None
+        self._xform_nodes = {}
 
     def destroy(self):
         self.detach_ovstage()
-        self._color = self._depth = self._pipeline = None
+        self._color = self._color_cpu = self._depth = self._pipeline = None
 
     def set_selection_group_styles(self, styles):
         self._styles = dict(styles)
@@ -416,26 +565,71 @@ class Renderer:
         color = Metal.MTLTextureDescriptor.texture2DDescriptorWithPixelFormat_width_height_mipmapped_(
             Metal.MTLPixelFormatRGBA8Unorm, width, height, False)
         color.setUsage_(Metal.MTLTextureUsageRenderTarget | Metal.MTLTextureUsageShaderRead)
-        color.setStorageMode_(Metal.MTLStorageModeShared)
+        color.setStorageMode_(Metal.MTLStorageModePrivate)
+        staging = Metal.MTLTextureDescriptor.texture2DDescriptorWithPixelFormat_width_height_mipmapped_(
+            Metal.MTLPixelFormatRGBA8Unorm, width, height, False)
+        staging.setUsage_(Metal.MTLTextureUsageShaderRead)
+        staging.setStorageMode_(Metal.MTLStorageModeShared)
         depth = Metal.MTLTextureDescriptor.texture2DDescriptorWithPixelFormat_width_height_mipmapped_(
             Metal.MTLPixelFormatDepth32Float, width, height, False)
         depth.setUsage_(Metal.MTLTextureUsageRenderTarget)
         depth.setStorageMode_(Metal.MTLStorageModePrivate)
         self._color = self._device.newTextureWithDescriptor_(color)
+        self._color_cpu = self._device.newTextureWithDescriptor_(staging)
         self._depth = self._device.newTextureWithDescriptor_(depth)
         self._size = (width, height)
+        self._cpu_frame = np.empty((height, width, 4), dtype=np.uint8)
+
+    def _ensure_uniform_pool(self, Metal, count):
+        rows = max(int(count), 1)
+        need = rows * UNIFORM_STRIDE
+        if self._uniform_cpu is None or self._uniform_cpu.shape[0] < rows:
+            self._uniform_cpu = np.zeros((rows, UNIFORM_STRIDE // 4), dtype=np.float32)
+        current = 0 if self._uniform_pool is None else int(self._uniform_pool.length())
+        if current >= need:
+            return
+        self._uniform_pool = self._device.newBufferWithLength_options_(
+            need, Metal.MTLResourceStorageModeShared)
+        self._gpu_allocs += 1
+
+    def _upload_geometry(self, Metal):
+        shared = Metal.MTLResourceStorageModeShared
+        for item in self._drawables:
+            packed = np.concatenate((item["positions"], item["normals"]), axis=1)
+            packed = np.ascontiguousarray(packed, dtype=np.float32)
+            item["count"] = int(len(packed))
+            vbuf = self._device.newBufferWithLength_options_(packed.nbytes, shared)
+            _fill_buffer(vbuf, packed.tobytes())
+            item["vbuf"] = vbuf
+            self._gpu_allocs += 1
+            indices = item.get("indices")
+            if indices is None:
+                item["ibuf"] = None
+                continue
+            indices = np.ascontiguousarray(indices, dtype=np.uint32)
+            item["index_count"] = int(len(indices))
+            ibuf = self._device.newBufferWithLength_options_(indices.nbytes, shared)
+            _fill_buffer(ibuf, indices.tobytes())
+            item["ibuf"] = ibuf
+            self._gpu_allocs += 1
 
     def _sync_drawables(self):
+        import Metal
         usd = None if self._stage is None else self._stage.usd
         if usd is None:
             self._drawables = []
+            self._usd_id = None
+            self._xform_nodes = {}
             return
-        if getattr(self, "_usd_id", None) is usd:
+        if self._usd_id is usd:
             return
         self._drawables = _extract_drawables(usd)
         self._usd_id = usd
         self._path_ids = {item["path"]: index + 1 for index, item in enumerate(self._drawables)}
         self._ids_to_path = {index: path for path, index in self._path_ids.items()}
+        overrides = {} if self._stage is None else self._stage.xforms
+        self._xform_nodes = _capture_xform_graph(self._drawables, overrides)
+        self._upload_geometry(Metal)
 
     def step(self, render_products=None, delta_time=0.0, ordinal=0):
         del delta_time, ordinal
@@ -469,47 +663,59 @@ class Renderer:
         encoder = command.renderCommandEncoderWithDescriptor_(pass_desc)
         encoder.setRenderPipelineState_(self._pipeline)
         encoder.setDepthStencilState_(self._depth_state)
+        encoder.setCullMode_(Metal.MTLCullModeNone)
         light = np.array((0.35, 0.8, 0.45), dtype=np.float32)
         style = self._styles.get(1) or SelectionGroupStyle()
-        shared = Metal.MTLResourceStorageModeShared
-        for item in self._drawables:
-            prim = usd.GetPrimAtPath(item["path"])
-            if not prim:
+        tint = np.array(style.outline_color[:3], dtype=np.float32)
+        view_proj = (view @ proj).astype(np.float32)
+        worlds = _worlds_from_graph(self._xform_nodes, overrides)
+        n = len(self._drawables)
+        self._ensure_uniform_pool(Metal, n)
+        cpu = self._uniform_cpu
+        valid = []
+        for slot, item in enumerate(self._drawables):
+            if item.get("vbuf") is None:
                 continue
-            model = _gf_to_numpy(_world_matrix(prim, overrides)).astype(np.float32)
+            model64 = worlds.get(item.get("xform_path") or item["path"])
+            if model64 is None:
+                continue
+            item["world"] = model64
             # USD/Gf is row-vector; Metal is column-vector. Store (M*V*P) in
             # column-major order so the shader's M * p matches p * M_usd.
-            mvp = (model @ view @ proj).astype(np.float32)
-            uniforms = np.zeros(64, dtype=np.float32)
-            uniforms[:16] = np.ascontiguousarray(mvp).reshape(-1)
-            uniforms[16:32] = np.ascontiguousarray(model).reshape(-1)
-            uniforms[32:35] = light
-            ubuf = self._device.newBufferWithLength_options_(256, shared)
-            _fill_buffer(ubuf, uniforms.tobytes())
-            vertices = item["local"]
-            if item["path"] in self._selection:
-                vertices = vertices.copy()
-                tint = np.array(style.outline_color[:3], dtype=np.float32)
-                vertices[:, 6:9] = 0.35 * vertices[:, 6:9] + 0.65 * tint
-            packed = np.ascontiguousarray(vertices, dtype=np.float32)
-            vbuf = self._device.newBufferWithLength_options_(packed.nbytes, shared)
-            _fill_buffer(vbuf, packed.tobytes())
-            encoder.setVertexBuffer_offset_atIndex_(vbuf, 0, 0)
-            encoder.setVertexBuffer_offset_atIndex_(ubuf, 0, 1)
-            encoder.setFragmentBuffer_offset_atIndex_(ubuf, 0, 1)
-            encoder.drawPrimitives_vertexStart_vertexCount_(
-                Metal.MTLPrimitiveTypeTriangle, 0, len(packed))
+            cpu[slot, :16] = (model64 @ view_proj).reshape(-1)
+            cpu[slot, 16:32] = model64.reshape(-1)
+            cpu[slot, 32:35] = light
+            cpu[slot, 36:39] = tint
+            cpu[slot, 39] = 1.0 if item["path"] in self._selection else 0.0
+            cpu[slot, 40:43] = np.asarray(item["color"], dtype=np.float32)
+            valid.append(slot)
+        rows = max(n, 1)
+        _fill_buffer(self._uniform_pool, cpu[:rows].tobytes())
+        for slot in valid:
+            item = self._drawables[slot]
+            offset = slot * UNIFORM_STRIDE
+            encoder.setVertexBuffer_offset_atIndex_(item["vbuf"], 0, 0)
+            encoder.setVertexBuffer_offset_atIndex_(self._uniform_pool, offset, 1)
+            encoder.setFragmentBuffer_offset_atIndex_(self._uniform_pool, offset, 1)
+            ibuf = item.get("ibuf")
+            if ibuf is not None:
+                encoder.drawIndexedPrimitives_indexCount_indexType_indexBuffer_indexBufferOffset_(
+                    Metal.MTLPrimitiveTypeTriangle, item["index_count"],
+                    Metal.MTLIndexTypeUInt32, ibuf, 0)
+            else:
+                encoder.drawPrimitives_vertexStart_vertexCount_(
+                    Metal.MTLPrimitiveTypeTriangle, 0, item["count"])
         encoder.endEncoding()
+        blit = command.blitCommandEncoder()
+        blit.copyFromTexture_toTexture_(self._color, self._color_cpu)
+        blit.endEncoding()
         command.commit()
         command.waitUntilCompleted()
-        nbytes = height * width * 4
-        raw = (ctypes.c_ubyte * nbytes)()
         region = Metal.MTLRegionMake2D(0, 0, width, height)
-        self._color.getBytes_bytesPerRow_fromRegion_mipmapLevel_(
+        raw = (ctypes.c_ubyte * self._cpu_frame.nbytes).from_buffer(self._cpu_frame)
+        self._color_cpu.getBytes_bytesPerRow_fromRegion_mipmapLevel_(
             raw, width * 4, region, 0)
-        pixels = np.frombuffer(raw, dtype=np.uint8).reshape(height, width, 4).copy()
-        pixels = np.flipud(pixels)
-        color_map = _Mapped(pixels)
+        color_map = _Mapped(self._cpu_frame)
         pick_ids = np.zeros((1,), dtype=np.int32)
         pick_params = {
             "magic": _Mapped(np.array([OVRTX_PICK_HIT_MAGIC], dtype=np.int32)),
@@ -522,20 +728,33 @@ class Renderer:
             best = None
             hit_path = ""
             for item in self._drawables:
-                prim = usd.GetPrimAtPath(item["path"])
-                if not prim:
+                model = item.get("world")
+                if model is None:
                     continue
-                model = _gf_to_numpy(_world_matrix(prim, overrides))
-                local = item["local"].reshape(-1, 3, 9)
-                for triangle in local:
-                    points = []
-                    for vertex in triangle:
-                        hom = model.T @ np.array((vertex[0], vertex[1], vertex[2], 1.0))
-                        points.append(hom[:3] / hom[3])
-                    t = _ray_triangle(origin, direction, *points)
-                    if t is not None and (best is None or t < best):
-                        best = t
-                        hit_path = item["path"]
+                bmin, bmax = _world_aabb(model, item["bmin"], item["bmax"])
+                if not _ray_aabb(origin, direction, bmin, bmax):
+                    continue
+                positions = item["positions"]
+                indices = item.get("indices")
+                if indices is None:
+                    count = (len(positions) // 3) * 3
+                    if count == 0:
+                        continue
+                    tris_idx = np.arange(count, dtype=np.int64).reshape(-1, 3)
+                else:
+                    tris_idx = np.asarray(indices, dtype=np.int64).reshape(-1, 3)
+                    count = len(tris_idx) * 3
+                pts = positions[tris_idx.reshape(-1)]
+                hom = np.empty((count, 4), dtype=np.float64)
+                hom[:, :3] = pts
+                hom[:, 3] = 1.0
+                world = hom @ model
+                w = world[:, 3:4]
+                world = world[:, :3] / np.where(np.abs(w) < 1e-12, 1.0, w)
+                t = _ray_triangles(origin, direction, world.reshape(-1, 3, 3))
+                if t is not None and (best is None or t < best):
+                    best = t
+                    hit_path = item["path"]
             self._pick = None
             if hit_path:
                 pick_ids = np.array([self._path_ids[hit_path]], dtype=np.int32)
