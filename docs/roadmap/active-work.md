@@ -1748,6 +1748,7 @@ queue item or let `docs/roadmap/` become a plan archive.
 - **Conclusion:** The 335-test macOS suite passes on the original local source. Integration includes current main; repeat its tests and refresh stale framework and native-source qualification before merge.
 - **Depends on:** MAC-003
 - **Implementation:**
-  - [ ] Commit the preserved Metal changes and reconcile current main through a review branch.
+  - [x] Commit the preserved Metal changes and reconcile current main through a review branch (PR #26).
+  - [ ] Repair the Darwin launcher test's incomplete platform fixture: on Windows, patching only sys.platform still invokes PowerShell. Model the platform locally without changing pathlib's host OS.
 - **Evidence:**
   - [ ] Pass current macOS native and portable tests, refresh genuine qualification receipts, and pass exact-commit hosted CI before landing.

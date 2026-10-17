@@ -9,6 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -202,6 +203,7 @@ class StartupTests(unittest.TestCase):
     def test_darwin_launcher_is_an_executable_command_script(self):
         destination = Path(self.directory.name) / "Applications" / "LeRTX.command"
         with patch.object(manage.sys, "platform", "darwin"), \
+                patch.object(manage, "os", SimpleNamespace(name="posix")), \
                 patch.object(manage, "launcher_path", return_value=destination):
             manage.install_launcher()
         text = destination.read_text(encoding="utf-8")
