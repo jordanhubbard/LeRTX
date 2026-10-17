@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Speed up the macOS Metal viewport by drawing indexed robot meshes, caching
+  authored transforms, and reading back from a private render target. Opening
+  the default pair is no longer a multi-second Python tessellation.
+
+- Keep Metal viewport frames right-side up with the OVRTX image origin, and reuse
+  GPU geometry and uniform buffers instead of allocating and tinting vertices on
+  the CPU every frame.
+
 - On macOS, render the native viewport with Metal instead of OVRTX. Darwin
   hash locks omit `ovrtx` and `ovstage`, pin PyObjC Metal, and run Newton on
   CPU. Linux and Windows stay on the pinned NVIDIA SDKs.

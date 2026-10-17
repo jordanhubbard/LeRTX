@@ -1,4 +1,5 @@
 """Graphics facade and Darwin shims must not import NVIDIA packages."""
+import inspect
 import sys
 import unittest
 from types import SimpleNamespace
@@ -68,3 +69,23 @@ class GraphicsTests(unittest.TestCase):
         sphere = metal_ovrtx._sphere_triangles(0.5)
         self.assertEqual(sphere.shape[1], 6)
         self.assertGreater(len(sphere), len(cube))
+
+    def test_triangle_mesh_keeps_shared_vertices(self):
+        points = np.array(((0, 0, 0), (1, 0, 0), (0, 1, 0), (0, 0, 1)), dtype=np.float32)
+        counts = np.array((3, 3), dtype=np.int32)
+        indices = np.array((0, 1, 2, 0, 2, 3), dtype=np.int32)
+        positions, normals, index_buffer = metal_ovrtx._triangle_mesh(points, counts, indices)
+        self.assertEqual(len(positions), 4)
+        self.assertEqual(len(normals), 4)
+        self.assertEqual(len(index_buffer), 6)
+        self.assertTrue(np.allclose(np.linalg.norm(normals, axis=1), 1.0, atol=1e-5))
+
+    def test_metal_step_keeps_framebuffer_origin_and_reuses_buffers(self):
+        source = inspect.getsource(metal_ovrtx.Renderer.step)
+        self.assertNotIn("flipud", source)
+        self.assertNotIn("newBufferWithLength", source)
+        self.assertNotIn("newBufferWithBytes", source)
+        self.assertIn("vbuf", source)
+        self.assertIn("_uniform_pool", source)
+        self.assertIn("drawIndexedPrimitives", source)
+        self.assertIn("tint", metal_ovrtx._SHADER)

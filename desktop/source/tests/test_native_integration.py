@@ -55,6 +55,13 @@ class NativeIntegrationTests(unittest.TestCase):
         try:
             worker.submit(lambda: worker.open_usd(usd_path)).result(timeout=90)
             worker.submit(lambda: worker.render("/Render/Product", delta_time=1.0 / 30.0)).result(timeout=90)
+            allocs = worker.submit(
+                lambda: getattr(worker._renderer, "_gpu_allocs", None)
+            ).result(timeout=90)
+            worker.submit(lambda: worker.render("/Render/Product", delta_time=1.0 / 30.0)).result(timeout=90)
+            allocs_again = worker.submit(
+                lambda: getattr(worker._renderer, "_gpu_allocs", None)
+            ).result(timeout=90)
         finally:
             worker.stop()
 
@@ -63,6 +70,24 @@ class NativeIntegrationTests(unittest.TestCase):
         self.assertIsNotNone(frame)
         self.assertGreater(frame.width, 0)
         self.assertGreater(frame.height, 0)
+        if allocs is not None:
+            self.assertEqual(allocs, allocs_again)
+        self._assert_world_up_is_top_of_frame(frame)
+
+    def _assert_world_up_is_top_of_frame(self, frame):
+        import numpy as np
+
+        pixels = np.frombuffer(frame.data, dtype=np.uint8).reshape(
+            frame.height, frame.width, frame.channels)
+        red, green, blue = pixels[..., 0], pixels[..., 1], pixels[..., 2]
+        orange = (red > 80) & (red > green + 20) & (red > blue + 40)
+        rows = np.nonzero(orange)[0]
+        self.assertGreater(len(rows), 16, "expected orange sphere pixels in the default scene")
+        self.assertLess(
+            float(rows.mean()),
+            frame.height * 0.5,
+            "world +Z should project to the top of the frame, matching OVRTX",
+        )
 
 
 if __name__ == "__main__":
