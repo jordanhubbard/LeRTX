@@ -1749,6 +1749,13 @@ queue item or let `docs/roadmap/` become a plan archive.
 - **Depends on:** MAC-003
 - **Implementation:**
   - [x] Commit the preserved Metal changes and reconcile current main through a review branch (PR #26).
-  - [ ] Repair the Darwin launcher test's incomplete platform fixture: on Windows, patching only sys.platform still invokes PowerShell. Model the platform locally without changing pathlib's host OS.
+  - [x] Repair the Darwin launcher test's incomplete platform fixture: on Windows, patching only sys.platform still invokes PowerShell. Model the platform locally without changing pathlib's host OS. All six hosted startup combinations pass at `52502fa`.
 - **Evidence:**
   - [ ] Pass current macOS native and portable tests, refresh genuine qualification receipts, and pass exact-commit hosted CI before landing.
+    The reconciled application passes all 341 tests on Apple M4 Pro (134.116s).
+    Authority and all three locks pass. The pinned 1.2.0 framework rejects Linux
+    retained-source admission because static import checking requires the
+    Darwin-only `Metal` dependency in the Linux BOM. Track the portable upstream
+    defect in [Literate AI #65](https://github.com/jordanhubbard/literate-ai/issues/65).
+    Keep the receipt gate failing until target-specific dependency admission is
+    supported; do not fabricate a Linux installation of the macOS dependency.
