@@ -31,7 +31,7 @@ def request(session, path='/state', payload=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action', choices=['state', 'events', 'ui', 'frame', 'window', 'command', 'watch'])
+    parser.add_argument('action', choices=['state', 'events', 'ui', 'services', 'frame', 'window', 'command', 'watch'])
     parser.add_argument('--pid', type=int)
     parser.add_argument('--window', help='Window id from state')
     parser.add_argument('--json', help='Validated command JSON')

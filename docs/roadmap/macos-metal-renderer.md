@@ -1,8 +1,8 @@
 # macOS Metal renderer
 
 - **Status:** completed
-- **Owning queue item:** [MAC-001](active-work.md#mac-001--macos-metal-renderer-replacing-ovrtx)
-- **Completion / archival evidence:** Darwin warmup passed on Apple M4 Pro (`native_warmup: passed`, 1.503s) without ovrtx/ovstage installed; `darwin-arm64.txt` pins usd-core, Newton, Warp, Qt and PyObjC Metal.
+- **Owning queue item:** [MAC-001](active-work.md#mac-001-macos-metal-renderer-replacing-ovrtx)
+- **Completion / archival evidence:** [Recorded MAC-001 host checks](active-work.md#mac-001-macos-metal-renderer-replacing-ovrtx): Darwin warmup passed on Apple M4 Pro (`native_warmup: passed`, 1.503s) without ovrtx/ovstage installed; `darwin-arm64.txt` pins usd-core, Newton, Warp, Qt and PyObjC Metal.
 
 ## Outcome
 

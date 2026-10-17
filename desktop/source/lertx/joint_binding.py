@@ -42,7 +42,8 @@ class JointBinding:
 
     def convert(self, value):
         if not finite(value) or not min(self.observed) <= value <= max(self.observed):
-            raise ValueError('Observation is outside calibrated range')
+            raise ValueError(f'{self.name}: observation {value!r} is outside calibrated binding range '
+                             f'[{min(self.observed):.3f}, {max(self.observed):.3f}] {self.unit}')
         fraction = (value - self.observed[0]) / (self.observed[1] - self.observed[0])
         return self.radians[0] + fraction * (self.radians[1] - self.radians[0])
 
@@ -69,5 +70,9 @@ class RobotBinding:
             raise ValueError('Observation timestamp is stale or invalid')
         if any(j.name + '.pos' not in values for j in self.joints):
             raise ValueError('Observation is missing required joint positions')
-        return {ROOTS[self.role] + '/Physics/' + j.name: j.convert(values[j.name + '.pos'])
-                for j in self.joints}
+        mapped={};errors=[]
+        for joint in self.joints:
+            try:mapped[ROOTS[self.role]+'/Physics/'+joint.name]=joint.convert(values[joint.name+'.pos'])
+            except ValueError as exc:errors.append(str(exc))
+        if errors:raise ValueError('; '.join(errors))
+        return mapped

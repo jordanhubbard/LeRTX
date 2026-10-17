@@ -119,6 +119,18 @@ class SDKTests(unittest.TestCase):
             started=time.monotonic()
             with self.assertRaises(ConnectionError):bus.sample()
             self.assertLess(time.monotonic()-started,.3)
+    def test_one_corrupt_read_response_recovers_without_writing(self):
+        bus=self.make_bus();bus.open();original=self.serial.write
+        calls=[]
+        def transient(packet):
+            self.serial.corrupt=not calls
+            calls.append(bytes(packet))
+            return original(packet)
+        self.serial.write=transient
+        self.assertEqual(int.from_bytes(bus.read(1,56,2),'little'),2048)
+        self.assertEqual(len(calls),2)
+        self.assertTrue(all(packet[4]==2 for packet in calls))
+        self.assertEqual(self.serial.writes,[])
     def test_partial_read_and_temperature_fault(self):
         bus=self.make_bus();bus.open();self.serial.registers[4][63]=65
         with self.assertRaises(ValueError):bus.sample()

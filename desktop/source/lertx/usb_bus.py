@@ -82,13 +82,18 @@ class FeetechBus:
         return self.metadata
 
     def read(self, motor, address, size):
-        try:
-            data, communication, error = self.packet.readTxRx(self.port, motor, address, size)
-            if communication != 0 or error or len(data) != size:
-                raise ConnectionError(f'Motor {motor}: read failed (communication {communication}, status {error})')
-            return bytes(data)
-        finally:
-            self.port.is_using = False
+        for attempt in range(2):
+            try:
+                data, communication, error = self.packet.readTxRx(self.port, motor, address, size)
+                # Retry only a lost/corrupt read response once. Never replay a
+                # write, hide motor fault bits, or bypass whole-sample freshness.
+                if communication in (-6, -7) and not error and attempt == 0:
+                    continue
+                if communication != 0 or error or len(data) != size:
+                    raise ConnectionError(f'Motor {motor}: read failed (communication {communication}, status {error})')
+                return bytes(data)
+            finally:
+                self.port.is_using = False
 
     def write(self, motor, address, value):
         if motor not in IDS or address not in WRITABLE:

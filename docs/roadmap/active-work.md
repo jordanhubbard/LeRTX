@@ -1,6 +1,89 @@
 # Active work
 
+Framework repair and hardware debugging — 2026-10-15: Smart App Control is
+disabled by the operator and the pinned CLI runs again. Repair the completed
+macOS plan's owner anchor, refresh stale locks through the CLI and obtain current
+verification evidence. Resume ROBOT-001 with the live app, preserving saved
+calibration data and strict physical correspondence checks.
+Live diagnosis now reproduces the follower binding failure after a fresh launch.
+Report all rejected joints together and retain the stop reason next to the live
+view control, rather than suggesting the operator simply re-enable it. The saved
+reference/direction still requires physical validation before replacing bindings.
+The final wizard step must now reject a proposed binding that cannot represent
+the current measured pose, retaining captures for Back navigation. This closes
+the false-success path reproduced by the follower gripper, while preserving the
+separate task of qualifying full usable travel and correcting saved reference data.
+Both actual devices reconnect read-only with all six motors off. The leader also
+has a distinct hardware calibration boundary failure: shoulder-lift encoder 3176
+versus saved maximum 3173 (three ticks, about 0.26 degrees); its calibrated
+observations and engagement remain blocked. Qualify endpoint repeatability and
+the treatment of measured boundary noise separately from strict command limits.
+The updated mapping diagnostics and wizard guard pass 67 targeted tests with
+one platform skip. Live follower errors now retain both rejected joints visibly.
+- [x] Repair the macOS plan's owner anchor, linked completion evidence and guide
+  reachability; refresh locks and documentation authority review through the CLI.
+- [ ] Restore a current accepted-source receipt after the framework's Windows
+  isolated-probe defect is fixed and qualified. The normal CPython 3.11 probe
+  returns AMD64; the installer's reduced environment returns an empty machine
+  field, rejected by strict wheel-target validation. See the sanitized
+  [upstream issue draft and reproducer](../architecture/windows-receipt-probe.md).
+  The pinned distribution is unchanged. Formal receipt acceptance remains open;
+  targeted application tests and authority/lock checks are separate evidence.
+
+Live physical proof — 2026-10-15 (ROBOT-001): actual follower engagement first
+failed on a corrupt Motor 2 response (-7); the next engagement succeeded, then
+motion aborted on a Motor 5 response timeout (-6). Both failures confirmed torque
+off. A single retry of timeout/corrupt read replies now recovers transient errors;
+writes are never replayed and freshness/heartbeat limits remain enforced.
+- [x] Verify bounded physical actuation through normal held-motion controls.
+  A 3-degree base command produced 2.20 degrees of encoder movement; a subsequent
+  8-degree command moved the base from 13.98 to 21.36 degrees (7.38 degrees).
+  Return commands were issued after both tests; exact return accuracy is unproven.
+  Final telemetry confirmed read-only state, no error, stop confirmed and torque
+  off on all six motors. Raw traces remain local because they contain device IDs.
+- [ ] Diagnose and repair saved physical-to-virtual correspondences. Current
+  follower elbow observation -96.53 degrees lies outside its saved binding
+  [-87.65, 96.62]; gripper observation 99.58 percent exceeds its binding
+  [0, 43.60]. One rejected joint pauses the whole live mirror. Verify reference
+  pose, direction, units and usable travel; do not silently clamp or expand data.
+- [ ] Prove end-to-end physical-to-RTX tracking after the binding repair, using
+  encoder traces, mapped angles, rendered poses, native publication ordinals and
+  substantial image motion for both roles. UI changes alone are insufficient.
+- [ ] Qualify sustained USB operation and persistent timeout/corrupt-response
+  recovery on both arms; verify bounded latency, heartbeat stops and torque-off.
+  The brief follower test does not establish prolonged communication reliability.
+- [ ] Verify leader-to-follower following with real devices through the normal
+  session workflow, including stop/disconnect behavior and tracking accuracy.
+  Current physical evidence covers follower base actuation only.
+Commit checkpoint: all 55 targeted diagnostics, hardware, hardware UI, device
+ownership and robot-session tests pass (one platform skip); diff whitespace checks
+pass. GitHub has no open issues or PRs at this checkpoint. Windows Application
+Control blocks the pinned local `litai` executable, so tracker/guidance inspection
+and formal framework verification are unavailable here; no admission or release
+qualification is claimed.
+
 ## Reconciled SDK release
+
+LLM development control — 2026-10-15 (ROBOT-001): the operator authorizes
+full UI and named application-service control by enabling the existing local
+telemetry interface. No second opt-in or human confirmation is required. Add
+session-stable widget/action identities, asynchronous UI operations, a service
+catalog and operation results; retain loopback authentication, GUI-thread
+dispatch and existing device validation. Then inspect calibration reload and
+physical-to-virtual motion using the running app directly.
+- [x] Implement and test diagnostic UI/service control, including modal dialogs.
+  Six diagnostics tests pass; existing authentication/origin rejection remains covered.
+- [x] Restart with the updated interface and inspect both connected arms.
+  Opened and connected both hardware panels through the endpoint. Both produce
+  fresh read-only telemetry with torque off. Saved setup reload now passes the
+  real register match and produces calibrated observations; 17 hardware UI tests pass.
+- [ ] Repair and verify calibration reload and live physical mirroring.
+  Reload is repaired. Mirroring remains blocked by observations beyond saved
+  virtual-binding intervals (including follower elbow and gripper); retain strict
+  correspondence validation and diagnose reference/direction/usable travel before
+  claiming visual tracking. Framework verify also reports an upstream dangling
+  macOS roadmap owner link, stale locks and unavailable current receipt; this
+  development evidence is not framework admission or release qualification.
 
 Windows contributor repair — 2026-10-13: `make build` and `make install`
 complete dependency setup and native warmup, then fail at the Unix-only `touch`
@@ -1601,8 +1684,9 @@ queue item or let `docs/roadmap/` become a plan archive.
     `uv lock --project desktop/tools` resolved usd-exchange v3.0.0 -> v3.0.1 from PyPI; lock wheels are `usd_exchange-3.0.1-cp312-cp312-manylinux_2_34_{aarch64,x86_64}.whl` and `win_amd64`.
   - [x] docs/architecture/runtime.md states the current ARM64 provider as usd-exchange==3.0.1.
 
-### [x] MAC-001 — macOS Metal renderer replacing OVRTX
+### MAC-001: macOS Metal renderer replacing OVRTX
 
+- [x] Complete the macOS Metal renderer implementation and recorded host checks.
 - **Priority:** high
 - **Owner:** Desktop Component, desktop-python Flavor, and native host delivery
 - **Direction:** On macOS, where RTX is unsupported, create a native Metal 3D renderer that replaces OVRTX. Do not compile or install ovrtx into the macOS binary at all; use Metal instead. An OVRTX-compatible API shim to Metal is acceptable so the rest of the scene session stays clean.

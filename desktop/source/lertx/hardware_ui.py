@@ -24,6 +24,8 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             self.preview_pending=False;self.preview_generation=0
             self.preview_at=0.
             self.motor_action=None;self.motor_sequence=-1
+            self.saved_setup_checked=False
+            self.live_error=''
             self.session=access
             self.setWindowTitle('SO-101 hardware · '+role+' · '+candidate.port)
             from .role_ui import role_icon
@@ -185,6 +187,7 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
 
         def live_changed(self,enabled):
             self.preview_generation+=1;self.sequence=-1
+            if enabled:self.live_error=''
             if not enabled:
                 self.sequence=-1
                 if owner.worker and owner._ready:
@@ -196,6 +199,19 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
         def poll(self):
             self.session.heartbeat(self.move_button.isDown() and not self.closing and self.isActiveWindow())
             snapshot=self.session.snapshot();state=snapshot['state'];sample=snapshot['sample']
+            if state in ('disconnected','connecting'):self.saved_setup_checked=False
+            if state=='read-only' and self.session.writable and not self.saved_setup_checked:
+                self.saved_setup_checked=True
+                if self.calibration is None:
+                    try:
+                        from .robot_session import load_saved_setup
+                        calibration,binding=load_saved_setup(owner.config_path,role,self.session.device_id)
+                        self.session.request('calibration',calibration)
+                        self.calibration=calibration;self.binding=binding
+                        self.calibration_label.setText('Saved calibration loaded; verifying connected registers · '+calibration.identity[:12])
+                        self.binding_label.setText('Saved measured binding loaded: '+role)
+                    except (ValueError,OSError) as exc:
+                        self.message.setText(str(exc))
             stale=snapshot['stale'];armed=state=='armed' and not stale
             self.status.setText(state.upper()+(' · STALE' if stale else '')+(' · '+snapshot['error'] if snapshot['error'] else ''))
             self.connect_button.setEnabled(state in ('disconnected','fault') and not self.closing)
@@ -214,7 +230,9 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
                 '3D mirroring unavailable: measure or load this arm’s virtual binding, or complete guided setup.' if not self.binding else
                 '3D mirroring waiting for fresh calibrated readings. '+(sample['calibration_error'] if sample else '') if not healthy else
                 '3D mirroring waiting for the RTX workspace.' if not owner._ready else
-                'Live measured motion is enabled.' if self.live.isChecked() else 'Mirroring paused — check the box above to follow this physical arm.')
+                'Live measured motion is enabled.' if self.live.isChecked() else
+                'Mirroring stopped: '+self.live_error if self.live_error else
+                'Mirroring paused — check the box above to follow this physical arm.')
             if sample:
                 for i,name in enumerate(JOINT_NAMES,1):
                     motor=sample['motors'][i];value=sample['observations'].get(name)
@@ -265,7 +283,8 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
                             self.preview_pending=False
                             if generation!=self.preview_generation or frame.get('hardware_cancelled'):return
                             if 'hardware_error' in frame:
-                                self.live.setChecked(False);self.message.setText(frame['hardware_error'])
+                                self.live_error=frame['hardware_error']
+                                self.live.setChecked(False);self.message.setText(self.live_error)
                             elif self.live.isChecked():
                                 owner._accept_frame(frame)
                                 self.preview_at=time.monotonic()

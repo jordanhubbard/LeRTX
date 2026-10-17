@@ -19,6 +19,8 @@ Start with [getting started](user/getting-started.md) for installation and usage
 See [hardware controls](user/hardware.md) for USB connection, calibration, manual
 movement and measured physical-to-virtual bindings.
 See [active work](roadmap/active-work.md) for current development status.
+The [macOS Metal renderer plan](roadmap/macos-metal-renderer.md) records the
+completed host implementation and its qualification evidence.
 
 See [live co-session debugging](user/live-debugging.md) for local state, frame,
 timing and GPU inspection while using the application.

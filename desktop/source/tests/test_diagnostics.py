@@ -44,6 +44,67 @@ class DiagnosticsTests(unittest.TestCase):
             time.sleep(.005)
         return future.result(timeout=1)
 
+    def test_control_identity_mutation_and_validation(self):
+        from PySide6.QtWidgets import QPushButton, QLineEdit
+        self.owner.show()
+        button = QPushButton('Diagnostic test', self.owner)
+        button.show()
+        edit = QLineEdit(self.owner)
+        edit.show()
+        hits = []
+        button.clicked.connect(lambda: hits.append(True))
+        controls = self.call('/ui')[0]['widgets']
+        key = next(c['id'] for c in controls if c.get('text') == 'Diagnostic test')
+        self.assertEqual(key, self.service.control.identify(button))
+        result = self.call('/command', {'command':'ui_action','id':key,'action':'click'})
+        self.app.processEvents()
+        self.assertEqual(hits, [True])
+        self.assertTrue(any(e.get('operation') == result['operation'] and e['kind'] == 'control.completed'
+                            for e in self.call('/events')))
+        button.setEnabled(False)
+        result = self.call('/command', {'command':'ui_action','id':key,'action':'click'})
+        self.app.processEvents()
+        self.assertTrue(any(e.get('operation') == result['operation'] and e['kind'] == 'control.failed'
+                            for e in self.call('/events')))
+        with self.assertRaises(ValueError):self.service.control.submit({'command':'ui_action','id':'stale','action':'click'})
+        self.assertIn('open_hardware', self.call('/services'))
+        with self.assertRaises(ValueError):self.service.control.submit({'command':'service','name':'eval'})
+        with self.assertRaises(ValueError):self.service.control.submit({'command':'service','name':'open_hardware','role':'bad'})
+
+    def test_control_modal_dialog_keeps_http_responsive(self):
+        from PySide6.QtWidgets import QPushButton, QDialog, QVBoxLayout
+        self.owner.show()
+        button = QPushButton('Open test modal', self.owner)
+        button.show()
+        dialogs = []
+        def open_dialog():
+            dialog = QDialog(self.owner)
+            dialog.setWindowTitle('Control modal')
+            close = QPushButton('Finish test', dialog)
+            QVBoxLayout(dialog).addWidget(close)
+            close.clicked.connect(dialog.accept)
+            dialogs.append(dialog)
+            dialog.exec()
+        button.clicked.connect(open_dialog)
+        # A client thread operates both requests while Qt runs its nested loop.
+        def client():
+            controls = request(self.session, '/ui')
+            key = next(c['id'] for w in controls for c in w['widgets'] if c.get('text') == 'Open test modal')
+            result = request(self.session, '/command', {'command':'ui_action','id':key,'action':'click'})
+            controls = request(self.session, '/ui')
+            key = next(c['id'] for w in controls for c in w['widgets'] if c.get('text') == 'Finish test')
+            request(self.session, '/command', {'command':'ui_action','id':key,'action':'click'})
+            return result
+        from PySide6.QtCore import QTimer
+        from shiboken6 import isValid
+        QTimer.singleShot(4000, lambda: [d.reject() for d in dialogs if isValid(d)])
+        future = self.pool.submit(client)
+        deadline = time.monotonic()+7
+        while not future.done() and time.monotonic()<deadline:
+            self.app.processEvents()
+            time.sleep(.005)
+        self.assertTrue(future.result(timeout=1)['queued'])
+
     def test_observe_tune_and_capture_without_hardware(self):
         from PySide6.QtGui import QImage
         self.owner._image = QImage(16, 16, QImage.Format.Format_RGB32)

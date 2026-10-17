@@ -262,11 +262,24 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
             except Exception as exc:self.status.setText(str(exc))
 
         def save_blocker(self,sample):
+            self.save_blocked_joint=None
             outside=[(i,m['position']) for i,m in sample['motors'].items() if not 0<=m['position']<=4095]
-            if not outside:return ''
-            i,value=outside[0];name=JOINT_GUIDES[JOINT_NAMES[i-1]][0].lower()
-            return (f'Return {name} toward the reference pose to enable Save. '
-                    f'Current reading: {value}; required range: 0–4095. All six joints are captured and retained.')
+            if outside:
+                i,value=outside[0];name=JOINT_GUIDES[JOINT_NAMES[i-1]][0].lower()
+                self.save_blocked_joint=JOINT_NAMES[i-1]
+                return (f'Return {name} toward the reference pose to enable Save. '
+                        f'Current reading: {value}; required range: 0–4095. All six joints are captured and retained.')
+            try:
+                calibration=self.capture.calibration()
+                binding=self.capture.binding(self.session.device_id)
+                binding.map_observation({name+'.pos':calibration.decode(name,sample['motors'][i]['position'])
+                    for i,name in enumerate(JOINT_NAMES,1)},device_id=self.session.device_id,
+                    calibration_id=calibration.identity,captured_at=sample['timestamp'],now=sample['timestamp'])
+            except ValueError as exc:
+                self.save_blocked_joint=next((name for name in JOINT_NAMES if name+':' in str(exc)),None)
+                return ('Cannot save a mapping that rejects the current arm pose. '+str(exc)+
+                    '. Use Back to review the reference pose, direction and travel. All captures are retained.')
+            return ''
 
         def preview_is_current(self):
             return (self.live.isChecked() and self.preview_window.isVisible() and self.preview_step==self.step
@@ -437,7 +450,8 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
             if self.step==9 and sample and not s['stale'] and not self.pending:
                 blocker=self.save_blocker(sample)
                 self.movement.setText(blocker or 'All six joints captured. Choose Save to confirm the review, or Back to correct a joint.')
-                self.next_button.setText('Return wrist twist to enable Save' if blocker else 'Save calibration to arm and files')
+                self.next_button.setText(('Review mapping to enable Save' if blocker.startswith('Cannot save') else
+                    'Return '+JOINT_GUIDES[self.save_blocked_joint][0].lower()+' to enable Save') if blocker else 'Save calibration to arm and files')
                 if blocker:self.next_button.setEnabled(False)
                 if not blocker and self.status.text().startswith('Return wrist twist'):self.status.clear()
             if self.step==9 and setup.get('state')=='saved':
@@ -449,7 +463,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
                 except Exception as exc:self.status.setText('Calibration is on the arm but saving files failed: '+str(exc));return
             if sample and not s['stale']:
                 now=time.monotonic()
-                active=JOINT_NAMES[self.step-3] if 3<=self.step<=8 else 'wrist_roll' if self.step==9 and self.save_blocker(sample) else None
+                active=JOINT_NAMES[self.step-3] if 3<=self.step<=8 else self.save_blocked_joint if self.step==9 and self.save_blocker(sample) else None
                 self.joint_map.set_state(active,confirmed=self.capture.confirmed if self.capture else ())
                 if self.capture and 3<=self.step<=8:
                     n=JOINT_NAMES[self.step-3]

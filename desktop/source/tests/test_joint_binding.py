@@ -31,3 +31,12 @@ class JointBindingTests(unittest.TestCase):
                        (dataclasses.replace(binding.joints[0],motor_id=6),)+binding.joints[1:],
                        binding.joints[:-1]+(dataclasses.replace(binding.joints[-1],unit='degrees'),)):
             with self.assertRaises(ValueError):dataclasses.replace(binding,joints=joints)
+
+    def test_reports_every_out_of_range_joint_without_partial_mapping(self):
+        binding=self.binding()
+        values={name+'.pos':50. if name=='gripper' else 0. for name in JOINT_NAMES}
+        values.update({'elbow_flex.pos':-30.,'gripper.pos':101.})
+        with self.assertRaises(ValueError) as error:
+            binding.map_observation(values,device_id='test-arm',calibration_id='measured-session-1',captured_at=10.,now=10.1)
+        self.assertIn('elbow_flex',str(error.exception))
+        self.assertIn('gripper',str(error.exception))
