@@ -161,6 +161,10 @@ class RangeCapture:
             raw=sample['motors'][i]['position']
             value=self.reference[n]+self.directions[n]*(raw-self.reference_positions[n])*2*math.pi/4095
             low,high=joint_limits(self.role)[n]
+            if n=='gripper' and n in self.confirmed:
+                first,last=self.ranges[n];fraction=(raw-first)/(last-first)
+                if self.directions[n]<0:fraction=1-fraction
+                value=low+fraction*(high-low)
             result[n]=max(low,min(high,value))
             if abs(result[n]-value)>.03:clipped.append(n)
         return result,clipped
@@ -174,6 +178,11 @@ class RangeCapture:
     def binding(self,device_id):
         c=self.calibration();joints=[]
         for i,n in enumerate(JOINT_NAMES,1):
+            if n=='gripper':
+                radians=joint_limits(self.role)[n]
+                if self.directions[n]<0:radians=tuple(reversed(radians))
+                joints.append(JointBinding(n,i,'percent',(0.,100.),tuple(radians)))
+                continue
             low,high=self.ranges[n]  # Only the observed wrist interval is qualified for mapping.
             vlow,vhigh=joint_limits(self.role)[n];direction=self.directions[n]
             # Intersect the measured encoder interval with representable CAD travel.

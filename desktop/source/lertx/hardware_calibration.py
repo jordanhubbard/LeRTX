@@ -66,6 +66,12 @@ class Calibration:
         c=self.values[name];low,high=c['range_min'],c['range_max']
         if not finite(ticks) or not low<=ticks<=high:
             raise ValueError(f'{name}: reading {ticks!r} outside calibrated range [{low}, {high}] encoder ticks')
+        return self.decode_measurement(name,ticks)
+
+    def decode_measurement(self,name,ticks):
+        """Display-only normalization; command eligibility still uses decode()."""
+        if not finite(ticks) or not 0<=ticks<=4095:raise ValueError('Invalid encoder measurement')
+        c=self.values[name];low,high=c['range_min'],c['range_max']
         if name=='gripper':
             value=100*(ticks-low)/(high-low)
             return 100-value if c['drive_mode'] else value
