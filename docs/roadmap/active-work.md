@@ -1,5 +1,30 @@
 # Active work
 
+Live physical preview repair — 2026-10-16 (ROBOT-001): the operator expects both
+RTX arms to follow hand movement. Own preview subscriptions at application scope,
+start them on explicit read-only connection and keep them after controls close.
+Separate display observations from command acceptance: valid encoder feedback
+outside a captured travel boundary must remain visible with a warning, while
+engagement, targets and following keep their strict existing limits. Render
+measured arm rotations beyond CAD simulation limits in the paused kinematic view;
+do not clamp physical arm rotations or feed them into actuator commands. Wizard
+grippers use normalized captured travel across their role-specific model range,
+not an assumed one-to-one encoder-to-claw rotation. Keep custom paired mappings.
+Verify ownership/closure, reconnects, stale-data handling, unchanged command gates,
+both-role native publication and substantial RTX image motion.
+- [x] Application-owned preview, persistent panel-independent telemetry and visible
+  per-role workspace status; recording/following/engagement checks stay strict.
+- [x] Portable ownership/session/UI tests pass (88 cases); both-role RTX acceptance
+  passes beyond CAD limits with substantial image changes and bounded targets.
+- [x] Actual follower base moved 7.21 degrees, with 0.009393 of image pixels
+  changing substantially. The rendered rotation matches the mapped encoder value;
+  the sampled capture-to-publication latency was 47 ms (not a performance bound).
+  Return requested and all twelve motors confirmed off. Both arms remain Live
+  after both hardware panels close; leader travel warnings no longer freeze it.
+- [ ] Qualify prolonged hand movement, endpoint repeatability and independent
+  disconnect/reconnect for both physical arms. Saved command limits/bindings still
+  require their own physical qualification; display continuity does not widen them.
+
 Framework repair and hardware debugging — 2026-10-15: Smart App Control is
 disabled by the operator and the pinned CLI runs again. Repair the completed
 macOS plan's owner anchor, refresh stale locks through the CLI and obtain current

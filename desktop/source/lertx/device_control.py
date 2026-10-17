@@ -58,11 +58,20 @@ class DeviceController:
         self.role = session.role
         self.calibration = None
         self.binding = None
+        self.binding_kind = 'measured'
         self._accesses = []
         self._writer = None
         self._engage_stop_sequence = None
         self._connecting = False
         self._connect_stop_sequence = 0
+
+    def restore_preview_setup(self,config_path):
+        """Restore verified metadata when a preview is the remaining owner."""
+        if self._writer is not None or self.session.snapshot()['state']!='read-only':return
+        from .robot_session import load_saved_setup
+        calibration,binding=load_saved_setup(config_path,self.role,self.session.device_id)
+        self.session.request('calibration',calibration)
+        self.calibration=calibration;self.binding=binding;self.binding_kind='wizard'
 
     def acquire(self, purpose):
         if purpose not in ("hardware", "setup", "session", "observer"):

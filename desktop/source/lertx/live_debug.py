@@ -130,6 +130,7 @@ class Diagnostics:
         panel=getattr(owner,'_robot_session_window',None)
         session=panel.session if panel and not panel.closed else None
         return dict(schema=1, at=now, pid=os.getpid(), ready=owner._ready,
+            physical_preview=owner.physical_preview.snapshot() if hasattr(owner,'physical_preview') else {},
             camera=dict(enabled=camera.enabled,selected=camera.selected_id,active=camera.active_id,
                 status=camera.status,frame_age_ms=(now-camera.frame_at)*1000 if camera.frame_at is not None else None) if camera else None,
             robot_session=dict(mode=session.mode,recording=session.recording,unsaved=session.unsaved,

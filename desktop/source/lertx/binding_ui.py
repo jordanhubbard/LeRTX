@@ -44,6 +44,7 @@ def build_binding_dialog(panel):
             from .hardware_calibration import save_binding
             save_binding(Path(path),binding)
             panel.binding=binding;panel.binding_label.setText('Measured binding loaded');dialog.accept()
+            panel.session.controller.binding_kind='measured'
         except KeyError:status.setText('Capture both A and B for every joint.')
         except Exception as exc:status.setText(str(exc))
     button=QPushButton('Save and use measured binding');button.clicked.connect(save);layout.addWidget(button)

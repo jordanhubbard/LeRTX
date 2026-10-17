@@ -31,6 +31,15 @@ the calibration against connected motor registers before using observations;
 missing, corrupt or mismatched records remain visible errors. Reloading does not
 write motor registers or enable torque. The existing measured-live-view control
 then uses calibrated observations without repeating setup or manual imports.
+Start measured preview automatically after this explicit connection. Application
+preview subscriptions survive closing a hardware panel; Disconnect and application
+exit stop them. Neither connection nor preview engages torque. Show each role's
+live, waiting, disconnected or failed preview state in the main workspace.
+Display valid encoder measurements even when they exceed captured travel or CAD
+simulation limits, with visible qualification warnings. This paused kinematic
+display never changes command limits, engagement checks or following eligibility.
+Wizard gripper display maps normalized captured travel to the model's gripper
+range and direction; retain explicit user-measured paired bindings unchanged.
 The explicit setup wizard may write homing and range calibration with torque off,
 following the pinned LeRobot half-turn procedure. Capture and persist original
 registers before modification, verify every write and restore on cancellation or
@@ -48,7 +57,9 @@ Read-only disconnect emits no writes; never automatically reconnect or rearm.
 Import six-joint LeRobot calibration JSON. Verify IDs, ranges and homing offsets
 against the motors. Raw reads work without calibration; writes require a match.
 Use LeRobot degree units for body joints and percent/direction for the gripper.
-Reject invalid or out-of-range measurements and targets.
+Reject invalid or out-of-range measurements and targets for command eligibility.
+Read-only preview may display valid encoder feedback beyond captured travel with
+the visible qualification warnings defined above; it never authorizes a command.
 
 Arm only with fresh healthy readings and all motors initially torque-off. Seed
 goals to current positions before enabling torque; bound speed, acceleration and

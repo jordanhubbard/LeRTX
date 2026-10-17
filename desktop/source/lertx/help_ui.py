@@ -55,12 +55,19 @@ not robot calibration. Cancelling unfinished setup restores original registers
 when communication permits; it does not save the new captures.</p>
 <a name="controls"></a><h2>Hardware controls</h2>
 <p>In <b>Devices</b>, choose the named arm's <b>Open controls</b> button. For an
-existing calibration, connect read-only and use <b>Import LeRobot calibration…</b>.
+existing saved setup, <b>Connect read-only</b> restores it and starts live preview.
+Use <b>Import LeRobot calibration…</b> for an external calibration file.
 The file must match the motor registers. For a physical-to-virtual mapping created
 outside the wizard, use <b>Measure virtual binding</b>.</p>
 <p><b>Show measured physical joints in the scene</b> requires fresh telemetry and
 a matching calibration and binding. Live physical viewing pauses simulation;
 viewport gestures never directly command hardware.</p>
+<p>With torque released, move either physical arm by hand to update its own 3D
+model. The workspace shows each role's live status. Closing the hardware panel
+keeps this read-only preview running; <b>Disconnect</b> stops it. Valid measured
+rotations beyond captured or CAD limits remain visible with a <b>check travel /
+mapping</b> message. Hover over the message for details. These display warnings do
+not widen motor-command limits. Wizard grippers use their full captured travel.</p>
 <p>Support the arm before releasing torque. The motor control reflects measured
 state: <b>Engage motors</b> when off, <b>Release motors</b> when on. Engagement asks
 for confirmation and requires verified calibration. Set joint targets, then hold

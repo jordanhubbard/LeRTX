@@ -74,7 +74,8 @@ To use an existing LeRobot calibration instead:
 3. Open **Devices**, scan, select the adapter and explicitly assign its role.
    Choose **Open hardware controls**, then **Connect read-only**. Verify all six
    encoder readings. Connecting does not change torque or motor settings.
-4. Choose **Import LeRobot calibration** for that specific arm. LeRTX checks the
+4. LeRTX reloads this device's saved setup automatically. For an external file,
+   choose **Import LeRobot calibration** for that specific arm. LeRTX checks the
    six IDs, encoder ranges and homing offsets against the motor registers.
    Body-joint readings use LeRobot's degree convention; gripper readings use
    normalized percent. These degrees are not automatically the USD joint angles.
@@ -116,10 +117,26 @@ its virtual values are radians internally, displayed as degrees in this dialog.
 Save the measured binding. It is tied to this USB identity, role and calibration.
 Adapters without a unique serial number require a new session binding after reconnect.
 
+**Connect read-only** starts measured live preview automatically when a matching
+saved setup is available. Move either arm by hand with torque released: its own
+model follows, independently of the other arm. The workspace shows the connection
+and preview state for each role. Closing hardware controls keeps the read-only
+preview connected; use **Disconnect** to stop it. Closing an armed control panel
+still releases its motors before returning control to the application.
+
 **Show measured physical joints in the scene** applies these measurements through
 the articulated forward kinematics and pauses simulation. Simulation Play, Reset
 and joint manipulation are blocked while live viewing owns the robot poses.
-Stale measurements stop live viewing. The authored USD remains unchanged.
+Stale measurements pause updates and show a waiting or error state; fresh readings
+resume automatically. The authored USD remains unchanged.
+Captured travel limits and CAD simulation limits do not suppress valid measured
+rotations in this paused, read-only display. A **check travel / mapping** message
+identifies observations outside those intervals; hover over it for details.
+Wizard grippers use the full normalized captured travel, so an assumed encoder
+zero cannot freeze the jaw halfway through its physical movement. Custom paired
+gripper bindings retain their measured correspondences. Motor engagement, targets,
+recording and automatic following retain their existing strict calibration checks;
+a live preview alone does not mean the arm is ready for those operations.
 The control explains missing calibration, binding or fresh telemetry. A raw
 read-only connection alone cannot establish physical-to-virtual joint coordinates.
 
@@ -140,8 +157,9 @@ middle-drag pans; the wheel zooms. There is no free-space gripper IK gizmo yet.
 
 The joint diagram stays above the scrolling instructions throughout setup. Back
 buttons name the parent panel. Leaving setup cancels it with the existing register
-recovery; leaving hardware controls closes its session before reopening Device
-Manager. Leaving setup also returns to Device Manager after register recovery.
+recovery; leaving hardware controls releases their motor-control ownership while
+the application keeps the read-only preview. Leaving setup also returns to Device
+Manager after register recovery.
 
 You can open setup while this arm's read-only hardware panel is open. Both use the
 same device connection. During setup, the hardware panel shows shared telemetry

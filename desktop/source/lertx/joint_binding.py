@@ -63,13 +63,37 @@ class RobotBinding:
         for joint in self.joints:
             joint.validate(self.role)
 
-    def map_observation(self, values, *, device_id, calibration_id, captured_at, now, max_age=.25):
+    def _check_sample(self,values,device_id,calibration_id,captured_at,now,max_age):
         if device_id != self.device_id or calibration_id != self.calibration_id:
             raise ValueError('Observation device or calibration identity mismatch')
         if not all(map(finite, (captured_at, now, max_age))) or max_age <= 0 or not 0 <= now - captured_at <= max_age:
             raise ValueError('Observation timestamp is stale or invalid')
         if any(j.name + '.pos' not in values for j in self.joints):
             raise ValueError('Observation is missing required joint positions')
+
+    def map_preview(self,values,*,device_id,calibration_id,captured_at,now,normalize_gripper=False,max_age=.25):
+        """Read-only display; never use this result to derive motor commands."""
+        self._check_sample(values,device_id,calibration_id,captured_at,now,max_age)
+        mapped={};warnings=[]
+        for joint in self.joints:
+            value=values[joint.name+'.pos']
+            if not finite(value):raise ValueError(joint.name+': invalid measured position')
+            if normalize_gripper and joint.name=='gripper':
+                low,high=joint_limits(self.role)[joint.name]
+                fraction=max(0.,min(1.,value/100.))
+                if (joint.radians[1]-joint.radians[0])*(joint.observed[1]-joint.observed[0])<0:fraction=1-fraction
+                angle=low+fraction*(high-low)
+                if not 0<=value<=100:warnings.append(joint.name+': outside captured travel')
+            else:
+                fraction=(value-joint.observed[0])/(joint.observed[1]-joint.observed[0])
+                angle=joint.radians[0]+fraction*(joint.radians[1]-joint.radians[0])
+                if not 0<=fraction<=1:warnings.append(joint.name+': beyond paired mapping interval')
+            if abs(angle)>2*math.pi:raise ValueError(joint.name+': implausible preview rotation; review binding')
+            mapped[ROOTS[self.role]+'/Physics/'+joint.name]=angle
+        return mapped,warnings
+
+    def map_observation(self, values, *, device_id, calibration_id, captured_at, now, max_age=.25):
+        self._check_sample(values,device_id,calibration_id,captured_at,now,max_age)
         mapped={};errors=[]
         for joint in self.joints:
             try:mapped[ROOTS[self.role]+'/Physics/'+joint.name]=joint.convert(values[joint.name+'.pos'])

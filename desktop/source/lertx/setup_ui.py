@@ -368,6 +368,7 @@ def build_setup_wizard(owner,session_factory=HardwareSession,scanner=None, *, in
             if hasattr(panel,'preview_window') and panel.preview_window is not self.preview_window:
                 panel.preview_window.dispose()
             panel.calibration=self.capture.calibration();panel.binding=self.capture.binding(self.session.device_id)
+            panel.session.controller.binding_kind='wizard'
             for n,spin in panel.targets.items():spin.setRange(*panel.calibration.limits(n))
             panel.calibration_label.setText('Wizard calibration verified · '+str(self.run_dir/'calibration.json'))
             panel.binding_label.setText('Verified reference and joint directions loaded')

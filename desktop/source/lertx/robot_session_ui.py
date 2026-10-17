@@ -69,6 +69,7 @@ def build_robot_session_panel(owner):
             self.ticket=self.scan.start(());self.status.setText('Discovering assigned robot arms…')
 
         def disconnect(self):
+            for role in self.session.accesses:owner.physical_preview.disconnect(role)
             self.stop();self.live.setChecked(False);self.session.close();self.session_assignments.clear();self.status.setText('Session disconnected; any recording is retained. Reassign session-only arms in Devices before reconnecting.')
 
         def toggle_recording(self):
@@ -113,9 +114,9 @@ def build_robot_session_panel(owner):
 
         def live_changed(self,enabled):
             self.preview_generation+=1
-            if not enabled and owner._ready:
-                for role in self.session.accesses:
-                    owner._command(lambda r=role:owner.worker.release_hardware(r),owner._apply_status)
+            for role,access in self.session.accesses.items():
+                if enabled:owner.physical_preview.track(access.controller)
+                owner.physical_preview.enable(role,enabled)
 
         def publish(self,positions,physical=False):
             if self.preview_pending or not owner._ready:return
@@ -173,6 +174,8 @@ def build_robot_session_panel(owner):
                             if state!='assigned':raise ValueError('Assign '+role+' in Device Manager first.')
                             selected[role]=candidate
                         self.session.connect(selected)
+                        if self.live.isChecked():
+                            for access in self.session.accesses.values():owner.physical_preview.track(access.controller)
                     except (ValueError,OSError) as exc:self.status.setText(str(exc))
             self.session.tick(active_window=self.isActiveWindow())
             states=self.session.snapshots()
@@ -197,8 +200,11 @@ def build_robot_session_panel(owner):
                     self.publish(positions)
                     if elapsed>=self.loaded['frames'][-1]['t']:self.preview_play=False;self.status.setText('Simulation playback complete.')
                 elif self.live.isChecked() and states:
-                    positions={r:self.session.positions(r) for r in states}
-                    self.publish(positions,physical=True);self.preview.set_mode('live')
+                    owner.physical_preview.poll()
+                    previews=[owner.physical_preview.roles[r]['status'] for r in states if r in owner.physical_preview.roles]
+                    self.preview.set_mode('live' if any(s.startswith('Live') for s in previews) else 'waiting')
+                    self.preview.status.setText('\n'.join(previews))
+                    self.preview.view.set_image(getattr(owner,'_image',None))
             except (ValueError,KeyError) as exc:
                 self.preview.set_mode('stale')
                 if self.session.mode=='idle':self.preview.status.setText(str(exc))
@@ -214,7 +220,7 @@ def build_robot_session_panel(owner):
             if self.session.unsaved and QMessageBox.question(self,'Unsaved joint recording','Discard the unsaved joint recording and close?',
                 QMessageBox.StandardButton.Yes|QMessageBox.StandardButton.No,QMessageBox.StandardButton.No)!=QMessageBox.StandardButton.Yes:
                 event.ignore();return
-            self.live.setChecked(False);self.closed=True;self.timer.stop()
+            self.live.blockSignals(True);self.live.setChecked(False);self.live.blockSignals(False);self.closed=True;self.timer.stop()
             if self.ticket is not None:self.scan.cancel(self.ticket)
             self.session.close();self.preview.dispose();event.accept()
 

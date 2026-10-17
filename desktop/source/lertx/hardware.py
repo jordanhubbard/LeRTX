@@ -122,13 +122,16 @@ class HardwareSession:
         motors=self.bus.sample(calibration_capture=True) if calibration_capture else self.bus.sample()
         if set(motors)!=set(IDS) or self.clock()-started>self.STALE:
             raise ConnectionError('Incomplete or stale motor sample')
-        observations={};calibration_error=''
+        observations={};preview_observations={};calibration_error=''
         if self.calibration:
             try:observations={n:self.calibration.decode(n,motors[i]['position']) for i,n in enumerate(JOINT_NAMES,1)}
             except ValueError as exc:calibration_error=str(exc)
+            try:preview_observations={n:self.calibration.decode_measurement(n,motors[i]['position']) for i,n in enumerate(JOINT_NAMES,1)}
+            except ValueError:pass
         self.sequence+=1
         sample=dict(timestamp=started,sequence=self.sequence,motors=motors,observations=observations,
-                    calibration_error=calibration_error)
+                    calibration_error=calibration_error,preview_observations=preview_observations,
+                    calibration_id=self.calibration.identity if self.calibration else None)
         with self._lock:self.latest=sample
         if self.owns_torque and calibration_error:raise ValueError(calibration_error)
         return sample
