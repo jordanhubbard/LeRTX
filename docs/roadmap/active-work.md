@@ -1739,3 +1739,15 @@ queue item or let `docs/roadmap/` become a plan archive.
     Default pair extract 17.332s / 4,755,048 unique-corner verts → 0.173s / 791,456 USD points + indexed 1,584,608 triangles. First native robot render 17.294s → 0.192s. Metal `step` median 6.87ms → 3.08ms at 1280x720. Playing ticks remain ~64ms and are Newton CPU, outside this item.
   - [x] Warmup still produces a meaningful Metal frame and native tests pass on this Mac.
     Warmup: `{"native_warmup": "passed", "cleanup_completed": true, "seconds": 1.178}`. `make test` — 335 tests OK in 134.421s on this Mac.
+
+### [ ] MAC-004 — Integrate the tested Metal renderer changes
+
+- **Priority:** high
+- **Owner:** Desktop Component and development qualification
+- **Direction:** Test and integrate the local macOS changes independently of the separate Windows branch.
+- **Conclusion:** The 335-test macOS suite passes on the original local source. Integration includes current main; repeat its tests and refresh stale framework and native-source qualification before merge.
+- **Depends on:** MAC-003
+- **Implementation:**
+  - [ ] Commit the preserved Metal changes and reconcile current main through a review branch.
+- **Evidence:**
+  - [ ] Pass current macOS native and portable tests, refresh genuine qualification receipts, and pass exact-commit hosted CI before landing.
