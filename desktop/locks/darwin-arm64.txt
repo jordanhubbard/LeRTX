@@ -1,8 +1,8 @@
 # Resolved native wheel closure; regenerate with verification/resolve_native_locks.py.
 lertx-robot-assets==1.0.0 \
     --hash=sha256:69fa417e81e0faa0c5f476adc04932b2842fb8db8d9e07253b47ce8f501acb24
-newton==1.6.1 \
-    --hash=sha256:0dbabb85228eeac9f2750347a3f4ce502ad41a9bf19d43f55c6c8e4458b7e318
+newton==1.7.0 \
+    --hash=sha256:a58b5ca4550a81d04bb9607c300318a0f87edddd4632fe58765224ee1fd18b05
 numpy==2.4.6 ; python_full_version < '3.12' \
     --hash=sha256:001fbb8e08d942dd57599e781f2472269ee7f2755fae407b4f67b2f0b17da3f1 \
     --hash=sha256:0280e0356c0829a18d9de1cb7eee50ec22ca639878d7240307ca0943d73cd2c4 \

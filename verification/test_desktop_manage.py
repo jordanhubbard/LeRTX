@@ -195,7 +195,7 @@ class StartupTests(unittest.TestCase):
         self.assertNotIn("ovrtx", text)
         self.assertNotIn("ovstage", text)
         self.assertIn("usd-core==26.8", text)
-        self.assertIn("newton==1.6.1", text)
+        self.assertIn("newton==1.7.0", text)
         self.assertIn("warp-lang==1.18.0", text)
         self.assertIn("pyside6==6.12.0", text)
         self.assertIn("pyobjc-framework-metal", text.lower())

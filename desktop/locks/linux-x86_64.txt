@@ -1,8 +1,8 @@
 # Resolved native wheel closure; regenerate with verification/resolve_native_locks.py.
 lertx-robot-assets==1.0.0 \
     --hash=sha256:69fa417e81e0faa0c5f476adc04932b2842fb8db8d9e07253b47ce8f501acb24
-newton==1.6.1 \
-    --hash=sha256:0dbabb85228eeac9f2750347a3f4ce502ad41a9bf19d43f55c6c8e4458b7e318
+newton==1.7.0 \
+    --hash=sha256:a58b5ca4550a81d04bb9607c300318a0f87edddd4632fe58765224ee1fd18b05
 numpy==2.4.6 ; python_full_version < '3.12' \
     --hash=sha256:001fbb8e08d942dd57599e781f2472269ee7f2755fae407b4f67b2f0b17da3f1 \
     --hash=sha256:0280e0356c0829a18d9de1cb7eee50ec22ca639878d7240307ca0943d73cd2c4 \
@@ -143,14 +143,14 @@ numpy==2.5.3 ; python_full_version >= '3.12' \
     --hash=sha256:f9a2353b37a1a9e78fd82b27ad7e2a32a2d036604d18f02b05e3136c62ca3b09 \
     --hash=sha256:fc36dc566135b5eceec4cf89758fcb719266a019ef07dae1754ae7c9f617ef3e \
     --hash=sha256:ffdc76bfcae6b255dff75202c5e7feaf95b40246bc0a17944facc1fecf9f79ab
-ovrtx==0.5.1.385782 \
-    --hash=sha256:232d46d872401d2870d1a6118ee256ba63db966bd9c1877ebe3e11a9cdd96091 \
-    --hash=sha256:314d35886253bc8a946d25b059c1fbe8516d3ede7c4bcfa9ccd503f5a6f204c5 \
-    --hash=sha256:6148b082942ad0f967e661482bdab970fe8f3533dc6283b6eae56ea035ad2546
-ovstage==0.2.1.385922 \
-    --hash=sha256:19b5549260f6088678ec5ff914517fd18a5629319bbb531401fff8ebf3fe5c5d \
-    --hash=sha256:35f7ffb5ba1e97388d63882839577af5097e5f8d5331f7d5d225f65f1752df27 \
-    --hash=sha256:ddf7f5723926e12a1d332315e4be4c224366396e4d321c8d314f4296e96a00d5
+ovrtx==0.6.0.1791947691 \
+    --hash=sha256:90188e5a762b01f4d84d66b84858d28f21eaf3a7ef3ad4dfb9a7bf860ff3e67e \
+    --hash=sha256:b56ee8687f7e9c2934bc2da5ce7aecbd3ef6e8123a43e0573f1f33b8db5fc3c7 \
+    --hash=sha256:fd8e3dcb6f3a491e5de08761d98de5875464135dd575f1b15f58049482abcee8
+ovstage==0.3.0.1791986420 \
+    --hash=sha256:1b9f983320a45703adab4bf72c9c17419728b9a874c300ae026abe46397f89dd \
+    --hash=sha256:35aa0c10c47549c495e65896356ce3b910041d2eaa602888f092f7e300586cf8 \
+    --hash=sha256:400df4b7dc916edefa6f832aa11b674deb8a4d6831bba9ad3849169236b80c46
 pyserial==3.5 \
     --hash=sha256:3c77e014170dfffbd816e6ffc205e9842efb10be9f58ec16d3e8675b4925cddb \
     --hash=sha256:c4451db6ba391ca6ca299fb3ec7bae67a5c55dde170964c7a14ceefec02f2cf0

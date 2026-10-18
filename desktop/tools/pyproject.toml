@@ -3,7 +3,7 @@ name = "lertx-asset-tools"
 version = "0.1.0"
 requires-python = ">=3.12,<3.13"
 dependencies = [
-  "urdf-usd-converter==0.3.3",
+  "urdf-usd-converter==0.3.4",
   "usd-exchange==3.0.1",
   "numpy==2.4.6",
   "scipy==1.17.1",

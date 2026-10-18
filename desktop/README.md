@@ -1,7 +1,7 @@
 # Retained LeRTX application
 
-The current SDK refresh uses OVRTX 0.5.1.385782, OVStage 0.2.1.385922, Newton
-1.6.1 and Warp 1.18.0. The source/setup ZIP is the release artifact. Current
+The dependency-refresh branch targets OVRTX 0.6.0.1791947691, OVStage 0.3.0.1791986420, Newton
+1.7.0 and Warp 1.18.0. The source/setup ZIP is the release artifact. Earlier SDK
 Linux qualification is recorded in `verification/upstream-release-review.json`
 in the repository; older cross-platform reports apply to earlier SDK snapshots.
 Windows x86-64 qualification is recorded in

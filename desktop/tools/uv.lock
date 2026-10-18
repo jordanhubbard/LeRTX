@@ -20,7 +20,7 @@ requires-dist = [
     { name = "numpy", specifier = "==2.4.6" },
     { name = "pyyaml", specifier = "==6.0.3" },
     { name = "scipy", specifier = "==1.17.1" },
-    { name = "urdf-usd-converter", specifier = "==0.3.3" },
+    { name = "urdf-usd-converter", specifier = "==0.3.4" },
     { name = "usd-exchange", specifier = "==3.0.1" },
     { name = "usd-validation-nvidia", specifier = "==1.22.0" },
 ]
@@ -183,7 +183,7 @@ wheels = [
 
 [[package]]
 name = "urdf-usd-converter"
-version = "0.3.3"
+version = "0.3.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "newton-usd-schemas" },
@@ -192,9 +192,9 @@ dependencies = [
     { name = "tinyobjloader" },
     { name = "usd-exchange" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/89/af/55ef258a582ce7fa9d3415376e6c383931cbc118e3af3e145dca72098b4f/urdf_usd_converter-0.3.3.tar.gz", hash = "sha256:866699f31dec277aefe3dae380a98e2375daca492f81188d1e3f99c98d466eae", size = 223905, upload-time = "2026-08-07T04:26:19.63Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/3c/b4/6b57eba54cc70accab39ccb95c722053b9e7b7c85b2ebf2baddb32b1e185/urdf_usd_converter-0.3.4.tar.gz", hash = "sha256:9aa76812544f75e28383f10eae0865015ad0765b1723f2dee6c73508b3be060f", size = 228532, upload-time = "2026-10-15T20:34:35.726Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/9c/8a/6fd7806e1772b924c13ce4b43246562b4d73052402a3c89766ac740e1a30/urdf_usd_converter-0.3.3-py3-none-any.whl", hash = "sha256:39fb16e1282414962aa9eb26b75c48b32de4c233eccc8d8d9669dd2ed53266c2", size = 64366, upload-time = "2026-08-07T04:26:18.108Z" },
+    { url = "https://files.pythonhosted.org/packages/30/a2/6fcacb356e0c0414ab6b10d69af2ff6638395bb269587ac4fc4bfec8914f/urdf_usd_converter-0.3.4-py3-none-any.whl", hash = "sha256:1d0064534795dc9730d4f680a6425d33b5dd3f304b0920a02bbd7e951d1c9c59", size = 66014, upload-time = "2026-10-15T20:34:34.282Z" },
 ]
 
 [[package]]

@@ -26,9 +26,9 @@ from literate_ai.adapters.dependencies.python_lock import (
 from literate_ai.adapters.dependencies.types import DependencyObservationError
 
 PINS = {
-    "ovrtx": "0.5.1.385782",
-    "ovstage": "0.2.1.385922",
-    "newton": "1.6.1",
+    "ovrtx": "0.6.0.1791947691",
+    "ovstage": "0.3.0.1791986420",
+    "newton": "1.7.0",
     "warp-lang": "1.18.0",
     "numpy": "2.5.3",
     "usd-core": "26.8",

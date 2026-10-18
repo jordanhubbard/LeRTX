@@ -1784,3 +1784,15 @@ queue item or let `docs/roadmap/` become a plan archive.
     defect in [Literate AI #65](https://github.com/jordanhubbard/literate-ai/issues/65).
     Keep the receipt gate failing until target-specific dependency admission is
     supported; do not fabricate a Linux installation of the macOS dependency.
+
+### [ ] SDK-001 — Refresh public OV libraries and requalify native backends
+
+- **Priority:** high
+- **Owner:** Desktop native runtime, dependency Flavors and native qualification
+- **Direction:** Rebase and rebuild LeRTX against current public OV libraries, preserving the macOS integration and separate Windows work.
+- **Conclusion:** Verify exact public direct NVIDIA and OV dependency versions, migrate required APIs, regenerate target locks and qualify native Linux and macOS. Preserve original PR26 evidence; do not bypass the parent platform-source admission blocker.
+- **Depends on:** none
+- **Implementation:**
+  - [ ] Inventory public releases and compatibility constraints; update requirements and API adapters with exact locks; rebuild isolated native environments.
+- **Evidence:**
+  - [ ] Portable and packaging checks; actual guarded Linux RTX and macOS Metal execution; accurate target coverage and remaining admission limits.
