@@ -39,8 +39,15 @@ shortcuts require explicit removal before replacement. Neither target requires U
 
 Use Windows 11 x86-64 or Linux x86-64/ARM64 with an NVIDIA RTX GPU and
 working NVIDIA driver, or macOS 11+ with Metal. Linux ARM64 needs glibc 2.39
-or newer for Qt (Ubuntu 24.04 or newer qualifies). Install Python 3.11 or `uv`,
-then from the repository:
+or newer for Qt (Ubuntu 24.04 or newer qualifies). Install Python 3.11 or `uv`.
+
+The pinned Warp 1.18 runtime requires NVIDIA R580 or newer for GPU physics;
+choose a platform/GPU-specific driver supported by
+[OVRTX](https://nvidia-omniverse.github.io/ovrtx/driver_requirements.html).
+[Newton 1.7 migration notes](https://github.com/newton-physics/newton/releases/tag/v1.7.0)
+describe the driver constraint. This branch does not install or change drivers.
+
+From the repository:
 
 ```sh
 python desktop/manage.py setup
@@ -192,3 +199,17 @@ PYTHONDONTWRITEBYTECODE=1 python -m unittest tests.test_document -v
 
 Missing USD is a test failure, not a skip. This target does not claim rendering,
 physics, UI, or complete application acceptance.
+
+### SDK refresh qualification
+
+Current results are in `verification/native/public-sdk-20261017/`: the rebased
+source passes 346 tests on Apple M4 Pro using Metal and Newton 1.7 CPU physics.
+The updated Linux SDK archives and interpreter compatibility are verified;
+native Linux installation/execution awaits adequate worker disk space. Windows
+and ARM64 runtime qualification remain open. The framework authority and locks
+pass, but the acceptance receipt and Linux native source binding are not current.
+
+Asset tooling selects URDF converter 0.3.4 and Newton USD schemas 0.6.0. Its
+USD Exchange dependency provides Linux/Windows wheels only, so these conversion
+tools cannot be installed on macOS. Bundled assets retain their original
+converter provenance; this refresh does not claim newly converted assets.

@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/Users/jkh/Src/LeRTX/verification/release_check.py", line 131, in <module>
+    package() if args.package_only else check(args.verify_authority)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jkh/Src/LeRTX/verification/release_check.py", line 52, in check
+    raise RuntimeError("Application source differs from native qualification")
+RuntimeError: Application source differs from native qualification

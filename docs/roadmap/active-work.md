@@ -1793,6 +1793,9 @@ queue item or let `docs/roadmap/` become a plan archive.
 - **Conclusion:** Verify exact public direct NVIDIA and OV dependency versions, migrate required APIs, regenerate target locks and qualify native Linux and macOS. Preserve original PR26 evidence; do not bypass the parent platform-source admission blocker.
 - **Depends on:** none
 - **Implementation:**
-  - [ ] Inventory public releases and compatibility constraints; update requirements and API adapters with exact locks; rebuild isolated native environments.
+  - [x] Verify current public versions and refresh all five hash locks, native Flavor authority, runtime diagnostics and converter tooling.
+  - [x] Rebase onto merged macOS and physical-preview work; preserve earlier qualification evidence.
+  - [ ] Rebuild and qualify isolated Linux NVIDIA runtime after worker storage pressure is resolved.
 - **Evidence:**
-  - [ ] Portable and packaging checks; actual guarded Linux RTX and macOS Metal execution; accurate target coverage and remaining admission limits.
+  - [x] Rebased isolated macOS Metal/Newton 1.7 suite: 346 tests passed; updated Linux archives and fresh target compatibility verified.
+  - [ ] Bind final rebased source to refreshed native, packaging and admission evidence. Linux storage, stale native source binding and parent admission issue 65 remain open; Windows refresh is untested.

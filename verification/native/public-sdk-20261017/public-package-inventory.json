@@ -361,5 +361,22 @@
         "uploaded": "2026-09-10T18:13:56.555627Z"
       }
     ]
+  },
+  {
+    "name": "newton-usd-schemas",
+    "version": "0.6.0",
+    "requires_dist": null,
+    "files": [
+      {
+        "name": "newton_usd_schemas-0.6.0-py3-none-any.whl",
+        "size": 22688,
+        "uploaded": "2026-10-15T19:12:57.069181Z"
+      },
+      {
+        "name": "newton_usd_schemas-0.6.0.tar.gz",
+        "size": 77182,
+        "uploaded": "2026-10-15T19:12:58.536986Z"
+      }
+    ]
   }
 ]

@@ -1,0 +1,6 @@
+Using CPython 3.12.15 interpreter at: /opt/homebrew/opt/python@3.12/bin/python3.12
+Creating virtual environment at: /private/tmp/lertx-public-asset-tools-20261017
+Resolved 15 packages in 8ms
+error: Distribution `usd-exchange==3.0.1 @ registry+https://pypi.org/simple` can't be installed because it doesn't have a source distribution or wheel for the current platform
+
+hint: You're on macOS (`macosx_27_0_arm64`), but `usd-exchange` (v3.0.1) only has wheels for the following platforms: `manylinux_2_34_aarch64`, `manylinux_2_34_x86_64`, `win_amd64`; consider adding "sys_platform == 'darwin' and platform_machine == 'arm64'" to `tool.uv.required-environments` to ensure uv resolves to a version with compatible wheels
