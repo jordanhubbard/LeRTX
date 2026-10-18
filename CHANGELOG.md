@@ -10,12 +10,17 @@
   GPU geometry and uniform buffers instead of allocating and tinting vertices on
   the CPU every frame.
 
+- Physical live preview starts on read-only connection and survives closing device
+  controls. Both arms keep tracking valid encoder measurements across captured/CAD
+  range boundaries with visible status; motor command limits remain strict.
+  Wizard grippers now use their full normalized captured travel.
+
 - Keep physical-mirroring failures visible with every rejected joint. Calibration
   Save now rejects a binding that cannot represent the current physical pose.
 
 - Retry a lost or corrupt USB read response once without replaying motor writes
-  or relaxing freshness checks. Bounded follower base actuation is verified;
-  physical-to-RTX tracking remains blocked by saved binding range mismatches.
+  or relaxing freshness checks. Bounded follower base actuation and read-only
+  RTX tracking are verified; command-mapping qualification remains separate.
 
 - Hardware controls reload the connected arm's saved calibration and measured
   binding on read-only connection, restoring calibrated observations for live 3D

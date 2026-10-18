@@ -5,6 +5,24 @@ from lertx.robot import JOINT_NAMES
 
 
 class JointBindingTests(unittest.TestCase):
+    def test_preview_reports_excess_without_weakening_command_mapping(self):
+        binding=self.binding();values={n+'.pos':50. if n=='gripper' else 0. for n in JOINT_NAMES}
+        values['elbow_flex.pos']=-30.
+        arguments=dict(device_id='test-arm',calibration_id='measured-session-1',captured_at=10.,now=10.1)
+        mapped,warnings=binding.map_preview(values,**arguments)
+        self.assertEqual(len(mapped),6);self.assertTrue(any('elbow_flex' in w for w in warnings))
+        with self.assertRaises(ValueError):binding.map_observation(values,**arguments)
+        with self.assertRaises(ValueError):binding.map_preview(values,**{**arguments,'now':12.})
+
+    def test_wizard_gripper_uses_normalized_travel_and_custom_binding_is_retained(self):
+        from lertx.robot import joint_limits
+        binding=self.binding();values={n+'.pos':50. if n=='gripper' else 0. for n in JOINT_NAMES}
+        arguments=dict(device_id='test-arm',calibration_id='measured-session-1',captured_at=10.,now=10.1)
+        custom,_=binding.map_preview(values,**arguments)
+        wizard,_=binding.map_preview(values,**arguments,normalize_gripper=True)
+        self.assertAlmostEqual(custom['/World/Leader/Physics/gripper'],.4)
+        self.assertAlmostEqual(wizard['/World/Leader/Physics/gripper'],sum(joint_limits('leader')['gripper'])/2)
+
     def binding(self):
         return RobotBinding('leader', 'test-arm', 'measured-session-1', tuple(
             JointBinding(name, index+1, 'percent' if name=='gripper' else 'degrees',

@@ -177,7 +177,9 @@ class RobotSession:
             if s['state']=='read-only' and role not in self.loading:
                 try:
                     c=access.controller
-                    if c.calibration is None or c.binding is None:c.calibration,c.binding=load_saved_setup(self.config_path,role,access.device_id)
+                    if c.calibration is None or c.binding is None:
+                        c.calibration,c.binding=load_saved_setup(self.config_path,role,access.device_id)
+                        c.binding_kind='wizard'
                     access.request('calibration',c.calibration);self.loading.add(role)
                 except (ValueError,OSError) as exc:self.error=str(exc);self.loading.add(role)
         try:

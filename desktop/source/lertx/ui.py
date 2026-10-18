@@ -530,6 +530,12 @@ def build_main_window(
             self._frame_timer = QTimer(self)
             self._frame_timer.timeout.connect(self._on_tick)
             self._frame_timer.start(4)
+            from .physical_preview import PhysicalPreview
+            self.physical_preview=PhysicalPreview(self)
+            self.destroyed.connect(self.physical_preview.shutdown)
+            self._physical_timer=QTimer(self)
+            self._physical_timer.timeout.connect(self.physical_preview.poll)
+            self._physical_timer.start(50)
             self.inspector.apply_button.clicked.connect(self._apply_transform)
             self._apply_theme()
             self._build_menus()
@@ -716,6 +722,13 @@ def build_main_window(
             transport_row.addWidget(self.native_status_label)
             transport_row.addStretch(1)
             layout.addLayout(transport_row)
+            physical_row=QHBoxLayout();self.physical_status_labels={}
+            from .role_ui import widgets
+            RoleLabel=widgets(lambda:self.profile)[0]
+            for role in ('leader','follower'):
+                label=RoleLabel(role.title()+': not connected');label.setWordWrap(True)
+                self.physical_status_labels[role]=label;physical_row.addWidget(label)
+            layout.addLayout(physical_row)
 
             self.setCentralWidget(central)
 
@@ -972,7 +985,6 @@ def build_main_window(
         def open_scene(self, path):
             from pathlib import Path
             self.viewport_label.cancel()
-            for panel in self._hardware_windows.values():panel.live.setChecked(False)
             if self.worker is None:
                 try:
                     self.worker = worker_factory()
@@ -1273,6 +1285,7 @@ def build_main_window(
                 session=getattr(self,"_robot_session_window",None)
                 if session and not session.closed and not session.close():return
                 self.camera_service.close()
+                self.physical_preview.shutdown()
                 self.devices.shutdown()
                 for panel in self._hardware_windows.values():
                     if panel.session and not panel.closing:panel.shutdown()

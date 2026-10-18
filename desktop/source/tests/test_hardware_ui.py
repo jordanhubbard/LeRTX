@@ -16,6 +16,57 @@ from tests.test_hardware import SerialRobot,calibration
 
 
 class HardwareUITests(unittest.TestCase):
+    def test_preview_rejects_a_sample_from_a_different_calibration(self):
+        from types import SimpleNamespace
+        from lertx.joint_binding import JointBinding,RobotBinding
+        from lertx.robot import JOINT_NAMES,joint_limits
+        self.connect();p=self.panel;owner=self.owner;owner._frame_timer.stop();cal=p.calibration
+        p.binding=RobotBinding('follower',p.session.device_id,cal.identity,tuple(
+            JointBinding(n,i,'percent' if n=='gripper' else 'degrees',cal.limits(n),joint_limits('follower')[n])
+            for i,n in enumerate(JOINT_NAMES,1)))
+        access=owner.physical_preview.roles['follower']['access'];sample=access.snapshot()
+        sample['sample']['calibration_id']='previous-calibration'
+        frames=[];commands=[]
+        owner.worker=SimpleNamespace(hardware_pose=lambda *a,**k:frames.append(a) or {})
+        owner._command=lambda fn,callback=None:commands.append((fn,callback));owner._ready=True
+        try:
+            with patch.object(access,'snapshot',return_value=sample):
+                owner.physical_preview.poll()
+                fn,callback=commands.pop();callback(fn())
+            self.assertEqual(frames,[])
+            self.assertIn('current calibration',owner.physical_preview.roles['follower']['status'])
+            self.assertEqual(self.serial.writes,[])
+        finally:owner._ready=False;owner.worker=None
+
+    def test_application_preview_survives_panel_close_and_keeps_command_gates(self):
+        from types import SimpleNamespace
+        from lertx.joint_binding import JointBinding,RobotBinding
+        from lertx.robot import JOINT_NAMES,joint_limits
+        self.connect();p=self.panel;owner=self.owner;cal=p.calibration;owner._frame_timer.stop()
+        p.binding=RobotBinding('follower',p.session.device_id,cal.identity,tuple(
+            JointBinding(n,i,'percent' if n=='gripper' else 'degrees',cal.limits(n),joint_limits('follower')[n])
+            for i,n in enumerate(JOINT_NAMES,1)))
+        frames=[]
+        owner.worker=SimpleNamespace(hardware_pose=lambda r,pos,t,**kw:frames.append((dict(pos),kw)) or {},release_hardware=lambda r:{})
+        owner._ready=True;owner._command=lambda fn,callback=None:callback(fn()) if callback else fn()
+        owner._accept_frame=lambda frame:None;owner._apply_status=lambda state:None
+        try:
+            self.wait(lambda:bool(frames));before=frames[-1][0]['shoulder_pan']
+            self.serial.registers[1][56:58]=(3587).to_bytes(2,'little')
+            self.wait(lambda:bool(p.session.snapshot()['sample']['calibration_error']))
+            self.wait(lambda:frames[-1][0]['shoulder_pan']!=before)
+            p.poll();self.assertFalse(p.torque_button.isEnabled())
+            self.assertTrue(frames[-1][1]['display_only'])
+            controller=p.session.controller
+            p.close();self.wait(lambda:not p.session.alive)
+            count=len(frames);self.serial.registers[1][56:58]=(2200).to_bytes(2,'little')
+            self.wait(lambda:len(frames)>count)
+            self.assertTrue(controller.session.alive)
+            self.assertEqual(self.serial.writes,[])
+            owner.physical_preview.disconnect('follower')
+            self.wait(lambda:not controller.session.alive)
+        finally:owner._ready=False;owner.worker=None
+
     def test_readonly_connection_restores_saved_setup_without_motor_writes(self):
         saved=calibration()
         binding=object()
@@ -86,6 +137,7 @@ class HardwareUITests(unittest.TestCase):
         self.fail('Condition failed: '+repr(self.panel.session.snapshot()))
     def cleanup(self):
         self.panel.shutdown();self.wait(lambda:not self.panel.session.alive)
+        self.owner.physical_preview.shutdown();self.owner.devices.shutdown();self.owner.devices.wait_closed()
         self.panel.deleteLater();self.owner.deleteLater();self.app.processEvents()
     def load_calibration(self):
         path=Path(self.directory.name)/'calibration.json';path.write_text(json.dumps(calibration().values))
@@ -192,7 +244,7 @@ class HardwareUITests(unittest.TestCase):
         self.assertFalse(owner.robot_panel.sliders['leader','shoulder_pan'].isEnabled())
         owner._ready=False
 
-    def test_native_failure_turns_off_live_view_without_motor_writes(self):
+    def test_native_failure_remains_visible_without_disabling_subscription(self):
         from types import SimpleNamespace
         from lertx.joint_binding import JointBinding,RobotBinding
         from lertx.robot import JOINT_NAMES,joint_limits
@@ -203,14 +255,14 @@ class HardwareUITests(unittest.TestCase):
                 (20.,80.) if name=='gripper' else (-10.,10.),
                 (low+(high-low)*.4,low+(high-low)*.6)))
         self.panel.binding=RobotBinding('follower',self.panel.session.device_id,self.panel.calibration.identity,tuple(joints))
-        def fail(*args):raise ValueError('Observation expired in renderer queue')
+        def fail(*args,**kwargs):raise ValueError('Observation expired in renderer queue')
         owner=self.owner;owner._ready=True
         owner.worker=SimpleNamespace(hardware_pose=fail,release_hardware=lambda role:{})
         owner._apply_status=lambda status:None
         owner._command=lambda fn,callback=None:callback(fn()) if callback else fn()
         try:
             self.panel.live.setChecked(True);self.panel.poll()
-            self.assertFalse(self.panel.live.isChecked())
+            self.assertTrue(self.panel.live.isChecked())
             self.assertIn('expired',self.panel.message.text())
             self.panel.poll()
             self.assertIn('expired',self.panel.live_reason.text())
@@ -259,7 +311,7 @@ class HardwareUITests(unittest.TestCase):
         p.binding=RobotBinding('follower',p.session.device_id,p.calibration.identity,tuple(joints))
         commands=[];frames=[]
         owner._ready=True;owner._pending=[object()]
-        owner.worker=SimpleNamespace(hardware_pose=lambda *args:frames.append(args) or {},release_hardware=lambda role:{})
+        owner.worker=SimpleNamespace(hardware_pose=lambda *args,**kwargs:frames.append(args) or {},release_hardware=lambda role:{})
         owner._command=lambda fn,callback=None:commands.append((fn,callback))
         owner._accept_frame=lambda frame:None;owner._apply_status=lambda state:None
         try:
@@ -268,7 +320,7 @@ class HardwareUITests(unittest.TestCase):
             p.poll();self.assertEqual(len(commands),1)
             fn,callback=commands.pop(0);callback(fn())
             self.assertEqual(len(frames),1)
-            p.sequence=-1;p.poll();p.live.setChecked(False)
+            owner.physical_preview.roles['follower']['sequence']=-1;p.poll();p.live.setChecked(False)
             fn,callback=commands.pop(0);callback(fn())
             self.assertEqual(len(frames),1)
             self.assertEqual(self.serial.writes,[])
