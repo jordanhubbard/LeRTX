@@ -1730,3 +1730,57 @@ queue item or let `docs/roadmap/` become a plan archive.
     `desktop/locks/darwin-arm64.txt` and `darwin-x86_64.txt` are identical; `make build` installed usd-core 26.8, newton 1.6.1, warp-lang 1.18.0, PySide6 6.12.0 and pyobjc-framework-Metal 12.2.2. `pip show ovrtx ovstage` reports not found.
   - [x] Native warmup or integration on this Mac produces a Metal frame whose RGB stddev is at least 5, without ovrtx installed.
     Warmup on Apple M4 Pro: `{"native_warmup": "passed", "cleanup_completed": true, "seconds": 1.503}` with Newton/Warp CPU. `tests.test_native_integration` 3 tests OK including an owned Metal framebuffer. Doctor gpu: `Apple M4 Pro`.
+
+### [x] MAC-002 — Metal viewport orientation and CPU cost
+
+- **Priority:** high
+- **Owner:** Desktop Component Metal renderer
+- **Direction:** The Metal image is inverted compared to the RTX image. Rendering is extremely slow and consumes a lot of CPU time.
+- **Conclusion:** Metal framebuffer origin is top-left like Qt, so the OpenGL-style vertical flip inverts the frame versus OVRTX. Per-frame Metal buffer allocation and CPU vertex tinting starve the owner thread. Keep the OVRTX call sequence; cache GPU geometry, upload uniforms without new buffers, tint in the shader, and deliver unflipped pixels. Do not claim RTX throughput.
+- **Depends on:** MAC-001
+- **Implementation:**
+  - [x] Remove the incorrect framebuffer vertical flip so Metal matches OVRTX image orientation.
+  - [x] Cache vertex buffers, upload uniforms without per-draw allocations, and tint selection in the shader to cut CPU cost.
+  - [x] Verify warmup still produces a meaningful frame and native tests still pass on this Mac.
+- **Evidence:**
+  - [x] Warmup or a native frame on this Mac is right-side up relative to the scene camera (not vertically flipped).
+    `tests.test_native_integration` asserts the default-scene orange sphere's mean row is in the top half (world +Z). Warmup on Apple M4 Pro: `{"native_warmup": "passed", "cleanup_completed": true, "seconds": 1.096}`.
+  - [x] A repeated Metal step no longer allocates a vertex or uniform buffer per drawable; native tests still pass.
+    `Renderer.step` binds cached `vbuf` entries and a reused uniform pool; `_gpu_allocs` is unchanged across two native renders. `make test` — 334 tests OK in 219.352s on this Mac.
+
+### [x] MAC-003 — Metal indexed meshes and frame-loop CPU
+
+- **Priority:** high
+- **Owner:** Desktop Component Metal renderer
+- **Direction:** Are there any performance improvements we can make for the Metal rendering path?
+- **Conclusion:** After MAC-002, a robot pair still spends ~17s expanding 1.58M already-triangular USD faces into 4.75M unique vertices in Python, then the GPU waits ~4.5ms drawing that bloat. Per-frame USD xform walks add ~1.5ms. Playing ticks are ~67ms and are mostly Newton CPU, which this item does not change. Keep the OVRTX call sequence. Use indexed Metal meshes with cached authored locals, a private render target plus blit for readback, and vectorized picking. Do not claim RTX throughput or retessellate the robot USD.
+- **Depends on:** MAC-002
+- **Implementation:**
+  - [x] Extract robot meshes as indexed GPU geometry with shared vertices and move per-prim color into uniforms.
+  - [x] Cache authored local transforms so the frame loop does not call USD, and read back from a private render target through a shared blit.
+  - [x] Vectorize CPU picking and verify extract time, warmup, and native tests on this Mac.
+- **Evidence:**
+  - [x] Extracting the default robot pair no longer takes on the order of 17 seconds, and GPU vertex count tracks unique USD points rather than 3x triangle corners.
+    Default pair extract 17.332s / 4,755,048 unique-corner verts → 0.173s / 791,456 USD points + indexed 1,584,608 triangles. First native robot render 17.294s → 0.192s. Metal `step` median 6.87ms → 3.08ms at 1280x720. Playing ticks remain ~64ms and are Newton CPU, outside this item.
+  - [x] Warmup still produces a meaningful Metal frame and native tests pass on this Mac.
+    Warmup: `{"native_warmup": "passed", "cleanup_completed": true, "seconds": 1.178}`. `make test` — 335 tests OK in 134.421s on this Mac.
+
+### [ ] MAC-004 — Integrate the tested Metal renderer changes
+
+- **Priority:** high
+- **Owner:** Desktop Component and development qualification
+- **Direction:** Test and integrate the local macOS changes independently of the separate Windows branch.
+- **Conclusion:** The 335-test macOS suite passes on the original local source. Integration includes current main; repeat its tests and refresh stale framework and native-source qualification before merge.
+- **Depends on:** MAC-003
+- **Implementation:**
+  - [x] Commit the preserved Metal changes and reconcile current main through a review branch (PR #26).
+  - [x] Repair the Darwin launcher test's incomplete platform fixture: on Windows, patching only sys.platform still invokes PowerShell. Model the platform locally without changing pathlib's host OS. All six hosted startup combinations pass at `52502fa`.
+- **Evidence:**
+  - [ ] Pass current macOS native and portable tests, refresh genuine qualification receipts, and pass exact-commit hosted CI before landing.
+    The reconciled application passes all 341 tests on Apple M4 Pro (134.116s).
+    Authority and all three locks pass. The pinned 1.2.0 framework rejects Linux
+    retained-source admission because static import checking requires the
+    Darwin-only `Metal` dependency in the Linux BOM. Track the portable upstream
+    defect in [Literate AI #65](https://github.com/jordanhubbard/literate-ai/issues/65).
+    Keep the receipt gate failing until target-specific dependency admission is
+    supported; do not fabricate a Linux installation of the macOS dependency.

@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- Speed up the macOS Metal viewport by drawing indexed robot meshes, caching
+  authored transforms, and reading back from a private render target. Opening
+  the default pair is no longer a multi-second Python tessellation.
+
+- Keep Metal viewport frames right-side up with the OVRTX image origin, and reuse
+  GPU geometry and uniform buffers instead of allocating and tinting vertices on
+  the CPU every frame.
+
 - Physical live preview starts on read-only connection and survives closing device
   controls. Both arms keep tracking valid encoder measurements across captured/CAD
   range boundaries with visible status; motor command limits remain strict.
