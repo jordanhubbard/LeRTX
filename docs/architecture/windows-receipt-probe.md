@@ -27,5 +27,11 @@ for environment in (os.environ, isolated):
 Observed output: `'AMD64'`, then `''`. Qualify the framework's Windows target
 observation under its own controlled installer environment, retaining strict
 target validation and package custody. Do not synthesize a passing receipt or
-change the pinned distribution locally. This report is an upstream issue draft;
-no upstream issue or new framework release is claimed.
+change the pinned distribution locally.
+
+The repair is tracked by [framework issue #63](https://github.com/jordanhubbard/literate-ai/issues/63)
+and merged in [PR #64](https://github.com/jordanhubbard/literate-ai/pull/64).
+Fourteen real installer/fixture tests and LeRTX's complete Windows wheel-set
+installation pass with the repaired source: 11,867 installed files, revalidation
+and cleanup verified. The released 1.2.0 wheel remains unchanged; a qualified
+replacement distribution and current downstream receipt are still required.

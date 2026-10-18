@@ -10,6 +10,36 @@ from lertx.scene import create_default_scene
 
 
 class RobotRenderNativeTests(unittest.TestCase):
+    def test_readonly_measured_motion_is_visible_beyond_simulation_limits(self):
+        import time
+        import numpy as np
+        from lertx.robot import home_positions,joint_limits
+        profile=copy.deepcopy(DEFAULT_PROFILE);profile['rendering'].update(width=480,height=300)
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'measured.usdc';create_default_scene(str(path),include_robots=True)
+            worker=SceneWorker(profile);worker.start()
+            def call(fn):return worker.submit(fn).result(timeout=120)
+            def pixels(result):
+                frame=result['frame']
+                return np.frombuffer(frame.data,dtype=np.uint8).reshape(frame.height,frame.width,frame.channels)[...,:3].astype(float)
+            try:
+                call(lambda:worker.open_document(str(path)))
+                for _ in range(4):call(lambda:worker.tick(0.))
+                for role in ('leader','follower'):
+                    pose=home_positions(role)
+                    before=call(lambda:worker.hardware_pose(role,pose,time.monotonic(),display_only=True))
+                    pose={**pose,'shoulder_pan':.6,'elbow_flex':joint_limits(role)['elbow_flex'][0]-.12}
+                    with self.assertRaises(ValueError):call(lambda:worker.hardware_pose(role,pose,time.monotonic()))
+                    after=call(lambda:worker.hardware_pose(role,pose,time.monotonic(),display_only=True))
+                    for _ in range(3):after=call(lambda:worker.tick(0.))
+                    self.assertAlmostEqual(after['robots']['positions'][role]['shoulder_pan'],.6,delta=.01)
+                    self.assertAlmostEqual(after['robots']['positions'][role]['elbow_flex'],pose['elbow_flex'],delta=.01)
+                    target=call(lambda:worker.physics.targets[role]['elbow_flex'])
+                    self.assertAlmostEqual(target,joint_limits(role)['elbow_flex'][0])
+                    difference=np.mean(np.max(np.abs(pixels(after)-pixels(before)),axis=2)>20)
+                    self.assertGreater(difference,.005,f'{role}: before std={pixels(before).std()}, after std={pixels(after).std()}')
+            finally:worker.stop()
+
     def test_nested_geometry_survives_publication_and_tracks_dynamics(self):
         import numpy as np
         profile=copy.deepcopy(DEFAULT_PROFILE);profile['rendering'].update(width=480,height=300)

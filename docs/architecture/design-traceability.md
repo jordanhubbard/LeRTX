@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:095f5c2c20fa06d852050e184cf20cb80938514deb89d74e033c0f0cba7a9f21 -->
+<!-- literate-ai:authority-reviewed sha256:b32acd58998ecd2114b2657a0cf04399257bb43233a01a2df0bbdb48b61a074e -->
 
 [Project guide](../README.md) → design traceability
 
@@ -40,6 +40,13 @@ register validation precedes engagement. Opt-in live diagnostics can operate nor
 UI and service handlers, including confirmations, while retaining identity,
 ownership, freshness and motion limits. Physical follower actuation is verified;
 saved virtual binding coverage remains a separate open hardware acceptance item.
+Application-owned observer leases now keep physical preview alive after controls
+close. Display normalization and paused kinematic publication accept valid sensor
+measurements independently of strict command eligibility, retaining visible range
+warnings. Wizard grippers use captured normalized travel; explicit paired bindings
+are preserved. Both-role RTX tests require substantial image changes beyond CAD
+limits while control targets stay bounded. USB/UI regressions cover panel closure,
+read-only encoder changes and unchanged engagement gates.
 Wizard Save validates the current measured pose against the proposed binding;
 unrepresentable poses keep their captures and offer Back navigation. Rejected
 live mappings report all failing joints and retain the reason beside the control.

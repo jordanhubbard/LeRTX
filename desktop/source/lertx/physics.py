@@ -186,14 +186,14 @@ class PhysicsScene:
         if following is not None:
             self.following = following
 
-    def apply_measured_pose(self, role, positions):
+    def apply_measured_pose(self, role, positions, *, display_only=False):
         import numpy as np
         import warp as wp
         from .robot import forward_kinematics, joint_limits
         limits=joint_limits(role)
         if role not in self.robots or set(positions)!=set(limits) or any(
             isinstance(v,bool) or not isinstance(v,(int,float)) or not math.isfinite(v)
-            or not limits[n][0]<=v<=limits[n][1] for n,v in positions.items()):
+            or not (-2*math.pi<=v<=2*math.pi if display_only else limits[n][0]<=v<=limits[n][1]) for n,v in positions.items()):
             raise ValueError('Measured pose does not match the virtual articulation')
         bodies=self.robots[role]['bodies']
         values=self.state.body_q.numpy();base=values[bodies['base_link']]
@@ -205,7 +205,7 @@ class PhysicsScene:
             velocity=state.body_qd.numpy()
             for index in bodies.values():velocity[index]=0
             state.body_qd.assign(velocity)
-        self.targets[role]=dict(positions)
+        self.targets[role]={n:max(limits[n][0],min(limits[n][1],v)) for n,v in positions.items()}
 
     def _update_targets(self):
         import numpy as np

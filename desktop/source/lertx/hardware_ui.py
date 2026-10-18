@@ -87,7 +87,11 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
         def binding(self,value):self.session.controller.binding=value
 
         def request(self,command,payload=None):
-            try:self.session.request(command,payload);self.message.clear();return True
+            try:
+                self.session.request(command,payload);self.message.clear()
+                if command=='connect':
+                    owner.physical_preview.track(self.session.controller);self.live.setChecked(True)
+                return True
             except Exception as exc:self.message.setText(str(exc));return False
 
         def import_calibration(self):
@@ -97,6 +101,7 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
                 calibration=Calibration.load(path)
                 self.session.request('calibration',calibration)
                 self.live.setChecked(False);self.calibration=calibration;self.binding=None
+                self.session.controller.binding_kind='measured'
                 self.calibration_label.setText('Calibration imported; register match required on connection: '+calibration.identity[:12])
                 self.binding_label.setText('No measured virtual binding')
                 for name,spin in self.targets.items():spin.setRange(*calibration.limits(name))
@@ -164,6 +169,7 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             if not path:return
             try:
                 self.binding=load_binding(path,role,self.session.device_id,self.calibration)
+                self.session.controller.binding_kind='measured'
                 self.binding_label.setText('Measured binding loaded: '+role)
             except Exception as exc:self.message.setText(str(exc))
 
@@ -188,12 +194,11 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
         def live_changed(self,enabled):
             self.preview_generation+=1;self.sequence=-1
             if enabled:self.live_error=''
-            if not enabled:
-                self.sequence=-1
-                if owner.worker and owner._ready:
-                    owner._command(lambda:owner.worker.release_hardware(role),owner._apply_status)
+            if enabled:owner.physical_preview.track(self.session.controller)
+            owner.physical_preview.enable(role,enabled)
 
         def disconnect(self):
+            owner.physical_preview.disconnect(role)
             self.live.setChecked(False);self.session.stop(disconnect=True,force=False)
 
         def poll(self):
@@ -208,6 +213,7 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
                         calibration,binding=load_saved_setup(owner.config_path,role,self.session.device_id)
                         self.session.request('calibration',calibration)
                         self.calibration=calibration;self.binding=binding
+                        self.session.controller.binding_kind='wizard'
                         self.calibration_label.setText('Saved calibration loaded; verifying connected registers · '+calibration.identity[:12])
                         self.binding_label.setText('Saved measured binding loaded: '+role)
                     except (ValueError,OSError) as exc:
@@ -225,7 +231,8 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             self.move_button.setEnabled(armed);self.virtual_button.setEnabled(armed and bool(self.binding))
             self.binding_button.setEnabled(bool(self.calibration) and not armed)
             self.capture_button.setEnabled(state=='read-only' and healthy)
-            self.live.setEnabled(healthy and bool(self.binding) and owner._ready)
+            preview_healthy=bool(sample and not stale and (sample.get('preview_observations') or sample['observations']))
+            self.live.setEnabled(preview_healthy and bool(self.binding) and owner._ready)
             self.live_reason.setText('3D mirroring unavailable: complete setup for this '+role+' or import its calibration.' if not self.calibration else
                 '3D mirroring unavailable: measure or load this arm’s virtual binding, or complete guided setup.' if not self.binding else
                 '3D mirroring waiting for fresh calibrated readings. '+(sample['calibration_error'] if sample else '') if not healthy else
@@ -252,47 +259,16 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
                 for widget in (self.connect_button,self.disconnect_button,self.import_button,self.torque_button,
                         self.move_button,self.virtual_button,self.binding_button,self.capture_button,self.live,
                         *self.send_buttons.values(),*self.targets.values()):widget.setEnabled(False)
-                self.live.setChecked(False)
             elif not self.closing:self.disconnect_button.setEnabled(True)
             if self.calibration:
                 for name,spin in self.targets.items():spin.setRange(*self.calibration.limits(name))
-            if self.live.isChecked():
-                if not healthy or state not in ('read-only','armed'):
-                    self.live.setChecked(False);self.message.setText('Live view stopped: physical telemetry is unavailable or stale.')
-                elif (sample['sequence']!=self.sequence and not self.preview_pending and owner._ready
-                      and time.monotonic()-getattr(self,'preview_requested_at',0.) >=
-                      1/getattr(owner,'_debug_target_fps',owner.profile['rendering']['target_fps'])):
-                    try:
-                        self.preview_requested_at=time.monotonic()
-                        self.sequence=sample['sequence']
-                        generation=self.preview_generation;binding=self.binding;calibration=self.calibration
-                        self.preview_pending=True
-                        def publish():
-                            try:
-                                if generation!=self.preview_generation:return {'hardware_cancelled':True}
-                                latest=self.session.snapshot();current=latest['sample']
-                                if latest['stale'] or latest['state'] not in ('read-only','armed') or not current or current['calibration_error']:
-                                    raise ValueError('Live view stopped: physical telemetry is unavailable or stale.')
-                                mapped=binding.map_observation({n+'.pos':v for n,v in current['observations'].items()},
-                                    device_id=self.session.device_id,calibration_id=calibration.identity,
-                                    captured_at=current['timestamp'],now=time.monotonic())
-                                positions={path.rsplit('/',1)[-1]:v for path,v in mapped.items()}
-                                return owner.worker.hardware_pose(role,positions,current['timestamp'])
-                            except Exception as exc:return {'hardware_error':str(exc)}
-                        def displayed(frame):
-                            self.preview_pending=False
-                            if generation!=self.preview_generation or frame.get('hardware_cancelled'):return
-                            if 'hardware_error' in frame:
-                                self.live_error=frame['hardware_error']
-                                self.live.setChecked(False);self.message.setText(self.live_error)
-                            elif self.live.isChecked():
-                                owner._accept_frame(frame)
-                                self.preview_at=time.monotonic()
-                                if hasattr(self,'preview_window') and not self.preview_window.disposed:self.preview_window.set_mode('live')
-                        owner._command(publish,displayed)
-                    except Exception as exc:
-                        self.preview_pending=False
-                        self.live.setChecked(False);self.message.setText(str(exc))
+            owner.physical_preview.poll()
+            preview=owner.physical_preview.roles.get(role)
+            if preview:
+                self.live.blockSignals(True);self.live.setChecked(preview['enabled']);self.live.blockSignals(False)
+                self.preview_at=preview['at'];self.preview_pending=preview['pending']
+                self.live_reason.setText(preview['status'])
+                if preview['enabled'] and preview['status']!='Live':self.message.setText(preview['status'])
             if self.closing and not snapshot['alive']:
                 self.timer.stop()
                 if snapshot['stop_confirmed'] is False:
@@ -314,7 +290,7 @@ def build_hardware_panel(owner,candidate,role,session_factory=HardwareSession):
             return super().event(event)
 
         def shutdown(self):
-            self.closing=True;self.move_button.setDown(False);self.live.setChecked(False)
+            self.closing=True;self.move_button.setDown(False)
             if hasattr(self,'preview_window'):self.preview_window.dispose()
             self.session.stop(shutdown=True,force=False)
 

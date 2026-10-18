@@ -207,14 +207,15 @@ class SceneWorker(NativeWorker):
         self._settled_frames = 0
         return {**self.tick(elapsed if self.clock.playing else 0.), 'joint_target': (role, name, value)}
 
-    def hardware_pose(self, role, positions, captured_at=None):
+    def hardware_pose(self, role, positions, captured_at=None, *, display_only=False):
         import time
         if captured_at is None or not 0<=time.monotonic()-captured_at<=.25:
             raise ValueError('Physical observation expired before rendering')
         if self.physics is None:
             raise ValueError('Open the robot workspace before enabling physical live view')
         self.clock.pause()
-        self.physics.apply_measured_pose(role,positions)
+        if display_only:self.physics.apply_measured_pose(role,positions,display_only=True)
+        else:self.physics.apply_measured_pose(role,positions)
         self._remember_pose(role, positions, captured_at)
         self._hardware_roles.add(role)
         if hasattr(self,'_setup_roles'):self._setup_roles.discard(role)
