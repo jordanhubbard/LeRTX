@@ -1,9 +1,9 @@
-ovrtx==0.5.1.385782; sys_platform != "darwin"
-ovstage==0.2.1.385922; sys_platform != "darwin"
+ovrtx==0.6.0.1791947691; sys_platform != "darwin"
+ovstage==0.3.0.1791986420; sys_platform != "darwin"
 pyobjc-core==12.2.2; sys_platform == "darwin"
 pyobjc-framework-Cocoa==12.2.2; sys_platform == "darwin"
 pyobjc-framework-Metal==12.2.2; sys_platform == "darwin"
-newton==1.6.1
+newton==1.7.0
 warp-lang==1.18.0
 numpy==2.4.6; python_version < "3.12"
 numpy==2.5.3; python_version >= "3.12"

@@ -1,0 +1,52 @@
+{
+  "complete": true,
+  "passed": true,
+  "cold_cache_tested": false,
+  "modules": [
+    {
+      "module": "test_launch_native",
+      "returncode": 0,
+      "seconds": 41.803
+    },
+    {
+      "module": "test_native_integration",
+      "returncode": 0,
+      "seconds": 6.361
+    },
+    {
+      "module": "test_physics_native",
+      "returncode": 0,
+      "seconds": 14.77
+    },
+    {
+      "module": "test_robot_dynamics",
+      "returncode": 0,
+      "seconds": 14.768
+    },
+    {
+      "module": "test_runtime_native",
+      "returncode": 0,
+      "seconds": 22.263
+    },
+    {
+      "module": "test_robot_render_native",
+      "returncode": 0,
+      "seconds": 16.663
+    },
+    {
+      "module": "test_window_native",
+      "returncode": 0,
+      "seconds": 9.51
+    },
+    {
+      "module": "test_reconstruction_native",
+      "returncode": 0,
+      "seconds": 7.954
+    },
+    {
+      "module": "test_photo_window_native",
+      "returncode": 0,
+      "seconds": 18.423
+    }
+  ]
+}

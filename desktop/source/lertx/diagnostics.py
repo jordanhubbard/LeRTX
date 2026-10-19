@@ -18,15 +18,15 @@ def report():
     except RuntimeError as error:
         problems.append(str(error))
     from . import graphics
-    expected = {"newton": "1.6.1", "warp-lang": "1.18.0",
+    expected = {"newton": "1.7.0", "warp-lang": "1.18.0",
                 "numpy": "2.4.6" if sys.version_info < (3, 12) else "2.5.3",
                 "PySide6": "6.12.0", "PySide6-Addons": "6.12.0",
                 "PySide6-Essentials": "6.12.0", "shiboken6": "6.12.0", "pyserial": "3.5",
                 "PySide6-Pdf": "6.12.0.140", "PySide6-WebEngine": "6.12.0.140",
                 "lertx-robot-assets": "1.0.0"}
     if graphics.backend() == "ovrtx":
-        expected["ovrtx"] = "0.5.1.385782"
-        expected["ovstage"] = "0.2.1.385922"
+        expected["ovrtx"] = "0.6.0.1791947691"
+        expected["ovstage"] = "0.3.0.1791986420"
     else:
         expected["pyobjc-core"] = "12.2.2"
         expected["pyobjc-framework-Cocoa"] = "12.2.2"

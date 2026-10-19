@@ -1,0 +1,48 @@
+Using CPython 3.11.16
+Creating virtual environment at: ../runtime
+Activate with: source ../runtime/bin/activate
+Using Python 3.11.16 environment at: <home>/literate-ai/qualification/lertx-sdk-20261018/runtime
+Resolved 14 packages in 780ms
+Downloading warp-lang (141.9MiB)
+Downloading ovrtx (1.3GiB)
+Downloading pyside6-essentials (80.4MiB)
+Downloading ovstage (63.7MiB)
+Downloading usd-core (28.2MiB)
+Downloading newton (6.2MiB)
+Downloading pyside6-webengine (111.3MiB)
+Downloading pyside6-addons (56.5MiB)
+Downloading pyside6-pdf (2.7MiB)
+ Downloaded pyside6-pdf
+ Downloaded ovstage
+ Downloaded newton
+ Downloaded warp-lang
+ Downloaded usd-core
+ Downloaded ovrtx
+ Downloaded pyside6-addons
+ Downloaded pyside6-essentials
+ Downloaded pyside6-webengine
+Prepared 13 packages in 2m 58s
+Installed 14 packages in 39ms
+ + lertx-robot-assets==1.0.0
+ + newton==1.7.0
+ + numpy==2.4.6
+ + ovrtx==0.6.0.1791947691
+ + ovstage==0.3.0.1791986420
+ + pyserial==3.5
+ + pyside6==6.12.0
+ + pyside6-addons==6.12.0
+ + pyside6-essentials==6.12.0
+ + pyside6-pdf==6.12.0.140
+ + pyside6-webengine==6.12.0.140
+ + shiboken6==6.12.0
+ + usd-core==26.8
+ + warp-lang==1.18.0
+Using Python 3.11.16 environment at: <home>/literate-ai/qualification/lertx-sdk-20261018/runtime
+Resolved 5 packages in 552ms
+Prepared 3 packages in 175ms
+Installed 5 packages in 21ms
+ + iniconfig==2.3.1
+ + packaging==26.3
+ + pluggy==1.7.0
+ + pygments==2.21.0
+ + pytest==9.1.1

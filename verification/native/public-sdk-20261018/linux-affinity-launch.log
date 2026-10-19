@@ -1,0 +1,116 @@
+test_cli_existing_file_in_fresh_process_initializes_usd_before_rtx (test_launch_native.LaunchNativeTests.test_cli_existing_file_in_fresh_process_initializes_usd_before_rtx) ... FAIL
+
+======================================================================
+FAIL: test_cli_existing_file_in_fresh_process_initializes_usd_before_rtx (test_launch_native.LaunchNativeTests.test_cli_existing_file_in_fresh_process_initializes_usd_before_rtx)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/tests/test_launch_native.py", line 75, in _check_cli_launch
+    result = subprocess.run([sys.executable, "-c", script] + ([scene] if scene else []),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<home>/.local/share/uv/python/cpython-3.11.16-linux-x86_64-gnu/lib/python3.11/subprocess.py", line 550, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<home>/.local/share/uv/python/cpython-3.11.16-linux-x86_64-gnu/lib/python3.11/subprocess.py", line 1209, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<home>/.local/share/uv/python/cpython-3.11.16-linux-x86_64-gnu/lib/python3.11/subprocess.py", line 2116, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+  File "<home>/.local/share/uv/python/cpython-3.11.16-linux-x86_64-gnu/lib/python3.11/subprocess.py", line 1253, in _check_timeout
+    raise TimeoutExpired(
+subprocess.TimeoutExpired: Command '['<home>/literate-ai/qualification/lertx-sdk-20261018/project/../runtime/bin/python', '-c', '\nimport faulthandler, json, runpy, sys, tempfile, time\nfrom unittest.mock import patch\nfrom PySide6.QtCore import QTimer\nfrom lertx import ui\nfrom lertx.scene import NativeWorker\nfaulthandler.dump_traceback_later(60, repeat=True, file=sys.stderr)\noriginal = ui.build_main_window\noriginal_initialize = NativeWorker._initialize\ninitializations = []\ndef initialize(worker):\n    initializations.append(True)\n    return original_initialize(worker)\nscene = sys.argv[1] if len(sys.argv) > 1 else None\nframes = []\ndef factory(*args, **kwargs):\n    window = original(*args, **kwargs)\n    timer = QTimer(window)\n    deadline = time.monotonic() + 90\n    def finish():\n        if window._image is not None or time.monotonic() > deadline:\n            frames.append(window._image is not None)\n            if window._image is None:\n                print("First-frame timeout:", window.native_status_label.text(), file=sys.stderr)\n                faulthandler.dump_traceback(file=sys.stderr)\n            else:\n                print("CLI test: first frame received; closing window", file=sys.stderr)\n            timer.stop()\n            window.close()\n    timer.timeout.connect(finish)\n    timer.start(30)\n    return window\nwith tempfile.TemporaryDirectory() as directory, \\\n        patch("lertx.config.user_config_dir", return_value=directory), \\\n        patch("lertx.ui.build_main_window", side_effect=factory), \\\n        patch.object(NativeWorker, "_initialize", initialize):\n    payload = {"command":"launch"}\n    if scene is not None:\n        payload["scene"] = scene\n    sys.argv = ["main.py", json.dumps([payload])]\n    runpy.run_module("main", run_name="__main__")\nfaulthandler.cancel_dump_traceback_later()\nif frames != [True]:\n    raise SystemExit("No native frame reached the actual CLI window")\nif initializations != [True]:\n    raise SystemExit("CLI startup created an unused native renderer")\n', '/tmp/tmpyyf_k1vi/existing.usda']' timed out after 150 seconds
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/tests/test_launch_native.py", line 24, in test_cli_existing_file_in_fresh_process_initializes_usd_before_rtx
+    self._check_cli_launch(str(path))
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/tests/test_launch_native.py", line 85, in _check_cli_launch
+    self.fail("CLI exceeded the 150-second deadline:\n" + diagnostics[-16000:])
+AssertionError: CLI exceeded the 150-second deadline:
+qt.multimedia.ffmpeg: Using Qt multimedia with FFmpeg version 9.0.1 LGPL version 2.1 or later
+This plugin does not support propagateSizeHints()
+I: Initializing Version 2.75.1-release.7540+gl.d3c5c5b8
+I: Client ID: <session>
+I: ThreadId(02) hub_client::client::Client::new Launching client mode=Shared with_cleaner=false cache_path=None cache_size=None
+I: ThreadId(03) launch self=Launcher { discovery_lock: RwLock { lock: RwLock { inner: File { fd: 50, path: "<sdk-hub-path>", read: false, write: true } } }, mode: Shared, with_cleaner: false, config_file: "<sdk-hub-path>" } cmd="hub" "--mode=shared" "--write-config" "<sdk-hub-path>" "--"
+I: Not using Hub: Hub not found
+Timeout (0:01:00)!
+Thread 0x000077aa1ffff6c0 (most recent call first):
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/runtime/lib/python3.11/site-packages/ovrtx/_src/bindings.py", line 1325 in attach_ovstage
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/runtime/lib/python3.11/site-packages/ovrtx/_src/renderer.py", line 504 in attach_ovstage
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/scene.py", line 282 in _initialize
+  File "<string>", line 13 in initialize
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/runtime.py", line 136 in rebuild
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/runtime.py", line 57 in open_document
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/ui.py", line 1005 in <lambda>
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/ui.py", line 834 in measured
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/scene.py", line 231 in _run
+  File "<home>/.local/share/uv/python/cpython-3.11.16-linux-x86_64-gnu/lib/python3.11/threading.py", line 982 in run
+  File "<home>/.local/share/uv/python/cpython-3.11.16-linux-x86_64-gnu/lib/python3.11/threading.py", line 1045 in _bootstrap_inner
+  File "<home>/.local/share/uv/python/cpython-3.11.16-linux-x86_64-gnu/lib/python3.11/threading.py", line 1002 in _bootstrap
+
+Thread 0x000077ac409e4740 (most recent call first):
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/app.py", line 86 in _launch
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/app.py", line 54 in main
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/main.py", line 62 in _run_cli
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/main.py", line 89 in _process_cli
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/main.py", line 95 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 229 in run_module
+  File "<string>", line 41 in <module>
+First-frame timeout: Native: loading
+Thread 0x000077aa1ffff6c0 (most recent call first):
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/runtime/lib/python3.11/site-packages/ovrtx/_src/bindings.py", line 1325 in attach_ovstage
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/runtime/lib/python3.11/site-packages/ovrtx/_src/renderer.py", line 504 in attach_ovstage
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/scene.py", line 282 in _initialize
+  File "<string>", line 13 in initialize
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/runtime.py", line 136 in rebuild
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/runtime.py", line 57 in open_document
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/ui.py", line 1005 in <lambda>
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/ui.py", line 834 in measured
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/scene.py", line 231 in _run
+  File "<home>/.local/share/uv/python/cpython-3.11.16-linux-x86_64-gnu/lib/python3.11/threading.py", line 982 in run
+  File "<home>/.local/share/uv/python/cpython-3.11.16-linux-x86_64-gnu/lib/python3.11/threading.py", line 1045 in _bootstrap_inner
+  File "<home>/.local/share/uv/python/cpython-3.11.16-linux-x86_64-gnu/lib/python3.11/threading.py", line 1002 in _bootstrap
+
+Current thread 0x000077ac409e4740 (most recent call first):
+  File "<string>", line 25 in finish
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/app.py", line 86 in _launch
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/app.py", line 54 in main
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/main.py", line 62 in _run_cli
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/main.py", line 89 in _process_cli
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/main.py", line 95 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 229 in run_module
+  File "<string>", line 41 in <module>
+Timeout (0:01:00)!
+Thread 0x000077aa1ffff6c0 (most recent call first):
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/runtime/lib/python3.11/site-packages/ovrtx/_src/bindings.py", line 1325 in attach_ovstage
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/runtime/lib/python3.11/site-packages/ovrtx/_src/renderer.py", line 504 in attach_ovstage
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/scene.py", line 282 in _initialize
+  File "<string>", line 13 in initialize
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/runtime.py", line 136 in rebuild
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/runtime.py", line 57 in open_document
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/ui.py", line 1005 in <lambda>
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/ui.py", line 834 in measured
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/scene.py", line 231 in _run
+  File "<home>/.local/share/uv/python/cpython-3.11.16-linux-x86_64-gnu/lib/python3.11/threading.py", line 982 in run
+  File "<home>/.local/share/uv/python/cpython-3.11.16-linux-x86_64-gnu/lib/python3.11/threading.py", line 1045 in _bootstrap_inner
+  File "<home>/.local/share/uv/python/cpython-3.11.16-linux-x86_64-gnu/lib/python3.11/threading.py", line 1002 in _bootstrap
+
+Thread 0x000077ac409e4740 (most recent call first):
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/app.py", line 86 in _launch
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/lertx/app.py", line 54 in main
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/main.py", line 62 in _run_cli
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/main.py", line 89 in _process_cli
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/main.py", line 95 in <module>
+  File "<frozen runpy>", line 88 in _run_code
+  File "<frozen runpy>", line 229 in run_module
+  File "<string>", line 41 in <module>
+
+
+----------------------------------------------------------------------
+Ran 1 test in 150.560s
+
+FAILED (failures=1)
+Native qualification failed: command failed

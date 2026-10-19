@@ -1,0 +1,26 @@
+{
+  "ready_for_launch": true,
+  "scope": "installation-preflight-not-rendering",
+  "platform": "Darwin",
+  "architecture": "arm64",
+  "python": "3.11.14",
+  "packages": {
+    "newton": "1.7.0",
+    "warp-lang": "1.18.0",
+    "numpy": "2.4.6",
+    "PySide6": "6.12.0",
+    "PySide6-Addons": "6.12.0",
+    "PySide6-Essentials": "6.12.0",
+    "shiboken6": "6.12.0",
+    "pyserial": "3.5",
+    "PySide6-Pdf": "6.12.0.140",
+    "PySide6-WebEngine": "6.12.0.140",
+    "lertx-robot-assets": "1.0.0",
+    "pyobjc-core": "12.2.2",
+    "pyobjc-framework-Cocoa": "12.2.2",
+    "pyobjc-framework-Metal": "12.2.2",
+    "usd-core": "26.8"
+  },
+  "gpu": "Apple M4 Pro",
+  "problems": []
+}

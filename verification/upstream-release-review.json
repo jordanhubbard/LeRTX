@@ -1,14 +1,14 @@
 {
   "schema": "lertx/upstream-release-review@1",
-  "date": "2026-10-17",
-  "upstream_base": "26f3f82",
+  "date": "2026-10-18",
+  "upstream_base": "0ac4c58dfa07f2fdbe310e88c5fb2930706f97da",
   "repository": "https://github.com/jordanhubbard/LeRTX",
   "status": "native-runtime-passed-framework-admission-blocked",
   "source_binding": {
     "qualification_version": "1.3.0",
     "files_relative_to_desktop_source": {
       "pytest.ini": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
-      "requirements.txt": "179353a6c43c12805ce877d980abb5daa7df68beb1f9b4dd9adde98a2d333b54",
+      "requirements.txt": "e89d43b2bb3d427e83ac8abcc1b66adc04d112bf8571895df3a9c96efa56a7fa",
       "desktop_main.py": "b774e50a945b668ed9c8f43dec424c058b580311c6c72f9fc1a7e8f7cab74a55",
       "main.py": "4d1e3fc24167ac32482c2aa7e2fa3c84b213d785ca5dad1d5a59d69aed512762",
       "tools/run_tests.py": "52ec76af18838c92e562f489f6fc8a2b428f9f0d26060415e9752c457e78e05d",
@@ -16,10 +16,10 @@
       "tests/test_dispatch.py": "24485eed377657d70758ff3abc61b2d4e8e6a6dbd19da15d1f401e37a08eb95a",
       "tests/test_mock_ui.py": "03d72e4f64c83f1d2f10c624e2604f9735a9448e13a7b185334b0be37c2e74d8",
       "tests/test_diagnostics.py": "0928f501a354c4b09d2b8d37c15d9eface58ec539d11129aad151140d3bb0968",
-      "tests/test_robot_render_native.py": "d4d40188d3eef06fe42da424e5079494f5e50d22be5cec97ae4470e3b87a7f7b",
+      "tests/test_robot_render_native.py": "548364a6317ae6715abe85462e20574c851f5878643cba8bd9d2d9012f4cee57",
       "tests/test_camera.py": "49d23789215452b03d32eaea3b6ef9d17df9f91a8183010cfd49162a2f1741b0",
       "tests/test_setup.py": "74517075adc8eb7f12f7eacf1532fdac6138eba2c5dcf32bf13835190cd20b28",
-      "tests/test_joint_binding.py": "2585e4d4337e2bb7d6410f3ae93d85d3f798a60b6f30f1b5e4ba57d08d784b4e",
+      "tests/test_joint_binding.py": "523575c57f25b365e0dd64108533c56e53b7817b031795c7ed36b3f2ded7e2c2",
       "tests/test_devices_ui.py": "5d54fe96994be6f00cdfe516871fab2be9f853627155253b85c011a3fe848f74",
       "tests/test_scene_mapping.py": "1b89577b280fd54808a78300b5b806972cfeb0aef124be20156964213452a1da",
       "tests/test_joint_interaction.py": "1a924ed3df4308ccd04868f801e47c9431a294d41c9369a5a61019b4b719fb9e",
@@ -40,7 +40,7 @@
       "tests/test_host.py": "f07043e8dfdb75d97dca7fbea8d62d8a3304ee87cc472a310d0cf90d7a10c1ee",
       "tests/test_native_integration.py": "ba57a920517ee035c2f06ca71f5895070321ea9359894064150a45af6894b908",
       "tests/test_connection_probe.py": "6976dbd3065f90879879c6f7efc62a131626f77884a16515a3a78e419e3cd1b1",
-      "tests/test_hardware_ui.py": "9f2992b194088fd673abf1c6f37588fbde790640ad1561ff508dbd7cbd7c6d40",
+      "tests/test_hardware_ui.py": "d5f30fe7f1ca17b38885e7317a6fd126fb634f8154d6170d093ad78ca6f82243",
       "tests/test_role_ui.py": "4fcc186bef5321ee838c13dc68201d6ecef0c9ab65aa9d594f2c0f6842140904",
       "tests/test_photo_ui.py": "bf48a0ad8193df595639bc54bc09bc8070ce19d8de5bce8a30af533a0b450840",
       "tests/test_runtime_native.py": "ba913ea7b635baed2a84fdd9cb018afffe7c6878a78c5c097df1262b814c3995",
@@ -59,7 +59,7 @@
       "tests/test_photo_window_native.py": "8f517a3d100a528ab73a8bd7cd3cb513e6c5e89dd0282f1e10cacd1dd95016ec",
       "tests/test_document.py": "2d5c93e4c35a01897c2ab778ba84ea7e09c80c44c877c32daa9ad17aa0195d47",
       "tests/test_device_control.py": "ce3168717ac55159c06c0507bee90c4f4f649028848bee1ff29539c1b0a2c9ec",
-      "tests/test_setup_ui.py": "192b25039e09bb12255251a6415cb2b18d6b243c5cd0ca936cd7611504af7eb6",
+      "tests/test_setup_ui.py": "95a7101e7fd24bb8051135f1adc743a27d3d56a07428ec5f426755ed0c78a2f7",
       "tests/test_robot_ui.py": "6e9482099d892326b34075c546700d6857f3d8ddd2ce269b1bbee4835280d28e",
       "tests/test_robot_session.py": "2cf74c610e992afec960548422fcb96c758c040f5c7357ae801ac38c550b4b3e",
       "tests/test_manifest_cases.py": "63999257f67ffdcd856d7edfc6dc8ca1ff00170949fb140f7df1b1dcd4104adc",
@@ -67,51 +67,52 @@
       "tests/test_hardware.py": "32270fa6a6d0de54a04262eae9bfa5dafd6b42923125e58764421925883705f1",
       "lertx/simulation.py": "a068e394b93afa25a24d01f8b47556cdd8d527a15060a1879f2fafebb94f036c",
       "lertx/graphics.py": "fa223b67446b750e77633574b29cfa35835d39217a3cc5b2b24ebd88a68ba8e8",
-      "lertx/help_ui.py": "dd2ca8797adaa97590d6ae2da7c091ebc93b34fd81b2d487ec8ce1544100937e",
+      "lertx/help_ui.py": "785fbcab20b48c041bf3241704d3e972768ad13f8553b1d25f3ee99a675b09f5",
       "lertx/hardware_feedback.py": "108a665aa5f5779dec96b4125b4b82f28f9922baf885fc5b8b7aa547d8b274a2",
       "lertx/config.py": "ef513a7c33d20747df23c25153f7768b5a9ea6199b53a6125528a49196191edf",
       "lertx/reconstruction.py": "04ac1527696d5b2e8b52406be33b4e6d90646d1e4b140cffd31dd40b952cdd16",
       "lertx/mock_ui.py": "ace0e107ebda10decb3138edbecee34c517f470ed31f26a71b7a2e45c3593dde",
-      "lertx/joint_binding.py": "0cfeb84dcd157a7b31564dac8e666b5438c6c5feb3f66e647c1d16487919e4e6",
+      "lertx/joint_binding.py": "dcee505e18021449bed5fa1e4f1423de60307ed466f0fdadf6ccab34134150c6",
       "lertx/photo_ui.py": "8905553e1e4be3f15dbb00621651df232e8a75cce0718e29fdfb625f77214525",
       "lertx/branding.py": "bbdaa7d81423326290120f0a74a3e76d2f11c2b6c9ca03bceaa3a4cf767b6864",
-      "lertx/hardware_ui.py": "e1d2fc8df518ee58a633bd7e7d8f52f516dc884e10979c24fc47cc52123f0176",
-      "lertx/device_control.py": "bf59d82fb8d488b0907892118ade899d43a561fdacf517dbae6a6e22633da96d",
+      "lertx/hardware_ui.py": "17618dfd2e9d69db08ee0cdd648929b9d9a333994c275cf0f29459443bcec31b",
+      "lertx/device_control.py": "74852f48d17835892c145f75b52edd271cec4d6caf16b5bb533eca5cd7fdb818",
       "lertx/robot_poses.py": "801d20e6582b4f07fb2b8b402dee04154e085ce0f9f6c62b2959d00e1a596314",
       "lertx/debug_control.py": "ec1ba8fe4bf15773f0c66f03434538d63fa50f0935181dd9a5e5b792c7096573",
       "lertx/setup_visuals.py": "8c4fa07c45529f63fc79b21814ed9183d1f66ec1c44cfa03da574d71e2acf566",
       "lertx/viewport_ui.py": "2dfd15236312a43224d393e59d3da66d64019bc36f35f14b8ec28a9d73c19dc3",
       "lertx/transport.py": "f4e759ddcfd7c3090c3c2b13b9d1c571336d2d2f5cb3695602231d5c17ea06c2",
-      "lertx/ui.py": "f9a9067d9e6e65c0b2f2a0a8b28455dd02d6b05533cda7b60bd2314f781f82f9",
+      "lertx/ui.py": "5a5fdfc093ff0d8b4eab30fdb5711450592c1ae91d48ccdb612831065e73e4a4",
       "lertx/host.py": "a082bdab48cbec1ad184f3936ec5e4ff5289add6ea655838a2c077992950e0e7",
-      "lertx/diagnostics.py": "156ace011ad0dbc969a3ba2c3740b657662cf4ab83b6fd8ffe2c8052e2c8c1f7",
-      "lertx/binding_ui.py": "8dde0bc3e8237740f08df28512ea3234a73dd8a13bd85926452a18467a8c15d8",
+      "lertx/diagnostics.py": "05fa2c15f13f65a0ac6e48bff5095fbe6c2906f5ddf513ed91785b97e3ca6490",
+      "lertx/binding_ui.py": "6dfe68a40b9b46a9afab05ce77fa5e531ded0139549a2453de2fde9066e91112",
       "lertx/metal_ovrtx.py": "48ca5ba2e0636657c9eabe8c1e98286268ac565de35b4690ac3a0b1e9d168a24",
       "lertx/role_ui.py": "023216e7d78c7766c2fe1d90974e31c76983a8ae5aaf4ce0ebb7baf1b6006bac",
       "lertx/__init__.py": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
       "lertx/telemetry.py": "20578ae68ac89874eacb6fc12c3a55a8004089b6b8097f7a1ec4be8a312f8453",
       "lertx/scene.py": "21edb9d48bdf21d079a845a2d50a3f542b91193883c0ee57c0b75ca77d25201a",
-      "lertx/setup_calibration.py": "285f790dc8372f73dbfbe1e18d5892844426a17756b5b20632c9807ae1cfb4f7",
-      "lertx/robot_session_ui.py": "f9b576fd6cc801a249dc2e31a3d2fc11b7af55a95f943aa09e64bd259511ea0d",
-      "lertx/live_debug.py": "ec754b16df0312843e56794eca8b7cb5d79d04f4be2fadee3cc89acfded14774",
-      "lertx/runtime.py": "98989797a276ffa0853fdeb4f27d8ffa8899bf14c779ab9a7903624c86255088",
-      "lertx/physics.py": "386d8f62122aae1caf9d7323e03c38abb9499b2aa17d1a7f56ca3d7857b55106",
+      "lertx/setup_calibration.py": "bc585ed898e20e5bd60562dc9c1838a34e12c32fe07c437fa3a9109764179763",
+      "lertx/robot_session_ui.py": "d561c586a2554a799ff14bced77dfcef604cf9ed7f07218ed5bc699171bf73b1",
+      "lertx/live_debug.py": "7bda2c3fec5e10dbbc6e68d2d9b9afa58af512f08809c4d284a7b0cd0f4c2f3b",
+      "lertx/runtime.py": "a8e04b291821c9f0728594b5c7a0916ac7d4d08d132010d03d1b61f21c973477",
+      "lertx/physics.py": "a7dd3daca732d6c4f8d86678d675f13ae10e3c3d26c68e29f94d26e8eab4451a",
       "lertx/camera.py": "8f3d4cf80ebbccb99b3cad3723822d965259edad3139c3f5781f7b2b091e6810",
       "lertx/warmup.py": "380779ef95dc33d51a9b6279d0e8ba33c76fb1d50f61ba111a05c31972a7f996",
       "lertx/arm_colors.py": "4a19bd006c5bea61257b48c9bf0121fd7d75375749a083098cb5b5cf9a0a7705",
       "lertx/assets.py": "4670660bc86e0e9debea8cf12039963ad5538edf1ef3db238a7aa5ed71d6a30f",
       "lertx/robot_ui.py": "643fbf12ab604e148e6ac9481e0ae99a249eb6c50768bd0bca2c22d15d483f15",
-      "lertx/setup_ui.py": "c2127f74db6925ec2439a56e248c5845fec0e9c83ec70b637aa4d0a1f9098e86",
+      "lertx/setup_ui.py": "581b30516602b73a772a5282bc2e665c9b1e492272d34ce85e5fbc74291d8bfd",
       "lertx/joint_interaction.py": "b7ae0247954299c43347672675d4fc059bc02d8f9c57b552bc87bef768c29565",
-      "lertx/hardware_calibration.py": "fff0340e5701bb6256c3db3fcc9c49f2d3519778fb6edbac61d8cc9aa6bf727b",
+      "lertx/hardware_calibration.py": "0161e476880847181bc7af8fb7785e3282a561045b8961d63af05e504b9b6845",
       "lertx/document.py": "8129c0ac237f5a6196da8d17df6e18649b03234be5edae3ffeb24544d96ca985",
       "lertx/desktop_state.py": "7e37d19a42d02603670358c41ab0ca6b41ac7837a78891a68449046e42254337",
-      "lertx/hardware.py": "ec0bc72afb6ce4d0071e2f2bb93275fbde279f417eddf43623312fb762792ce8",
+      "lertx/hardware.py": "c58bc0db37fd907cdad5143003feb005d93e3cc00e0afe0a7d40b927ea35ba45",
       "lertx/app.py": "75dc24b5f1e0124e8360b4182d39b2d03de59f545ac6e85ead77dbda1b9a61e2",
       "lertx/photo.py": "58d31b0f57527c5b639ed228c93fe4001567b06dfd06fff48ccddf1a1451375d",
       "lertx/picking.py": "081666b4d9d7d981f42ef9214a0127044dcaf2b8e3fdb5d6b7e5061dd584c809",
       "lertx/robot.py": "7844d3329637875b074002b051a4797f4e6b72be77a475bbeeea1f94f8316e9e",
-      "lertx/robot_session.py": "026a1113743ee425522629aba22227eab90078c4a93c1d84a78fa44926811cda",
+      "lertx/physical_preview.py": "6603fe3d85689006e93318c530d9c2ddc12cad08e65c5e7b22a7d1c051ade044",
+      "lertx/robot_session.py": "0fc48b8317afa71fb351c6efb1646cd1e2890f08da38cda6ceea185820cac801",
       "lertx/metal_ovstage.py": "e5cfa918fa91c7f8205abed2d0dcfd3800c7e7cc76a804ebcc314372933db2a9",
       "lertx/usb_bus.py": "34809141b8b4464179f7bea3f938eaee84ce68064c6de4a0bbcb0a8bdcee6d42",
       "lertx/devices.py": "e53d52e039096420cd32c9609c49bb2ebb2da4a513092e14eb9a8db5231e1d37",
@@ -157,26 +158,32 @@
       "lertx/resources/so101/assets/wrist_roll_pitch_so101_v2.stl": "6c7ec5525b4d8b9e397a30ab4bb0037156a5d5f38a4adf2c7d943d6c56eda5ae",
       "lertx/resources/so101/assets/waveshare_mounting_plate_so101_v2.stl": "e197e24005a07d01bbc06a8c42311664eaeda415bf859f68fa247884d0f1a6e9",
       "lertx/resources/so101/assets/Wrist_Roll_SO101.stl": "db20e6ac7c08cf8d75692a38db5a217011c97c0ab5d73c248296535df81e39b7"
-    },
-    "local_and_remote_files_identical": true
+    }
   },
   "portable": {
     "status": "passed",
     "platform": "macOS arm64",
     "module_runs": 42,
-    "tests": 326,
-    "log_sha256": "3697070ce4a3c93a47fd64d23c7f40e64b989b52e2acede4c260afe1e916f6c0",
-    "scope": "Portable regression modules, resource-wheel checks and reproducible source bundle checks; Linux native modules verified separately."
+    "tests": 330,
+    "log_sha256": "7e1533e35d20762955bd26572bb96619396310d7df6044feb1e678c91472631b",
+    "evidence": "native/public-sdk-20261018/portable-release.log",
+    "scope": "Portable regression modules and robot asset wheel checks plus reproducible package and extracted defaults; native NVIDIA modules separately qualified."
   },
   "linux_native": {
     "status": "passed",
-    "tests": 17,
+    "tests": 18,
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "driver": "595.84",
+    "python": "3.11.16",
     "cold_cache_qualified": false,
+    "ovrtx": "0.6.0.1791947691",
+    "ovstage": "0.3.0.1791986420",
+    "newton": "1.7.0",
     "native_modules": [
       {
         "module": "test_launch_native",
         "returncode": 0,
-        "seconds": 67.229,
+        "seconds": 41.803,
         "tests": 3,
         "guard": {
           "status": "passed",
@@ -187,17 +194,22 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 42331729920,
-          "minimum_available_bytes": 37421744128,
-          "seconds": 67.164,
+          "initial_available_bytes": 115221524480,
+          "cpu_affinity": [
+            0,
+            1
+          ],
+          "effective_cpu_count": 2,
+          "minimum_available_bytes": 109879848960,
+          "seconds": 41.774,
           "returncode": 0
         },
-        "log_sha256": "5881f5d97f2208d7cfffa779e3024afed5e37a10fdd3f2d26f1ce739a009ac92"
+        "log_sha256": "4a06ea2f567d148921337c1d33a074b5d33d355d7c7beaa0d07b52f33eb70dcc"
       },
       {
         "module": "test_native_integration",
         "returncode": 0,
-        "seconds": 12.983,
+        "seconds": 6.361,
         "tests": 3,
         "guard": {
           "status": "passed",
@@ -208,17 +220,22 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 41488191488,
-          "minimum_available_bytes": 37875179520,
-          "seconds": 12.947,
+          "initial_available_bytes": 114366271488,
+          "cpu_affinity": [
+            0,
+            1
+          ],
+          "effective_cpu_count": 2,
+          "minimum_available_bytes": 111460347904,
+          "seconds": 6.323,
           "returncode": 0
         },
-        "log_sha256": "7a7a6b464d25dcfb4be7060999ed95eae8016867fa7867aebadb2832cdb98827"
+        "log_sha256": "49314efaac3f636aa5036a7db4ee599d9ded371f8fb316e57d91f54fcb32b3f3"
       },
       {
         "module": "test_physics_native",
         "returncode": 0,
-        "seconds": 4.311,
+        "seconds": 14.77,
         "tests": 2,
         "guard": {
           "status": "passed",
@@ -229,17 +246,22 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 41725001728,
-          "minimum_available_bytes": 41391726592,
-          "seconds": 4.243,
+          "initial_available_bytes": 114716508160,
+          "cpu_affinity": [
+            0,
+            1
+          ],
+          "effective_cpu_count": 2,
+          "minimum_available_bytes": 114176499712,
+          "seconds": 14.733,
           "returncode": 0
         },
-        "log_sha256": "e7195e72793b7164b56bb5e6354855b889b636c5d95ca30e24cd3713e10f0d54"
+        "log_sha256": "155a7be3e253c29333b838dbcfbb4ef71d0806f29d99b09a55e46522438ac7ee"
       },
       {
         "module": "test_robot_dynamics",
         "returncode": 0,
-        "seconds": 10.467,
+        "seconds": 14.768,
         "tests": 1,
         "guard": {
           "status": "passed",
@@ -250,17 +272,22 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 41728208896,
-          "minimum_available_bytes": 41425797120,
-          "seconds": 10.428,
+          "initial_available_bytes": 114956828672,
+          "cpu_affinity": [
+            0,
+            1
+          ],
+          "effective_cpu_count": 2,
+          "minimum_available_bytes": 114360504320,
+          "seconds": 14.734,
           "returncode": 0
         },
-        "log_sha256": "f070e33225413653d53e92821fd9eebdd6e62a9943717a72295ba4dc4b2957b5"
+        "log_sha256": "1a49736906fb6b2e8adf26ef24b3b7c878feab0ec4a59f4f8e26374fb1c18397"
       },
       {
         "module": "test_runtime_native",
         "returncode": 0,
-        "seconds": 73.209,
+        "seconds": 22.263,
         "tests": 1,
         "guard": {
           "status": "passed",
@@ -271,18 +298,23 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 41861214208,
-          "minimum_available_bytes": 36552261632,
-          "seconds": 73.146,
+          "initial_available_bytes": 115051630592,
+          "cpu_affinity": [
+            0,
+            1
+          ],
+          "effective_cpu_count": 2,
+          "minimum_available_bytes": 108703752192,
+          "seconds": 22.233,
           "returncode": 0
         },
-        "log_sha256": "643fed823a993d690f8952c59fc2461f759fee1fae53ead59624f25c24b21da5"
+        "log_sha256": "5efee1740add30bce32fa07742f5afd9ce03347cbcc5b691f3be15eba1ec45c7"
       },
       {
         "module": "test_robot_render_native",
         "returncode": 0,
-        "seconds": 35.168,
-        "tests": 1,
+        "seconds": 16.663,
+        "tests": 2,
         "guard": {
           "status": "passed",
           "memory_limit_bytes": 12884901888,
@@ -292,17 +324,22 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 42318045184,
-          "minimum_available_bytes": 36672495616,
-          "seconds": 35.094,
+          "initial_available_bytes": 114694131712,
+          "cpu_affinity": [
+            0,
+            1
+          ],
+          "effective_cpu_count": 2,
+          "minimum_available_bytes": 110301446144,
+          "seconds": 16.629,
           "returncode": 0
         },
-        "log_sha256": "029eef839171c6252569badebfee84a23714fde357c035216cd4aab04409f63b"
+        "log_sha256": "c424eacf0f9de4e4fbc9cab79a5147c86228ac43740d28df8e6ed82f46d0f1e5"
       },
       {
         "module": "test_window_native",
         "returncode": 0,
-        "seconds": 33.12,
+        "seconds": 9.51,
         "tests": 1,
         "guard": {
           "status": "passed",
@@ -313,17 +350,22 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 42065580032,
-          "minimum_available_bytes": 37722587136,
-          "seconds": 33.055,
+          "initial_available_bytes": 114632126464,
+          "cpu_affinity": [
+            0,
+            1
+          ],
+          "effective_cpu_count": 2,
+          "minimum_available_bytes": 110712537088,
+          "seconds": 9.476,
           "returncode": 0
         },
-        "log_sha256": "ff8da5ec92a48e9f1950c13ae29d5b6bf51e31d544b5014727ced026bcf9f071"
+        "log_sha256": "e6f8d96567852de3c07ef1b1693eb8d236638a6e76f9d09cdd9bd132e15d1133"
       },
       {
         "module": "test_reconstruction_native",
         "returncode": 0,
-        "seconds": 17.924,
+        "seconds": 7.954,
         "tests": 3,
         "guard": {
           "status": "passed",
@@ -334,17 +376,22 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 42246447104,
-          "minimum_available_bytes": 38209081344,
-          "seconds": 17.853,
+          "initial_available_bytes": 114108551168,
+          "cpu_affinity": [
+            0,
+            1
+          ],
+          "effective_cpu_count": 2,
+          "minimum_available_bytes": 110905782272,
+          "seconds": 7.924,
           "returncode": 0
         },
-        "log_sha256": "bd4cffa40b5d7cb294211502d493ab5ac78681bac5cfedb7c0bd032f639a6cc2"
+        "log_sha256": "8f90946442b13b38d7c434e3a7c79c06b1104d8ac53debaddc5a1976986a1271"
       },
       {
         "module": "test_photo_window_native",
         "returncode": 0,
-        "seconds": 63.591,
+        "seconds": 18.423,
         "tests": 2,
         "guard": {
           "status": "passed",
@@ -355,14 +402,20 @@
           "cpu_quota_percent": 200,
           "task_limit": 128,
           "launched": true,
-          "initial_available_bytes": 41482948608,
-          "minimum_available_bytes": 37243813888,
-          "seconds": 63.518,
+          "initial_available_bytes": 114076168192,
+          "cpu_affinity": [
+            0,
+            1
+          ],
+          "effective_cpu_count": 2,
+          "minimum_available_bytes": 109450235904,
+          "seconds": 18.391,
           "returncode": 0
         },
-        "log_sha256": "1a744e698be8438ff0e7d752ecb7a6cddddfd8ef50db3fa9cb45b6e82222bdca"
+        "log_sha256": "e7f7d0a5bc68895fd269f4fc2d76a2c40219ca7528156ea8d12bbbcca73c30f7"
       }
-    ]
+    ],
+    "evidence": "native/public-sdk-20261018/full-linux"
   },
   "startup": {
     "status": "passed",
@@ -389,15 +442,15 @@
     "Allow first-install shader preparation beyond five minutes, preserving a fifteen-minute outer deadline and Windows process-tree termination."
   ],
   "qualification_metadata_adjustments": [
-    "Native suite used the same application version value 1.0.0; standard spacing and double quotes in the VERSION assignment were subsequently added for the declared release mirror parser.",
-    "The portable inspector regression wait now polls a bounded deadline instead of assuming a 50ms timer fires within 60ms.",
-    "Windows qualification covers the unchanged rendering/runtime/test modules from d085593; the warmup-only amendment also passed fixed Windows setup and fresh guarded Linux native qualification."
+    "Exact Git/LFS checkout 97bec1e qualified with prepared shader caches, explicit display, two-core child affinity and existing 12 GiB memory limits. Initial installation warmup used a separate 24 GiB/eight-core bounded run. No cold-cache qualification claim.",
+    "Committed logs remove local paths and session identifiers; private original log hashes are retained beside scrubbed evidence."
   ],
   "framework_admission": {
     "status": "blocked",
-    "reason": "Pinned framework rejects Darwin-only Metal imports during Linux retained-source dependency admission.",
+    "reason": "Published pinned framework 1.2.0 rejects Darwin-only Metal imports during Linux retained-source admission. Parent PR71 supplies target-bound admission but is not yet published.",
     "issue": "https://github.com/jordanhubbard/literate-ai/issues/65",
     "release_gate": "Keep receipt verification required; the prior receipt does not qualify current source."
   },
-  "windows_qualification": "windows-qualification-review.json"
+  "windows_qualification": "windows-qualification-review.json",
+  "qualification_revision": "97bec1e76129e079cb1fbfb19df4ac673fd408e3"
 }

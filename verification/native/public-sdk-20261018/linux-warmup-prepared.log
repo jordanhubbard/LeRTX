@@ -1,0 +1,23 @@
+Preparing the NVIDIA renderer; first-install shader compilation may take up to 14 minutes.
+Warp 1.18.0 initialized:
+   CUDA Toolkit 13.4, Driver 13.2
+   Devices:
+     "cpu"      : "CPU"
+     "cuda:0"   : "NVIDIA GeForce RTX 5090" (31 GiB, sm_120, mempool enabled)
+   Kernel cache:
+     <home>/.cache/warp/1.18.0
+Module validate_and_correct_inertia_kernel_1ff2ac62 1ff2ac6 load on device 'cuda:0' took 0.34 ms  (cached)
+Module newton._src.geometry.bvh 58a3a49 load on device 'cuda:0' took 0.30 ms  (cached)
+Module newton._src.solvers.solver d7b7ff4 load on device 'cuda:0' took 0.30 ms  (cached)
+I: Initializing Version 2.75.1-release.7540+gl.d3c5c5b8
+I: Client ID: <session>
+I: ThreadId(02) hub_client::client::Client::new Launching client mode=Shared with_cleaner=false cache_path=None cache_size=None
+I: ThreadId(03) launch self=Launcher { discovery_lock: RwLock { lock: RwLock { inner: File { fd: 46, path: "<sdk-hub-path>", read: false, write: true } } }, mode: Shared, with_cleaner: false, config_file: "<sdk-hub-path>" } cmd="hub" "--mode=shared" "--write-config" "<sdk-hub-path>" "--"
+I: Not using Hub: Hub not found
+2026-10-19T03:51:51Z [246ms] [Warning] [omni.platforminfo.plugin] failed to open the default display.  Can't verify X Server version.
+2026-10-19T03:51:52Z [746ms] [Warning] [omni.rtx] CPU performance profile is set to powersave. This profile sets the CPU to the lowest frequency reducing performance.
+2026-10-19T03:51:52Z [748ms] [Warning] [omni.rtx] PCIe link width current (8) and maximum (16) for device 0 don't match.
+2026-10-19T03:51:52Z [748ms] [Warning] [omni.rtx] IOMMU is enabled.
+2026-10-19T03:51:52Z [1,047ms] [Warning] [omni.rtx] NGX does not list DLSS-NR as available for this device/driver; NR passes stay disabled.
+2026-10-19T03:53:20Z [88,778ms] [Warning] [omni.rtx] DLSS increasing input dimensions: Render resolution of (371, 209) is below minimal input resolution of 300.
+{"native_warmup": "passed", "cleanup_completed": true, "seconds": 94.721}

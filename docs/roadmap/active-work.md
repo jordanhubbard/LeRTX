@@ -1784,3 +1784,32 @@ queue item or let `docs/roadmap/` become a plan archive.
     defect in [Literate AI #65](https://github.com/jordanhubbard/literate-ai/issues/65).
     Keep the receipt gate failing until target-specific dependency admission is
     supported; do not fabricate a Linux installation of the macOS dependency.
+
+### [ ] SDK-001 — Refresh public OV libraries and requalify native backends
+
+- **Priority:** high
+- **Owner:** Desktop native runtime, dependency Flavors and native qualification
+- **Direction:** Rebase and rebuild LeRTX against current public OV libraries, preserving the macOS integration and the Windows work now merged upstream.
+- **Conclusion:** Verify exact public direct NVIDIA and OV dependency versions, migrate required APIs, regenerate target locks and qualify native Linux and macOS. Preserve original PR26 evidence; do not bypass the parent platform-source admission blocker.
+- **Depends on:** none
+- **Implementation:**
+  - [x] Verify current public versions and refresh all five hash locks, native Flavor authority, runtime diagnostics and converter tooling.
+  - [x] Rebase onto merged macOS and physical-preview work; preserve earlier qualification evidence.
+  - [ ] Rebuild and qualify isolated Linux NVIDIA runtime on an available compatible worker; preserve existing qualification environments under disk pressure.
+  - [x] Preserve framework verification JSON in CI output when verification fails; retain its nonzero exit status and all receipt requirements.
+  - [ ] Refresh Windows native qualification after checking available storage, and resolve exact-source desktop and verifier-owned framework receipt gates without weakening either check.
+- **Evidence:**
+  - [x] Rebased isolated macOS Metal/Newton 1.7 suite: 346 tests passed; updated Linux archives and fresh target compatibility verified.
+  - [ ] Bind final rebased source to refreshed native, packaging and admission evidence. Linux storage, stale native source binding and parent admission issue 65 remain open; Windows refresh is untested.
+
+SDK-001 current status: fetched main `0ac4c58` is already an ancestor of PR #27 at `c835ea0`; no upstream commits are missing. The current macOS suite passes all 346 tests in 145.690 seconds, and reproducible packaging/extracted defaults pass. The original Linux worker and Windows GPU worker lack installation headroom; no files were deleted.
+
+On an alternate Linux RTX 5090 worker, exact checkout and hash-locked installation pass. Initial native thread allocation, timeout and 12-GiB OOM failures are retained in [the continuation evidence](../architecture/public-sdk-20261018.md). A separate 24-GiB/eight-core SDK initialization diagnostic and real application warmup pass; the original prepared-cache launch then passes at the unchanged two-core/12-GiB budget. This disproves a persistent attachment deadlock, but does not establish cold-cache performance or a portable memory minimum. The guard now limits child CPU affinity to its declared budget, restores the supervisor affinity, records the selected CPU IDs/effective count, and reaps its owned process if affinity restoration fails after launch. The next action is full native qualification using this exact guard before refreshing source-bound acceptance.
+
+Framework authority and locks passed at the initial inspection, but the acceptance receipt was stale. Target-bound source projection landed upstream in Literate AI PR #71 but is not yet in a published release; the current published pin remains 1.2.0. Windows native refresh and verifier-owned admission remain required. The CI diagnostic change preserves failure status while printing the verification details.
+
+SDK-001 native milestone: exact Git/LFS checkout `97bec1e` passes all 18 Linux NVIDIA tests across nine guarded modules on RTX 5090 with current public SDKs, Python 3.11.16 and prepared caches. Refresh the source-bound evidence and rerun portable/package gates; Windows storage and published-framework receipt remain open.
+
+SDK-001 release-check milestone: refreshed source binding accepted; all 330 portable/resource tests in 42 module runs and reproducible packaging/extracted defaults pass on the current isolated macOS SDK runtime. Native Windows and the verifier-owned framework receipt remain required; no merge/release claim.
+
+SDK-001 authority correction: place the continuation narrative under declared docs/architecture and keep raw structured qualification evidence under verification/native; validate authority again before push.

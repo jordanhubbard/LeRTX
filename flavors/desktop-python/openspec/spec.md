@@ -12,8 +12,8 @@ NVIDIA packages. Native commands must reject an unsupported host or Python ABI
 with an actionable error before SDK initialization.
 
 Use these exact runtime distributions and declare them honestly in requirements
-and the source SBOM. On Linux and Windows: `ovrtx==0.5.1.385782`,
-`ovstage==0.2.1.385922`, `newton==1.6.1`, `warp-lang==1.18.0`, `numpy==2.4.6`,
+and the source SBOM. On Linux and Windows: `ovrtx==0.6.0.1791947691`,
+`ovstage==0.3.0.1791986420`, `newton==1.7.0`, `warp-lang==1.18.0`, `numpy==2.4.6`,
 `usd-core==26.8`, `PySide6==6.12.0`, `pyserial==3.5`, and the locally supplied
 `lertx-robot-assets==1.0.0` resource wheel. On macOS omit `ovrtx` and `ovstage`
 entirely and add `pyobjc-core==12.2.2`, `pyobjc-framework-Cocoa==12.2.2`, and

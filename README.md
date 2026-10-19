@@ -10,12 +10,12 @@ and the [runtime contract](docs/architecture/runtime.md).
 
 ## SDK refresh release
 
-The next source/setup release retains the camera, recording and integrated device
-workflows from the current upstream. Its SDK combination is OVRTX 0.5.1.385782,
-OVStage 0.2.1.385922, Newton 1.6.1 and Warp 1.18.0. Portable and Linux native
-qualification is refreshed for this combined source. Earlier platform reports
-remain historical; fresh Windows/ARM64 and physical-device qualification are
-follow-up coverage for this cut. macOS remains a development host only.
+The dependency-refresh branch retains the camera, recording and integrated device
+workflows and the macOS Metal integration. It targets OVRTX 0.6.0.1791947691,
+OVStage 0.3.0.1791986420, Newton 1.7.0 and Warp 1.18.0. Linux and Windows use
+OVRTX/OVStage; macOS uses Metal with CPU physics. Earlier qualification reports
+apply to their recorded SDK versions. Fresh native qualification and framework
+admission are required before this dependency refresh is release-ready.
 
 ## Milestones
 
@@ -25,7 +25,7 @@ follow-up coverage for this cut. macOS remains a development host only.
 
 ## Run the development desktop
 
-With GNU Make installed, from the checkout on Windows or Linux:
+With GNU Make installed, from the checkout on Windows, Linux or macOS:
 
 ```sh
 make run
@@ -33,9 +33,8 @@ make run
 
 This prepares dependencies when needed and launches LeRTX. Windows uses the
 PowerShell launcher below; Linux uses `python3` (override with `make run
-PYTHON=python3.11` if needed). On macOS the same target exits with an explanation:
-the pinned NVIDIA renderer has no Mac build. It does not create an environment
-or download incompatible SDKs there.
+PYTHON=python3.11` if needed). On macOS the same target selects the Darwin dependency lock and Metal renderer;
+it does not install NVIDIA renderer packages.
 
 On Windows, from PowerShell in the checkout, build and run with one command:
 

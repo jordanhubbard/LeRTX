@@ -1,0 +1,6 @@
+test_cli_existing_file_in_fresh_process_initializes_usd_before_rtx (test_launch_native.LaunchNativeTests.test_cli_existing_file_in_fresh_process_initializes_usd_before_rtx) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 7.287s
+
+OK

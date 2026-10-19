@@ -1,6 +1,6 @@
 # Design traceability
 
-<!-- literate-ai:authority-reviewed sha256:b32acd58998ecd2114b2657a0cf04399257bb43233a01a2df0bbdb48b61a074e -->
+<!-- literate-ai:authority-reviewed sha256:c66475a48c38a9222bcf93b7c4320e800bd99fd8c9aba059a236223b38b74027 -->
 
 [Project guide](../README.md) → design traceability
 
@@ -86,3 +86,17 @@ highlighted-articulation regression requires substantial visual changes through
 selection and deselection; refreshing touched mesh-local transforms repairs the
 pinned renderer's ancestor-update issue. Guided setup keeps sweep requirements
 visible and uses role-specific projected CAD geometry for its reference diagram.
+
+The public SDK refresh is owned by the native Python and Linux target Flavors:
+OVRTX 0.6 and OVStage 0.3 advance together, with Newton 1.7. The five installer
+hash locks and runtime diagnostics select the same direct versions. macOS keeps
+the Metal implementation and CPU physics; it does not install NVIDIA renderer
+packages. The fresh Linux interpreter observation and verified updated archives
+establish dependency compatibility. An alternate RTX 5090 worker passes all
+18 native tests across nine guarded modules with prepared caches; macOS passes
+346 Metal/CPU-physics tests, and portable release checks pass 330 tests.
+Current source-bound evidence is in `verification/native/public-sdk-20261018/`;
+the [continuation review](public-sdk-20261018.md) preserves initial failures,
+resource limits and remaining Windows storage and framework receipt gaps.
+Earlier platform reports do not qualify this new SDK combination, and the
+retained-source admission gap remains tracked in Literate AI issue 65.

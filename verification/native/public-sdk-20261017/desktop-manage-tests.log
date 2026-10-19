@@ -1,0 +1,13 @@
+.Preparing LeRTX for this checkout...
+........LeRTX environment ready. Run: make run
+LeRTX environment ready. Run: make run
+Installed launcher: /var/folders/v0/pxyl2_m512v5j9nhv674pt400000gn/T/tmpc9jt9i3j/Applications/LeRTX.command
+Preparing LeRTX for this checkout...
+.Preparing LeRTX for this checkout...
+.....s..Launcher already installed: /var/folders/v0/pxyl2_m512v5j9nhv674pt400000gn/T/tmpgur5uzg4/LeRTX.lnk
+Preparing LeRTX for this checkout...
+..s
+----------------------------------------------------------------------
+Ran 21 tests in 0.239s
+
+OK (skipped=2)

@@ -121,6 +121,15 @@ earlier tests; a combined run exceeded the guard's 128-task limit. Each module
 keeps the memory cap, host reserve and deadline. The runner preserves logs and
 guard reports, and fails if any module fails. It may reuse shader caches and
 does not establish cold-cache startup performance.
-The guard records its CPU quota and task limit. `--cpu-cores` allows an explicit
+The guard records its CPU quota, selected CPU affinity and task limit. Child
+processes inherit affinity limited to that CPU budget so SDK thread discovery
+does not size pools for every host CPU. `--cpu-cores` allows an explicit
 diagnostic budget after checking worker headroom; its default remains two cores.
 Changing that budget is a distinct experiment and must be recorded as such.
+
+Public OVRTX 0.6 first-install preparation can exceed the regular 12-GiB native
+test budget. Keep explicit warmup evidence separate from prepared-cache tests;
+check worker headroom before selecting a larger bounded installation budget. A
+24-GiB/eight-core diagnostic was needed on the observed RTX 5090 worker before
+the original two-core/12-GiB launch test passed. This observation is not a
+portable minimum-memory guarantee or cold-cache startup claim.

@@ -36,8 +36,8 @@ assignment. Use Hugging Face LeRobot code and models.
 
 The replacement upstream is `https://github.com/jordanhubbard/LeRTX`. Its camera,
 recording and integrated calibration work is retained. The next source/setup
-release combines that code with OVRTX 0.5.1.385782, OVStage 0.2.1.385922, Newton
-1.6.1 and Warp 1.18.0. Historical platform and admission results below describe
+release combines that code with OVRTX 0.6.0.1791947691, OVStage 0.3.0.1791986420, Newton
+1.7.0 and Warp 1.18.0. Historical platform and admission results below describe
 earlier snapshots. Fresh portable, Linux NVIDIA and framework admission checks
 must bind the combined source before publication. Windows/ARM64 refresh,
 physical-arm qualification and two-core cold-cache qualification remain separate

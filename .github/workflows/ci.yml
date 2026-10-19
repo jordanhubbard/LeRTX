@@ -34,5 +34,8 @@ jobs:
           'literate-ai @ https://github.com/jordanhubbard/literate-ai/releases/download/v1.2.0/literate_ai-1.2.0-py3-none-any.whl#sha256=e6ece36ee714ce30b4b63fc19dc880ce4838ca157e45607a3e524850d80c9686'
       - name: Verify framework authority, locks and acceptance receipt
         run: |
-          litai verify > framework-verification.json
+          status=0
+          litai verify > framework-verification.json || status=$?
+          cat framework-verification.json
+          if [ "$status" -ne 0 ]; then exit "$status"; fi
           python -c 'import json; r=json.load(open("framework-verification.json")); print(json.dumps(r, indent=2)); assert r["ok"] and r["result"]["ok"], "Framework verification failed"'

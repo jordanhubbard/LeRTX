@@ -1,0 +1,382 @@
+[
+  {
+    "name": "ovrtx",
+    "version": "0.6.0.1791947691",
+    "requires_dist": null,
+    "files": [
+      {
+        "name": "ovrtx-0.6.0.1791947691.tar.gz",
+        "size": 23088,
+        "uploaded": "2026-10-15T05:49:20.493009Z"
+      }
+    ]
+  },
+  {
+    "name": "ovstage",
+    "version": "0.3.0.1791986420",
+    "requires_dist": null,
+    "files": [
+      {
+        "name": "ovstage-0.3.0.1791986420-py3-none-manylinux_2_35_aarch64.whl",
+        "size": 64550686,
+        "uploaded": "2026-10-15T03:53:22.190186Z"
+      },
+      {
+        "name": "ovstage-0.3.0.1791986420-py3-none-manylinux_2_35_x86_64.whl",
+        "size": 66832291,
+        "uploaded": "2026-10-15T03:53:46.247572Z"
+      },
+      {
+        "name": "ovstage-0.3.0.1791986420-py3-none-win_amd64.whl",
+        "size": 38037230,
+        "uploaded": "2026-10-15T03:53:02.713119Z"
+      }
+    ]
+  },
+  {
+    "name": "newton",
+    "version": "1.7.0",
+    "requires_dist": [
+      "warp-lang>=1.17.0",
+      "newton[examples]; extra == \"dev\"",
+      "coverage[toml]>=7.8.0; extra == \"dev\"",
+      "viser>=1.1.1; extra == \"dev\"",
+      "newton[importers]; extra == \"docs\"",
+      "myst-parser>=3.0.1; extra == \"docs\"",
+      "sphinx>=7.4.7; extra == \"docs\"",
+      "pydata-sphinx-theme>=0.16.1; extra == \"docs\"",
+      "sphinxcontrib-mermaid>=1.0.0; extra == \"docs\"",
+      "sphinx-copybutton>=0.5.0; extra == \"docs\"",
+      "sphinx-design<=0.6.1,>=0.5.0; extra == \"docs\"",
+      "sphinx-tabs>=3.3.0; extra == \"docs\"",
+      "nbsphinx>=0.9.0; extra == \"docs\"",
+      "ipykernel<7.0.0,>=6.0.0; extra == \"docs\"",
+      "pypandoc>=1.11; extra == \"docs\"",
+      "pypandoc-binary>=1.11; extra == \"docs\"",
+      "gitpython>=3.1.58; extra == \"docs\"",
+      "viser>=1.1.1; extra == \"docs\"",
+      "newton[sim]; extra == \"examples\"",
+      "newton[importers]; extra == \"examples\"",
+      "newton[onnx]; extra == \"examples\"",
+      "pyglet<3,>=2.1.6; extra == \"examples\"",
+      "gitpython>=3.1.58; extra == \"examples\"",
+      "imgui-bundle>=1.92.0; extra == \"examples\"",
+      "pyyaml>=6.0.2; extra == \"examples\"",
+      "cbor2>=5.7.0; extra == \"examples\"",
+      "pillow>=11.3.0; extra == \"examples\"",
+      "requests>=2.25.0; extra == \"importers\"",
+      "scipy>=1.11.0; extra == \"importers\"",
+      "fast-simplification>=0.1.11; extra == \"importers\"",
+      "alphashape>=1.3.1; extra == \"importers\"",
+      "coacd>=1.0.7; python_full_version < \"3.14\" and extra == \"importers\"",
+      "trimesh>=4.6.8; extra == \"importers\"",
+      "meshio>=5.3.5; extra == \"importers\"",
+      "pycollada>=0.9; extra == \"importers\"",
+      "resolve-robotics-uri-py>=0.4.0; extra == \"importers\"",
+      "open3d>=0.19.0; (python_full_version < \"3.13\" and platform_machine != \"aarch64\" and extra == \"importers\") or (python_full_version < \"3.13\" and sys_platform != \"linux\" and extra == \"importers\")",
+      "usd-core<26.9,>=25.5; python_full_version < \"3.14\" and platform_machine != \"aarch64\" and extra == \"importers\"",
+      "usd-exchange<4,>=2.3.0; python_full_version < \"3.14\" and platform_machine == \"aarch64\" and extra == \"importers\"",
+      "newton-usd-schemas>=0.5.0; extra == \"importers\"",
+      "newton[examples]; extra == \"notebook\"",
+      "rerun-sdk[notebook]>=0.27.1; python_full_version < \"3.14\" and extra == \"notebook\"",
+      "jupyterlab>=4.5.7; extra == \"notebook\"",
+      "jupyter-server-proxy>=4.5.0; extra == \"notebook\"",
+      "viser>=1.1.1; extra == \"notebook\"",
+      "warp-nn[onnx]~=0.4.0; extra == \"onnx\"",
+      "open3d>=0.19.0; (python_full_version < \"3.13\" and platform_machine != \"aarch64\" and extra == \"remesh\") or (python_full_version < \"3.13\" and sys_platform != \"linux\" and extra == \"remesh\")",
+      "pyfqmr>=0.5.0; extra == \"remesh\"",
+      "newton[importers]; extra == \"rtx\"",
+      "pyglet<3,>=2.1.6; extra == \"rtx\"",
+      "ovrtx>=0.3; extra == \"rtx\"",
+      "ovstage>=0.1.1; extra == \"rtx\"",
+      "mujoco-warp~=3.15.0; extra == \"sim\"",
+      "mujoco~=3.15.0; extra == \"sim\"",
+      "newton[examples]; extra == \"torch-cu12\"",
+      "torch>=2.7.0; extra == \"torch-cu12\"",
+      "newton[examples]; extra == \"torch-cu13\"",
+      "torch>=2.10.0; extra == \"torch-cu13\""
+    ],
+    "files": [
+      {
+        "name": "newton-1.7.0-py3-none-any.whl",
+        "size": 6552044,
+        "uploaded": "2026-10-14T22:37:28.631496Z"
+      }
+    ]
+  },
+  {
+    "name": "warp-lang",
+    "version": "1.18.0",
+    "requires_dist": [
+      "numpy",
+      "nvidia-sphinx-theme; extra == \"docs\"",
+      "sphinx-copybutton; extra == \"docs\"",
+      "pre-commit; extra == \"docs\"",
+      "myst_parser; extra == \"docs\"",
+      "usd-core>=25.5; ((sys_platform != \"linux\" or platform_machine != \"aarch64\") and (sys_platform != \"win32\" or (platform_machine != \"ARM64\" and platform_machine != \"arm64\" and platform_machine != \"aarch64\"))) and extra == \"benchmark\"",
+      "usd-exchange>=2.2; (python_version >= \"3.10\" and python_version < \"3.13\" and sys_platform == \"linux\" and platform_machine == \"aarch64\") and extra == \"benchmark\"",
+      "blosc>=1.11.1; (sys_platform != \"win32\" or (platform_machine != \"ARM64\" and platform_machine != \"arm64\" and platform_machine != \"aarch64\")) and extra == \"examples\"",
+      "matplotlib>=3.7.5; extra == \"examples\"",
+      "nlopt; (python_version < \"3.15\" and (sys_platform != \"win32\" or (platform_machine != \"ARM64\" and platform_machine != \"arm64\" and platform_machine != \"aarch64\"))) and extra == \"examples\"",
+      "pillow>=10.4.0; extra == \"examples\"",
+      "psutil>=7.1.0; extra == \"examples\"",
+      "pyglet>=2.1.9; extra == \"examples\"",
+      "usd-core>=25.5; ((sys_platform != \"linux\" or platform_machine != \"aarch64\") and (sys_platform != \"win32\" or (platform_machine != \"ARM64\" and platform_machine != \"arm64\" and platform_machine != \"aarch64\"))) and extra == \"examples\"",
+      "usd-exchange>=2.2; (python_version >= \"3.10\" and python_version < \"3.13\" and sys_platform == \"linux\" and platform_machine == \"aarch64\") and extra == \"examples\"",
+      "warp-lang[examples]; extra == \"torch-cu12\"",
+      "torch>=2.7.0; extra == \"torch-cu12\"",
+      "warp-lang[examples]; extra == \"torch-cu13\"",
+      "torch>=2.9.0; extra == \"torch-cu13\"",
+      "warp-lang[examples]; extra == \"dev\"",
+      "warp-lang[docs]; extra == \"dev\"",
+      "nvtx; (sys_platform != \"win32\" or (platform_machine != \"ARM64\" and platform_machine != \"arm64\" and platform_machine != \"aarch64\")) and extra == \"dev\"",
+      "coverage[toml]; extra == \"dev\"",
+      "ml-dtypes>=0.5.4; extra == \"dev\""
+    ],
+    "files": [
+      {
+        "name": "warp_lang-1.18.0-py3-none-macosx_11_0_arm64.whl",
+        "size": 27819487,
+        "uploaded": "2026-10-05T00:22:32.346738Z"
+      },
+      {
+        "name": "warp_lang-1.18.0-py3-none-manylinux_2_28_x86_64.whl",
+        "size": 148811186,
+        "uploaded": "2026-10-05T00:23:01.197186Z"
+      },
+      {
+        "name": "warp_lang-1.18.0-py3-none-manylinux_2_34_aarch64.whl",
+        "size": 147348850,
+        "uploaded": "2026-10-05T00:23:31.015399Z"
+      },
+      {
+        "name": "warp_lang-1.18.0-py3-none-win_amd64.whl",
+        "size": 134607061,
+        "uploaded": "2026-10-05T00:23:56.792371Z"
+      }
+    ]
+  },
+  {
+    "name": "usd-core",
+    "version": "26.8",
+    "requires_dist": null,
+    "files": [
+      {
+        "name": "usd_core-26.8-cp310-none-macosx_10_15_universal2.whl",
+        "size": 40653920,
+        "uploaded": "2026-07-20T14:32:02.229418Z"
+      },
+      {
+        "name": "usd_core-26.8-cp310-none-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "size": 29604993,
+        "uploaded": "2026-07-20T14:32:05.744896Z"
+      },
+      {
+        "name": "usd_core-26.8-cp310-none-win_amd64.whl",
+        "size": 13848462,
+        "uploaded": "2026-07-20T14:32:08.701147Z"
+      },
+      {
+        "name": "usd_core-26.8-cp311-none-macosx_10_15_universal2.whl",
+        "size": 40653076,
+        "uploaded": "2026-07-20T14:32:11.676819Z"
+      },
+      {
+        "name": "usd_core-26.8-cp311-none-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "size": 29611915,
+        "uploaded": "2026-07-20T14:32:14.833429Z"
+      },
+      {
+        "name": "usd_core-26.8-cp311-none-win_amd64.whl",
+        "size": 13848082,
+        "uploaded": "2026-07-20T14:32:17.701282Z"
+      },
+      {
+        "name": "usd_core-26.8-cp312-none-macosx_10_15_universal2.whl",
+        "size": 40698020,
+        "uploaded": "2026-07-20T14:32:20.788483Z"
+      },
+      {
+        "name": "usd_core-26.8-cp312-none-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "size": 29530957,
+        "uploaded": "2026-07-20T14:32:24.255895Z"
+      },
+      {
+        "name": "usd_core-26.8-cp312-none-win_amd64.whl",
+        "size": 13887898,
+        "uploaded": "2026-07-20T14:32:27.452228Z"
+      },
+      {
+        "name": "usd_core-26.8-cp313-none-macosx_10_15_universal2.whl",
+        "size": 40698029,
+        "uploaded": "2026-07-20T14:32:30.566286Z"
+      },
+      {
+        "name": "usd_core-26.8-cp313-none-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "size": 29531140,
+        "uploaded": "2026-07-20T14:32:34.047544Z"
+      },
+      {
+        "name": "usd_core-26.8-cp313-none-win_amd64.whl",
+        "size": 13888333,
+        "uploaded": "2026-07-20T14:32:36.645657Z"
+      },
+      {
+        "name": "usd_core-26.8-cp314-none-macosx_10_15_universal2.whl",
+        "size": 40856543,
+        "uploaded": "2026-07-20T14:32:39.783506Z"
+      },
+      {
+        "name": "usd_core-26.8-cp314-none-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "size": 29575839,
+        "uploaded": "2026-07-20T14:32:43.582332Z"
+      },
+      {
+        "name": "usd_core-26.8-cp314-none-win_amd64.whl",
+        "size": 14451875,
+        "uploaded": "2026-07-20T14:32:46.461765Z"
+      },
+      {
+        "name": "usd_core-26.8-cp39-none-macosx_10_15_universal2.whl",
+        "size": 40656959,
+        "uploaded": "2026-07-20T14:32:50.065961Z"
+      },
+      {
+        "name": "usd_core-26.8-cp39-none-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+        "size": 29605905,
+        "uploaded": "2026-07-20T14:32:53.574144Z"
+      },
+      {
+        "name": "usd_core-26.8-cp39-none-win_amd64.whl",
+        "size": 13849883,
+        "uploaded": "2026-07-20T14:32:56.379718Z"
+      }
+    ]
+  },
+  {
+    "name": "usd-exchange",
+    "version": "3.0.1",
+    "requires_dist": [
+      "usd-validation-nvidia<2,>=1.22.0; extra == \"test\""
+    ],
+    "files": [
+      {
+        "name": "usd_exchange-3.0.1-cp310-cp310-manylinux_2_34_aarch64.whl",
+        "size": 25948706,
+        "uploaded": "2026-10-07T14:43:39.644745Z"
+      },
+      {
+        "name": "usd_exchange-3.0.1-cp310-cp310-manylinux_2_34_x86_64.whl",
+        "size": 26678601,
+        "uploaded": "2026-10-07T14:44:04.555981Z"
+      },
+      {
+        "name": "usd_exchange-3.0.1-cp310-cp310-win_amd64.whl",
+        "size": 15974962,
+        "uploaded": "2026-10-07T14:44:28.357639Z"
+      },
+      {
+        "name": "usd_exchange-3.0.1-cp311-cp311-manylinux_2_34_aarch64.whl",
+        "size": 25946095,
+        "uploaded": "2026-10-07T14:45:01.109290Z"
+      },
+      {
+        "name": "usd_exchange-3.0.1-cp311-cp311-manylinux_2_34_x86_64.whl",
+        "size": 26676795,
+        "uploaded": "2026-10-07T14:45:19.722247Z"
+      },
+      {
+        "name": "usd_exchange-3.0.1-cp311-cp311-win_amd64.whl",
+        "size": 15976834,
+        "uploaded": "2026-10-07T14:45:40.893424Z"
+      },
+      {
+        "name": "usd_exchange-3.0.1-cp312-cp312-manylinux_2_34_aarch64.whl",
+        "size": 25810541,
+        "uploaded": "2026-10-07T14:46:03.864956Z"
+      },
+      {
+        "name": "usd_exchange-3.0.1-cp312-cp312-manylinux_2_34_x86_64.whl",
+        "size": 26576561,
+        "uploaded": "2026-10-07T14:46:25.192793Z"
+      },
+      {
+        "name": "usd_exchange-3.0.1-cp312-cp312-win_amd64.whl",
+        "size": 16030931,
+        "uploaded": "2026-10-07T14:46:46.752186Z"
+      },
+      {
+        "name": "usd_exchange-3.0.1-cp313-cp313-manylinux_2_34_aarch64.whl",
+        "size": 25808381,
+        "uploaded": "2026-10-07T14:47:25.163765Z"
+      },
+      {
+        "name": "usd_exchange-3.0.1-cp313-cp313-manylinux_2_34_x86_64.whl",
+        "size": 26577031,
+        "uploaded": "2026-10-07T14:47:50.940706Z"
+      },
+      {
+        "name": "usd_exchange-3.0.1-cp313-cp313-win_amd64.whl",
+        "size": 16031823,
+        "uploaded": "2026-10-07T14:48:15.167706Z"
+      }
+    ]
+  },
+  {
+    "name": "urdf-usd-converter",
+    "version": "0.3.4",
+    "requires_dist": [
+      "newton-usd-schemas>=0.4.0",
+      "numpy-stl>=3.2",
+      "pycollada>=0.9.2",
+      "tinyobjloader>=2.0.0rc13",
+      "usd-exchange>=2.2.2"
+    ],
+    "files": [
+      {
+        "name": "urdf_usd_converter-0.3.4-py3-none-any.whl",
+        "size": 66014,
+        "uploaded": "2026-10-15T20:34:34.282364Z"
+      },
+      {
+        "name": "urdf_usd_converter-0.3.4.tar.gz",
+        "size": 228532,
+        "uploaded": "2026-10-15T20:34:35.726510Z"
+      }
+    ]
+  },
+  {
+    "name": "usd-validation-nvidia",
+    "version": "1.22.0",
+    "requires_dist": [
+      "numpy<3,>=1; extra == \"numpy\"",
+      "usd-core<26.09,>=23.11; python_version < \"3.14\" and extra == \"usd\"",
+      "usd-core<26.09,>=26.08; python_version == \"3.14\" and extra == \"usd\"",
+      "usd-exchange>=3.0.0; python_version < \"3.14\" and extra == \"usdex\""
+    ],
+    "files": [
+      {
+        "name": "usd_validation_nvidia-1.22.0-py3-none-any.whl",
+        "size": 327888,
+        "uploaded": "2026-09-10T18:13:56.555627Z"
+      }
+    ]
+  },
+  {
+    "name": "newton-usd-schemas",
+    "version": "0.6.0",
+    "requires_dist": null,
+    "files": [
+      {
+        "name": "newton_usd_schemas-0.6.0-py3-none-any.whl",
+        "size": 22688,
+        "uploaded": "2026-10-15T19:12:57.069181Z"
+      },
+      {
+        "name": "newton_usd_schemas-0.6.0.tar.gz",
+        "size": 77182,
+        "uploaded": "2026-10-15T19:12:58.536986Z"
+      }
+    ]
+  }
+]
