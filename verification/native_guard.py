@@ -74,7 +74,18 @@ def main(argv=None):
                   '-p', 'CPUQuota='+str(report['cpu_quota_percent'])+'%', '-p', 'TasksMax=128',
                   '-p', 'RuntimeMaxSec='+str(args.timeout), '--', *command]
         start = time.monotonic()
-        process = subprocess.Popen(launch, start_new_session=True)
+        # CPU quota limits total work, but SDKs can still size thread pools for
+        # every host CPU. Give the child the same CPU budget during discovery.
+        original_affinity = os.sched_getaffinity(0)
+        selected_affinity = sorted(original_affinity)[:args.cpu_cores]
+        report['cpu_affinity'] = selected_affinity
+        report['effective_cpu_count'] = len(selected_affinity)
+        try:
+            os.sched_setaffinity(0, selected_affinity)
+            process = subprocess.Popen(launch, start_new_session=True)
+            report['launched'] = True
+        finally:
+            os.sched_setaffinity(0, original_affinity)
         report.update(launched=True, status='running', minimum_available_bytes=available)
         while process.poll() is None:
             available = available_bytes()
@@ -98,6 +109,10 @@ def main(argv=None):
         report['reason'] = str(error)
         if process is not None and process.poll() is None:
             stop_owned_unit(unit)
+            try: process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                os.killpg(process.pid, signal.SIGKILL)
+                process.wait(timeout=5)
     finally:
         if lock is not None:
             lock.close()

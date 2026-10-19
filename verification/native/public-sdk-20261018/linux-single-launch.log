@@ -1,0 +1,26 @@
+test_cli_existing_file_in_fresh_process_initializes_usd_before_rtx (test_launch_native.LaunchNativeTests.test_cli_existing_file_in_fresh_process_initializes_usd_before_rtx) ... FAIL
+
+======================================================================
+FAIL: test_cli_existing_file_in_fresh_process_initializes_usd_before_rtx (test_launch_native.LaunchNativeTests.test_cli_existing_file_in_fresh_process_initializes_usd_before_rtx)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/tests/test_launch_native.py", line 24, in test_cli_existing_file_in_fresh_process_initializes_usd_before_rtx
+    self._check_cli_launch(str(path))
+  File "<home>/literate-ai/qualification/lertx-sdk-20261018/project/desktop/source/tests/test_launch_native.py", line 86, in _check_cli_launch
+    self.assertEqual(result.returncode, 0, result.stderr[-4000:])
+AssertionError: -6 != 0 : qt.multimedia.ffmpeg: Using Qt multimedia with FFmpeg version 9.0.1 LGPL version 2.1 or later
+This plugin does not support propagateSizeHints()
+I: Initializing Version 2.75.1-release.7540+gl.d3c5c5b8
+I: Client ID: <session>
+I: ThreadId(02) hub_client::client::Client::new Launching client mode=Shared with_cleaner=false cache_path=None cache_size=None
+I: ThreadId(03) launch self=Launcher { discovery_lock: RwLock { lock: RwLock { inner: File { fd: 56, path: "<sdk-hub-path>", read: false, write: true } } }, mode: Shared, with_cleaner: false, config_file: "<sdk-hub-path>" } cmd="hub" "--mode=shared" "--write-config" "<sdk-hub-path>" "--"
+I: Not using Hub: Hub not found
+terminate called after throwing an instance of 'std::system_error'
+  what():  Resource temporarily unavailable
+
+
+----------------------------------------------------------------------
+Ran 1 test in 3.651s
+
+FAILED (failures=1)
+Native qualification failed: command failed

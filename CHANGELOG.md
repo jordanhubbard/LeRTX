@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Match native qualification child CPU affinity to its CPU budget, preventing
+  SDK thread pools from sizing themselves for every host CPU.
+
+- Show framework verification details in CI when a gate fails, preserving the
+  original failure status and acceptance requirements.
+
 - Speed up the macOS Metal viewport by drawing indexed robot meshes, caching
   authored transforms, and reading back from a private render target. Opening
   the default pair is no longer a multi-second Python tessellation.
