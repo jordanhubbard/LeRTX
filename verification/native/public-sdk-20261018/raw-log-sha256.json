@@ -12,5 +12,6 @@
   "linux-warmup-prepared.log": "aac02623c24eda9c006aea996f0fdfab001d7509337473c30e6faed20923db4c",
   "linux-launch-prepared.log": "76894fd90a1b9548be37ea60dad58d68462e5f981b592c91e96b9730be698336",
   "linux-launch-new-guard.log": "2aeae9691bd7b4fc04dd68afaaa40314d40a1257b290c766f5cd0d530e849327",
-  "linux-launch-new-guard-v2.log": "8468a818c8322c233c32b22043ad8adb86b49c8c1a6548cf13b236647d5fbce9"
+  "linux-launch-new-guard-v2.log": "8468a818c8322c233c32b22043ad8adb86b49c8c1a6548cf13b236647d5fbce9",
+  "portable-release.log": "e7a022766c7709212cd4458fe4938039475f64aefd71ea28d6d2055c7fa928d2"
 }

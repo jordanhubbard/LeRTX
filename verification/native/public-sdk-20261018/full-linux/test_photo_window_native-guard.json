@@ -1,0 +1,19 @@
+{
+  "status": "passed",
+  "memory_limit_bytes": 12884901888,
+  "reserve_bytes": 17179869184,
+  "swap_limit_bytes": 0,
+  "timeout_seconds": 240.0,
+  "cpu_quota_percent": 200,
+  "task_limit": 128,
+  "launched": true,
+  "initial_available_bytes": 114076168192,
+  "cpu_affinity": [
+    0,
+    1
+  ],
+  "effective_cpu_count": 2,
+  "minimum_available_bytes": 109450235904,
+  "seconds": 18.391,
+  "returncode": 0
+}

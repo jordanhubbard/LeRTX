@@ -1,0 +1,37 @@
+test_visible_controls_deliver_native_frames_and_save (test_window_native.WindowNativeTests.test_visible_controls_deliver_native_frames_and_save) ... qt.multimedia.ffmpeg: Using Qt multimedia with FFmpeg version 9.0.1 LGPL version 2.1 or later
+Warp 1.18.0 initialized:
+   CUDA Toolkit 13.4, Driver 13.2
+   Devices:
+     "cpu"      : "CPU"
+     "cuda:0"   : "NVIDIA GeForce RTX 5090" (31 GiB, sm_120, mempool enabled)
+   Kernel cache:
+     <home>/.cache/warp/1.18.0
+Module validate_and_correct_inertia_kernel_1ff2ac62 1ff2ac6 load on device 'cuda:0' took 0.38 ms  (cached)
+Module newton._src.geometry.bvh 58a3a49 load on device 'cuda:0' took 0.55 ms  (cached)
+Module newton._src.solvers.solver d7b7ff4 load on device 'cuda:0' took 0.30 ms  (cached)
+I: Initializing Version 2.75.1-release.7540+gl.d3c5c5b8
+I: Client ID: <session>
+I: ThreadId(02) hub_client::client::Client::new Launching client mode=Shared with_cleaner=false cache_path=None cache_size=None
+I: ThreadId(03) launch self=Launcher { discovery_lock: RwLock { lock: RwLock { inner: File { fd: 54, path: "<sdk-hub-path>", read: false, write: true } } }, mode: Shared, with_cleaner: false, config_file: "<sdk-hub-path>" } cmd="hub" "--mode=shared" "--write-config" "<sdk-hub-path>" "--"
+I: Not using Hub: Hub not found
+2026-10-19T04:03:19Z [775ms] [Warning] [omni.rtx] CPU performance profile is set to powersave. This profile sets the CPU to the lowest frequency reducing performance.
+2026-10-19T04:03:19Z [777ms] [Warning] [omni.rtx] PCIe link width current (8) and maximum (16) for device 0 don't match.
+2026-10-19T04:03:19Z [777ms] [Warning] [omni.rtx] IOMMU is enabled.
+2026-10-19T04:03:19Z [1,114ms] [Warning] [omni.rtx] NGX does not list DLSS-NR as available for this device/driver; NR passes stay disabled.
+2026-10-19T04:03:20Z [2,375ms] [Warning] [omni.rtx] DLSS increasing input dimensions: Render resolution of (371, 209) is below minimal input resolution of 300.
+Module newton._src.sim.collide 56e960b load on device 'cuda:0' took 0.78 ms  (cached)
+Module newton._src.geometry.broad_phase_nxn 0c4afcd load on device 'cuda:0' took 0.47 ms  (cached)
+Module narrow_phase_primitive_write_contact_False_False_False 6b2fd5c load on device 'cuda:0' took 0.34 ms  (cached)
+Module newton._src.geometry.narrow_phase eeaa2fe load on device 'cuda:0' took 2.13 ms  (cached)
+Module newton._src.solvers.xpbd.kernels 10d9537 load on device 'cuda:0' took 1.11 ms  (cached)
+2026-10-19T04:03:22Z [4,293ms] [Warning] [omni.rtx] CPU performance profile is set to powersave. This profile sets the CPU to the lowest frequency reducing performance.
+2026-10-19T04:03:22Z [4,293ms] [Warning] [omni.rtx] PCIe link width current (8) and maximum (16) for device 0 don't match.
+2026-10-19T04:03:22Z [4,293ms] [Warning] [omni.rtx] IOMMU is enabled.
+2026-10-19T04:03:22Z [4,514ms] [Warning] [omni.rtx] NGX does not list DLSS-NR as available for this device/driver; NR passes stay disabled.
+QMainWindow::saveState(): 'objectName' not set for QToolBar 0x5684af2c60b0 'Main'
+ok
+
+----------------------------------------------------------------------
+Ran 1 test in 8.554s
+
+OK

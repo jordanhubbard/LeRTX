@@ -5,7 +5,7 @@
   "missing_upstream_commits": 0,
   "source_files_match_prior_macos_evidence": 151,
   "linux": {
-    "status": "warmup-and-focused-launch-passed-full-suite-pending",
+    "status": "passed",
     "gpu": "NVIDIA GeForce RTX 5090",
     "checkout": "exact shallow Git commit; recursive submodules and LFS verified",
     "guard": "per-module cgroup memory limit, host reserve, CPU and task limits, serial host lock",
@@ -56,7 +56,12 @@
       ],
       "guard_sha256": "314f119c1d14dfc7b29cf302e6325cf8cfda2f8731895de7e275998ed8e0217d",
       "effective_cpu_count": 2
-    }
+    },
+    "qualification_revision": "97bec1e76129e079cb1fbfb19df4ac673fd408e3",
+    "tests": 18,
+    "modules": 9,
+    "cold_cache_qualified": false,
+    "evidence": "full-linux"
   },
   "windows": {
     "status": "blocked-storage",
